@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V8.1 - Tối ưu hiển thị */
+        /* CSS V8.2 - Tối ưu hiển thị */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
@@ -13,7 +13,6 @@
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         
-        /* Ảnh to phải fit khung hình */
         #mainImg { 
             display: block; 
             max-width: 100%; 
@@ -30,6 +29,8 @@
         .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
+
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); }
@@ -42,7 +43,7 @@
         /* FILMSTRIP (Dải ảnh nhỏ) */
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; } /* Ép ảnh nhỏ lại cho vừa khung */
+        .th img { width: 100%; height: 100%; object-fit: cover; } 
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
         .th.sel .dot { display: block; }
         .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
@@ -98,10 +99,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // --- HÀM TẠO LINK THÔNG MINH (QUAN TRỌNG) ---
+        // --- HÀM TẠO LINK THÔNG MINH (QUAN TRỌNG: Dùng /thumbnail cho độ ổn định cao nhất) ---
         function getLink(id, size) {
+            // ✅ SỬA LỖI CUỐI CÙNG: Dùng /thumbnail để tránh lỗi chặn của Google Drive
             // size: 's2000' (Ảnh to), 's220' (Thumbnail nhỏ)
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=${size}`;
+            return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
         async function init() {
@@ -127,7 +129,7 @@
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
                 
-                // ✅ SỬA LỖI: Chỉ dùng s220 cho thumbnail để load siêu nhanh
+                // Dùng s220 cho thumbnail
                 let thumb = getLink(p.id, 's220'); 
                 
                 d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
@@ -141,7 +143,7 @@
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
-            // ✅ SỬA LỖI: Chỉ dùng s2000 cho ảnh chính để nét căng
+            // Dùng s2000 cho ảnh chính
             let hd = getLink(p.id, 's2000'); 
             
             img.src=hd; 
