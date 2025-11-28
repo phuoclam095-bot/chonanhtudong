@@ -5,32 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
+        /* CSS V8.1 - Tối ưu hiển thị */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
-        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; height: 100%; overflow: hidden; }
-        .canvas-box { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        /* MAIN STAGE */
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
+        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         
-        /* FIX LỖI ẢNH NHỎ: Ép ảnh chiếm tối đa không gian */
+        /* Ảnh to phải fit khung hình */
         #mainImg { 
             display: block; 
             max-width: 100%; 
             max-height: 100%; 
-            width: auto; 
-            height: auto; 
-            object-fit: contain; /* Giữ tỉ lệ ảnh */
+            width: auto; height: auto; 
+            object-fit: contain; 
         }
         
         #drawCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; display: none; z-index: 10; }
-        
         .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
         .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
 
+        /* TOOLS & CONTROLS */
         .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
-        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); }
@@ -40,9 +39,10 @@
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
 
+        /* FILMSTRIP (Dải ảnh nhỏ) */
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; }
+        .th img { width: 100%; height: 100%; object-fit: cover; } /* Ép ảnh nhỏ lại cho vừa khung */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
         .th.sel .dot { display: block; }
         .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
@@ -98,10 +98,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // --- HÀM TẠO LINK THÔNG MINH (Dùng ID trực tiếp) ---
-        // Hàm này bỏ qua link cũ và tự tạo link mới từ ID file
+        // --- HÀM TẠO LINK THÔNG MINH (QUAN TRỌNG) ---
         function getLink(id, size) {
-            // sz=s2000 (Ảnh to), sz=s220 (Thumbnail nhỏ)
+            // size: 's2000' (Ảnh to), 's220' (Thumbnail nhỏ)
             return `https://drive.google.com/uc?export=view&id=${id}&sz=${size}`;
         }
 
@@ -128,8 +127,9 @@
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
                 
-                // Dùng link nhỏ (s220) cho thumbnail để load nhanh
-                let thumb = getLink(p.id, 's220');
+                // ✅ SỬA LỖI: Chỉ dùng s220 cho thumbnail để load siêu nhanh
+                let thumb = getLink(p.id, 's220'); 
+                
                 d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
                 s.appendChild(d);
             });
@@ -141,13 +141,11 @@
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
-            // Dùng link to (s2000) cho ảnh chính
-            // p.id là File ID của Google Drive
+            // ✅ SỬA LỖI: Chỉ dùng s2000 cho ảnh chính để nét căng
             let hd = getLink(p.id, 's2000'); 
             
             img.src=hd; 
             img.onload = () => { 
-                // Cập nhật kích thước canvas theo kích thước thực tế của ảnh đang hiển thị
                 cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
             };
@@ -166,14 +164,11 @@
             document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
-        // ... (Các hàm xử lý Vẽ, Lưu, Chốt đơn giữ nguyên) ...
-
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
                 ctx=cvs.getContext('2d'); ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
-                // Vẽ ảnh làm nền cho canvas (để khi lưu có cả ảnh)
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
             }
         }
