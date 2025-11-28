@@ -5,16 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        .main-stage { 
-    /* ... các thuộc tính khác ... */
-    height: 100%; 
-    width: 100%;
-}
-        .canvas-box { 
-    /* ... các thuộc tính khác ... */
-    height: 100%; /* QUAN TRỌNG: Ép giãn nở chiều dọc */
-    width: 100%;  /* Ép giãn nở chiều ngang */
-}
         /* CSS V7.1 - Final Dark Mode/Filmstrip */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -49,7 +39,7 @@
     </style>
 </head>
 <body>
-    <div id="load"><div>⏳</div><div>Đang tạo link ảnh...</div></div>
+    <div id="load"><div>⏳</div><div>Đang chờ n8n phản hồi...</div></div>
 
     <div class="tools" id="tools">
         <button class="t-btn act" onclick="setPen()">✏️</button>
@@ -85,7 +75,7 @@
     <div class="strip" id="strip"></div>
 
     <script>
-        // CÁC LINK ĐÃ CHUYỂN SANG PRODUCTION
+        // CÁC LINK NÀY ĐÃ CHUYỂN SANG PRODUCTION
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
@@ -93,7 +83,7 @@
 
         let photos=[], cur=0, isDraw=false, ctx=null; 
 
-        const cvs=document.getElementById('drawCanvas'), img=document.getElementById('mainImage');
+        const cvs=document.getElementById('drawCanvas'), img=document.getElementById('mainImg');
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
@@ -106,38 +96,39 @@
         function getHdUrl(url) {
             const id = getDriveId(url);
             if (!id) return url;
-            // Dùng s2000 (ổn định) để cân bằng tốc độ và chất lượng
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=d`; 
+            // Kích thước ổn định nhất: s2000
+            return `https://drive.google.com/uc?export=view&id=${id}&sz=s2000`; 
         }
         function getThumbUrl(url) {
             const id = getDriveId(url);
             if (!id) return url;
-            // Dùng s150 cho thumbnail
+            // Kích thước nhỏ cho thumbnail
             return `https://drive.google.com/uc?export=view&id=${id}&sz=s150`;
         }
         // -----------------------------------------------------------
+
 
         async function init() {
             try {
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // GỌI N8N ĐỂ LẤY DATA
+                // 💡 LOGIC FETCH DATA TRỰC TIẾP TỪ N8N (ĐÃ KHÔI PHỤC)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 
-                if(!res.ok) throw new Error("Lỗi Server. N8N không phản hồi.");
+                if(!res.ok) throw new Error("Lỗi Server. Vui lòng kiểm tra N8N Active.");
                 
-                let data = await res.json();
-                
+                let data = await res.json(); // Nhận dữ liệu JSON
+
                 if (!data || !Array.isArray(data) || data.length === 0) {
                     throw new Error("Không tìm thấy ảnh nào khớp với ID này. Kiểm tra lại Google Sheet.");
                 }
                 
-                photos = data; 
+                photos = data; // Gán dữ liệu JSON
                 document.getElementById('load').style.display='none';
                 
                 if(photos.length) { render(); show(0); }
             } catch(e) { 
-                document.getElementById('load').innerHTML = `<span style="color:red; text-align:center;">❌ LỖI KẾT NỐI: ${e.message}<br>Vui lòng kiểm tra Console (F12).</span>`; 
+                document.getElementById('load').innerHTML = `<span style="color:red; text-align:center;">❌ LỖI: ${e.message}<br>Vui lòng kiểm tra Console (F12) để xem chi tiết lỗi CORS/kết nối.</span>`; 
             }
         }
 
@@ -147,9 +138,10 @@
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
                 
-                let thumbLink = getThumbUrl(p.url); // Lấy link thumbnail đã chuyển đổi
+                // SỬA: Dùng hàm getThumbUrl để lấy link thumbnail ổn định
+                let thumbLink = getThumbUrl(p.url); 
                 
-                d.innerHTML=`<img src="${thumbLink}" onerror="this.onerror=null;this.src='placeholder.png';" loading="lazy"><div class="dot"></div>`; 
+                d.innerHTML=`<img src="${thumbLink}" onerror="this.onerror=null;this.src='placeholder.png';" loading="lazy"><div class="dot"></div>`;
                 s.appendChild(d);
             });
             document.getElementById('pCount').innerText = `1 / ${photos.length}`;
@@ -160,8 +152,8 @@
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
-            // Lấy link HD đã chuyển đổi
-            let hd = getHdUrl(p.url);
+            // SỬA: Dùng hàm getHdUrl để lấy link HD ổn định
+            let hd = getHdUrl(p.url); 
             
             // Cài đặt src và kích hoạt canvas resize
             img.src=hd; 
@@ -242,5 +234,3 @@
     </script>
 </body>
 </html>
-
-
