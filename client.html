@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V8.2 - Tối ưu hiển thị */
+        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
@@ -19,9 +19,20 @@
             max-height: 100%; 
             width: auto; height: auto; 
             object-fit: contain; 
+            box-shadow: 0 0 20px #000; /* Thêm shadow để đẹp hơn */
         }
         
-        #drawCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; display: none; z-index: 10; }
+        /* FIX LỖI CANVAS: Đặt Canvas che phủ chính xác lên ảnh */
+        #drawCanvas { 
+            position: absolute; 
+            top: 50%; left: 50%; /* Canh giữa */
+            transform: translate(-50%, -50%); /* Dùng transform để canh giữa chính xác */
+            cursor: crosshair; 
+            display: none; 
+            z-index: 10; 
+            /* Bỏ width/height ở đây, sẽ được set bằng JS khi ảnh load */
+        }
+
         .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
         .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
 
@@ -101,8 +112,6 @@
 
         // --- HÀM TẠO LINK THÔNG MINH (QUAN TRỌNG: Dùng /thumbnail cho độ ổn định cao nhất) ---
         function getLink(id, size) {
-            // ✅ SỬA LỖI CUỐI CÙNG: Dùng /thumbnail để tránh lỗi chặn của Google Drive
-            // size: 's2000' (Ảnh to), 's220' (Thumbnail nhỏ)
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
@@ -129,9 +138,7 @@
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
                 
-                // Dùng s220 cho thumbnail
                 let thumb = getLink(p.id, 's220'); 
-                
                 d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
                 s.appendChild(d);
             });
@@ -139,17 +146,21 @@
         }
 
         function show(i) {
-            if(isDraw) togDraw(false);
+            // ✅ FIX LỖI: Tắt chế độ vẽ khi chuyển ảnh hoặc khi ảnh chính thay đổi
+            if(isDraw) togDraw(false); 
+
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
-            // Dùng s2000 cho ảnh chính
             let hd = getLink(p.id, 's2000'); 
             
             img.src=hd; 
             img.onload = () => { 
+                // ✅ FIX LỖI: Set kích thước Canvas khi ảnh load xong, để Canvas khớp với ảnh
                 cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
+                // ✅ FIX LỖI: Nếu đang ở chế độ vẽ, phải vẽ lại ảnh lên Canvas
+                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
             };
             
             document.getElementById('pName').innerText=p.name;
@@ -166,28 +177,37 @@
             document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
+        // ✅ FIX LỖI: Hàm togDraw chỉ nên vẽ ảnh lên Canvas KHI ĐƯỢC BẬT
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
-                ctx=cvs.getContext('2d'); ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                ctx=cvs.getContext('2d'); 
+                ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                // ✅ FIX LỖI: Chỉ vẽ ảnh lên Canvas khi bật chế độ vẽ
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+            } else {
+                // Khi tắt chế độ vẽ, xóa hết các đường vẽ trên Canvas
+                cls(); 
             }
         }
+
         let paint=false;
         function start(e){paint=true;draw(e);}
         function end(){paint=false;ctx.beginPath();}
         function draw(e){
             if(!paint||!isDraw)return; e.preventDefault();
             const r=cvs.getBoundingClientRect();
-            const x=((e.clientX||e.touches[0].clientX)-r.left);
-            const y=((e.clientY||e.touches[0].clientY)-r.top);
+            // Điều chỉnh tọa độ vẽ để khớp với kích thước Canvas
+            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
+            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
             ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
         }
         ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
         ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
         ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
         function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
+        // ✅ FIX LỖI: Hàm cls() chỉ xóa đường vẽ, không vẽ lại ảnh
         function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
         
         function saveDraw() {
