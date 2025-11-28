@@ -7,69 +7,199 @@
     <style>
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
-        /* ... CSS Rút Gọn ... */
+        
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); }
-        #mainImg { display: block; max-width: 100%; max-height: calc(100vh - 180px); object-fit: contain; }
-        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 999; flex-direction: column; font-size: 20px; }
+        .canvas-box { position: relative; max-width: 100%; max-height: 100%; box-shadow: 0 0 20px #000; }
+        #mainImg { display: block; max-width: 100%; max-height: calc(100vh - 180px); object-fit: contain; pointer-events: none; }
+        #drawCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; display: none; z-index: 10; }
+        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
+        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
+
+        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
+        .tools.active { display: flex; }
+        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+
+        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
+        .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
+        .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); }
+        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-sel.act { background: var(--gold); color: #000; }
+        .btn-done { background: #28a745; color: white; border-radius: 5px; }
+
+        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
+        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; }
+        .th img { width: 100%; height: 100%; object-fit: cover; }
+        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
+        .th.sel .dot { display: block; }
+        .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
+        
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
 </head>
 <body>
-    <div id="load" class="loading"><div>⏳</div><div>Đang tải dữ liệu album...</div></div>
+    <div id="load"><div>⏳</div><div>Đang chờ n8n phản hồi...</div></div>
 
-    <div class="top-bar">...</div> 
-    <div class="stage">
-        <div class="canvas-box">
-            <img id="mainImg" src="" alt="Ảnh Album" onerror="this.src='loading.gif'">
-            <canvas id="drawCanvas" style="position: absolute; top: 0; left: 0;"></canvas>
-        </div>
+    <div class="tools" id="tools">
+        <button class="t-btn act" onclick="setPen()">✏️</button>
+        <button class="t-btn" onclick="cls()">🗑️</button>
+        <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
+        <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
     </div>
-    <div class="bottom-bar">...</div>
-    
+
+    <div class="stage">
+        <button class="nav prev" onclick="mov(-1)">&#10094;</button>
+        <div class="canvas-box">
+            <img id="mainImg" src="">
+            <canvas id="drawCanvas"></canvas>
+        </div>
+        <button class="nav next" onclick="mov(1)">&#10095;</button>
+    </div>
+
+    <div class="ctrl">
+        <div class="info">
+            <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
+            <div class="p-count" id="pCount">0 / 0</div>
+        </div>
+        <div style="display:flex; align-items:center">
+            <div class="stars" id="stars">
+                <span onclick="rate(1)">★</span><span onclick="rate(2)">★</span><span onclick="rate(3)">★</span><span onclick="rate(4)">★</span><span onclick="rate(5)">★</span>
+            </div>
+            <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
+            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+        </div>
+        <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
+    </div>
+
+    <div class="strip" id="strip"></div>
 
     <script>
-        // ⚠️ THAY LINK WEBHOOK 'GET' (API GET DATA) VÀO ĐÂY
-        const URL_GET_PHOTOS = 'https://dichvufb.tino.page/webhook/get-photos'; 
-        // ⚠️ THAY LINK WEBHOOK 'SAVE' VÀO ĐÂY
-        const URL_SAVE_SELECTION = 'https://dichvufb.tino.page/webhook/save-selection';
-        
-        let photos = []; 
-        let currentPhotoIndex = 0;
+        // ⚠️ THAY CÁC LINK N8N NÀY BẰNG PRODUCTION URL CỦA BẠN
+        const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
+        const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
+        const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
+        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
+
+        // KHÔNG THAY ĐỔI DÒNG NÀY
+        let photos=[], cur=0, isDraw=false, ctx=null; 
+
+        const cvs=document.getElementById('drawCanvas'), img=document.getElementById('mainImg');
         const urlParams = new URLSearchParams(window.location.search);
-        const folderId = urlParams.get('id');
+        const fid = urlParams.get('id'); // Lấy mã khách hàng
 
         async function init() {
-            if(!folderId) {
-                document.getElementById('load').innerHTML = '<div>❌ Lỗi</div><div>Thiếu mã Album. Vui lòng kiểm tra lại link.</div>';
-                return;
-            }
             try {
-                // Gọi n8n để lấy dữ liệu ảnh dựa trên folderId
-                let res = await fetch(`${URL_GET_PHOTOS}?id=${folderId}`);
-                let data = await res.json();
+                if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                if (data && data.length > 0) {
-                    photos = data; // Gán dữ liệu ảnh từ n8n
-                    document.getElementById('load').style.display = 'none';
-                    showPhoto(currentPhotoIndex);
-                } else {
-                    document.getElementById('load').innerHTML = '<div>⚠️ Trống</div><div>Không tìm thấy ảnh nào trong Album này.</div>';
+                // 💡 LOGIC FETCH DATA TRỰC TIẾP TỪ N8N (ĐÃ KHÔI PHỤC)
+                let res = await fetch(`${URL_GET}?id=${fid}`);
+                
+                if(!res.ok) throw new Error("Lỗi Server. Vui lòng kiểm tra N8N Active.");
+                
+                let data = await res.json(); // Nhận dữ liệu JSON
+
+                // Kiểm tra xem dữ liệu có hợp lệ không (Lỗi phổ biến nhất)
+                if (!data || !Array.isArray(data) || data.length === 0) {
+                    throw new Error("Không tìm thấy ảnh nào khớp với ID này. Kiểm tra lại Google Sheet.");
                 }
+                
+                photos = data; // Gán dữ liệu JSON vào biến photos
+                document.getElementById('load').style.display='none';
+                
+                if(photos.length) { render(); show(0); }
             } catch(e) { 
-                document.getElementById('load').innerHTML = '<div>❌ Lỗi kết nối</div><div>Không thể kết nối tới n8n để tải dữ liệu ảnh.</div>';
-                console.error(e);
+                document.getElementById('load').innerHTML = `<span style="color:red; text-align:center;">❌ LỖI: ${e.message}<br>Vui lòng kiểm tra Console (F12) để xem chi tiết lỗi CORS/kết nối.</span>`; 
             }
         }
+
+        function render() {
+            const s = document.getElementById('strip'); s.innerHTML='';
+            photos.forEach((p,i) => {
+                let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
+                if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
+                d.innerHTML=`<img src="${p.url}" onerror="this.onerror=null;this.src='placeholder.png';" loading="lazy"><div class="dot"></div>`;
+                s.appendChild(d);
+            });
+            document.getElementById('pCount').innerText = `1 / ${photos.length}`;
+        }
+
+        function show(i) {
+            if(isDraw) togDraw(false);
+            if(i<0 || i>=photos.length) return;
+            cur=i; let p=photos[i];
+            
+            let hd = p.url.includes('=s') ? p.url.replace(/=s\d+/, "=s2000") : p.url+"=s2000";
+            img.src=hd; img.onload = () => { cvs.width=img.width; cvs.height=cvs.width * img.naturalHeight / img.naturalWidth; };
+            
+            document.getElementById('pName').innerText=p.name;
+            document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
+            
+            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
+            let t=document.getElementById(`t-${i}`); if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
+
+            let isSel=String(p.selected).toLowerCase()==='true';
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
+
+            let r=parseInt(p.rating)||0;
+            document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
+        }
+
+        function togDraw(en) {
+            const tl=document.getElementById('tools');
+            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
+            if(en) { ctx=cvs.getContext('2d'); ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }
+        }
+
+        let paint=false;
+        function start(e){paint=true;draw(e);}
+        function end(){paint=false;ctx.beginPath();}
+        function draw(e){
+            if(!paint||!isDraw)return; e.preventDefault();
+            const r=cvs.getBoundingClientRect();
+            const x=((e.clientX||e.touches[0].clientX)-r.left)*(cvs.width/r.width);
+            const y=((e.clientY||e.touches[0].clientY)-r.top)*(cvs.height/r.height);
+            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
+        }
+        ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
+        ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
+        ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+
+        function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
+        function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
         
-        function showPhoto(index) {
-            // Hiển thị ảnh (Cần phải có code logic V6.0 của bạn ở đây)
-            const imgElement = document.getElementById('mainImg');
-            if (photos[index] && photos[index].drive_url) {
-                imgElement.src = photos[index].drive_url;
+        function saveDraw() {
+            if(!confirm("Lưu ghi chú?")) return;
+            cvs.toBlob(async function(blob) {
+                let fd=new FormData();
+                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
+                fd.append('photoId', photos[cur].id);
+                try {
+                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
+                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
+                } catch(e) { alert("Lỗi: "+e.message); }
+            }, 'image/png');
+        }
+
+        function togSel() {
+            let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
+            document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
+        }
+        function rate(n) {
+            let p=photos[cur]; p.rating=n; show(cur);
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, rating:n})});
+        }
+        function mov(d){show(cur+d);}
+        async function finish(){
+            if(confirm("Gửi danh sách chọn?")) {
+                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
+                alert("✅ Đã gửi!");
             }
         }
 
-        // ... Dán toàn bộ các hàm JS V6.0 của bạn (next, prev, select, save, v.v...) vào đây
-
+        document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
         init();
     </script>
 </body>
