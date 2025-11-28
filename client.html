@@ -107,7 +107,7 @@
             const id = getDriveId(url);
             if (!id) return url;
             // Dùng s2000 (ổn định) để cân bằng tốc độ và chất lượng
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=s2000`; 
+            return `https://drive.google.com/uc?export=view&id=${id}&sz=d`; 
         }
         function getThumbUrl(url) {
             const id = getDriveId(url);
@@ -242,4 +242,5 @@
     </script>
 </body>
 </html>
+
 
