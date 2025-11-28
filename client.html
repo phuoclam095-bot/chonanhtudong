@@ -5,19 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V7.1 - Final Dark Mode/Filmstrip */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
-        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); }
-        .canvas-box { position: relative; max-width: 100%; max-height: 100%; box-shadow: 0 0 20px #000; }
-        #mainImg { display: block; max-width: 100%; max-height: calc(100vh - 180px); object-fit: contain; pointer-events: none; }
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; height: 100%; overflow: hidden; }
+        .canvas-box { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        
+        /* FIX LỖI ẢNH NHỎ: Ép ảnh chiếm tối đa không gian */
+        #mainImg { 
+            display: block; 
+            max-width: 100%; 
+            max-height: 100%; 
+            width: auto; 
+            height: auto; 
+            object-fit: contain; /* Giữ tỉ lệ ảnh */
+        }
+        
         #drawCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; display: none; z-index: 10; }
+        
         .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
+        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
 
         .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
 
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
@@ -29,7 +41,7 @@
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
 
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; }
+        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; }
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
         .th.sel .dot { display: block; }
@@ -39,7 +51,7 @@
     </style>
 </head>
 <body>
-    <div id="load"><div>⏳</div><div>Đang chờ n8n phản hồi...</div></div>
+    <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
     <div class="tools" id="tools">
         <button class="t-btn act" onclick="setPen()">✏️</button>
@@ -51,7 +63,7 @@
     <div class="stage">
         <button class="nav prev" onclick="mov(-1)">&#10094;</button>
         <div class="canvas-box">
-            <img id="mainImage" src="">
+            <img id="mainImg" src="">
             <canvas id="drawCanvas"></canvas>
         </div>
         <button class="nav next" onclick="mov(1)">&#10095;</button>
@@ -75,60 +87,38 @@
     <div class="strip" id="strip"></div>
 
     <script>
-        // CÁC LINK NÀY ĐÃ CHUYỂN SANG PRODUCTION
+        // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
         let photos=[], cur=0, isDraw=false, ctx=null; 
-
         const cvs=document.getElementById('drawCanvas'), img=document.getElementById('mainImg');
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // --- HELPER FUNCTION: TRÍCH XUẤT VÀ TẠO URL TRỰC TIẾP ---
-        function getDriveId(url) {
-            // Lấy ID từ các định dạng link phổ biến: /d/ID/view hoặc id=ID
-            const match = url.match(/(?:id=|d\/)([a-zA-Z0-9_-]+)/);
-            return match ? (match[1] || match[2]) : null;
+        // --- HÀM TẠO LINK THÔNG MINH (Dùng ID trực tiếp) ---
+        // Hàm này bỏ qua link cũ và tự tạo link mới từ ID file
+        function getLink(id, size) {
+            // sz=s2000 (Ảnh to), sz=s220 (Thumbnail nhỏ)
+            return `https://drive.google.com/uc?export=view&id=${id}&sz=${size}`;
         }
-        function getHdUrl(url) {
-            const id = getDriveId(url);
-            if (!id) return url;
-            // Kích thước ổn định nhất: s2000
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=s2000`; 
-        }
-        function getThumbUrl(url) {
-            const id = getDriveId(url);
-            if (!id) return url;
-            // Kích thước nhỏ cho thumbnail
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=s150`;
-        }
-        // -----------------------------------------------------------
-
 
         async function init() {
             try {
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
-                
-                // 💡 LOGIC FETCH DATA TRỰC TIẾP TỪ N8N (ĐÃ KHÔI PHỤC)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
+                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
-                if(!res.ok) throw new Error("Lỗi Server. Vui lòng kiểm tra N8N Active.");
+                let data = await res.json();
+                if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
                 
-                let data = await res.json(); // Nhận dữ liệu JSON
-
-                if (!data || !Array.isArray(data) || data.length === 0) {
-                    throw new Error("Không tìm thấy ảnh nào khớp với ID này. Kiểm tra lại Google Sheet.");
-                }
-                
-                photos = data; // Gán dữ liệu JSON
+                photos = data;
                 document.getElementById('load').style.display='none';
-                
-                if(photos.length) { render(); show(0); }
+                render(); show(0);
             } catch(e) { 
-                document.getElementById('load').innerHTML = `<span style="color:red; text-align:center;">❌ LỖI: ${e.message}<br>Vui lòng kiểm tra Console (F12) để xem chi tiết lỗi CORS/kết nối.</span>`; 
+                document.getElementById('load').innerHTML = `<span style="color:red">${e.message}</span>`; 
             }
         }
 
@@ -138,27 +128,27 @@
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 if(String(p.selected).toLowerCase()==='true') d.classList.add('sel');
                 
-                // SỬA: Dùng hàm getThumbUrl để lấy link thumbnail ổn định
-                let thumbLink = getThumbUrl(p.url); 
-                
-                d.innerHTML=`<img src="${thumbLink}" onerror="this.onerror=null;this.src='placeholder.png';" loading="lazy"><div class="dot"></div>`;
+                // Dùng link nhỏ (s220) cho thumbnail để load nhanh
+                let thumb = getLink(p.id, 's220');
+                d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
                 s.appendChild(d);
             });
             document.getElementById('pCount').innerText = `1 / ${photos.length}`;
         }
 
         function show(i) {
-            if(isDraw) toggleDrawMode(false);
+            if(isDraw) togDraw(false);
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
-            // SỬA: Dùng hàm getHdUrl để lấy link HD ổn định
-            let hd = getHdUrl(p.url); 
+            // Dùng link to (s2000) cho ảnh chính
+            // p.id là File ID của Google Drive
+            let hd = getLink(p.id, 's2000'); 
             
-            // Cài đặt src và kích hoạt canvas resize
             img.src=hd; 
             img.onload = () => { 
-                cvs.width = img.offsetWidth; // Fix lỗi resize
+                // Cập nhật kích thước canvas theo kích thước thực tế của ảnh đang hiển thị
+                cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
             };
             
@@ -176,26 +166,30 @@
             document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
-        function toggleDrawMode(en) {
+        // ... (Các hàm xử lý Vẽ, Lưu, Chốt đơn giữ nguyên) ...
+
+        function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
-            if(en) { ctx=cvs.getContext('2d'); ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }
+            if(en) { 
+                ctx=cvs.getContext('2d'); ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                // Vẽ ảnh làm nền cho canvas (để khi lưu có cả ảnh)
+                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+            }
         }
-
         let paint=false;
         function start(e){paint=true;draw(e);}
         function end(){paint=false;ctx.beginPath();}
         function draw(e){
             if(!paint||!isDraw)return; e.preventDefault();
             const r=cvs.getBoundingClientRect();
-            const x=((e.clientX||e.touches[0].clientX)-r.left)*(cvs.width/r.width);
-            const y=((e.clientY||e.touches[0].clientY)-r.top)*(cvs.height/r.height);
+            const x=((e.clientX||e.touches[0].clientX)-r.left);
+            const y=((e.clientY||e.touches[0].clientY)-r.top);
             ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
         }
         ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
         ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
         ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
-
         function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
         function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
         
@@ -211,7 +205,6 @@
                 } catch(e) { alert("Lỗi: "+e.message); }
             }, 'image/png');
         }
-
         function togSel() {
             let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
             document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
@@ -228,7 +221,6 @@
                 alert("✅ Đã gửi!");
             }
         }
-
         document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
         init();
     </script>
