@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Album Ảnh - ADMIN</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- CSS (Màu xanh lá cây chuyên nghiệp) --- */
+        :root {
+            --primary-green: #147a30; 
+            --dark-green: #0e5a22;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
+            background-color: #111;
+            background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
+            background-size: 60px 60px; background-position: 0 0, 30px 30px;
+            color: #333; height: 100vh; display: flex; flex-direction: column;
+        }
+
+        /* HEADER */
+        .header { background: var(--primary-green); color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
+
+        /* MAIN CONTENT */
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .create-card { background: #fff; width: 100%; max-width: 450px; border-radius: 10px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; }
+        h2 { text-align: center; margin-top: 0; margin-bottom: 30px; font-weight: 600; }
+
+        /* FORM ELEMENTS */
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary-green); }
+
+        /* TOGGLES (Giữ nguyên cấu trúc nếu cần) */
+        .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
+        .switch-label { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; cursor: pointer; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { background-color: #ccc; border-radius: 34px; transition: .4s; position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-green); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* BUTTONS & FOOTER */
+        .btn-create {
+            background: var(--primary-green); color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%;
+            font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-create:hover { background: var(--dark-green); }
+        .info-box { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 14px; display: flex; align-items: center; gap: 10px; clear: both; }
+        .footer { background: var(--primary-green); color: white; text-align: center; padding: 10px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">Công cụ Tạo Album</div>
+
+    <div class="main-container">
+        <div class="create-card">
+            <h2>Tạo Album Ảnh Mới</h2>
+
+            <div class="form-group">
+                <label>Link Google Drive Thư mục Ảnh</label>
+                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
+            </div>
+            
+            <div class="switch-group">
+                <div class="switch-label">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="allowDownload">
+                        <span class="slider"></span>
+                    </label>
+                    <i class="fas fa-download"></i> Cho phép tải xuống
+                </div>
+            </div>
+
+            <div class="switch-group">
+                <div class="switch-label">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="allowComment">
+                        <span class="slider"></span>
+                    </label>
+                    <i class="fas fa-comment"></i> Cho phép comment
+                </div>
+            </div>
+
+            <div class="switch-group">
+                <div class="switch-label">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="limitPhotos">
+                        <span class="slider"></span>
+                    </label>
+                    <i class="fas fa-list-ol"></i> Số ảnh được phép chọn
+                </div>
+            </div>
+            
+            <button class="btn-create" onclick="createAlbum()">
+                <i class="fas fa-plus"></i> Tạo trang cho khách
+            </button>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i> Hiện tại Google Drive chưa hỗ trợ thumbnail file CR3
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 CongTuBacLieu Hotel & Studio. Tất cả các quyền được bảo lưu.
+    </div>
+
+    <script>
+        // ⚠️ THAY LINK WEBHOOK 'CREATE' VÀO ĐÂY
+        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
+
+        async function createAlbum() {
+            const btn = document.querySelector('.btn-create');
+            const driveLink = document.getElementById('driveLink').value;
+            
+            if (!driveLink) {
+                alert("Vui lòng dán link Google Drive vào!");
+                return;
+            }
+
+            // 1. TRÍCH XUẤT ID
+            let folderId = "";
+            try {
+                let cleanedLink = driveLink.split('?')[0]; 
+                const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
+                if (match && match[1]) {
+                    folderId = match[1];
+                } else {
+                    alert("Link Google Drive không đúng định dạng!");
+                    return;
+                }
+            } catch (e) {
+                return alert("Lỗi xử lý link Drive: " + e.message);
+            }
+
+            // 2. GỌI N8N ĐỂ TẠO DỮ LIỆU
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(URL_CREATE_ALBUM, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        folderId: folderId,
+                        // ⚠️ ĐÃ BỎ THAM SỐ PASSWORD
+                        settings: {
+                            download: document.getElementById('allowDownload').checked,
+                            comment: document.getElementById('allowComment').checked
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    // 3. TẠO LINK TUYỆT ĐỐI
+                    let currentUrl = window.location.href.split('?')[0];
+                    const directoryPath = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+                    const clientFileName = 'client.html'; // Tên file client
+                    const clientLink = `${directoryPath}${clientFileName}?id=${folderId}`;
+
+                    prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
+                } else {
+                    alert("Lỗi kết nối n8n. Vui lòng kiểm tra n8n đã lắng nghe chưa.");
+                }
+
+            } catch (error) {
+                alert("Lỗi: " + error.message);
+            } finally {
+                btn.innerHTML = oldText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

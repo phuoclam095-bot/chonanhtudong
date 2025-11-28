@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <style>
+        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        /* ... CSS Rút Gọn ... */
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); }
+        #mainImg { display: block; max-width: 100%; max-height: calc(100vh - 180px); object-fit: contain; }
+        .loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 999; flex-direction: column; font-size: 20px; }
+    </style>
+</head>
+<body>
+    <div id="load" class="loading"><div>⏳</div><div>Đang tải dữ liệu album...</div></div>
+
+    <div class="top-bar">...</div> 
+    <div class="stage">
+        <div class="canvas-box">
+            <img id="mainImg" src="" alt="Ảnh Album" onerror="this.src='loading.gif'">
+            <canvas id="drawCanvas" style="position: absolute; top: 0; left: 0;"></canvas>
+        </div>
+    </div>
+    <div class="bottom-bar">...</div>
+    
+
+    <script>
+        // ⚠️ THAY LINK WEBHOOK 'GET' (API GET DATA) VÀO ĐÂY
+        const URL_GET_PHOTOS = 'https://dichvufb.tino.page/webhook/get-photos'; 
+        // ⚠️ THAY LINK WEBHOOK 'SAVE' VÀO ĐÂY
+        const URL_SAVE_SELECTION = 'https://dichvufb.tino.page/webhook/save-selection';
+        
+        let photos = []; 
+        let currentPhotoIndex = 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderId = urlParams.get('id');
+
+        async function init() {
+            if(!folderId) {
+                document.getElementById('load').innerHTML = '<div>❌ Lỗi</div><div>Thiếu mã Album. Vui lòng kiểm tra lại link.</div>';
+                return;
+            }
+            try {
+                // Gọi n8n để lấy dữ liệu ảnh dựa trên folderId
+                let res = await fetch(`${URL_GET_PHOTOS}?id=${folderId}`);
+                let data = await res.json();
+                
+                if (data && data.length > 0) {
+                    photos = data; // Gán dữ liệu ảnh từ n8n
+                    document.getElementById('load').style.display = 'none';
+                    showPhoto(currentPhotoIndex);
+                } else {
+                    document.getElementById('load').innerHTML = '<div>⚠️ Trống</div><div>Không tìm thấy ảnh nào trong Album này.</div>';
+                }
+            } catch(e) { 
+                document.getElementById('load').innerHTML = '<div>❌ Lỗi kết nối</div><div>Không thể kết nối tới n8n để tải dữ liệu ảnh.</div>';
+                console.error(e);
+            }
+        }
+        
+        function showPhoto(index) {
+            // Hiển thị ảnh (Cần phải có code logic V6.0 của bạn ở đây)
+            const imgElement = document.getElementById('mainImg');
+            if (photos[index] && photos[index].drive_url) {
+                imgElement.src = photos[index].drive_url;
+            }
+        }
+
+        // ... Dán toàn bộ các hàm JS V6.0 của bạn (next, prev, select, save, v.v...) vào đây
+
+        init();
+    </script>
+</body>
+</html>
