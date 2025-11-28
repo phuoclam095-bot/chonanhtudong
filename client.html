@@ -98,7 +98,7 @@
             const id = getDriveId(url);
             if (!id) return url;
             // Trả về cú pháp direct embed link (https://drive.google.com/uc?export=view&id=FILE_ID&sz=SIZE)
-            return `https://drive.google.com/uc?export=view&id=${id}&sz=d;
+            return `https://drive.google.com/uc?export=view&id=${id}&sz=4800;
         }
         function getThumbUrl(url) {
             const id = getDriveId(url);
@@ -229,4 +229,5 @@
     </script>
 </body>
 </html>
+
 
