@@ -156,6 +156,21 @@
         .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
+        
+        /* KHÓA GIAO DIỆN KHI KHÔNG CHO PHÉP CHỌN */
+        .locked-overlay {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: all;
+        }
     </style>
 </head>
 <body>
@@ -184,7 +199,10 @@
         </div>
         
         <div id="photoGrid">
+            <div id="lockOverlay" class="locked-overlay" style="display:none;">
+                🔒 Bình chọn đã được khóa
             </div>
+        </div>
 
         <div id="photoViewer">
             <div class="tools" id="tools">
@@ -220,6 +238,7 @@
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
         let albumTitle = "Thư Viện Ảnh"; 
+        let isSelectionLocked = false; // Biến trạng thái khóa bình chọn
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
@@ -264,9 +283,14 @@
             }
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Dùng khóa độc lập theo FID)
         function luuTrangThaiLocally() {
-            localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(selectedPhotoIds));
+            const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
+            
+            // LƯU TRẠNG THÁI KHÓA (Gửi đi lần đầu tiên)
+            const LOCK_KEY = 'album_locked_' + fid;
+            localStorage.setItem(LOCK_KEY, 'true');
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -298,20 +322,28 @@
             
             // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
-            if (grid) {
+            const lockOverlay = document.getElementById('lockOverlay');
+            if (grid && lockOverlay) {
                 grid.innerHTML = '';
+                
+                // Hiển thị Overlay nếu bị khóa
+                lockOverlay.style.display = isSelectionLocked ? 'flex' : 'none';
+                
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
                     // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
                     d.onclick = () => {
+                        if (isSelectionLocked) {
+                            alert("Bình chọn cho album này đã bị khóa.");
+                            return;
+                        }
                         const oldCur = cur;
                         cur = i;
                         togSel();
                         cur = oldCur; 
                         
-                        // FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTổngSố(); 
                         }
@@ -336,6 +368,9 @@
                     
                     grid.appendChild(d);
                 });
+                
+                // Đưa Overlay vào Grid
+                grid.appendChild(lockOverlay);
             }
 
             // 3. Cập nhật nút "Gửi List" và Tổng số ảnh trên thanh điều khiển chung
@@ -351,12 +386,15 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
+                // Khóa nút nếu bình chọn bị khóa
+                btnSel.disabled = isSelectionLocked;
+
                 if (currentView === 'viewer') {
                     // Cập nhật trạng thái nút Chọn CHÍNH XÁC trong Viewer
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
-                    // Nút Chọn ở Grid View luôn là "Chọn" (vì click để chọn thực hiện trên ảnh)
+                    // Nút Chọn ở Grid View
                     btnSel.className='btn btn-sel'; 
                     btnSel.innerText='Chọn';
                 }
@@ -376,7 +414,7 @@
         }
 
 
-        // SỬA ĐỔI: INIT
+        // SỬA ĐỔI: INIT (Kiểm tra trạng thái khóa)
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -384,6 +422,24 @@
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
+                // 1. KIỂM TRA TRẠNG THÁI KHÓA CŨ
+                const LOCK_KEY = 'album_locked_' + fid;
+                isSelectionLocked = (localStorage.getItem(LOCK_KEY) === 'true');
+                
+                // 2. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Dựa trên ID album)
+                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+                
+                if (duLieuDaLuuJSON) {
+                    selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
+                } else {
+                    // Nếu là link mới tinh, không có dữ liệu lưu cục bộ
+                    selectedPhotoIds = [];
+                    // Đảm bảo trạng thái khóa là FALSE
+                    isSelectionLocked = false;
+                }
+
+                // 3. TẢI DỮ LIỆU ẢNH (Từ Server)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
@@ -391,16 +447,6 @@
                 
                 photos = data.photos || data; 
                 if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
-
-                // Tải trạng thái đã lưu
-                const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
-                if (duLieuDaLuuJSON) {
-                    // 💡 FIX LỖI 1: Chỉ tin tưởng vào localStorage cho ID đã chọn
-                    selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
-                } else {
-                    // FIX LỖI 1: Nếu chưa có dữ liệu, đảm bảo mảng rỗng (khởi tạo bộ đếm = 0)
-                    selectedPhotoIds = [];
-                }
 
                 document.getElementById('load').style.display='none';
                 
@@ -432,7 +478,6 @@
                 if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
             };
             
-            // Cập nhật thông tin file
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
             
@@ -440,18 +485,21 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
             capNhatSoThuTuVaTổngSố(); 
 
-            // Cập nhật trạng thái nút "Chọn"
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
-        // 💡 FIX LỖI VẼ: Đảm bảo Canvas Context (ctx) được khởi tạo đúng
+        // FIX LỖI VẼ
         function togDraw(en) {
+            if (isSelectionLocked) {
+                 alert("Bình chọn đã bị khóa. Không thể vẽ.");
+                 return;
+            }
+
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
@@ -468,8 +516,8 @@
         }
 
         let paint=false;
-        function start(e){paint=true;draw(e);}
-        function end(){paint=false;if(ctx) ctx.beginPath();} 
+        function start(e){if(isSelectionLocked)return; paint=true;draw(e);}
+        function end(){if(isSelectionLocked)return; paint=false;if(ctx) ctx.beginPath();} 
         function draw(e){
             if(!paint||!isDraw||!ctx)return; 
             e.preventDefault();
@@ -483,6 +531,10 @@
         function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
         
         function saveDraw() {
+            if (isSelectionLocked) {
+                 alert("Bình chọn đã bị khóa. Không thể lưu ghi chú.");
+                 return;
+            }
             if(!confirm("Lưu ghi chú?")) return;
             cvs.toBlob(async function(blob) {
                 let fd=new FormData();
@@ -495,8 +547,13 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
+        // SỬA ĐỔI: TOGGLE SEL (Kiểm tra Khóa)
         function togSel() {
+            if (isSelectionLocked) {
+                alert("Bình chọn cho album này đã bị khóa.");
+                return;
+            }
+            
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
             
@@ -510,21 +567,23 @@
             }
             p.selected = ns ? 'true' : 'false';
 
-            // Cập nhật số thứ tự và khung cho cả hai chế độ
             capNhatSoThuTuVaTổngSố();
 
-            // Cập nhật trạng thái nút "Chọn"
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            luuTrangThaiLocally();
+            luuTrangThaiLocally(); // Ghi dữ liệu đã chọn và đánh dấu link này là "đã khóa"
 
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
         function mov(d){show(cur+d);}
         async function finish(){
+            if (isSelectionLocked) {
+                 alert("Album này đã được đánh dấu hoàn tất. Không thể gửi lại.");
+                 return;
+            }
             if(confirm("Gửi danh sách chọn?")) {
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
                 alert("✅ Đã gửi!");
