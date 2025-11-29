@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - ạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,9 +11,8 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* THAY ĐỔI: Sử dụng ảnh nền hoa văn tối bên ngoài (ví dụ từ Imgur) để tránh lỗi base64 quá lớn. */
             --grid-bg-image: url('https://i.imgur.com/KxJ4PzR.png'); 
-            --grid-item-size: 250px; /* Kích thước tối ưu cho mỗi item trong lưới */
+            --grid-item-size: 250px; 
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -51,7 +50,7 @@
             max-height: 100%;
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
-            background-size: 500px 500px; /* Điều chỉnh kích thước nền */
+            background-size: 500px 500px; 
             background-position: center;
             background-attachment: fixed; 
             position: relative; 
@@ -61,7 +60,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); /* Tăng độ tối của lớp phủ */
+            background: rgba(0, 0, 0, 0.7); 
             z-index: 0;
         }
 
@@ -83,6 +82,7 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
+        /* Đảm bảo ảnh bên trong chiếm hết wrapper */
         .grid-item-wrapper img { 
             width: 100%; 
             height: var(--grid-item-size); 
@@ -90,8 +90,6 @@
             display: block; 
             border-radius: 2px;
         }
-        
-        /* ĐÃ LOẠI BỎ: CSS cho .grid-heart */
 
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
@@ -271,16 +269,17 @@
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
-                    // KÍCH HOẠT CHỌN/BỎ CHỌN TRÊN GRID VIEW
-                    d.onclick = (event) => {
-                        // Gọi hàm togSel() để thay đổi trạng thái chọn
+                    // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
+                    d.onclick = () => {
                         // Tạm thời thay đổi 'cur' để togSel biết ảnh nào đang được thao tác
                         const oldCur = cur;
                         cur = i;
                         togSel();
                         cur = oldCur;
-                        // Ngăn chặn chuyển sang Viewer nếu chỉ click để chọn
-                        event.stopPropagation();
+                        // Quay lại Grid View sau khi chọn (nếu đang ở Grid)
+                        if (currentView === 'grid') {
+                            capNhatSoThuTuVaTongSo();
+                        }
                     };
 
                     let isSel = selectedPhotoIds.includes(p.id);
@@ -289,11 +288,11 @@
                     let thumb = getLink(p.id, 's500'); 
                     let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
                     
-                    // ĐÃ XÓA: Biểu tượng trái tim ❤️
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
                     
-                    // Thêm sự kiện click để MỞ VIEWER (nếu click vào ảnh con)
-                    d.querySelector('img').onclick = () => {
+                    // Sự kiện click ảnh (CHỈ ĐỂ MỞ VIEWER)
+                    d.querySelector('img').onclick = (event) => {
+                        event.stopPropagation(); // Ngăn sự kiện chọn của wrapper chạy
                         setView('viewer');
                         show(i);
                     };
@@ -370,6 +369,9 @@
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
+
+            // GỌI CẬP NHẬT: Đảm bảo số thứ tự trên Strip được cập nhật
+            capNhatSoThuTuVaTongSo(); 
 
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
