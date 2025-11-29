@@ -241,7 +241,10 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
-
+        
+        // SỬ DỤNG KHÓA ĐỘC LẬP THEO FID
+        const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+        
         let selectedPhotoIds = []; 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
@@ -282,11 +285,8 @@
             }
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Đảm bảo lưu ID độc lập theo FID)
         function luuTrangThaiLocally() {
-            // FIX LỖI: Sử dụng Khóa Độc Lập FID
-            const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-            
             // Luôn lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
         }
@@ -374,7 +374,7 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                btnSel.disabled = isSelectionLocked;
+                btnSel.disabled = false;
 
                 if (currentView === 'viewer') {
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
@@ -408,17 +408,16 @@
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
                 // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Bền vững)
-                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+                // KHÓA ĐỘC LẬP
+                const LOCAL_STORAGE_KEY_FID = 'anh_da_chon_cua_khach_' + fid;
+                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY_FID);
                 
                 if (duLieuDaLuuJSON) {
                     try {
-                        // FIX LỖI: Nạp danh sách ID đã chọn cũ
                         const loadedIds = JSON.parse(duLieuDaLuuJSON);
                         if (Array.isArray(loadedIds)) {
                             selectedPhotoIds = loadedIds;
                         } else {
-                            // Nếu dữ liệu bị hỏng (ví dụ: null), reset
                             selectedPhotoIds = [];
                         }
                     } catch (e) {
@@ -440,7 +439,6 @@
 
                 document.getElementById('load').style.display='none';
                 
-                // GỌI CẬP NHẬT GIAO DIỆN SAU KHI DỮ LIỆU ẢNH VÀ DỮ LIỆU CHỌN ĐÃ ĐƯỢC NẠP
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
