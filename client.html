@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,9 +11,9 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
+            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            /* ĐIỀU CHỈNH KÍCH THƯỚC ITEM LƯỚI */
-            --grid-item-size: 200px; /* Đã giảm từ 250px xuống 200px */
+            --grid-item-size: 200px; 
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -46,7 +46,6 @@
             padding: 20px; 
             overflow-y: auto; 
             display: grid;
-            /* Đảm bảo mỗi hàng có thể chứa 4 cột nếu đủ không gian, mỗi cột ~200px */
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
             gap: 15px;
             flex-grow: 1; 
@@ -71,8 +70,7 @@
             transition: border-color 0.2s, transform 0.2s;
             cursor: pointer;
             overflow: hidden;
-            /* ĐIỀU CHỈNH BO TRÒN GÓC */
-            border-radius: 8px; /* Bo tròn 8px */
+            border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
         }
@@ -84,18 +82,18 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
+        /* SỬA LỖI: Chỉ giới hạn chiều rộng tối đa, cho phép ảnh dọc (Rectangle) hiển thị */
         .grid-item-wrapper img { 
             width: 100%; 
-            /* ĐIỀU CHỈNH CHIỀU CAO ẢNH ĐỂ KHỚP VỚI KÍCH THƯỚC MỚI */
-            height: var(--grid-item-size); 
-            object-fit: cover; 
+            height: auto; /* Bỏ chiều cao cố định */
+            max-height: var(--grid-item-size); /* Chiều cao tối đa */
+            object-fit: contain; /* Đảm bảo không bị cắt */
             display: block; 
-            /* Bo tròn ảnh bên trong wrapper */
-            border-radius: 6px; /* Nhỏ hơn wrapper một chút */
+            border-radius: 6px; 
         }
         /* DOT GRID: Số thứ tự */
         .grid-dot { 
-            position: absolute; top: 8px; right: 8px; /* Dịch vào trong một chút do bo tròn */
+            position: absolute; top: 8px; right: 8px; 
             width: 28px; height: 28px; 
             background: var(--gold); color: #000;
             border-radius: 50%; 
@@ -129,7 +127,7 @@
 
         /* THANH ĐIỀU KHIỂN CHUNG */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; width: 180px; } /* CỐ ĐỊNH CHIỀU RỘNG */
+        .info { display: flex; flex-direction: column; width: 180px; } 
         .p-count { font-size: 12px; color: #888; }
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
@@ -142,7 +140,6 @@
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } 
-        /* DOT VIEWER: Hiển thị số thứ tự */
         .dot { 
             position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
             background: var(--gold); color: #000;
@@ -291,7 +288,6 @@
                     strip.appendChild(d);
                 });
                 
-                // ĐỒNG BỘ: Đảm bảo ảnh đang xem được đánh dấu đúng (cur)
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -310,8 +306,10 @@
                         cur = i;
                         togSel();
                         cur = oldCur; 
+                        
+                        // 💡 FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
                         if (currentView === 'grid') {
-                            capNhatSoThuTuVaTổngSố(); // Cập nhật lại Grid để hiển thị số thứ tự và khung mới
+                            capNhatSoThuTuVaTổngSố(); 
                         }
                     };
                     
@@ -344,15 +342,12 @@
             // 4. Cập nhật tên album
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung (áp dụng cho cả Grid và Viewer)
+            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
             const btnSel = document.getElementById('btnSel');
-            if (btnSel && photos.length > 0) { // Đảm bảo có ảnh để lấy trạng thái
+            if (btnSel && photos.length > 0) {
                 let isSel = selectedPhotoIds.includes(photos[cur].id);
                 btnSel.className=`btn btn-sel ${isSel?'act':''}`; 
                 btnSel.innerText=isSel?'✔ Đã Chọn':'Chọn';
-            } else if (btnSel) {
-                btnSel.className='btn btn-sel';
-                btnSel.innerText='Chọn';
             }
             
             // 6. Cập nhật thông tin file (tên và số đếm)
@@ -393,7 +388,6 @@
 
                 document.getElementById('load').style.display='none';
                 
-                // Cần gọi trước setView để các nút cập nhật đúng trạng thái ban đầu
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
@@ -433,7 +427,7 @@
             // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
             capNhatSoThuTuVaTổngSố(); 
 
-            // 💡 FIX LỖI: Cập nhật trạng thái nút "Chọn"
+            // 💡 FIX LỖI 3: Cập nhật trạng thái nút "Chọn"
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
