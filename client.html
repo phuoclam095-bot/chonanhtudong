@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - iêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -13,8 +13,8 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 250px; 
-            --grid-gap: 15px; /* Khoảng cách tiêu chuẩn */
+            --grid-item-size: 320px; /* TĂNG KÍCH THƯỚC ẢNH */
+            --grid-gap: 10px; /* THU HẸP KHOẢNG CÁCH */
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -67,7 +67,8 @@
 
         .grid-item-wrapper { 
             position: relative;
-            border: 2px solid transparent; 
+            /* ĐIỀU CHỈNH VIỀN CHƯA CHỌN MỎNG HƠN */
+            border: 1px solid transparent; 
             transition: border-color 0.2s, transform 0.2s;
             cursor: pointer;
             overflow: hidden;
@@ -85,6 +86,7 @@
             transform: translateY(-2px);
         }
         .grid-item-wrapper.sel { 
+            border-width: 4px; /* TĂNG ĐỘ DÀY VIỀN ĐÃ CHỌN */
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
@@ -427,18 +429,16 @@
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. KIỂM TRA TRẠNG THÁI KHÓA CŨ
+                // 1. KIỂM TRA TRẠNG THÁI KHÓA VÀ DỮ LIỆU CŨ
                 const LOCK_KEY = 'album_locked_' + fid;
                 isSelectionLocked = (localStorage.getItem(LOCK_KEY) === 'true');
                 
-                // 2. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Dựa trên ID album)
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
                 if (duLieuDaLuuJSON) {
-                    // Nạp danh sách ID đã chọn cũ
+                    // FIX LỖI: Nạp danh sách ID đã chọn cũ
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
-                    // Nếu có dữ liệu, trạng thái khóa sẽ được áp dụng từ bước 1.
                 } else {
                     // Nếu là link mới tinh, khởi tạo rỗng
                     selectedPhotoIds = [];
@@ -586,11 +586,13 @@
         
         function mov(d){show(cur+d);}
         async function finish(){
-            // Khi Gửi List, ta đánh dấu Album này là KHÓA
-            isSelectionLocked = true;
-            
+            if (isSelectionLocked) {
+                 alert("Album này đã được đánh dấu hoàn tất. Không thể gửi lại.");
+                 return;
+            }
             if(confirm("Gửi danh sách chọn? Sau khi gửi, bạn sẽ không thể thay đổi bình chọn.")) {
-                // Đảm bảo trạng thái khóa được lưu lại
+                // Đánh dấu album này là KHÓA
+                isSelectionLocked = true;
                 luuTrangThaiLocally(); 
                 
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
@@ -600,8 +602,7 @@
                 
                 alert("✅ Đã gửi!");
             } else {
-                // Nếu hủy gửi, đặt lại trạng thái khóa
-                isSelectionLocked = false;
+                // Nếu hủy gửi, không thay đổi trạng thái khóa
             }
         }
         
