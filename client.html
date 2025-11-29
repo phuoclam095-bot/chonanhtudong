@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -89,7 +89,6 @@
             display: block; 
             border-radius: 2px;
         }
-
         /* DOT GRID: Số thứ tự */
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
@@ -117,8 +116,10 @@
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
+        /* CỐ ĐỊNH VỊ TRÍ CỦA NÚT CHỌN */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
+        .info { display: flex; flex-direction: column; width: 180px; } /* CỐ ĐỊNH CHIỀU RỘNG */
+        .p-count { font-size: 12px; color: #888; }
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
@@ -231,7 +232,7 @@
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                capNhatSoThuTuVaTongSo(); 
+                capNhatSoThuTuVaTổngSố(); 
             } else {
                 gridDiv.style.display = 'none';
                 viewerDiv.style.display = 'flex'; 
@@ -247,7 +248,7 @@
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
-        function capNhatSoThuTuVaTongSo() {
+        function capNhatSoThuTuVaTổngSố() {
             let count = selectedPhotoIds.length;
             
             // 1. Cập nhật Viewer Strip 
@@ -264,13 +265,13 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    // DOT Viewer: Hiển thị số thứ tự (hoặc rỗng nếu chưa chọn)
+                    // DOT Viewer: Hiển thị số thứ tự
                     const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
                 
-                // 💡 FIX ĐỒNG BỘ: Đảm bảo ảnh đang xem được đánh dấu đúng (cur)
+                // ĐỒNG BỘ: Đảm bảo ảnh đang xem được đánh dấu đúng (cur)
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -290,9 +291,16 @@
                         togSel();
                         cur = oldCur; 
                         if (currentView === 'grid') {
-                            capNhatSoThuTuVaTongSo();
+                            capNhatSoThuTuVaTổngSố();
                         }
                     };
+                    
+                    // 💡 Sự kiện Double-click (MỞ VIEWER)
+                    d.ondblclick = (event) => {
+                         event.preventDefault(); // Ngăn chọn
+                         cur = i;
+                         setView('viewer');
+                    }
 
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
@@ -304,26 +312,6 @@
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
                     
-                    // Thêm nút/vùng click để MỞ VIEWER 
-                    let viewerButton = document.createElement('div');
-                    viewerButton.style.position = 'absolute';
-                    viewerButton.style.bottom = '0';
-                    viewerButton.style.left = '0';
-                    viewerButton.style.width = '100%';
-                    viewerButton.style.textAlign = 'center';
-                    viewerButton.style.background = 'rgba(0,0,0,0.4)';
-                    viewerButton.style.color = 'white';
-                    viewerButton.style.padding = '5px';
-                    viewerButton.style.fontSize = '12px';
-                    viewerButton.innerText = '🔍 Xem Ảnh';
-                    viewerButton.onclick = (event) => {
-                        event.stopPropagation(); // Ngăn sự kiện chọn của wrapper chạy
-                        // 💡 ĐỒNG BỘ: Cập nhật 'cur' trước khi chuyển view để Viewer mở đúng ảnh
-                        cur = i; 
-                        setView('viewer');
-                    };
-                    
-                    d.appendChild(viewerButton);
                     grid.appendChild(d);
                 });
             }
@@ -362,7 +350,7 @@
 
                 document.getElementById('load').style.display='none';
                 
-                capNhatSoThuTuVaTongSo(); 
+                capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
@@ -398,11 +386,12 @@
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
             // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
-            capNhatSoThuTuVaTongSo(); 
+            capNhatSoThuTuVaTổngSố(); 
 
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
+            btn.className=`btn btn-sel ${isSel?'act':''}`; 
+            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
         function togDraw(en) {
@@ -460,7 +449,7 @@
             p.selected = ns ? 'true' : 'false';
 
             // Cập nhật số thứ tự và khung cho cả hai chế độ
-            capNhatSoThuTuVaTongSo();
+            capNhatSoThuTuVaTổngSố();
 
             if (currentView === 'viewer') {
                 show(cur); 
