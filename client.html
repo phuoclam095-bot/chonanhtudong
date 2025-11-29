@@ -35,53 +35,58 @@
 
 
     // SỬA ĐỔI: INIT (Thêm logic tải trạng thái đã lưu)
-    async function init() {
-        try {
-            // 1. 💡 PHẦN MỚI: Tải trạng thái đã lưu trước khi gọi server
-            const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
-            if (duLieuDaLuuJSON) {
-                const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
-                selectedPhotoIds = new Set(danhSachDaChon); // Sử dụng ID (p.id) làm khóa
-            }
+   // SỬA ĐỔI: INIT (Điều chỉnh thứ tự tải dữ liệu và trạng thái)
+async function init() {
+    try {
+        if(!fid) throw new Error("Link thiếu mã Album (id)");
+        
+        // 1. Tải danh sách ảnh từ Server
+        let res = await fetch(`${URL_GET}?id=${fid}`);
+        if(!res.ok) throw new Error("Lỗi Server/Kết nối");
+        
+        let data = await res.json();
+        if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
+        
+        photos = data;
 
-            if(!fid) throw new Error("Link thiếu mã Album (id)");
-            let res = await fetch(`${URL_GET}?id=${fid}`);
-            if(!res.ok) throw new Error("Lỗi Server/Kết nối");
-            
-            let data = await res.json();
-            if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
-            
-            photos = data;
-            document.getElementById('load').style.display='none';
-            render(); show(0);
-        } catch(e) { 
-            document.getElementById('load').innerHTML = `<span style="color:red">${e.message}</span>`; 
+        // 2. 💡 PHẦN SỬA: Tải trạng thái đã lưu sau khi có dữ liệu ảnh
+        const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
+        if (duLieuDaLuuJSON) {
+            const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
+            selectedPhotoIds = new Set(danhSachDaChon); 
         }
+
+        document.getElementById('load').style.display='none';
+        render(); show(0);
+    } catch(e) { 
+        document.getElementById('load').innerHTML = `<span style="color:red">${e.message}</span>`; 
     }
+}
 
     // SỬA ĐỔI: RENDER (Áp dụng trạng thái Local Storage)
-    function render() {
-        const s = document.getElementById('strip'); s.innerHTML='';
-        photos.forEach((p,i) => {
-            let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
-            
-            // 💡 LOGIC MỚI: Ưu tiên trạng thái đã lưu trong Local Storage
-            const identifier = p.id; 
+    // SỬA ĐỔI: RENDER (Giữ nguyên logic áp dụng trạng thái Local Storage)
+function render() {
+    const s = document.getElementById('strip'); s.innerHTML='';
+    photos.forEach((p,i) => {
+        let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
+        
+        // 💡 LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage
+        const identifier = p.id; 
 
-            if (selectedPhotoIds.has(identifier)) {
-                d.classList.add('sel');
-                p.selected = 'true'; // Đảm bảo mảng photos cũng được cập nhật
-            } else if (String(p.selected).toLowerCase() === 'true') {
-                 // Nếu không có trong Local Storage, kiểm tra trạng thái từ Server
-                d.classList.add('sel');
-            }
-            
-            let thumb = getLink(p.id, 's220'); 
-            d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
-            s.appendChild(d);
-        });
-        document.getElementById('pCount').innerText = `1 / ${photos.length}`;
-    }
+        if (selectedPhotoIds.has(identifier)) {
+            d.classList.add('sel');
+            p.selected = 'true'; 
+        } else if (String(p.selected).toLowerCase() === 'true') {
+             // Nếu không có trong Local Storage, kiểm tra trạng thái từ Server (dành cho lần đầu tải)
+            d.classList.add('sel');
+        }
+        
+        let thumb = getLink(p.id, 's220'); 
+        d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
+        s.appendChild(d);
+    });
+    document.getElementById('pCount').innerText = `1 / ${photos.length}`;
+}
 
     function show(i) {
         // ✅ FIX LỖI: Tắt chế độ vẽ khi chuyển ảnh hoặc khi ảnh chính thay đổi
@@ -186,3 +191,4 @@
     document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
     init();
 </script>
+
