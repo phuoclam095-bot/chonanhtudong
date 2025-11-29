@@ -13,9 +13,9 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 450px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 320px; /* Chiều cao hình chữ nhật nằm */
-            --grid-gap: 10px; 
+            --grid-item-size: 380px; /* TĂNG KÍCH THƯỚC CHIỀU RỘNG */
+            --grid-item-height: 240px; /* CHIỀU CAO HÌNH CHỮ NHẬT NẰM */
+            --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -49,7 +49,7 @@
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); 
+            gap: var(--grid-gap); /* Khoảng trống đều nhau */
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -75,8 +75,7 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            /* HÌNH CHỮ NHẬT NẰM */
-            height: var(--grid-item-height); 
+            height: var(--grid-item-height); /* Đặt chiều cao cố định */
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -92,9 +91,9 @@
             transform: scale(1.02); 
         }
         .grid-item-wrapper img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* CẮT ẢNH ĐỂ LẤP ĐẦY KHUNG (KHÔNG KHOẢNG TRẮNG) */
+            width: 100%; /* Chiếm toàn bộ khung */
+            height: 100%; /* Chiếm toàn bộ khung */
+            object-fit: cover; /* Cắt ảnh để lấp đầy khung */
             display: block; 
             border-radius: 6px; 
         }
@@ -321,6 +320,12 @@
             // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
             if (grid) {
+                // Đảm bảo Overlay được loại bỏ khỏi Grid nếu nó còn đó
+                const lockOverlay = document.getElementById('lockOverlay');
+                if (lockOverlay) {
+                    lockOverlay.style.display = 'none';
+                }
+                
                 grid.innerHTML = '';
                 
                 photos.forEach((p, i) => {
@@ -556,4 +561,3 @@
     </script>
 </body>
 </html>
-
