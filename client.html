@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - LNP</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
@@ -21,25 +21,45 @@
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* SỬA LỖI BỐ CỤC: Giữ min-width cho stars nhưng để nội dung trống */
-        .stars { min-width: 130px; } /* Giữ min-width ước tính để đảm bảo bố cục */
-        .stars span { font-size: 26px; color: transparent !important; cursor: default; } 
-        .stars span.act { color: transparent !important; }
-        /* Kết thúc sửa lỗi bố cục */
+        /* === SỬA LỖI 1: XÓA SAO NHƯNG GIỮ BỐ CỤC === */
+        /* Đặt chiều rộng tối thiểu để giữ không gian 5 sao, tránh lệch nút */
+        .stars { min-width: 130px; } 
+        .stars span { display: none; } /* Ẩn hoàn toàn nếu có thẻ span nào còn sót */
         
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        
+        /* === SỬA LỖI 2: BUỘC THUMBNAIL PHẢI NẰM NGANG === */
+        .strip { 
+            height: 110px; 
+            background: #000; 
+            display: flex; 
+            flex-direction: row !important; /* QUAN TRỌNG: Buộc hiển thị ngang */
+            gap: 10px; 
+            padding: 10px; 
+            overflow-x: auto; 
+            flex-shrink: 0; 
+            border-top: 1px solid #333; 
+        }
+        
+        .th { 
+            min-width: 90px; 
+            height: 90px; 
+            opacity: 0.5; 
+            border: 2px solid transparent; 
+            cursor: pointer; 
+            position: relative; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            flex-shrink: 0; /* Đảm bảo không bị co lại */
+        }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
-        /* Ảnh đang hoạt động */
+        /* Đảm bảo ảnh đang xem và ảnh đã chọn luôn sáng */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
-        
-        /* Đảm bảo ảnh đã chọn luôn sáng */
         .th.sel { opacity: 1; border-color: var(--gold); }
         
         .th.sel .dot { display: block; }
@@ -162,7 +182,7 @@
             }
         }
 
-        // SỬA ĐỔI: RENDER (Đã xóa logic rating)
+        // RENDER 
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
@@ -185,7 +205,7 @@
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
         }
 
-        // SỬA ĐỔI: SHOW (Đã xóa logic rating)
+        // SHOW
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -209,10 +229,6 @@
             let isSel=String(p.selected).toLowerCase()==='true';
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
-
-            // ĐẢM BẢO XÓA SẠCH LOGIC CẬP NHẬT SAO
-            // let r=parseInt(p.rating)||0;
-            // document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
         function togDraw(en) {
@@ -254,7 +270,7 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Thêm logic lưu trạng thái)
+        // TOGGLE SEL (Thêm logic lưu trạng thái)
         function togSel() {
             let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
             document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
@@ -265,8 +281,8 @@
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
 
-        // XÓA HÀM rate(n)
-
+        // HÀM rate(n) ĐÃ BỊ XÓA HOÀN TOÀN
+        
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
