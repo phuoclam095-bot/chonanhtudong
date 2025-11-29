@@ -5,14 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; }
+        :root { 
+            --bg: #1a1a1a; 
+            --gold: #c5a059; 
+            --text: #f0f0f0; 
+            --panel: #2b2b2b; 
+            --blue-frame: #007bff; 
+            --grid-bg-image: url('https://i.imgur.com/kS5x8eC.jpeg'); /* <-- ĐỔI ẢNH NỀN TẠI ĐÂY */
+            --grid-item-size: 250px; /* Kích thước tối ưu cho mỗi item trong lưới */
+        }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
         /* HEADER VÀ TOOLBAR CHUNG */
-        .header { background: #155724; color: white; padding: 15px 20px; text-align: center; font-size: 20px; font-weight: bold; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
-        .view-toggle { display: flex; gap: 10px; }
+        .header { 
+            background: #155724; 
+            color: white; 
+            padding: 15px 20px; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: bold; 
+            flex-shrink: 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .album-title { flex-grow: 1; text-align: center; } /* Đảm bảo tiêu đề nằm giữa */
+        .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
         .view-btn { padding: 5px 10px; background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+        .view-btn:hover { background: rgba(255, 255, 255, 0.4); }
         .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
 
         /* KHU VỰC CHÍNH */
@@ -23,29 +45,78 @@
             padding: 20px; 
             overflow-y: auto; 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
             gap: 15px;
             max-height: 100%;
-            background: #000;
+            background: var(--bg); /* Thay vì màu đen */
+            background-image: var(--grid-bg-image); /* Ảnh nền */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Giữ nền cố định khi cuộn */
+            position: relative; /* Cho lớp phủ overlay */
         }
-        .grid-item { position: relative; border: 2px solid transparent; cursor: pointer; overflow: hidden; }
-        .grid-item img { width: 100%; height: auto; display: block; }
-        .grid-item:hover { opacity: 0.9; }
-        .grid-item.sel { border-color: var(--blue-frame); } /* Khung xanh cho ảnh đã chọn */
+        /* Lớp phủ màu đen trong suốt trên ảnh nền */
+        #photoGrid::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6); /* Lớp phủ đen 60% */
+            z-index: 0;
+        }
+
+        .grid-item-wrapper { /* Để xếp lớp ảnh, trái tim, số thứ tự */
+            position: relative;
+            border: 2px solid transparent; /* Khung mặc định */
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            z-index: 1; /* Đảm bảo nằm trên lớp phủ */
+        }
+        .grid-item-wrapper:hover {
+            border-color: rgba(255, 255, 255, 0.7); /* Khung trắng nhạt khi hover */
+            transform: translateY(-2px);
+        }
+        .grid-item-wrapper.sel { 
+            border-color: var(--blue-frame); /* Khung xanh cho ảnh đã chọn */
+            transform: scale(1.02); /* Phóng to nhẹ ảnh đã chọn */
+        }
+        .grid-item-wrapper img { 
+            width: 100%; 
+            height: var(--grid-item-size); /* Chiều cao cố định */
+            object-fit: cover; 
+            display: block; 
+            border-radius: 2px;
+        }
         
-        .grid-heart { position: absolute; top: 10px; right: 10px; color: white; text-shadow: 0 0 5px #000; font-size: 24px; pointer-events: none; }
+        .grid-heart { 
+            position: absolute; 
+            top: 10px; right: 10px; 
+            color: white; 
+            text-shadow: 0 0 5px #000; 
+            font-size: 24px; 
+            pointer-events: none; 
+            z-index: 2; /* Đảm bảo nằm trên ảnh */
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .grid-item-wrapper:hover .grid-heart { opacity: 1; }
+
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
-            width: 20px; height: 20px; 
+            width: 28px; height: 28px; /* Kích thước lớn hơn cho số thứ tự */
             background: var(--gold); color: #000;
-            border-radius: 4px; 
-            font-size: 12px; font-weight: bold;
-            text-align: center; line-height: 20px;
-            z-index: 10;
+            border-radius: 50%; /* Hình tròn */
+            font-size: 16px; font-weight: bold; /* Chữ lớn hơn */
+            text-align: center; line-height: 28px;
+            z-index: 3; /* Nằm trên cả trái tim */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center; /* Căn giữa số */
         }
 
         /* CHẾ ĐỘ 2: VIEWER (DÙNG CODE CŨ) */
-        #photoViewer { display: none; height: 100%; flex-direction: column; }
+        #photoViewer { display: none; height: 100%; flex-direction: column; background: var(--bg); }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
@@ -78,7 +149,7 @@
     <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
     <div class="header">
-        Album Ảnh Nhi (<span id="totalPhotos">0</span> ảnh)
+        <div class="album-title">Album Ảnh Nhi (<span id="totalPhotos">0</span> ảnh)</div>
         <div class="view-toggle">
             <button class="view-btn active" id="btnGrid" onclick="setView('grid')">🖼️ Dạng Lưới</button>
             <button class="view-btn" id="btnViewer" onclick="setView('viewer')">🔍 Xem Chi Tiết</button>
@@ -135,6 +206,7 @@
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
+        let albumTitle = "Album Ảnh"; // Tên album mặc định
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
@@ -159,10 +231,10 @@
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                capNhatSoThuTuVaTongSo(); // Cập nhật lại Grid View
+                capNhatSoThuTuVaTongSo(); // Cập nhật lại Grid View khi chuyển về
             } else {
                 gridDiv.style.display = 'none';
-                viewerDiv.style.display = 'flex';
+                viewerDiv.style.display = 'flex'; // Dùng flex để dễ dàng căn chỉnh
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
                 show(cur); // Chuyển sang Viewer và hiển thị ảnh hiện tại
@@ -195,7 +267,7 @@
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${isSel ? selectedPhotoIds.indexOf(p.id) + 1 : ''}</div>`;
                     strip.appendChild(d);
                 });
-                // Đảm bảo ảnh đang xem vẫn được làm nổi bật
+                // Đảm bảo ảnh đang xem vẫn được làm nổi bật (nếu có)
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -206,7 +278,7 @@
                 grid.innerHTML = '';
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
-                    d.className = 'grid-item';
+                    d.className = 'grid-item-wrapper'; // Sử dụng wrapper
                     d.onclick = () => {
                         // Khi click vào Grid, chuyển sang Viewer và hiển thị ảnh đó
                         setView('viewer');
@@ -216,7 +288,7 @@
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
                     
-                    let thumb = getLink(p.id, 's400'); // Kích thước lớn hơn cho dạng lưới
+                    let thumb = getLink(p.id, 's500'); // Kích thước lớn hơn cho dạng lưới
                     let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="grid-heart">❤️</div>${dotContent}`;
@@ -228,12 +300,14 @@
             const btnDone = document.querySelector('.btn-done');
             if (btnDone) btnDone.innerText = `🚀 Gửi List (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
+
+            // 4. Cập nhật tên album
+            document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
         }
 
 
-        // SỬA ĐỔI: INIT
+        // SỬA ĐỔI: INIT (Bổ sung lấy tên album)
         async function init() {
-            // ... (Phần gán DOM và tải dữ liệu giữ nguyên) ...
             try {
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
@@ -244,9 +318,10 @@
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
                 let data = await res.json();
-                if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
+                if (!data || !data.photos || !data.photos.length) throw new Error("Album trống hoặc sai ID");
                 
-                photos = data;
+                photos = data.photos; // Giả định API trả về { albumName: "...", photos: [...] }
+                albumTitle = data.albumName || `Album ${fid}`; // Lấy tên album hoặc dùng ID
 
                 // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
@@ -256,11 +331,9 @@
 
                 document.getElementById('load').style.display='none';
                 
-                // 💡 CHỈ RENDER BAN ĐẦU, HIỂN THỊ CHẾ ĐỘ LƯỚI MẶC ĐỊNH
                 capNhatSoThuTuVaTongSo(); // Vừa render cả Grid và Strip, vừa tính toán số thứ tự
-                setView('grid'); 
+                setView('grid'); // Mặc định hiển thị dạng lưới
                 
-                // ... (Gắn sự kiện) ...
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -274,6 +347,7 @@
 
         // HÀM SHOW (CHỈ CHẠY TRONG CHẾ ĐỘ VIEWER)
         function show(i) {
+            if(isDraw) togDraw(false); // Tắt chế độ vẽ nếu đang bật
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
