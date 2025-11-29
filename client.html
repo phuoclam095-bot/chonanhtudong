@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
 <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,13 +11,37 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
+            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 500px; /* TĂNG KÍCH THƯỚC CHIỀU RỘNG */
-            --grid-item-height: 250px; /* CHIỀU CAO HÌNH CHỮ NHẬT NẰM */
+            --grid-item-size: 350px; /* Chiều rộng item lưới (lớn) */
+            --grid-item-height: 220px; /* Chiều cao hình chữ nhật nằm */
             --grid-gap: 10px; 
         }
         
-        /* ... (CSS cho các thành phần khác giữ nguyên) ... */
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        
+        /* HEADER VÀ TOOLBAR CHUNG */
+        .header { 
+            background: #155724; 
+            color: white; 
+            padding: 15px 20px; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: bold; 
+            flex-shrink: 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .album-title { flex-grow: 1; text-align: center; } 
+        .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
+        .view-btn { padding: 5px 10px; background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+        .view-btn:hover { background: rgba(255, 255, 255, 0.4); }
+        .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+
+        /* KHU VỰC CHÍNH */
+        .main-container { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
@@ -25,26 +49,131 @@
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap);
+            gap: var(--grid-gap); 
             flex-grow: 1; 
-            /* ... */
+            background: var(--bg); 
+            background-image: var(--grid-bg-image); 
+            background-size: cover; 
+            background-position: center;
+            background-attachment: fixed; 
+            position: relative; 
+        }
+        #photoGrid::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: 0;
         }
 
         .grid-item-wrapper { 
-            /* ... (các thuộc tính bo tròn, viền giữ nguyên) ... */
-            height: var(--grid-item-height); /* Dùng chiều cao mới */
+            position: relative;
+            border: 1px solid transparent; 
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            z-index: 1; 
+            /* HÌNH CHỮ NHẬT NẰM */
+            height: var(--grid-item-height); 
             display: flex; 
-            justify-content: center;
+            justify-content: center; 
             align-items: center; 
-            /* ... */
+            background: rgba(0,0,0,0.5); 
+        }
+        .grid-item-wrapper:hover {
+            border-color: rgba(255, 255, 255, 0.7); 
+            transform: translateY(-2px);
+        }
+        .grid-item-wrapper.sel { 
+            border-width: 4px; 
+            border-color: var(--blue-frame); 
+            transform: scale(1.02); 
         }
         .grid-item-wrapper img { 
             width: 100%; 
             height: 100%; 
-            object-fit: cover; /* Đảm bảo hình chữ nhật được lấp đầy */
-            /* ... */
+            object-fit: cover; /* CẮT ẢNH ĐỂ LẤP ĐẦY KHUNG (KHÔNG KHOẢNG TRẮNG) */
+            display: block; 
+            border-radius: 6px; 
         }
-        /* ... (CSS cho Viewer và Dots giữ nguyên) ... */
+        /* DOT GRID: Số thứ tự */
+        .grid-dot { 
+            position: absolute; top: 8px; right: 8px; 
+            width: 28px; height: 28px; 
+            background: var(--gold); color: #000;
+            border-radius: 50%; 
+            font-size: 16px; font-weight: bold; 
+            text-align: center; line-height: 28px;
+            z-index: 3; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center; 
+            display: none; 
+        }
+        .grid-item-wrapper.sel .grid-dot { display: flex; }
+        
+        /* CHẾ ĐỘ 2: VIEWER */
+        #photoViewer { 
+            display: none; 
+            flex-direction: column; 
+            flex-grow: 1; 
+            background: var(--bg); 
+            overflow: hidden;
+        }
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
+        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
+        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
+        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
+        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
+        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
+        .tools.active { display: flex; }
+        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
+
+        /* THANH ĐIỀU KHIỂN CHUNG */
+        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
+        .info { display: flex; flex-direction: column; width: 180px; } 
+        .p-count { font-size: 12px; color: #888; }
+        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-sel.act { background: var(--gold); color: #000; }
+        .btn-done { background: #28a745; color: white; border-radius: 5px; }
+        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
+        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        .th img { width: 100%; height: 100%; object-fit: cover; } 
+        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
+        .th.sel { opacity: 1; border-color: var(--blue-frame); } 
+        .th.sel.act { border-color: var(--gold); } 
+        .dot { 
+            position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
+            background: var(--gold); color: #000;
+            border-radius: 50%; 
+            font-size: 12px; font-weight: bold; 
+            text-align: center; line-height: 20px;
+            box-shadow: 0 0 4px #000; z-index: 10;
+            display: none; 
+        }
+        .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
+        
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
+        
+        /* OVERLAY KHÓA BÌNH CHỌN */
+        .locked-overlay {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: auto; /* Cho phép bắt sự kiện click */
+        }
     </style>
 </head>
 <body>
@@ -109,7 +238,7 @@
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
         let albumTitle = "Thư Viện Ảnh"; 
-        let isSelectionLocked = false; // Luôn đặt là false vì không khóa
+        let isSelectionLocked = false; // Luôn là false
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
@@ -160,8 +289,6 @@
             
             // Luôn lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
-            
-            // Bỏ qua việc lưu trạng thái khóa
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -194,8 +321,6 @@
             // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
             if (grid) {
-                // Loại bỏ Overlay khóa
-                
                 grid.innerHTML = '';
                 
                 photos.forEach((p, i) => {
@@ -248,7 +373,6 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                // Đảm bảo không bị khóa
                 btnSel.disabled = false;
 
                 if (currentView === 'viewer') {
@@ -287,12 +411,13 @@
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
                 if (duLieuDaLuuJSON) {
+                    // FIX LỖI: Nạp danh sách ID đã chọn cũ
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
                 } else {
                     selectedPhotoIds = [];
                 }
                 
-                // BỎ QUA KIỂM TRA KHÓA Ở ĐÂY
+                // BỎ QUA KIỂM TRA KHÓA BÌNH CHỌN
 
                 // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
@@ -431,4 +556,3 @@
     </script>
 </body>
 </html>
-
