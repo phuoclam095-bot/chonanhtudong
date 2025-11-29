@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - iêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -13,7 +13,7 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 300px; /* ĐÃ TĂNG KÍCH THƯỚC ẢNH */
+            --grid-item-size: 250px; 
             --grid-gap: 15px; /* Khoảng cách tiêu chuẩn */
         }
         
@@ -101,10 +101,8 @@
             width: 28px; height: 28px; 
             background: var(--gold); color: #000;
             border-radius: 50%; 
-            font-size: 16px; 
-            font-weight: bold; 
-            text-align: center; 
-            line-height: 28px;
+            font-size: 16px; font-weight: bold; 
+            text-align: center; line-height: 28px;
             z-index: 3; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             display: flex; justify-content: center; align-items: center; 
@@ -290,7 +288,7 @@
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             const LOCK_KEY = 'album_locked_' + fid;
             
-            // Lưu danh sách ID đã chọn
+            // Luôn lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
             
             // Lưu trạng thái khóa
@@ -440,11 +438,10 @@
                 if (duLieuDaLuuJSON) {
                     // Nạp danh sách ID đã chọn cũ
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
-                    // Nếu có dữ liệu cũ, trạng thái khóa sẽ được áp dụng từ bước 1.
+                    // Nếu có dữ liệu, trạng thái khóa sẽ được áp dụng từ bước 1.
                 } else {
                     // Nếu là link mới tinh, khởi tạo rỗng
                     selectedPhotoIds = [];
-                    // BỎ KHÓA nếu không có dữ liệu chọn
                     isSelectionLocked = false;
                 }
 
@@ -589,13 +586,22 @@
         
         function mov(d){show(cur+d);}
         async function finish(){
-            if (isSelectionLocked) {
-                 alert("Album này đã được đánh dấu hoàn tất. Không thể gửi lại.");
-                 return;
-            }
-            if(confirm("Gửi danh sách chọn?")) {
+            // Khi Gửi List, ta đánh dấu Album này là KHÓA
+            isSelectionLocked = true;
+            
+            if(confirm("Gửi danh sách chọn? Sau khi gửi, bạn sẽ không thể thay đổi bình chọn.")) {
+                // Đảm bảo trạng thái khóa được lưu lại
+                luuTrangThaiLocally(); 
+                
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
+                
+                // Cập nhật giao diện lần cuối sau khi gửi
+                capNhatSoThuTuVaTổngSố();
+                
                 alert("✅ Đã gửi!");
+            } else {
+                // Nếu hủy gửi, đặt lại trạng thái khóa
+                isSelectionLocked = false;
             }
         }
         
