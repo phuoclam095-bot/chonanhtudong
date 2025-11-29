@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -284,7 +284,7 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
-            // Khóa Độc Lập FID
+            // FIX LỖI: Sử dụng Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             // Luôn lưu danh sách ID đã chọn
@@ -374,7 +374,7 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                btnSel.disabled = false;
+                btnSel.disabled = isSelectionLocked;
 
                 if (currentView === 'viewer') {
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
@@ -412,13 +412,13 @@
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
                 if (duLieuDaLuuJSON) {
-                    // FIX LỖI: Nạp danh sách ID đã chọn cũ
                     try {
-                        // Cần đảm bảo rằng dữ liệu được parse là một mảng
+                        // FIX LỖI: Nạp danh sách ID đã chọn cũ
                         const loadedIds = JSON.parse(duLieuDaLuuJSON);
                         if (Array.isArray(loadedIds)) {
                             selectedPhotoIds = loadedIds;
                         } else {
+                            // Nếu dữ liệu bị hỏng (ví dụ: null), reset
                             selectedPhotoIds = [];
                         }
                     } catch (e) {
@@ -440,6 +440,7 @@
 
                 document.getElementById('load').style.display='none';
                 
+                // GỌI CẬP NHẬT GIAO DIỆN SAU KHI DỮ LIỆU ẢNH VÀ DỮ LIỆU CHỌN ĐÃ ĐƯỢC NẠP
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
