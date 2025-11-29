@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -13,8 +13,8 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 350px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 220px; /* Chiều cao hình chữ nhật nằm */
+            --grid-item-size: 480px; /* Chiều rộng item lưới (lớn) */
+            --grid-item-height: 3450px; /* Chiều cao hình chữ nhật nằm */
             --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
         }
         
@@ -320,6 +320,7 @@
             // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
             if (grid) {
+                
                 grid.innerHTML = '';
                 
                 photos.forEach((p, i) => {
@@ -372,7 +373,7 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                btnSel.disabled = isSelectionLocked;
+                btnSel.disabled = false;
 
                 if (currentView === 'viewer') {
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
@@ -416,7 +417,7 @@
                     selectedPhotoIds = [];
                 }
                 
-                // TẢI DỮ LIỆU ẢNH (Từ Server)
+                // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
