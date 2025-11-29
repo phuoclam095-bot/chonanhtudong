@@ -157,11 +157,11 @@
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
         
-        /* KHÓA GIAO DIỆN KHI KHÔNG CHO PHÉP CHỌN */
+        /* OVERLAY KHÓA BÌNH CHỌN */
         .locked-overlay {
             position: absolute;
             top: 0; right: 0; bottom: 0; left: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -169,7 +169,7 @@
             font-size: 24px;
             font-weight: bold;
             z-index: 100;
-            pointer-events: all;
+            pointer-events: auto; /* Cho phép bắt sự kiện click */
         }
     </style>
 </head>
@@ -199,7 +199,7 @@
         </div>
         
         <div id="photoGrid">
-            <div id="lockOverlay" class="locked-overlay" style="display:none;">
+             <div id="lockOverlay" class="locked-overlay" style="display:none;">
                 🔒 Bình chọn đã được khóa
             </div>
         </div>
@@ -238,7 +238,7 @@
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
         let albumTitle = "Thư Viện Ảnh"; 
-        let isSelectionLocked = false; // Biến trạng thái khóa bình chọn
+        let isSelectionLocked = false; // Trạng thái khóa
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
@@ -286,11 +286,16 @@
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Dùng khóa độc lập theo FID)
         function luuTrangThaiLocally() {
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+            const LOCK_KEY = 'album_locked_' + fid;
+            
+            // Lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
             
-            // LƯU TRẠNG THÁI KHÓA (Gửi đi lần đầu tiên)
-            const LOCK_KEY = 'album_locked_' + fid;
-            localStorage.setItem(LOCK_KEY, 'true');
+            // Lưu trạng thái khóa (ĐƯỢC GỌI KHI CÓ THAO TÁC CHỌN LẦN ĐẦU)
+            if (selectedPhotoIds.length > 0) {
+                 localStorage.setItem(LOCK_KEY, 'true');
+                 isSelectionLocked = true;
+            }
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -324,10 +329,11 @@
             const grid = document.getElementById('photoGrid');
             const lockOverlay = document.getElementById('lockOverlay');
             if (grid && lockOverlay) {
-                grid.innerHTML = '';
                 
                 // Hiển thị Overlay nếu bị khóa
                 lockOverlay.style.display = isSelectionLocked ? 'flex' : 'none';
+                
+                grid.innerHTML = '';
                 
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
@@ -394,7 +400,7 @@
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
-                    // Nút Chọn ở Grid View
+                    // Nút Chọn ở Grid View luôn là "Chọn" 
                     btnSel.className='btn btn-sel'; 
                     btnSel.innerText='Chọn';
                 }
@@ -432,10 +438,11 @@
                 
                 if (duLieuDaLuuJSON) {
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
+                    // Nếu có dữ liệu cũ, nó có thể đã bị khóa trước đó.
+                    // Nếu là link cũ, giữ nguyên isSelectionLocked = true từ bước 1.
                 } else {
                     // Nếu là link mới tinh, không có dữ liệu lưu cục bộ
                     selectedPhotoIds = [];
-                    // Đảm bảo trạng thái khóa là FALSE
                     isSelectionLocked = false;
                 }
 
@@ -506,6 +513,7 @@
                 if (!ctx) {
                     ctx=cvs.getContext('2d'); 
                 }
+                // Khởi tạo màu sắc cho cọ vẽ
                 ctx.strokeStyle='red'; 
                 ctx.lineWidth=5; 
                 ctx.lineCap='round'; 
@@ -573,7 +581,7 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            luuTrangThaiLocally(); // Ghi dữ liệu đã chọn và đánh dấu link này là "đã khóa"
+            luuTrangThaiLocally(); 
 
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
