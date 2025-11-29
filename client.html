@@ -3,11 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
-        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH CHO ẢNH ĐÃ CHỌN */ }
+        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; }
+        
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        
+        /* HEADER VÀ TOOLBAR CHUNG */
+        .header { background: #155724; color: white; padding: 15px 20px; text-align: center; font-size: 20px; font-weight: bold; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+        .view-toggle { display: flex; gap: 10px; }
+        .view-btn { padding: 5px 10px; background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+        .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
+
+        /* KHU VỰC CHÍNH */
+        .main-container { flex: 1; overflow: hidden; position: relative; }
+        
+        /* CHẾ ĐỘ 1: GRID VIEW (MỚI) */
+        #photoGrid { 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 100%;
+            background: #000;
+        }
+        .grid-item { position: relative; border: 2px solid transparent; cursor: pointer; overflow: hidden; }
+        .grid-item img { width: 100%; height: auto; display: block; }
+        .grid-item:hover { opacity: 0.9; }
+        .grid-item.sel { border-color: var(--blue-frame); } /* Khung xanh cho ảnh đã chọn */
+        
+        .grid-heart { position: absolute; top: 10px; right: 10px; color: white; text-shadow: 0 0 5px #000; font-size: 24px; pointer-events: none; }
+        .grid-dot { 
+            position: absolute; top: 4px; right: 4px; 
+            width: 20px; height: 20px; 
+            background: var(--gold); color: #000;
+            border-radius: 4px; 
+            font-size: 12px; font-weight: bold;
+            text-align: center; line-height: 20px;
+            z-index: 10;
+        }
+
+        /* CHẾ ĐỘ 2: VIEWER (DÙNG CODE CŨ) */
+        #photoViewer { display: none; height: 100%; flex-direction: column; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
@@ -28,27 +66,10 @@
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
-        
-        /* Ảnh đang xem (act) - Khung vàng */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        /* Ảnh đã chọn (sel) - Khung xanh, sáng đều */
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
-        .th.sel.act { border-color: var(--gold); } /* Khi đang chọn VÀ đang xem -> Khung vàng */
-
-        .th.sel .dot { display: block; }
-        
-        /* HIỂN THỊ SỐ THỨ TỰ */
-        .dot { 
-            position: absolute; top: 4px; right: 4px; 
-            width: 20px; height: 20px; 
-            background: var(--gold); color: #000;
-            border-radius: 4px; 
-            display: none; 
-            box-shadow: 0 0 4px #000;
-            font-size: 12px; font-weight: bold;
-            text-align: center; line-height: 20px;
-            z-index: 10;
-        }
+        .th.sel.act { border-color: var(--gold); } 
+        .dot { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background: var(--gold); color: #000; border-radius: 4px; display: none; box-shadow: 0 0 4px #000; font-size: 12px; font-weight: bold; text-align: center; line-height: 20px; z-index: 10; }
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -56,35 +77,52 @@
 <body>
     <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
-    <div class="tools" id="tools">
-        <button class="t-btn act" onclick="setPen()">✏️</button>
-        <button class="t-btn" onclick="cls()">🗑️</button>
-        <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
-        <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
+    <div class="header">
+        Album Ảnh Nhi (<span id="totalPhotos">0</span> ảnh)
+        <div class="view-toggle">
+            <button class="view-btn active" id="btnGrid" onclick="setView('grid')">🖼️ Dạng Lưới</button>
+            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">🔍 Xem Chi Tiết</button>
+        </div>
     </div>
 
-    <div class="stage">
-        <button class="nav prev" onclick="mov(-1)">&#10094;</button>
-        <div class="canvas-box">
-            <img id="mainImg" src="">
-            <canvas id="drawCanvas"></canvas>
-        </div>
-        <button class="nav next" onclick="mov(1)">&#10095;</button>
-    </div>
+    <div class="main-container">
+        
+        <div id="photoGrid">
+            </div>
 
-    <div class="ctrl">
-        <div class="info">
-            <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
-            <div class="p-count" id="pCount">0 / 0</div>
-        </div>
-        <div style="display:flex; align-items:center">
-            <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
-            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
-        </div>
-        <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
-    </div>
+        <div id="photoViewer">
+            <div class="tools" id="tools">
+                <button class="t-btn act" onclick="setPen()">✏️</button>
+                <button class="t-btn" onclick="cls()">🗑️</button>
+                <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
+                <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
+            </div>
 
-    <div class="strip" id="strip"></div>
+            <div class="stage">
+                <button class="nav prev" onclick="mov(-1)">&#10094;</button>
+                <div class="canvas-box">
+                    <img id="mainImg" src="">
+                    <canvas id="drawCanvas"></canvas>
+                </div>
+                <button class="nav next" onclick="mov(1)">&#10095;</button>
+            </div>
+
+            <div class="ctrl">
+                <div class="info">
+                    <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
+                    <div class="p-count" id="pCount">0 / 0</div>
+                </div>
+                <div style="display:flex; align-items:center">
+                    <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
+                    <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+                </div>
+                <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
+            </div>
+
+            <div class="strip" id="strip"></div>
+        </div>
+
+    </div>
 
     <script>
         // ============================================================
@@ -95,58 +133,107 @@
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        let photos=[], cur=0, isDraw=false, ctx=null; 
+        let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // 💡 THAY ĐỔI: Sử dụng Mảng (Array) để lưu trữ ID theo thứ tự chọn
-        let selectedPhotoIds = []; 
+        let selectedPhotoIds = []; // Mảng (Array) để lưu trữ ID theo thứ tự chọn
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
+        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM
+        function setView(view) {
+            currentView = view;
+            const gridDiv = document.getElementById('photoGrid');
+            const viewerDiv = document.getElementById('photoViewer');
+            const btnGrid = document.getElementById('btnGrid');
+            const btnViewer = document.getElementById('btnViewer');
+            
+            if (view === 'grid') {
+                gridDiv.style.display = 'grid';
+                viewerDiv.style.display = 'none';
+                btnGrid.classList.add('active');
+                btnViewer.classList.remove('active');
+                capNhatSoThuTuVaTongSo(); // Cập nhật lại Grid View
+            } else {
+                gridDiv.style.display = 'none';
+                viewerDiv.style.display = 'flex';
+                btnGrid.classList.remove('active');
+                btnViewer.classList.add('active');
+                show(cur); // Chuyển sang Viewer và hiển thị ảnh hiện tại
+            }
+        }
+
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
-            // Lưu mảng ID đã được sắp xếp
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(selectedPhotoIds));
         }
 
-        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
         function capNhatSoThuTuVaTongSo() {
             let count = selectedPhotoIds.length;
             
-            // 1. Reset trạng thái .sel và .dot của tất cả thumbnail
-            document.querySelectorAll('.th').forEach(th => {
-                th.classList.remove('sel');
-                th.querySelector('.dot').style.display = 'none';
-            });
+            // 1. Cập nhật Viewer Strip (Nếu đang ở chế độ Viewer)
+            const strip = document.getElementById('strip');
+            if (strip) {
+                strip.innerHTML = '';
+                photos.forEach((p, i) => {
+                    let d = document.createElement('div');
+                    d.className = 'th';
+                    d.id = `t-${i}`;
+                    d.onclick = () => show(i);
 
-            // 2. Gán số thứ tự cho các thumbnail đã chọn dựa trên MẢNG selectedPhotoIds
-            selectedPhotoIds.forEach((id, index) => {
-                const i = photos.findIndex(p => p.id === id); // Tìm index trong mảng ảnh gốc
-                if (i !== -1) {
-                    const thumbnailDiv = document.getElementById(`t-${i}`);
-                    if (thumbnailDiv) {
-                        thumbnailDiv.classList.add('sel');
-                        const dot = thumbnailDiv.querySelector('.dot');
-                        dot.innerText = index + 1; // Số thứ tự chính là index trong mảng + 1
-                        dot.style.display = 'block';
-                    }
-                }
-            });
+                    let isSel = selectedPhotoIds.includes(p.id);
+                    if (isSel) d.classList.add('sel');
+                    
+                    let thumb = getLink(p.id, 's220');
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${isSel ? selectedPhotoIds.indexOf(p.id) + 1 : ''}</div>`;
+                    strip.appendChild(d);
+                });
+                // Đảm bảo ảnh đang xem vẫn được làm nổi bật
+                let t = document.getElementById(`t-${cur}`);
+                if (t) t.classList.add('act');
+            }
+            
+            // 2. Cập nhật Grid View
+            const grid = document.getElementById('photoGrid');
+            if (grid) {
+                grid.innerHTML = '';
+                photos.forEach((p, i) => {
+                    let d = document.createElement('div');
+                    d.className = 'grid-item';
+                    d.onclick = () => {
+                        // Khi click vào Grid, chuyển sang Viewer và hiển thị ảnh đó
+                        setView('viewer');
+                        show(i);
+                    };
 
-            // 3. Cập nhật nút "Gửi List"
+                    let isSel = selectedPhotoIds.includes(p.id);
+                    if (isSel) d.classList.add('sel');
+                    
+                    let thumb = getLink(p.id, 's400'); // Kích thước lớn hơn cho dạng lưới
+                    let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
+                    
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="grid-heart">❤️</div>${dotContent}`;
+                    grid.appendChild(d);
+                });
+            }
+
+            // 3. Cập nhật nút "Gửi List" và Tổng số ảnh
             const btnDone = document.querySelector('.btn-done');
-            btnDone.innerText = `🚀 Gửi List (${count})`;
+            if (btnDone) btnDone.innerText = `🚀 Gửi List (${count})`;
+            document.getElementById('totalPhotos').innerText = photos.length;
         }
 
 
         // SỬA ĐỔI: INIT
         async function init() {
+            // ... (Phần gán DOM và tải dữ liệu giữ nguyên) ...
             try {
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
@@ -164,48 +251,34 @@
                 // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
-                    // 💡 THAY ĐỔI: Đọc dữ liệu đã lưu vào Mảng selectedPhotoIds
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
                 }
 
                 document.getElementById('load').style.display='none';
                 
-                render(); show(0);
+                // 💡 CHỈ RENDER BAN ĐẦU, HIỂN THỊ CHẾ ĐỘ LƯỚI MẶC ĐỊNH
+                capNhatSoThuTuVaTongSo(); // Vừa render cả Grid và Strip, vừa tính toán số thứ tự
+                setView('grid'); 
                 
+                // ... (Gắn sự kiện) ...
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
                 
-                document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
+                document.onkeydown=e=>{if(currentView==='viewer' && !isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
             } catch(e) { 
                 document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
             }
         }
 
-        // SỬA ĐỔI: RENDER (Không cần cập nhật logic, chỉ cần gọi hàm cập nhật)
-        function render() {
-            const s = document.getElementById('strip'); s.innerHTML='';
-            photos.forEach((p,i) => {
-                let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
-                
-                let thumb = getLink(p.id, 's220'); 
-                d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
-                s.appendChild(d);
-            });
-            
-            capNhatSoThuTuVaTongSo(); 
-            
-            document.getElementById('pCount').innerText = `1 / ${photos.length}`;
-        }
-
+        // HÀM SHOW (CHỈ CHẠY TRONG CHẾ ĐỘ VIEWER)
         function show(i) {
-            if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
+            // Load ảnh chính
             let hd = getLink(p.id, 's2000'); 
-            
             img.src=hd; 
             img.onload = () => { 
                 cvs.width = img.offsetWidth; 
@@ -216,7 +289,7 @@
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
             
-            // Xóa trạng thái act cũ và đặt act mới
+            // Xóa act cũ trên strip, đặt act mới
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
@@ -268,17 +341,15 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Cập nhật Mảng theo thứ tự chọn)
+        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
         function togSel() {
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới là có chọn hay không
             
-            // 💡 Cập nhật Mảng selectedPhotoIds theo logic thời gian chọn
+            // Cập nhật Mảng selectedPhotoIds theo logic thời gian chọn
             if (ns) {
-                // Nếu chưa có trong mảng -> Thêm vào cuối mảng
                 selectedPhotoIds.push(p.id);
             } else {
-                // Nếu đã có -> Tìm vị trí và xóa ID khỏi mảng
                 const index = selectedPhotoIds.indexOf(p.id);
                 if (index > -1) {
                     selectedPhotoIds.splice(index, 1);
@@ -286,10 +357,12 @@
             }
             p.selected = ns ? 'true' : 'false';
 
-            // Cập nhật số thứ tự và tổng số ảnh
+            // Cập nhật số thứ tự và tổng số ảnh cho cả hai chế độ
             capNhatSoThuTuVaTongSo();
 
-            show(cur); // Cập nhật nút 'Chọn' và khung vàng/xanh
+            if (currentView === 'viewer') {
+                show(cur); // Cập nhật nút 'Chọn' và khung vàng/xanh trong Viewer
+            }
             
             // Lưu trạng thái vào Local Storage và gửi lên Server
             luuTrangThaiLocally();
