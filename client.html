@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH CHO ẢNH ĐÃ CHỌN */ }
@@ -101,7 +101,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        let selectedPhotoIds = new Set(); 
+        // 💡 THAY ĐỔI: Sử dụng Mảng (Array) để lưu trữ ID theo thứ tự chọn
+        let selectedPhotoIds = []; 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
@@ -110,20 +111,13 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
-            // Lấy danh sách ID đã chọn từ Set hiện tại
-            const danhSachDaChonId = Array.from(selectedPhotoIds);
-
-            localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
-            // Không cần cập nhật selectedPhotoIds ở đây vì nó đã được cập nhật trong togSel
+            // Lưu mảng ID đã được sắp xếp
+            localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(selectedPhotoIds));
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
         function capNhatSoThuTuVaTongSo() {
-            let count = 0;
-            // Chuyển Set sang Array để lấy thứ tự dựa trên thời gian/thứ tự ảnh ban đầu
-            const selectedIdsArray = photos
-                .filter(p => selectedPhotoIds.has(p.id))
-                .map(p => p.id);
+            let count = selectedPhotoIds.length;
             
             // 1. Reset trạng thái .sel và .dot của tất cả thumbnail
             document.querySelectorAll('.th').forEach(th => {
@@ -131,17 +125,16 @@
                 th.querySelector('.dot').style.display = 'none';
             });
 
-            // 2. Gán số thứ tự cho các thumbnail đã chọn
-            selectedIdsArray.forEach((id, index) => {
-                const i = photos.findIndex(p => p.id === id);
+            // 2. Gán số thứ tự cho các thumbnail đã chọn dựa trên MẢNG selectedPhotoIds
+            selectedPhotoIds.forEach((id, index) => {
+                const i = photos.findIndex(p => p.id === id); // Tìm index trong mảng ảnh gốc
                 if (i !== -1) {
                     const thumbnailDiv = document.getElementById(`t-${i}`);
                     if (thumbnailDiv) {
                         thumbnailDiv.classList.add('sel');
                         const dot = thumbnailDiv.querySelector('.dot');
-                        dot.innerText = index + 1;
+                        dot.innerText = index + 1; // Số thứ tự chính là index trong mảng + 1
                         dot.style.display = 'block';
-                        count++;
                     }
                 }
             });
@@ -171,8 +164,8 @@
                 // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
-                    const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
-                    selectedPhotoIds = new Set(danhSachDaChon); 
+                    // 💡 THAY ĐỔI: Đọc dữ liệu đã lưu vào Mảng selectedPhotoIds
+                    selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
                 }
 
                 document.getElementById('load').style.display='none';
@@ -190,7 +183,7 @@
             }
         }
 
-        // SỬA ĐỔI: RENDER
+        // SỬA ĐỔI: RENDER (Không cần cập nhật logic, chỉ cần gọi hàm cập nhật)
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
@@ -228,11 +221,13 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // Kiểm tra trạng thái đã chọn từ Set
-            let isSel = selectedPhotoIds.has(p.id);
+            // Kiểm tra trạng thái đã chọn từ Mảng
+            let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
+        
+        // ... (các hàm vẽ: togDraw, start, end, draw, setPen, cls, saveDraw giữ nguyên) ...
 
         function togDraw(en) {
             const tl=document.getElementById('tools');
@@ -273,16 +268,21 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
+        // SỬA ĐỔI: TOGGLE SEL (Cập nhật Mảng theo thứ tự chọn)
         function togSel() {
             let p=photos[cur]; 
-            let ns=!(String(p.selected).toLowerCase()==='true'); 
+            let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới là có chọn hay không
             
-            // 💡 FIX LỖI: Cập nhật tập hợp selectedPhotoIds TỨC THÌ
+            // 💡 Cập nhật Mảng selectedPhotoIds theo logic thời gian chọn
             if (ns) {
-                selectedPhotoIds.add(p.id);
+                // Nếu chưa có trong mảng -> Thêm vào cuối mảng
+                selectedPhotoIds.push(p.id);
             } else {
-                selectedPhotoIds.delete(p.id);
+                // Nếu đã có -> Tìm vị trí và xóa ID khỏi mảng
+                const index = selectedPhotoIds.indexOf(p.id);
+                if (index > -1) {
+                    selectedPhotoIds.splice(index, 1);
+                }
             }
             p.selected = ns ? 'true' : 'false';
 
@@ -290,7 +290,7 @@
             capNhatSoThuTuVaTongSo();
 
             show(cur); // Cập nhật nút 'Chọn' và khung vàng/xanh
-
+            
             // Lưu trạng thái vào Local Storage và gửi lên Server
             luuTrangThaiLocally();
 
