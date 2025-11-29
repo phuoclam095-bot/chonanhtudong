@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - LNP</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
-        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH MỚI */ }
+        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH CHO ẢNH ĐÃ CHỌN */ }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -29,9 +29,12 @@
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
-        /* CHỈNH SỬA: Ảnh đang xem (act) và ảnh đã chọn (sel) đều sáng tối đa (opacity: 1) và có khung xanh */
-        .th.act { opacity: 1; border-color: var(--blue-frame); transform: scale(1.05); z-index: 5; } /* Khung xanh */
-        .th.sel { opacity: 1; border-color: var(--blue-frame); } /* Khung xanh và sáng tối đa */
+        /* ĐIỀU CHỈNH: Ảnh đang xem (act) - Khung vàng */
+        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
+        /* ĐIỀU CHỈNH: Ảnh đã chọn (sel) - Khung xanh, nhưng nếu đang act thì vẫn ưu tiên khung vàng */
+        .th.sel { opacity: 1; border-color: var(--blue-frame); } 
+        .th.sel.act { border-color: var(--gold); } /* Khi đang chọn VÀ đang xem -> Khung vàng */
+
         .th.sel .dot { display: block; }
         
         /* HIỂN THỊ SỐ THỨ TỰ */
