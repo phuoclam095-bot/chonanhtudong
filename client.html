@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - BL Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,10 +11,10 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
+            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            /* TĂNG KÍCH THƯỚC ẢNH VÀ ĐIỀU CHỈNH KHOẢNG CÁCH */
-            --grid-item-size: 250px; /* Tăng kích thước lại */
-            --grid-gap: 20px; /* Thêm biến cho khoảng cách đều */
+            --grid-item-size: 250px; 
+            --grid-gap: 20px; 
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -44,11 +44,11 @@
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
-            padding: var(--grid-gap); /* Sử dụng gap cho padding */
+            padding: var(--grid-gap); 
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
+            gap: var(--grid-gap); 
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -74,9 +74,11 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            /* Thêm min-height để giữ tỷ lệ khung nhìn tốt hơn */
-            min-height: var(--grid-item-size);
-            background: rgba(0,0,0,0.5); /* Nền nhẹ khi ảnh chưa load */
+            height: var(--grid-item-size); /* Đặt chiều cao cố định để tạo ô vuông */
+            display: flex; /* Dùng flex để căn giữa ảnh */
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
             border-color: rgba(255, 255, 255, 0.7); 
@@ -86,12 +88,12 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
-        /* SỬA LỖI: Cho phép ảnh dọc hiển thị đầy đủ */
         .grid-item-wrapper img { 
-            width: 100%; 
+            width: auto; 
             height: auto; 
-            max-height: var(--grid-item-size); 
-            object-fit: contain; /* Đảm bảo không bị cắt */
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
             display: block; 
             border-radius: 6px; 
         }
@@ -247,7 +249,7 @@
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none'; // Ẩn nút Vẽ khi ở Grid View
+                btnDraw.style.display = 'none'; 
                 
                 // Cập nhật thông tin trên thanh điều khiển cho Grid View
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
@@ -259,8 +261,8 @@
                 viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
-                btnDraw.style.display = 'block'; // Hiển thị nút Vẽ khi ở Viewer Mode
-                show(cur); // Đảm bảo Viewer Mode hiển thị ảnh đang chọn
+                btnDraw.style.display = 'block'; 
+                show(cur); 
             }
         }
 
@@ -311,13 +313,13 @@
                         togSel();
                         cur = oldCur; 
                         
-                        // 💡 FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
+                        // FIX LỖI: CẬP NHẬT BỘ ĐẾM VÀ TRẠNG THÁI NÚT TỨC THÌ
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTổngSố(); 
                         }
                     };
                     
-                    // 💡 Sự kiện Double-click (MỞ VIEWER)
+                    // Sự kiện Double-click (MỞ VIEWER)
                     d.ondblclick = (event) => {
                          event.preventDefault(); 
                          cur = i;
@@ -348,10 +350,19 @@
 
             // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
             const btnSel = document.getElementById('btnSel');
-            if (btnSel && photos.length > 0) {
-                let isSel = selectedPhotoIds.includes(photos[cur].id);
-                btnSel.className=`btn btn-sel ${isSel?'act':''}`; 
-                btnSel.innerText=isSel?'✔ Đã Chọn':'Chọn';
+            if (btnSel) {
+                // Ở Grid View, nút này không có ý nghĩa chọn ảnh, chỉ cần hiển thị trạng thái đã chọn chung.
+                let isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
+
+                if (currentView === 'viewer') {
+                    btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                    btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
+                } else {
+                    // FIX LỖI: Ở Grid View, nút này chỉ nên hiển thị trạng thái chung (vd: Đã Chọn nếu có ít nhất 1 ảnh được chọn)
+                    let isAnySelected = selectedPhotoIds.length > 0;
+                    btnSel.className='btn btn-sel'; 
+                    btnSel.innerText=isAnySelected?'Đã Chọn':'Chọn'; // Sửa logic tránh hiểu nhầm
+                }
             }
             
             // 6. Cập nhật thông tin file (tên và số đếm)
@@ -371,7 +382,6 @@
         // SỬA ĐỔI: INIT
         async function init() {
             try {
-                // Khai báo lại cvs, img để tránh lỗi trong các hàm vẽ/hiển thị
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
@@ -396,7 +406,7 @@
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
-                // 💡 KHẮC PHỤC LỖI VẼ: Gắn lại sự kiện cho canvas
+                // KHẮC PHỤC LỖI VẼ: Gắn lại sự kiện cho canvas
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -417,7 +427,6 @@
             let hd = getLink(p.id, 's2000'); 
             img.src=hd; 
             img.onload = () => { 
-                // Cập nhật kích thước canvas khi ảnh tải xong
                 cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
                 if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
@@ -441,17 +450,14 @@
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
-        // 💡 FIX LỖI VẼ: Đảm bảo Canvas Context (ctx) được khởi tạo đúng
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
-                // Đảm bảo ctx được khởi tạo
                 if (!ctx) {
                     ctx=cvs.getContext('2d'); 
                 }
                 ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
-                // Vẽ lại ảnh lên canvas
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
             } else {
                 cls(); 
@@ -460,9 +466,9 @@
 
         let paint=false;
         function start(e){paint=true;draw(e);}
-        function end(){paint=false;if(ctx) ctx.beginPath();} // Kiểm tra ctx
+        function end(){paint=false;if(ctx) ctx.beginPath();} 
         function draw(e){
-            if(!paint||!isDraw||!ctx)return; // Kiểm tra ctx
+            if(!paint||!isDraw||!ctx)return; 
             e.preventDefault();
             const r=cvs.getBoundingClientRect();
             const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
@@ -486,7 +492,7 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
+        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN và CẬP NHẬT NÚT)
         function togSel() {
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
