@@ -21,25 +21,32 @@
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* Giữ nguyên .stars nhưng đảm bảo không hiển thị nội dung sao */
-        .stars { min-width: 130px; } /* Giữ min-width để duy trì bố cục */
-        .stars span { font-size: 26px; color: transparent; cursor: default; } /* Loại bỏ màu và click cho sao */
-        .stars span.act { color: transparent; } /* Đảm bảo không có màu active */
+        /* KHU VỰC SỬA LỖI BỐ CỤC */
+        .stars { min-width: 130px; } 
+        .stars span { 
+            font-size: 26px; 
+            color: transparent !important; /* Đảm bảo sao trong suốt */
+            cursor: default; 
+        } 
+        .stars span.act { color: transparent !important; } /* Đảm bảo không có màu active */
+        /* END KHU VỰC SỬA LỖI BỐ CỤC */
 
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; } /* Giữ nguyên màu vàng cho nút chọn */
+        .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
+        
+        /* Ảnh đang hoạt động */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
         
-        /* Đảm bảo ảnh đã chọn luôn sáng và có viền vàng */
-        .th.sel { opacity: 1; border-color: var(--gold); } 
-        .th.sel .dot { display: block; } /* Giữ nguyên dot như cũ */
-
+        /* Đảm bảo ảnh đã chọn luôn sáng */
+        .th.sel { opacity: 1; border-color: var(--gold); }
+        
+        .th.sel .dot { display: block; }
         .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -70,6 +77,7 @@
         </div>
         <div style="display:flex; align-items:center">
             <div class="stars" id="stars">
+                <span style="visibility:hidden">★</span><span style="visibility:hidden">★</span><span style="visibility:hidden">★</span><span style="visibility:hidden">★</span><span style="visibility:hidden">★</span>
             </div>
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
             <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
@@ -191,10 +199,10 @@
 
             let isSel=String(p.selected).toLowerCase()==='true';
             let btn=document.getElementById('btnSel');
+            // Giữ nguyên nội dung và màu vàng của nút chọn
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
 
-            // Đảm bảo div.stars trống rỗng
-            document.getElementById('stars').innerHTML = '';
+            // Loại bỏ logic cập nhật sao (chỉ giữ HTML tĩnh)
         }
 
         function togDraw(en) {
@@ -245,7 +253,8 @@
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
 
-        // Xóa hoàn toàn hàm rate(n)
+        // Đã xóa hàm rate(n)
+
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
