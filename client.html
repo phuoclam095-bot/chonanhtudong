@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - ạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -40,7 +40,7 @@
         /* KHU VỰC CHÍNH */
         .main-container { flex: 1; overflow: hidden; position: relative; }
         
-        /* CHẾ ĐỘ 1: GRID VIEW (MỚI) */
+        /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
             padding: 20px; 
             overflow-y: auto; 
@@ -55,7 +55,6 @@
             background-attachment: fixed; 
             position: relative; 
         }
-        /* Lớp phủ màu đen trong suốt trên ảnh nền */
         #photoGrid::before {
             content: "";
             position: absolute;
@@ -82,13 +81,13 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
-        /* Đảm bảo ảnh bên trong chiếm hết wrapper */
         .grid-item-wrapper img { 
             width: 100%; 
             height: var(--grid-item-size); 
             object-fit: cover; 
             display: block; 
             border-radius: 2px;
+            /* pointer-events: none đã được loại bỏ để sự kiện click trên ảnh có thể hoạt động riêng */
         }
 
         .grid-dot { 
@@ -102,8 +101,8 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             display: flex; justify-content: center; align-items: center; 
         }
-
-        /* CHẾ ĐỘ 2: VIEWER (DÙNG CODE CŨ) */
+        
+        /* CHẾ ĐỘ 2: VIEWER */
         #photoViewer { display: none; height: 100%; flex-direction: column; background: var(--bg); }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -128,7 +127,13 @@
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } 
-        .dot { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background: var(--gold); color: #000; border-radius: 4px; display: none; box-shadow: 0 0 4px #000; font-size: 12px; font-weight: bold; text-align: center; line-height: 20px; z-index: 10; }
+        /* DOT TRONG VIEWER: Chỉ dùng để đánh dấu trạng thái (chọn) nhưng không hiển thị số */
+        .dot { 
+            position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; 
+            background: var(--gold); border-radius: 50%; display: none; 
+            box-shadow: 0 0 4px #000; z-index: 10;
+        }
+        .th.sel .dot { display: block; } 
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -238,7 +243,7 @@
         function capNhatSoThuTuVaTongSo() {
             let count = selectedPhotoIds.length;
             
-            // 1. Cập nhật Viewer Strip (Nếu đang ở chế độ Viewer)
+            // 1. Cập nhật Viewer Strip 
             const strip = document.getElementById('strip');
             if (strip) {
                 strip.innerHTML = '';
@@ -252,9 +257,8 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    // KHẮC PHỤC LỖI: Hiển thị số thứ tự trên .dot
-                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
-                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
+                    // DOT Viewer: Dùng để đánh dấu đã chọn, không hiển thị số
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot"></div>`;
                     strip.appendChild(d);
                 });
                 let t = document.getElementById(`t-${cur}`);
@@ -271,12 +275,12 @@
                     
                     // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
                     d.onclick = () => {
-                        // Tạm thời thay đổi 'cur' để togSel biết ảnh nào đang được thao tác
+                        // Lưu index ảnh hiện tại trước khi gọi togSel
                         const oldCur = cur;
                         cur = i;
                         togSel();
-                        cur = oldCur;
-                        // Quay lại Grid View sau khi chọn (nếu đang ở Grid)
+                        cur = oldCur; 
+                        // Cập nhật lại Grid View để thấy số thứ tự và khung
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTongSo();
                         }
@@ -286,6 +290,8 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's500'); 
+                    
+                    // DOT Grid: Hiển thị số thứ tự
                     let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
@@ -370,7 +376,7 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // GỌI CẬP NHẬT: Đảm bảo số thứ tự trên Strip được cập nhật
+            // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
             capNhatSoThuTuVaTongSo(); 
 
             let isSel = selectedPhotoIds.includes(p.id);
