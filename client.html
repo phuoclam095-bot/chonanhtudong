@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V9.1 - Xóa Rating + Đánh Số Thứ Tự (GIỮ NGUYÊN) */
+        /* CSS V9.2 - Fix Bố Cục + Đánh Số Thứ Tự (GIỮ NGUYÊN BỐ CỤC) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
@@ -20,39 +20,30 @@
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
-        
-        /* Cập nhật phần điều khiển */
-        .sel-index { 
-            font-size: 18px; font-weight: bold; color: var(--text); border: 2px solid var(--gold); 
-            border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; 
-            align-items: center; margin-right: 15px; background: transparent; 
-            transition: all 0.2s;
-        }
-        .sel-index.act { 
-            background: var(--gold); color: #000; border-color: var(--gold); 
-        }
-
+        /* Xóa CSS cũ cho .stars */
+        /* .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); } */
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        /* Giữ nguyên .btn-sel để duy trì bố cục, chỉ đổi nội dung và màu sắc */
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-sel.act { background: var(--gold); color: #000; border: none; } /* Đổi màu khi đã chọn */
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
-        
-        /* Ảnh đang hoạt động */
-        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
+        .th.act { border-color: var(--gold); transform: scale(1.05); z-index: 5; } /* Ảnh đang xem */
         
         /* Ảnh đã chọn: luôn giữ opacity 1 và có viền vàng */
-        .th.sel { opacity: 1; border-color: var(--gold); }
-
+        .th.sel { opacity: 1; border-color: var(--gold); } 
+        
         /* Đánh số thứ tự thay cho dot */
-        .th .index-num {
+        .dot { 
             position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; 
             background: var(--gold); color: #000; border-radius: 50%; 
             display: none; box-shadow: 0 0 4px #000; font-size: 10px; 
             font-weight: bold; justify-content: center; align-items: center;
         }
-        .th.sel .index-num { display: flex; }
+        .th.sel .dot { display: flex; } /* Hiển thị số thứ tự khi đã chọn */
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -65,7 +56,7 @@
         <button class="t-btn" onclick="cls()">🗑️</button>
         <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
         <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
-    </div>
+            </div>
 
     <div class="stage">
         <button class="nav prev" onclick="mov(-1)">&#10094;</button>
@@ -82,10 +73,9 @@
             <div class="p-count" id="pCount">0 / 0</div>
         </div>
         <div style="display:flex; align-items:center">
-            
-                        <div class="sel-index" id="selIndexDisplay" onclick="togSel()">...</div>
-
+                        
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
+                        <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
         <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
     </div>
@@ -103,17 +93,18 @@
 
         let photos=[], cur=0, isDraw=false, ctx=null; 
         let cvs, img; 
-        let selectedPhotoIds = new Set(); 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
+
+        let selectedPhotoIds = new Set(); 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE + Cập nhật selectedPhotoIds
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE + Cập nhật index
         function luuTrangThaiLocally() {
             // 1. Lọc và lấy danh sách ID đã chọn
             const danhSachDaChonId = photos
@@ -123,11 +114,9 @@
             // 2. Lưu vào Local Storage
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             
-            // 3. Cập nhật lại Set (quan trọng)
+            // 3. Cập nhật lại Set và tính index
             selectedPhotoIds = new Set(danhSachDaChonId);
             
-            // 4. Sắp xếp lại danh sách ảnh để tạo index chính xác
-            // Chỉ cần duyệt qua và gán index
             let indexCount = 1;
             photos.forEach(p => {
                 if (selectedPhotoIds.has(p.id)) {
@@ -135,13 +124,12 @@
                 } else {
                     p.selectIndex = 0; // 0 nghĩa là chưa chọn
                 }
+                // Xóa rating cũ để tránh lỗi (dù đã xóa logic)
+                delete p.rating;
             });
-
-            console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh đã chọn.');
         }
 
-
-        // SỬA ĐỔI: INIT (Áp dụng trạng thái Local Storage)
+        // SỬA ĐỔI: INIT 
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -177,7 +165,6 @@
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
                 
-                // Cập nhật phím tắt: SPACE để Chọn/Bỏ Chọn
                 document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
             } catch(e) { 
@@ -185,7 +172,7 @@
             }
         }
 
-        // SỬA ĐỔI: RENDER (Áp dụng trạng thái Local Storage và Đánh Số)
+        // SỬA ĐỔI: RENDER (Thêm số thứ tự vào dot)
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
@@ -198,16 +185,16 @@
                 
                 let thumb = getLink(p.id, 's220'); 
                 
-                // Hiển thị số thứ tự đã chọn thay cho chấm
-                const indexHtml = p.selectIndex > 0 ? `<div class="index-num">${p.selectIndex}</div>` : `<div class="index-num"></div>`;
+                // Thay dot bằng số thứ tự (index-num)
+                const dotContent = p.selectIndex > 0 ? `${p.selectIndex}` : '';
                 
-                d.innerHTML=`<img src="${thumb}" loading="lazy">${indexHtml}`; 
+                d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot">${dotContent}</div>`; 
                 s.appendChild(d);
             });
-            document.getElementById('pCount').innerText = `1 / ${photos.length}`;
+            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
         }
 
-        // SỬA ĐỔI: SHOW (Cập nhật hiển thị số thứ tự ở thanh điều khiển)
+        // SỬA ĐỔI: SHOW (Cập nhật nút Chọn)
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -228,16 +215,19 @@
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
             let t=document.getElementById(`t-${i}`); if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // Cập nhật hiển thị số thứ tự ở thanh điều khiển
-            const indexDisplay = document.getElementById('selIndexDisplay');
+            // Cập nhật nút Chọn (btnSel)
+            let isSel=String(p.selected).toLowerCase()==='true';
+            let btn=document.getElementById('btnSel');
             
-            if (p.selectIndex && p.selectIndex > 0) {
-                indexDisplay.classList.add('act');
-                indexDisplay.innerText = p.selectIndex;
+            if (isSel) {
+                btn.classList.add('act'); 
+                btn.innerText=`✔ Ch. (${p.selectIndex})`; // Hiển thị số thứ tự
             } else {
-                indexDisplay.classList.remove('act');
-                indexDisplay.innerText = 'Ch. '; // Chờ chọn
+                btn.classList.remove('act');
+                btn.innerText='Chọn';
             }
+            
+            // Đã xóa logic rating
         }
 
         function togDraw(en) {
@@ -279,25 +269,24 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Thêm logic lưu trạng thái và update index)
+        // SỬA ĐỔI: TOGGLE SEL (Tính lại index và cập nhật giao diện)
         function togSel() {
             let p=photos[cur]; 
-            let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
+            let ns=!(String(p.selected).toLowerCase()==='true'); 
+            p.selected=ns;
             
-            // 1. Lưu trạng thái vào Local Storage và tính lại index cho TẤT CẢ
+            // 1. Lưu trạng thái và tính lại index cho TẤT CẢ ảnh
             luuTrangThaiLocally(); 
 
-            // 2. Cập nhật giao diện thanh strip cho TẤT CẢ ảnh (để đảm bảo index đúng)
+            // 2. Cập nhật giao diện thanh strip và nút chọn
             render(); 
-
-            // 3. Cập nhật giao diện ảnh đang xem
             show(cur);
             
-            // 4. Gửi lên Server (Không cần rating nữa)
+            // 3. Gửi lên Server
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
 
-        // HÀM RATE ĐÃ BỊ XÓA
+        // Đã xóa hàm rate(n)
         
         function mov(d){show(cur+d);}
         async function finish(){
