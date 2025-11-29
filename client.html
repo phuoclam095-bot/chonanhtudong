@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -  Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -76,8 +76,8 @@
             z-index: 1; 
             height: var(--grid-item-size); /* Đặt chiều cao cố định để tạo ô vuông */
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc */
+            justify-content: center; 
+            align-items: center; /* Căn giữa dọc và ngang */
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -92,7 +92,7 @@
             width: auto; 
             height: auto; 
             max-width: 100%; 
-            max-height: 100%; /* Giới hạn kích thước bên trong khung vuông */
+            max-height: 100%; 
             object-fit: contain; 
             display: block; 
             border-radius: 6px; 
@@ -313,7 +313,7 @@
                         togSel();
                         cur = oldCur; 
                         
-                        // FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
+                        // 💡 FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTổngSố(); 
                         }
@@ -350,18 +350,17 @@
 
             // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
             const btnSel = document.getElementById('btnSel');
+            const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
+            
             if (btnSel) {
-                let isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
-
                 if (currentView === 'viewer') {
-                    // FIX LỖI 3: Cập nhật trạng thái nút Chọn CHÍNH XÁC trong Viewer
+                    // FIX LỖI: Cập nhật trạng thái nút Chọn CHÍNH XÁC trong Viewer
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
-                    // FIX LỖI 3: Nút Chọn ở Grid View phải phản ánh trạng thái chung (hoặc trạng thái mặc định)
-                    let isAnySelected = selectedPhotoIds.length > 0;
+                    // FIX LỖI: Nút Chọn ở Grid View luôn là "Chọn" (vì click để chọn thực hiện trên ảnh)
                     btnSel.className='btn btn-sel'; 
-                    btnSel.innerText=isAnySelected?'Đã Chọn':'Chọn';
+                    btnSel.innerText='Chọn';
                 }
             }
             
