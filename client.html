@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,10 +11,9 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 320px; /* TĂNG KÍCH THƯỚC ẢNH */
-            --grid-gap: 10px; /* THU HẸP KHOẢNG CÁCH */
+            --grid-item-size: 320px;
+            --grid-gap: 10px;
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -48,7 +47,7 @@
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
+            gap: var(--grid-gap); 
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -67,7 +66,6 @@
 
         .grid-item-wrapper { 
             position: relative;
-            /* ĐIỀU CHỈNH VIỀN CHƯA CHỌN MỎNG HƠN */
             border: 1px solid transparent; 
             transition: border-color 0.2s, transform 0.2s;
             cursor: pointer;
@@ -75,10 +73,10 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            height: var(--grid-item-size); /* Đặt chiều cao cố định để tạo ô vuông */
+            height: var(--grid-item-size); 
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc và ngang */
+            justify-content: center; 
+            align-items: center; 
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -86,14 +84,14 @@
             transform: translateY(-2px);
         }
         .grid-item-wrapper.sel { 
-            border-width: 4px; /* TĂNG ĐỘ DÀY VIỀN ĐÃ CHỌN */
+            border-width: 4px; 
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
         .grid-item-wrapper img { 
-            width: 100%; /* Chiếm toàn bộ khung vuông */
-            height: 100%; /* Chiếm toàn bộ khung vuông */
-            object-fit: cover; /* Cắt ảnh để lấp đầy khung */
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
             display: block; 
             border-radius: 6px; 
         }
@@ -285,7 +283,7 @@
             }
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Dùng khóa độc lập theo FID)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Đảm bảo lưu ID và trạng thái khóa)
         function luuTrangThaiLocally() {
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             const LOCK_KEY = 'album_locked_' + fid;
@@ -421,7 +419,7 @@
         }
 
 
-        // SỬA ĐỔI: INIT (Khắc phục lỗi mất dữ liệu)
+        // SỬA ĐỔI: INIT (Khắc phục lỗi mất dữ liệu khi refresh)
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -429,15 +427,15 @@
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. KIỂM TRA TRẠNG THÁI KHÓA VÀ DỮ LIỆU CŨ
+                // 1. KIỂM TRA TRẠNG THÁI KHÓA CŨ
                 const LOCK_KEY = 'album_locked_' + fid;
                 isSelectionLocked = (localStorage.getItem(LOCK_KEY) === 'true');
                 
+                // 2. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Dựa trên ID album)
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
                 if (duLieuDaLuuJSON) {
-                    // FIX LỖI: Nạp danh sách ID đã chọn cũ
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
                 } else {
                     // Nếu là link mới tinh, khởi tạo rỗng
