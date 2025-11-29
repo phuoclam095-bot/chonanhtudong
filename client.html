@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -291,10 +291,12 @@
             // Lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
             
-            // Lưu trạng thái khóa (ĐƯỢC GỌI KHI CÓ THAO TÁC CHỌN LẦN ĐẦU)
+            // Lưu trạng thái khóa (Được gọi khi có thao tác chọn lần đầu)
             if (selectedPhotoIds.length > 0) {
                  localStorage.setItem(LOCK_KEY, 'true');
-                 isSelectionLocked = true;
+                 // isSelectionLocked = true; // Không cần cập nhật ở đây, chỉ cần cập nhật khi finish() hoặc init()
+            } else {
+                 localStorage.removeItem(LOCK_KEY);
             }
         }
 
@@ -420,7 +422,7 @@
         }
 
 
-        // SỬA ĐỔI: INIT (Kiểm tra trạng thái khóa)
+        // SỬA ĐỔI: INIT (Kiểm tra trạng thái khóa và Tải dữ liệu chính xác)
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -438,10 +440,9 @@
                 
                 if (duLieuDaLuuJSON) {
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
-                    // Nếu có dữ liệu cũ, nó có thể đã bị khóa trước đó.
-                    // Nếu là link cũ, giữ nguyên isSelectionLocked = true từ bước 1.
+                    // Nếu có dữ liệu cũ, nó sẽ được nạp và trạng thái khóa sẽ được áp dụng từ bước 1.
                 } else {
-                    // Nếu là link mới tinh, không có dữ liệu lưu cục bộ
+                    // Nếu là link mới tinh, khởi tạo rỗng
                     selectedPhotoIds = [];
                     isSelectionLocked = false;
                 }
@@ -513,7 +514,6 @@
                 if (!ctx) {
                     ctx=cvs.getContext('2d'); 
                 }
-                // Khởi tạo màu sắc cho cọ vẽ
                 ctx.strokeStyle='red'; 
                 ctx.lineWidth=5; 
                 ctx.lineCap='round'; 
