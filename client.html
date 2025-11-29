@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,7 +11,7 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI */
+            /* ẢNH NỀN HOA VĂN TỐI (dùng cho cả giao diện) */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
             --grid-item-size: 250px; 
         }
@@ -388,6 +388,7 @@
             // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
             capNhatSoThuTuVaTổngSố(); 
 
+            // 💡 FIX LỖI: Cập nhật trạng thái nút "Chọn"
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
@@ -451,8 +452,11 @@
             // Cập nhật số thứ tự và khung cho cả hai chế độ
             capNhatSoThuTuVaTổngSố();
 
+            // Chỉ cập nhật nút nếu đang ở Viewer Mode
             if (currentView === 'viewer') {
-                show(cur); 
+                let btn=document.getElementById('btnSel');
+                btn.className=`btn btn-sel ${ns?'act':''}`; 
+                btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             }
             
             luuTrangThaiLocally();
