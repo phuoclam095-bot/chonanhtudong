@@ -111,20 +111,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // 💡 BIẾN MỚI: Dùng để lưu và tra cứu trạng thái đã chọn từ Local Storage
+        // 💡 BIẾN LOCAL STORAGE: Dùng để lưu và tra cứu trạng thái đã chọn
         let selectedPhotoIds = new Set(); 
 
-        // --- HÀM TẠO LINK THÔNG MINH (QUAN TRỌNG: Dùng /thumbnail cho độ ổn định cao nhất) ---
+        // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM MỚI: LƯU TRẠNG THÁI VÀO LOCAL STORAGE
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
             // Lọc ra ID của tất cả ảnh đang có p.selected = 'true'
             const danhSachDaChonId = photos
                 .filter(p => String(p.selected).toLowerCase() === 'true')
-                .map(p => p.id); // Dùng p.id (ID Google Drive) làm định danh
+                .map(p => p.id); 
 
             // Lưu vào localStorage. Key 'anh_da_chon_cua_khach'
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
@@ -135,7 +135,7 @@
         }
 
 
-        // SỬA ĐỔI: INIT (Điều chỉnh thứ tự tải dữ liệu và trạng thái)
+        // SỬA ĐỔI: INIT (FIX LỖI THỨ TỰ TẢI & GẮN SỰ KIỆN)
         async function init() {
             try {
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
@@ -149,7 +149,7 @@
                 
                 photos = data;
 
-                // 2. 💡 PHẦN SỬA: Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
+                // 2. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
@@ -158,6 +158,14 @@
 
                 document.getElementById('load').style.display='none';
                 render(); show(0);
+                
+                // 3. 💡 PHẦN FIX LỖI TRẮNG TINH: GẮN SỰ KIỆN SAU KHI DOM ĐÃ TẢI
+                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
+                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
+                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+                
+                document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
+
             } catch(e) { 
                 document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
             }
@@ -169,14 +177,14 @@
             photos.forEach((p,i) => {
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 
-                // 💡 LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage
+                // LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage (Ưu tiên)
                 const identifier = p.id; 
 
                 if (selectedPhotoIds.has(identifier)) {
                     d.classList.add('sel');
                     p.selected = 'true'; 
                 } else if (String(p.selected).toLowerCase() === 'true') {
-                    // Trường hợp lần đầu tải, kiểm tra trạng thái từ Server
+                    // Kiểm tra trạng thái từ Server
                     d.classList.add('sel');
                 }
                 
@@ -245,9 +253,7 @@
             const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
             ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
         }
-        ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
-        ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
-        ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+        
         function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
         // ✅ FIX LỖI: Hàm cls() chỉ xóa đường vẽ, không vẽ lại ảnh
         function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
@@ -287,7 +293,7 @@
                 alert("✅ Đã gửi!");
             }
         }
-        document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
+        
         init();
     </script>
 </body>
