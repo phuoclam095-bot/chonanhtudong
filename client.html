@@ -11,7 +11,6 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
             --grid-item-size: 250px; 
         }
@@ -90,7 +89,7 @@
             border-radius: 2px;
         }
 
-        /* DOT GRID: Số thứ tự */
+        /* DOT GRID: Số thứ tự (Sử dụng chung style với DOT Viewer) */
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
             width: 28px; height: 28px; 
@@ -101,7 +100,10 @@
             z-index: 3; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             display: flex; justify-content: center; align-items: center; 
+            /* Đảm bảo ẩn khi không được chọn */
+            display: none; 
         }
+        .grid-item-wrapper.sel .grid-dot { display: flex; }
         
         /* CHẾ ĐỘ 2: VIEWER */
         #photoViewer { display: none; height: 100%; flex-direction: column; background: var(--bg); }
@@ -128,13 +130,18 @@
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } 
-        /* DOT VIEWER: Vòng tròn nhỏ (Không có số) */
+        /* DOT VIEWER: Đã chỉnh sửa để hiển thị SỐ THỨ TỰ */
         .dot { 
-            position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; 
-            background: var(--gold); border-radius: 50%; display: none; 
+            position: absolute; top: 4px; right: 4px; 
+            width: 20px; height: 20px; /* Kích thước nhỏ hơn grid-dot một chút cho phù hợp với strip */
+            background: var(--gold); color: #000;
+            border-radius: 50%; 
+            font-size: 12px; font-weight: bold; 
+            text-align: center; line-height: 20px;
             box-shadow: 0 0 4px #000; z-index: 10;
+            display: none; /* Mặc định ẩn */
         }
-        .th.sel .dot { display: block; } 
+        .th.sel .dot { display: flex; justify-content: center; align-items: center; } /* Chỉ hiển thị khi đã chọn */
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -258,8 +265,9 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    // DOT Viewer: Dùng để đánh dấu đã chọn, không hiển thị số
-                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot"></div>`;
+                    // DOT Viewer: Hiển thị số thứ tự (hoặc rỗng nếu chưa chọn)
+                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
                 let t = document.getElementById(`t-${cur}`);
@@ -276,6 +284,7 @@
                     
                     // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
                     d.onclick = () => {
+                        // Tạm thời thay đổi 'cur' để togSel biết ảnh nào đang được thao tác
                         const oldCur = cur;
                         cur = i;
                         togSel();
@@ -295,13 +304,25 @@
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
                     
-                    // SỬA LỖI: Sự kiện click ảnh (CHỈ ĐỂ MỞ VIEWER)
-                    d.querySelector('img').onclick = (event) => {
+                    // 💡 THAY ĐỔI LỚN: Thêm nút/vùng click để MỞ VIEWER (không phải ảnh)
+                    let viewerButton = document.createElement('div');
+                    viewerButton.style.position = 'absolute';
+                    viewerButton.style.bottom = '0';
+                    viewerButton.style.left = '0';
+                    viewerButton.style.width = '100%';
+                    viewerButton.style.textAlign = 'center';
+                    viewerButton.style.background = 'rgba(0,0,0,0.4)';
+                    viewerButton.style.color = 'white';
+                    viewerButton.style.padding = '5px';
+                    viewerButton.style.fontSize = '12px';
+                    viewerButton.innerText = '🔍 Xem Ảnh';
+                    viewerButton.onclick = (event) => {
                         event.stopPropagation(); // Ngăn sự kiện chọn của wrapper chạy
                         setView('viewer');
                         show(i);
                     };
                     
+                    d.appendChild(viewerButton);
                     grid.appendChild(d);
                 });
             }
