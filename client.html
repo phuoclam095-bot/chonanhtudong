@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Lâm Nam Phước</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
@@ -20,7 +20,6 @@
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
-        /* ĐÃ XÓA: CSS cho .stars */
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
@@ -29,11 +28,25 @@
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
-        /* CHỈNH SỬA: Ảnh đang xem (act) và ảnh đã chọn (sel) đều sáng */
+        
+        /* CHỈNH SỬA: Ảnh đang xem (act) và ảnh đã chọn (sel) đều sáng tối đa (opacity: 1) */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
-        .th.sel { opacity: 0.8; } /* Ảnh đã chọn sẽ sáng hơn (0.8) so với ảnh chưa chọn (0.5) */
+        .th.sel { opacity: 1; } 
         .th.sel .dot { display: block; }
-        .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
+        
+        /* THAY THẾ: Dot (vòng tròn) bằng box chứa số thứ tự */
+        .dot { 
+            position: absolute; top: 4px; right: 4px; 
+            width: 20px; height: 20px; 
+            background: var(--gold); color: #000;
+            border-radius: 4px; 
+            display: none; 
+            box-shadow: 0 0 4px #000;
+            font-size: 12px; font-weight: bold;
+            text-align: center; line-height: 20px;
+            z-index: 10;
+        }
+        
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
 </head>
@@ -79,14 +92,12 @@
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        // 💡 FIX LỖI: Khai báo let và KHÔNG gán giá trị DOM ngay lập tức
         let photos=[], cur=0, isDraw=false, ctx=null; 
-        let cvs, img; // KHÔNG GÁN: Gán trong init()
+        let cvs, img; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // 💡 BIẾN LOCAL STORAGE: Dùng để lưu và tra cứu trạng thái đã chọn
         let selectedPhotoIds = new Set(); 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
@@ -102,20 +113,57 @@
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
-            console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
+            // console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
+        }
+
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
+        function capNhatSoThuTuVaTongSo() {
+            let count = 0;
+            const selectedIdsArray = []; // Mảng chứa ID ảnh đã chọn theo thứ tự
+
+            // 1. Cập nhật trạng thái "selected" trong mảng photos dựa trên Local Storage Set
+            photos.forEach(p => {
+                const isSelected = selectedPhotoIds.has(p.id);
+                p.selected = isSelected ? 'true' : 'false';
+                if (isSelected) {
+                    selectedIdsArray.push(p.id);
+                }
+            });
+
+            // 2. Gán số thứ tự cho các thumbnail đã chọn và reset các thumbnail chưa chọn
+            document.querySelectorAll('.th').forEach(th => {
+                th.classList.remove('sel');
+                th.querySelector('.dot').style.display = 'none';
+            });
+
+            selectedIdsArray.forEach((id, index) => {
+                const i = photos.findIndex(p => p.id === id);
+                if (i !== -1) {
+                    const thumbnailDiv = document.getElementById(`t-${i}`);
+                    if (thumbnailDiv) {
+                        thumbnailDiv.classList.add('sel');
+                        const dot = thumbnailDiv.querySelector('.dot');
+                        dot.innerText = index + 1;
+                        dot.style.display = 'block';
+                        count++;
+                    }
+                }
+            });
+
+            // 3. Cập nhật nút "Gửi List"
+            const btnDone = document.querySelector('.btn-done');
+            btnDone.innerText = `🚀 Gửi List (${count})`;
         }
 
 
-        // SỬA ĐỔI: INIT (FIX LỖI THỨ TỰ TẢI & GẮN SỰ KIỆN)
+        // SỬA ĐỔI: INIT
         async function init() {
             try {
-                // 1. 💡 FIX LỖI: GÁN GIÁ TRỊ DOM TẠI ĐÂY (Nơi DOM đã sẵn sàng)
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 2. Tải danh sách ảnh từ Server
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
@@ -124,7 +172,7 @@
                 
                 photos = data;
 
-                // 3. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
+                // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
@@ -132,9 +180,9 @@
                 }
 
                 document.getElementById('load').style.display='none';
+                
                 render(); show(0);
                 
-                // 4. GẮN SỰ KIỆN SAU KHI cvs đã được gán giá trị
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -146,26 +194,19 @@
             }
         }
 
-        // SỬA ĐỔI: RENDER (Áp dụng trạng thái Local Storage)
+        // SỬA ĐỔI: RENDER
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 
-                // LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage (Ưu tiên)
-                const identifier = p.id; 
-
-                if (selectedPhotoIds.has(identifier)) {
-                    d.classList.add('sel');
-                    p.selected = 'true'; 
-                } else if (String(p.selected).toLowerCase() === 'true') {
-                    d.classList.add('sel');
-                }
-                
                 let thumb = getLink(p.id, 's220'); 
                 d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
                 s.appendChild(d);
             });
+            
+            capNhatSoThuTuVaTongSo(); 
+            
             document.getElementById('pCount').innerText = `1 / ${photos.length}`;
         }
 
@@ -186,16 +227,15 @@
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
             
+            // Xóa trạng thái act cũ và đặt act mới
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
-            let t=document.getElementById(`t-${i}`); if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
+            let t=document.getElementById(`t-${i}`); 
+            if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            let isSel=String(p.selected).toLowerCase()==='true';
+            // Kiểm tra trạng thái đã chọn từ Set
+            let isSel = selectedPhotoIds.has(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
-
-            // ĐÃ XÓA: Logic liên quan đến rating
-            // let r=parseInt(p.rating)||0;
-            // document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
         function togDraw(en) {
@@ -237,23 +277,30 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Thêm logic lưu trạng thái)
+        // SỬA ĐỔI: TOGGLE SEL
         function togSel() {
-            let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
+            let p=photos[cur]; 
+            let ns=!(String(p.selected).toLowerCase()==='true'); 
             
-            // Đảm bảo cập nhật class 'sel' cho ảnh thu nhỏ
-            document.getElementById(`t-${cur}`).classList.toggle('sel', ns); 
-            
+            // Cập nhật Local Storage Set
+            if (ns) {
+                selectedPhotoIds.add(p.id);
+            } else {
+                selectedPhotoIds.delete(p.id);
+            }
+            p.selected = ns ? 'true' : 'false';
+
+            // Cập nhật số thứ tự và tổng số ảnh
+            capNhatSoThuTuVaTongSo();
+
             show(cur); // Cập nhật nút 'Chọn'
             
-            // 💡 PHẦN MỚI: Lưu trạng thái vào Local Storage sau khi thay đổi
+            // Lưu trạng thái vào Local Storage và gửi lên Server
             luuTrangThaiLocally();
 
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
-        // ĐÃ XÓA: Hàm rate(n)
-
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
