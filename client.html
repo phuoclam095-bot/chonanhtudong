@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Lâm Nam Phước</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
-        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
+        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH MỚI */ }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -29,12 +29,12 @@
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
-        /* CHỈNH SỬA: Ảnh đang xem (act) và ảnh đã chọn (sel) đều sáng tối đa (opacity: 1) */
-        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
-        .th.sel { opacity: 1; } 
+        /* CHỈNH SỬA: Ảnh đang xem (act) và ảnh đã chọn (sel) đều sáng tối đa (opacity: 1) và có khung xanh */
+        .th.act { opacity: 1; border-color: var(--blue-frame); transform: scale(1.05); z-index: 5; } /* Khung xanh */
+        .th.sel { opacity: 1; border-color: var(--blue-frame); } /* Khung xanh và sáng tối đa */
         .th.sel .dot { display: block; }
         
-        /* THAY THẾ: Dot (vòng tròn) bằng box chứa số thứ tự */
+        /* HIỂN THỊ SỐ THỨ TỰ */
         .dot { 
             position: absolute; top: 4px; right: 4px; 
             width: 20px; height: 20px; 
@@ -113,7 +113,6 @@
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
-            // console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
@@ -121,7 +120,7 @@
             let count = 0;
             const selectedIdsArray = []; // Mảng chứa ID ảnh đã chọn theo thứ tự
 
-            // 1. Cập nhật trạng thái "selected" trong mảng photos dựa trên Local Storage Set
+            // 1. Cập nhật trạng thái "selected" trong mảng photos và tạo danh sách ID đã chọn
             photos.forEach(p => {
                 const isSelected = selectedPhotoIds.has(p.id);
                 p.selected = isSelected ? 'true' : 'false';
@@ -130,12 +129,13 @@
                 }
             });
 
-            // 2. Gán số thứ tự cho các thumbnail đã chọn và reset các thumbnail chưa chọn
+            // 2. Reset trạng thái .sel và .dot của tất cả thumbnail
             document.querySelectorAll('.th').forEach(th => {
                 th.classList.remove('sel');
                 th.querySelector('.dot').style.display = 'none';
             });
 
+            // 3. Gán số thứ tự cho các thumbnail đã chọn
             selectedIdsArray.forEach((id, index) => {
                 const i = photos.findIndex(p => p.id === id);
                 if (i !== -1) {
@@ -150,7 +150,7 @@
                 }
             });
 
-            // 3. Cập nhật nút "Gửi List"
+            // 4. Cập nhật nút "Gửi List"
             const btnDone = document.querySelector('.btn-done');
             btnDone.innerText = `🚀 Gửi List (${count})`;
         }
