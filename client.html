@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - êu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V10.0 - FIX LỖI CACHE VÀ BỐ CỤC */
+        /* CSS V11.0 - SẠCH SẼ & FIX BỐ CỤC */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
@@ -19,11 +19,10 @@
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* FIX BỐ CỤC: Giữ không gian 5 sao và ẩn nội dung */
-        .stars { min-width: 130px; } 
-        .stars span { display: none; } 
+        /* FIX BỐ CỤC FINAL: Đẩy info về bên trái (giữ nguyên bố cục cũ) */
+        .info { display: flex; flex-direction: column; flex-grow: 1; } 
+        .p-count { font-size: 12px; color: #888; }
         
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
@@ -81,8 +80,7 @@
             <div class="p-count" id="pCount">0 / 0</div>
         </div>
         <div style="display:flex; align-items:center">
-            <div class="stars" id="stars">
-                            </div>
+                        <div id="stars" style="min-width: 130px;"></div> 
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
             <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
@@ -100,6 +98,17 @@
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
+        // 💡 FIX LỖI CACHE BẮT BUỘC: Thêm hàm kiểm tra cache
+        if (typeof window !== 'undefined') {
+            const currentCodeVersion = 'V11.0';
+            const cachedVersion = localStorage.getItem('app_version');
+
+            if (cachedVersion !== currentCodeVersion) {
+                // Đây là lỗi cố ý để buộc người dùng xóa cache!
+                throw new Error("❌ LỖI BẮT BUỘC KHẮC PHỤC CACHE: Vui lòng xóa cache/dữ liệu trang web trong trình duyệt của bạn (Ctrl+Shift+R hoặc xóa dữ liệu trang web) và thử lại. Mã code đã được cập nhật lên " + currentCodeVersion);
+            }
+        }
+        
         let photos=[], cur=0, isDraw=false, ctx=null; 
         let cvs, img; 
 
@@ -119,6 +128,7 @@
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
+            
             photos.forEach(p => delete p.rating);
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
@@ -126,6 +136,9 @@
 
         async function init() {
             try {
+                // Đánh dấu phiên bản code đã chạy thành công
+                localStorage.setItem('app_version', 'V11.0'); 
+                
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
@@ -155,6 +168,7 @@
                 document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
             } catch(e) { 
+                // Nếu có lỗi cố ý (cache), nó sẽ hiển thị ở đây
                 document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
             }
         }
