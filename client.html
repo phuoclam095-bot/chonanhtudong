@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - êu</title>
     <style>
-        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
+        /* CSS V10.0 - FIX LỖI CACHE VÀ BỐ CỤC */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
@@ -21,9 +21,9 @@
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* SỬA LỖI BỐ CỤC (THẺ SAO) */
-        .stars { min-width: 130px; } /* Giữ không gian để không bị lệch nút */
-        .stars span { display: none; } /* Ẩn hoàn toàn ngôi sao */
+        /* FIX BỐ CỤC: Giữ không gian 5 sao và ẩn nội dung */
+        .stars { min-width: 130px; } 
+        .stars span { display: none; } 
         
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
@@ -31,12 +31,12 @@
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
         
-        /* FIX LỖI THUMBNAIL NẰM DỌC */
+        /* FIX LỖI THUMBNAIL DỌC */
         .strip { 
             height: 110px; 
             background: #000; 
-            display: flex !important; /* Buộc là flex */
-            flex-direction: row !important; /* Buộc hiển thị ngang */
+            display: flex !important; 
+            flex-direction: row !important; 
             gap: 10px; 
             padding: 10px; 
             overflow-x: auto; 
@@ -119,9 +119,7 @@
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
-            
             photos.forEach(p => delete p.rating);
-            
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
 
@@ -161,7 +159,6 @@
             }
         }
 
-        // RENDER 
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
@@ -183,7 +180,6 @@
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
         }
 
-        // SHOW
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -207,8 +203,6 @@
             let isSel=String(p.selected).toLowerCase()==='true';
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
-
-            // ĐẢM BẢO KHÔNG CÓ LOGIC CẬP NHẬT SAO
         }
 
         function togDraw(en) {
@@ -250,7 +244,6 @@
             }, 'image/png');
         }
 
-        // TOGGLE SEL (Thêm logic lưu trạng thái)
         function togSel() {
             let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
             document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
@@ -259,8 +252,6 @@
 
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
-
-        // HÀM rate(n) ĐÃ BỊ XÓA HOÀN TOÀN
 
         function mov(d){show(cur+d);}
         async function finish(){
