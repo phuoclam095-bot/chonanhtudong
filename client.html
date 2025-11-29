@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - LNP</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; /* MÀU XANH CHO ẢNH ĐÃ CHỌN */ }
@@ -29,9 +29,9 @@
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
-        /* ĐIỀU CHỈNH: Ảnh đang xem (act) - Khung vàng */
+        /* Ảnh đang xem (act) - Khung vàng */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        /* ĐIỀU CHỈNH: Ảnh đã chọn (sel) - Khung xanh, nhưng nếu đang act thì vẫn ưu tiên khung vàng */
+        /* Ảnh đã chọn (sel) - Khung xanh, sáng đều */
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } /* Khi đang chọn VÀ đang xem -> Khung vàng */
 
@@ -110,35 +110,28 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
-            const danhSachDaChonId = photos
-                .filter(p => String(p.selected).toLowerCase() === 'true')
-                .map(p => p.id); 
+            // Lấy danh sách ID đã chọn từ Set hiện tại
+            const danhSachDaChonId = Array.from(selectedPhotoIds);
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
-            selectedPhotoIds = new Set(danhSachDaChonId);
+            // Không cần cập nhật selectedPhotoIds ở đây vì nó đã được cập nhật trong togSel
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
         function capNhatSoThuTuVaTongSo() {
             let count = 0;
-            const selectedIdsArray = []; // Mảng chứa ID ảnh đã chọn theo thứ tự
-
-            // 1. Cập nhật trạng thái "selected" trong mảng photos và tạo danh sách ID đã chọn
-            photos.forEach(p => {
-                const isSelected = selectedPhotoIds.has(p.id);
-                p.selected = isSelected ? 'true' : 'false';
-                if (isSelected) {
-                    selectedIdsArray.push(p.id);
-                }
-            });
-
-            // 2. Reset trạng thái .sel và .dot của tất cả thumbnail
+            // Chuyển Set sang Array để lấy thứ tự dựa trên thời gian/thứ tự ảnh ban đầu
+            const selectedIdsArray = photos
+                .filter(p => selectedPhotoIds.has(p.id))
+                .map(p => p.id);
+            
+            // 1. Reset trạng thái .sel và .dot của tất cả thumbnail
             document.querySelectorAll('.th').forEach(th => {
                 th.classList.remove('sel');
                 th.querySelector('.dot').style.display = 'none';
             });
 
-            // 3. Gán số thứ tự cho các thumbnail đã chọn
+            // 2. Gán số thứ tự cho các thumbnail đã chọn
             selectedIdsArray.forEach((id, index) => {
                 const i = photos.findIndex(p => p.id === id);
                 if (i !== -1) {
@@ -153,7 +146,7 @@
                 }
             });
 
-            // 4. Cập nhật nút "Gửi List"
+            // 3. Cập nhật nút "Gửi List"
             const btnDone = document.querySelector('.btn-done');
             btnDone.innerText = `🚀 Gửi List (${count})`;
         }
@@ -280,12 +273,12 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL
+        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
         function togSel() {
             let p=photos[cur]; 
             let ns=!(String(p.selected).toLowerCase()==='true'); 
             
-            // Cập nhật Local Storage Set
+            // 💡 FIX LỖI: Cập nhật tập hợp selectedPhotoIds TỨC THÌ
             if (ns) {
                 selectedPhotoIds.add(p.id);
             } else {
@@ -296,8 +289,8 @@
             // Cập nhật số thứ tự và tổng số ảnh
             capNhatSoThuTuVaTongSo();
 
-            show(cur); // Cập nhật nút 'Chọn'
-            
+            show(cur); // Cập nhật nút 'Chọn' và khung vàng/xanh
+
             // Lưu trạng thái vào Local Storage và gửi lên Server
             luuTrangThaiLocally();
 
