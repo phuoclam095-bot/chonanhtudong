@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - BL Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -14,7 +14,7 @@
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
             --grid-item-size: 250px; 
-            --grid-gap: 20px; 
+            --grid-gap: 15px; /* Khoảng cách tiêu chuẩn */
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -48,7 +48,7 @@
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); 
+            gap: var(--grid-gap); /* Khoảng trống đều nhau */
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -75,9 +75,9 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
             height: var(--grid-item-size); /* Đặt chiều cao cố định để tạo ô vuông */
-            display: flex; /* Dùng flex để căn giữa ảnh */
-            justify-content: center;
-            align-items: center;
+            display: flex; 
+            justify-content: center; /* Căn giữa ngang */
+            align-items: center; /* Căn giữa dọc */
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -92,7 +92,7 @@
             width: auto; 
             height: auto; 
             max-width: 100%; 
-            max-height: 100%; 
+            max-height: 100%; /* Giới hạn kích thước bên trong khung vuông */
             object-fit: contain; 
             display: block; 
             border-radius: 6px; 
@@ -249,7 +249,7 @@
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none'; 
+                btnDraw.style.display = 'none'; // Ẩn nút Vẽ khi ở Grid View
                 
                 // Cập nhật thông tin trên thanh điều khiển cho Grid View
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
@@ -261,8 +261,8 @@
                 viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
-                btnDraw.style.display = 'block'; 
-                show(cur); 
+                btnDraw.style.display = 'block'; // Hiển thị nút Vẽ khi ở Viewer Mode
+                show(cur); // Đảm bảo Viewer Mode hiển thị ảnh đang chọn
             }
         }
 
@@ -313,7 +313,7 @@
                         togSel();
                         cur = oldCur; 
                         
-                        // FIX LỖI: CẬP NHẬT BỘ ĐẾM VÀ TRẠNG THÁI NÚT TỨC THÌ
+                        // FIX LỖI 2: CẬP NHẬT BỘ ĐẾM TỨC THÌ TRÊN GRID VIEW
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTổngSố(); 
                         }
@@ -351,17 +351,17 @@
             // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
             const btnSel = document.getElementById('btnSel');
             if (btnSel) {
-                // Ở Grid View, nút này không có ý nghĩa chọn ảnh, chỉ cần hiển thị trạng thái đã chọn chung.
                 let isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
 
                 if (currentView === 'viewer') {
+                    // FIX LỖI 3: Cập nhật trạng thái nút Chọn CHÍNH XÁC trong Viewer
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
-                    // FIX LỖI: Ở Grid View, nút này chỉ nên hiển thị trạng thái chung (vd: Đã Chọn nếu có ít nhất 1 ảnh được chọn)
+                    // FIX LỖI 3: Nút Chọn ở Grid View phải phản ánh trạng thái chung (hoặc trạng thái mặc định)
                     let isAnySelected = selectedPhotoIds.length > 0;
                     btnSel.className='btn btn-sel'; 
-                    btnSel.innerText=isAnySelected?'Đã Chọn':'Chọn'; // Sửa logic tránh hiểu nhầm
+                    btnSel.innerText=isAnySelected?'Đã Chọn':'Chọn';
                 }
             }
             
@@ -492,7 +492,7 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN và CẬP NHẬT NÚT)
+        // SỬA ĐỔI: TOGGLE SEL (FIX CỘNG DỒN)
         function togSel() {
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
