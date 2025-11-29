@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - CT Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -13,8 +13,8 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 480px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 350px; /* Chiều cao hình chữ nhật nằm */
+            --grid-item-size: 380px; /* Chiều rộng item lưới (lớn) */
+            --grid-item-height: 240px; /* Chiều cao hình chữ nhật nằm */
             --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
         }
         
@@ -158,21 +158,6 @@
         .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
-        
-        /* OVERLAY KHÓA BÌNH CHỌN */
-        .locked-overlay {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            pointer-events: auto; /* Cho phép bắt sự kiện click */
-        }
     </style>
 </head>
 <body>
@@ -225,9 +210,7 @@
 
     </div>
 
-    // ... (các biến và CSS giữ nguyên) ...
-
-<script>
+    <script>
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
@@ -235,6 +218,9 @@
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
+        
+        // 💡 SỬ DỤNG KHÓA CHUNG THEO YÊU CẦU CỦA BẠN ĐỂ TÌM LẠI TRẠNG THÁI ỔN ĐỊNH
+        const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach'; 
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
@@ -244,22 +230,21 @@
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        let selectedPhotoIds = []; 
+        // 💡 SỬ DỤNG SET cho tốc độ và tính chính xác khi thêm/xóa
+        let selectedPhotoIds = new Set(); 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Đã Fix: Sử dụng selectedPhotoIds làm nguồn)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Set và Key chung)
         function luuTrangThaiLocally() {
-            const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-            
-            // Luôn lưu danh sách ID đã chọn (mảng được sắp xếp)
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
+            // Chuyển Set sang Array để lưu trữ và lưu
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(Array.from(selectedPhotoIds)));
         }
 
-        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM (Giữ nguyên)
+        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM
         function setView(view) {
             currentView = view;
             const gridDiv = document.getElementById('photoGrid');
@@ -278,7 +263,7 @@
                 btnDraw.style.display = 'none'; 
                 
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${selectedPhotoIds.length} ảnh`;
+                pCountElement.innerText = `Đã chọn: ${selectedPhotoIds.size} ảnh`;
                 
                 capNhatSoThuTuVaTổngSố(); 
             } else {
@@ -291,9 +276,10 @@
             }
         }
 
-        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (Giữ nguyên logic cập nhật hiển thị)
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (Dùng Set.has() và Set.size)
         function capNhatSoThuTuVaTổngSố() {
-            let count = selectedPhotoIds.length;
+            let count = selectedPhotoIds.size;
+            let selectedArray = Array.from(selectedPhotoIds);
             
             // 1. Cập nhật Viewer Strip 
             const strip = document.getElementById('strip');
@@ -305,11 +291,13 @@
                     d.id = `t-${i}`;
                     d.onclick = () => show(i);
 
-                    let isSel = selectedPhotoIds.includes(p.id);
+                    // 💡 Set.has() cho tốc độ tra cứu
+                    let isSel = selectedPhotoIds.has(p.id);
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
+                    // Sử dụng selectedArray để lấy index
+                    const dotIndex = isSel ? selectedArray.indexOf(p.id) + 1 : '';
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
@@ -344,12 +332,13 @@
                          setView('viewer');
                     }
 
-                    let isSel = selectedPhotoIds.includes(p.id);
+                    let isSel = selectedPhotoIds.has(p.id);
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's500'); 
                     
-                    let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
+                    // DOT Grid: Hiển thị số thứ tự
+                    let dotContent = isSel ? `<div class="grid-dot">${selectedArray.indexOf(p.id) + 1}</div>` : '';
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
                     
@@ -364,7 +353,7 @@
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
             const btnSel = document.getElementById('btnSel');
-            const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
+            const isSelCur = photos.length > 0 && selectedPhotoIds.has(photos[cur].id);
             
             if (btnSel) {
                 btnSel.disabled = isSelectionLocked;
@@ -391,7 +380,7 @@
         }
 
 
-        // SỬA ĐỔI: INIT (Khắc phục lỗi mất dữ liệu khi refresh)
+        // 💡 INIT ĐÃ SỬA LỖI (Nạp dữ liệu trước khi tải ảnh)
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -399,14 +388,26 @@
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. NẠP DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE TRƯỚC
-                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+                // 1. NẠP DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
                 if (duLieuDaLuuJSON) {
-                    selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
+                    try {
+                         // 💡 Chuyển Array từ Local Storage thành Set
+                        const loadedArray = JSON.parse(duLieuDaLuuJSON);
+                        if(Array.isArray(loadedArray)) {
+                            selectedPhotoIds = new Set(loadedArray);
+                            console.log(`✅ Đã nạp lại ${selectedPhotoIds.size} ảnh từ Local Storage.`);
+                        } else {
+                            selectedPhotoIds = new Set();
+                        }
+                    } catch (e) {
+                         // Trường hợp dữ liệu bị lỗi
+                        selectedPhotoIds = new Set();
+                        console.error("Lỗi parse Local Storage, thiết lập lại:", e);
+                    }
                 } else {
-                    selectedPhotoIds = [];
+                    selectedPhotoIds = new Set();
                 }
                 
                 // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
@@ -420,6 +421,7 @@
 
                 document.getElementById('load').style.display='none';
                 
+                // 3. Render giao diện với trạng thái đã nạp
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
@@ -457,7 +459,7 @@
 
             capNhatSoThuTuVaTổngSố(); 
 
-            let isSel = selectedPhotoIds.includes(p.id);
+            let isSel = selectedPhotoIds.has(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
@@ -508,30 +510,24 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Logic chính xác)
+        // 💡 TOGGLE SEL ĐÃ SỬA LỖI (Logic Set)
         function togSel() {
             let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); 
+            // 💡 Dùng Set.has() để kiểm tra
+            let isCurrentlySelected = selectedPhotoIds.has(p.id); 
             
-            if (ns) {
-                selectedPhotoIds.push(p.id);
+            if (!isCurrentlySelected) {
+                selectedPhotoIds.add(p.id); // Thêm vào Set
             } else {
-                const index = selectedPhotoIds.indexOf(p.id);
-                if (index > -1) {
-                    selectedPhotoIds.splice(index, 1);
-                }
+                selectedPhotoIds.delete(p.id); // Xóa khỏi Set
             }
-            p.selected = ns ? 'true' : 'false';
-
-            capNhatSoThuTuVaTổngSố();
-
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${ns?'act':''}`; 
-            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
+            // Cập nhật giao diện và lưu trữ
+            capNhatSoThuTuVaTổngSố();
             luuTrangThaiLocally(); 
 
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
+            // Gửi lên Server (Không đổi)
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:!isCurrentlySelected})});
         }
         
         function mov(d){show(cur+d);}
