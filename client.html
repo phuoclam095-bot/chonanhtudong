@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,7 +11,6 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI (dùng cho cả giao diện) */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
             --grid-item-size: 250px; 
         }
@@ -39,7 +38,8 @@
         .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
 
         /* KHU VỰC CHÍNH */
-        .main-container { flex: 1; overflow: hidden; position: relative; }
+        /* main-container chứa cả Grid và Viewer */
+        .main-container { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
@@ -48,7 +48,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
             gap: 15px;
-            max-height: 100%;
+            flex-grow: 1; /* Cho phép Grid View chiếm không gian còn lại */
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
             background-size: cover; 
@@ -105,7 +105,13 @@
         .grid-item-wrapper.sel .grid-dot { display: flex; }
         
         /* CHẾ ĐỘ 2: VIEWER */
-        #photoViewer { display: none; height: 100%; flex-direction: column; background: var(--bg); }
+        #photoViewer { 
+            display: none; 
+            flex-direction: column; 
+            flex-grow: 1; /* Cho phép Viewer View chiếm không gian còn lại */
+            background: var(--bg); 
+            overflow: hidden;
+        }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
@@ -116,7 +122,8 @@
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-        /* CỐ ĐỊNH VỊ TRÍ CỦA NÚT CHỌN */
+
+        /* THANH ĐIỀU KHIỂN CHUNG */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; width: 180px; } /* CỐ ĐỊNH CHIỀU RỘNG */
         .p-count { font-size: 12px; color: #888; }
@@ -159,6 +166,18 @@
 
     <div class="main-container">
         
+        <div class="ctrl" id="commonCtrlBar">
+            <div class="info">
+                <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
+                <div class="p-count" id="pCount">0 / 0</div>
+            </div>
+            <div style="display:flex; align-items:center">
+                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
+                <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+            </div>
+            <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
+        </div>
+        
         <div id="photoGrid">
             </div>
 
@@ -177,18 +196,6 @@
                     <canvas id="drawCanvas"></canvas>
                 </div>
                 <button class="nav next" onclick="mov(1)">&#10095;</button>
-            </div>
-
-            <div class="ctrl">
-                <div class="info">
-                    <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
-                    <div class="p-count" id="pCount">0 / 0</div>
-                </div>
-                <div style="display:flex; align-items:center">
-                    <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
-                    <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
-                </div>
-                <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
             </div>
 
             <div class="strip" id="strip"></div>
@@ -226,18 +233,21 @@
             const viewerDiv = document.getElementById('photoViewer');
             const btnGrid = document.getElementById('btnGrid');
             const btnViewer = document.getElementById('btnViewer');
+            const btnDraw = document.getElementById('btnDraw'); // Lấy nút vẽ
             
             if (view === 'grid') {
                 gridDiv.style.display = 'grid';
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
+                btnDraw.style.display = 'none'; // Ẩn nút Vẽ
                 capNhatSoThuTuVaTổngSố(); 
             } else {
                 gridDiv.style.display = 'none';
                 viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
+                btnDraw.style.display = 'block'; // Hiển thị nút Vẽ
                 show(cur); 
             }
         }
@@ -265,13 +275,11 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    // DOT Viewer: Hiển thị số thứ tự
                     const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
                 
-                // ĐỒNG BỘ: Đảm bảo ảnh đang xem được đánh dấu đúng (cur)
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -297,7 +305,7 @@
                     
                     // 💡 Sự kiện Double-click (MỞ VIEWER)
                     d.ondblclick = (event) => {
-                         event.preventDefault(); // Ngăn chọn
+                         event.preventDefault(); 
                          cur = i;
                          setView('viewer');
                     }
@@ -316,13 +324,33 @@
                 });
             }
 
-            // 3. Cập nhật nút "Gửi List" và Tổng số ảnh
+            // 3. Cập nhật nút "Gửi List" và Tổng số ảnh trên thanh điều khiển chung
             const btnDone = document.querySelector('.btn-done');
             if (btnDone) btnDone.innerText = `🚀 Gửi List (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
 
             // 4. Cập nhật tên album
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
+
+            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
+            const btnSel = document.getElementById('btnSel');
+            if (btnSel) {
+                let isSel = selectedPhotoIds.includes(photos[cur].id);
+                btnSel.className=`btn btn-sel ${isSel?'act':''}`; 
+                btnSel.innerText=isSel?'✔ Đã Chọn':'Chọn';
+            }
+            
+            // 6. Cập nhật thông tin file (tên và số đếm)
+            const pNameElement = document.getElementById('pName');
+            const pCountElement = document.getElementById('pCount');
+            if (currentView === 'viewer' && pNameElement && pCountElement) {
+                pNameElement.innerText = photos[cur].name;
+                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
+            } else if (pNameElement && pCountElement) {
+                // Đặt lại thông tin chung khi ở Grid View
+                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
+                pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+            }
         }
 
 
@@ -378,6 +406,7 @@
                 if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
             };
             
+            // Cập nhật thông tin file
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
             
@@ -452,12 +481,10 @@
             // Cập nhật số thứ tự và khung cho cả hai chế độ
             capNhatSoThuTuVaTổngSố();
 
-            // Chỉ cập nhật nút nếu đang ở Viewer Mode
-            if (currentView === 'viewer') {
-                let btn=document.getElementById('btnSel');
-                btn.className=`btn btn-sel ${ns?'act':''}`; 
-                btn.innerText=ns?'✔ Đã Chọn':'Chọn';
-            }
+            // Cập nhật trạng thái nút "Chọn"
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${ns?'act':''}`; 
+            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
             luuTrangThaiLocally();
 
