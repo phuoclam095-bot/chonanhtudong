@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Lâm Nam Phước</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
@@ -21,15 +21,10 @@
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* SỬA LỖI BỐ CỤC: Giữ kích thước nhưng làm ngôi sao trong suốt */
-        .stars span { 
-            font-size: 26px; 
-            color: transparent !important; 
-            cursor: default; 
-        } 
-        .stars span.act { 
-            color: transparent !important; 
-        }
+        /* SỬA LỖI BỐ CỤC: Giữ min-width cho stars nhưng để nội dung trống */
+        .stars { min-width: 130px; } /* Giữ min-width ước tính để đảm bảo bố cục */
+        .stars span { font-size: 26px; color: transparent !important; cursor: default; } 
+        .stars span.act { color: transparent !important; }
         /* Kết thúc sửa lỗi bố cục */
         
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
@@ -41,8 +36,10 @@
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
-        /* Đảm bảo ảnh đang xem và ảnh đã chọn luôn sáng */
+        /* Ảnh đang hoạt động */
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
+        
+        /* Đảm bảo ảnh đã chọn luôn sáng */
         .th.sel { opacity: 1; border-color: var(--gold); }
         
         .th.sel .dot { display: block; }
@@ -76,13 +73,12 @@
         </div>
         <div style="display:flex; align-items:center">
             <div class="stars" id="stars">
-                <span onclick="rate(1)">★</span><span onclick="rate(2)">★</span><span onclick="rate(3)">★</span><span onclick="rate(4)">★</span><span onclick="rate(5)">★</span>
-            </div>
+                            </div>
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
             <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
         <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
-      </div>
+    </div>
 
     <div class="strip" id="strip"></div>
 
@@ -110,7 +106,7 @@
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (ĐÃ XÓA RATING)
         function luuTrangThaiLocally() {
             const danhSachDaChonId = photos
                 .filter(p => String(p.selected).toLowerCase() === 'true')
@@ -118,18 +114,18 @@
 
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
-            
-            // Xóa rating khỏi dữ liệu ảnh
+            
+            // Đảm bảo không còn thuộc tính rating trong dữ liệu
             photos.forEach(p => delete p.rating);
-
+            
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
 
 
-        // SỬA ĐỔI: INIT (FIX LỖI THỨ TỰ TẢI & GẮN SỰ KIỆN)
+        // SỬA ĐỔI: INIT (Khởi tạo)
         async function init() {
             try {
-                // 1. 💡 FIX LỖI: GÁN GIÁ TRỊ DOM TẠI ĐÂY (Nơi DOM đã sẵn sàng)
+                // 1. GÁN GIÁ TRỊ DOM 
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
@@ -144,7 +140,7 @@
                 
                 photos = data;
 
-                // 3. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
+                // 3. Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
@@ -154,7 +150,7 @@
                 document.getElementById('load').style.display='none';
                 render(); show(0);
                 
-                // 4. GẮN SỰ KIỆN SAU KHI cvs đã được gán giá trị
+                // 4. GẮN SỰ KIỆN 
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -166,7 +162,7 @@
             }
         }
 
-        // SỬA ĐỔI: RENDER (Áp dụng trạng thái Local Storage)
+        // SỬA ĐỔI: RENDER (Đã xóa logic rating)
         function render() {
             const s = document.getElementById('strip'); s.innerHTML='';
             photos.forEach((p,i) => {
@@ -189,6 +185,7 @@
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
         }
 
+        // SỬA ĐỔI: SHOW (Đã xóa logic rating)
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -211,10 +208,9 @@
 
             let isSel=String(p.selected).toLowerCase()==='true';
             let btn=document.getElementById('btnSel');
-            // Giữ nguyên nội dung và màu vàng của nút chọn
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
 
-            // XÓA LOGIC CẬP NHẬT SAO
+            // ĐẢM BẢO XÓA SẠCH LOGIC CẬP NHẬT SAO
             // let r=parseInt(p.rating)||0;
             // document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
@@ -261,9 +257,7 @@
         // SỬA ĐỔI: TOGGLE SEL (Thêm logic lưu trạng thái)
         function togSel() {
             let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
-            
-            // Cập nhật thumbnail và nút chọn
-            document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
+            document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
             
             // 💡 PHẦN MỚI: Lưu trạng thái vào Local Storage sau khi thay đổi
             luuTrangThaiLocally();
@@ -272,7 +266,7 @@
         }
 
         // XÓA HÀM rate(n)
-        
+
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
