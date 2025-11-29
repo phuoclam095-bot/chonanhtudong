@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -  Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -76,7 +76,7 @@
             z-index: 1; 
             height: var(--grid-item-size); /* Đặt chiều cao cố định để tạo ô vuông */
             display: flex; 
-            justify-content: center; 
+            justify-content: center; /* Căn giữa ngang */
             align-items: center; /* Căn giữa dọc và ngang */
             background: rgba(0,0,0,0.5); 
         }
@@ -395,7 +395,11 @@
                 // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
+                    // 💡 FIX LỖI 1: Chỉ tin tưởng vào localStorage cho ID đã chọn
                     selectedPhotoIds = JSON.parse(duLieuDaLuuJSON); 
+                } else {
+                    // FIX LỖI 1: Nếu chưa có dữ liệu, đảm bảo mảng rỗng (khởi tạo bộ đếm = 0)
+                    selectedPhotoIds = [];
                 }
 
                 document.getElementById('load').style.display='none';
@@ -446,6 +450,7 @@
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
+        // 💡 FIX LỖI VẼ: Đảm bảo Canvas Context (ctx) được khởi tạo đúng
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
@@ -453,7 +458,9 @@
                 if (!ctx) {
                     ctx=cvs.getContext('2d'); 
                 }
-                ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                ctx.strokeStyle='red'; 
+                ctx.lineWidth=5; 
+                ctx.lineCap='round'; 
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
             } else {
                 cls(); 
