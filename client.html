@@ -5,42 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas */
+        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
-        
-        /* MAIN STAGE */
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        
-        #mainImg { 
-            display: block; 
-            max-width: 100%; 
-            max-height: 100%; 
-            width: auto; height: auto; 
-            object-fit: contain; 
-            box-shadow: 0 0 20px #000; 
-        }
-        
-        /* FIX LỖI CANVAS: Đặt Canvas che phủ chính xác lên ảnh */
-        #drawCanvas { 
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            cursor: crosshair; 
-            display: none; 
-            z-index: 10; 
-        }
-
+        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
+        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
         .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
         .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
-
-        /* TOOLS & CONTROLS */
         .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
         .tools.active { display: flex; }
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); }
@@ -49,15 +26,12 @@
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
-
-        /* FILMSTRIP (Dải ảnh nhỏ) */
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
         .th.sel .dot { display: block; }
         .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
-        
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
 </head>
@@ -106,8 +80,10 @@
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
+        // 💡 FIX LỖI: Khai báo let và KHÔNG gán giá trị DOM ngay lập tức
         let photos=[], cur=0, isDraw=false, ctx=null; 
-        const cvs=document.getElementById('drawCanvas'), img=document.getElementById('mainImg');
+        let cvs, img; // KHÔNG GÁN: Gán trong init()
+
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
@@ -121,15 +97,11 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
-            // Lọc ra ID của tất cả ảnh đang có p.selected = 'true'
             const danhSachDaChonId = photos
                 .filter(p => String(p.selected).toLowerCase() === 'true')
                 .map(p => p.id); 
 
-            // Lưu vào localStorage. Key 'anh_da_chon_cua_khach'
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
-            
-            // Cập nhật biến global Set
             selectedPhotoIds = new Set(danhSachDaChonId);
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
@@ -138,9 +110,13 @@
         // SỬA ĐỔI: INIT (FIX LỖI THỨ TỰ TẢI & GẮN SỰ KIỆN)
         async function init() {
             try {
+                // 1. 💡 FIX LỖI: GÁN GIÁ TRỊ DOM TẠI ĐÂY (Nơi DOM đã sẵn sàng)
+                cvs = document.getElementById('drawCanvas');
+                img = document.getElementById('mainImg');
+
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. Tải danh sách ảnh từ Server (BƯỚC ĐẦU TIÊN)
+                // 2. Tải danh sách ảnh từ Server
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
@@ -149,7 +125,7 @@
                 
                 photos = data;
 
-                // 2. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
+                // 3. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
@@ -159,7 +135,7 @@
                 document.getElementById('load').style.display='none';
                 render(); show(0);
                 
-                // 3. 💡 PHẦN FIX LỖI TRẮNG TINH: GẮN SỰ KIỆN SAU KHI DOM ĐÃ TẢI
+                // 4. GẮN SỰ KIỆN SAU KHI cvs đã được gán giá trị
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -184,7 +160,6 @@
                     d.classList.add('sel');
                     p.selected = 'true'; 
                 } else if (String(p.selected).toLowerCase() === 'true') {
-                    // Kiểm tra trạng thái từ Server
                     d.classList.add('sel');
                 }
                 
@@ -196,9 +171,7 @@
         }
 
         function show(i) {
-            // ✅ FIX LỖI: Tắt chế độ vẽ khi chuyển ảnh hoặc khi ảnh chính thay đổi
             if(isDraw) togDraw(false); 
-
             if(i<0 || i>=photos.length) return;
             cur=i; let p=photos[i];
             
@@ -206,10 +179,8 @@
             
             img.src=hd; 
             img.onload = () => { 
-                // ✅ FIX LỖI: Set kích thước Canvas khi ảnh load xong, để Canvas khớp với ảnh
                 cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
-                // ✅ FIX LỖI: Nếu đang ở chế độ vẽ, phải vẽ lại ảnh lên Canvas
                 if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
             };
             
@@ -227,17 +198,14 @@
             document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
         }
 
-        // ✅ FIX LỖI: Hàm togDraw chỉ nên vẽ ảnh lên Canvas KHI ĐƯỢC BẬT
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
                 ctx=cvs.getContext('2d'); 
                 ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
-                // ✅ FIX LỖI: Chỉ vẽ ảnh lên Canvas khi bật chế độ vẽ
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
             } else {
-                // Khi tắt chế độ vẽ, xóa hết các đường vẽ trên Canvas
                 cls(); 
             }
         }
@@ -248,14 +216,12 @@
         function draw(e){
             if(!paint||!isDraw)return; e.preventDefault();
             const r=cvs.getBoundingClientRect();
-            // Điều chỉnh tọa độ vẽ để khớp với kích thước Canvas
             const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
             const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
             ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
         }
         
         function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
-        // ✅ FIX LỖI: Hàm cls() chỉ xóa đường vẽ, không vẽ lại ảnh
         function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
         
         function saveDraw() {
