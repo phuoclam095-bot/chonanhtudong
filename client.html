@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Tử Bạc Liêu</title>
-<style>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <style>
         :root { 
             --bg: #1a1a1a; 
             --gold: #c5a059; 
@@ -13,8 +13,8 @@
             --blue-frame: #007bff; 
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 380px; /* TĂNG KÍCH THƯỚC CHIỀU RỘNG */
-            --grid-item-height: 240px; /* CHIỀU CAO HÌNH CHỮ NHẬT NẰM */
+            --grid-item-size: 350px; /* Chiều rộng item lưới (lớn) */
+            --grid-item-height: 220px; /* Chiều cao hình chữ nhật nằm */
             --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
         }
         
@@ -77,8 +77,8 @@
             z-index: 1; 
             height: var(--grid-item-height); /* Đặt chiều cao cố định */
             display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            justify-content: center; /* Căn giữa ngang */
+            align-items: center; /* Căn giữa dọc và ngang */
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -201,7 +201,7 @@
         </div>
         
         <div id="photoGrid">
-             </div>
+        </div>
 
         <div id="photoViewer">
             <div class="tools" id="tools">
@@ -237,7 +237,7 @@
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
         let albumTitle = "Thư Viện Ảnh"; 
-        let isSelectionLocked = false; // Luôn là false
+        let isSelectionLocked = false; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
@@ -320,12 +320,6 @@
             // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
             if (grid) {
-                // Đảm bảo Overlay được loại bỏ khỏi Grid nếu nó còn đó
-                const lockOverlay = document.getElementById('lockOverlay');
-                if (lockOverlay) {
-                    lockOverlay.style.display = 'none';
-                }
-                
                 grid.innerHTML = '';
                 
                 photos.forEach((p, i) => {
@@ -378,7 +372,7 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                btnSel.disabled = false;
+                btnSel.disabled = isSelectionLocked;
 
                 if (currentView === 'viewer') {
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
@@ -422,9 +416,7 @@
                     selectedPhotoIds = [];
                 }
                 
-                // BỎ QUA KIỂM TRA KHÓA BÌNH CHỌN
-
-                // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
+                // TẢI DỮ LIỆU ẢNH (Từ Server)
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
