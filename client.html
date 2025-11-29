@@ -11,7 +11,8 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            --grid-bg-image: url('https://i.imgur.com/kS5x8eC.jpeg'); /* <-- ĐỔI ẢNH NỀN TẠI ĐÂY */
+            /* THAY ĐỔI: Sử dụng ảnh nền hoa văn tối bên ngoài (ví dụ từ Imgur) để tránh lỗi base64 quá lớn. */
+            --grid-bg-image: url('https://i.imgur.com/KxJ4PzR.png'); 
             --grid-item-size: 250px; /* Kích thước tối ưu cho mỗi item trong lưới */
         }
         
@@ -50,7 +51,7 @@
             max-height: 100%;
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
-            background-size: cover;
+            background-size: 500px 500px; /* Điều chỉnh kích thước nền */
             background-position: center;
             background-attachment: fixed; 
             position: relative; 
@@ -60,7 +61,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6); 
+            background: rgba(0, 0, 0, 0.7); /* Tăng độ tối của lớp phủ */
             z-index: 0;
         }
 
@@ -90,18 +91,7 @@
             border-radius: 2px;
         }
         
-        .grid-heart { 
-            position: absolute; 
-            top: 10px; right: 10px; 
-            color: white; 
-            text-shadow: 0 0 5px #000; 
-            font-size: 24px; 
-            pointer-events: none; 
-            z-index: 2; 
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .grid-item-wrapper:hover .grid-heart { opacity: 1; }
+        /* ĐÃ LOẠI BỎ: CSS cho .grid-heart */
 
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
@@ -206,7 +196,6 @@
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
-        // 💡 THAY ĐỔI: Tên album mặc định
         let albumTitle = "Thư Viện Ảnh"; 
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -265,7 +254,9 @@
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
-                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${isSel ? selectedPhotoIds.indexOf(p.id) + 1 : ''}</div>`;
+                    // KHẮC PHỤC LỖI: Hiển thị số thứ tự trên .dot
+                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
                 let t = document.getElementById(`t-${cur}`);
@@ -279,9 +270,17 @@
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
-                    d.onclick = () => {
-                        setView('viewer');
-                        show(i);
+                    
+                    // KÍCH HOẠT CHỌN/BỎ CHỌN TRÊN GRID VIEW
+                    d.onclick = (event) => {
+                        // Gọi hàm togSel() để thay đổi trạng thái chọn
+                        // Tạm thời thay đổi 'cur' để togSel biết ảnh nào đang được thao tác
+                        const oldCur = cur;
+                        cur = i;
+                        togSel();
+                        cur = oldCur;
+                        // Ngăn chặn chuyển sang Viewer nếu chỉ click để chọn
+                        event.stopPropagation();
                     };
 
                     let isSel = selectedPhotoIds.includes(p.id);
@@ -290,7 +289,15 @@
                     let thumb = getLink(p.id, 's500'); 
                     let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
                     
-                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="grid-heart">❤️</div>${dotContent}`;
+                    // ĐÃ XÓA: Biểu tượng trái tim ❤️
+                    d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
+                    
+                    // Thêm sự kiện click để MỞ VIEWER (nếu click vào ảnh con)
+                    d.querySelector('img').onclick = () => {
+                        setView('viewer');
+                        show(i);
+                    };
+                    
                     grid.appendChild(d);
                 });
             }
@@ -318,11 +325,8 @@
                 
                 let data = await res.json();
                 
-                // 💡 THAY ĐỔI: Đơn giản hóa việc lấy dữ liệu (Chỉ quan tâm đến mảng ảnh)
                 photos = data.photos || data; 
                 if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
-
-                // albumTitle = data.albumName || `Album ${fid}`; // Đã bỏ qua phần này
 
                 // Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
@@ -426,6 +430,7 @@
             }
             p.selected = ns ? 'true' : 'false';
 
+            // Cập nhật số thứ tự và khung cho cả hai chế độ
             capNhatSoThuTuVaTongSo();
 
             if (currentView === 'viewer') {
