@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - LNP</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
@@ -21,10 +21,9 @@
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
         
-        /* === SỬA LỖI 1: XÓA SAO NHƯNG GIỮ BỐ CỤC === */
-        /* Đặt chiều rộng tối thiểu để giữ không gian 5 sao, tránh lệch nút */
-        .stars { min-width: 130px; } 
-        .stars span { display: none; } /* Ẩn hoàn toàn nếu có thẻ span nào còn sót */
+        /* SỬA LỖI BỐ CỤC (THẺ SAO) */
+        .stars { min-width: 130px; } /* Giữ không gian để không bị lệch nút */
+        .stars span { display: none; } /* Ẩn hoàn toàn ngôi sao */
         
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
@@ -32,12 +31,12 @@
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
         
-        /* === SỬA LỖI 2: BUỘC THUMBNAIL PHẢI NẰM NGANG === */
+        /* FIX LỖI THUMBNAIL NẰM DỌC */
         .strip { 
             height: 110px; 
             background: #000; 
-            display: flex; 
-            flex-direction: row !important; /* QUAN TRỌNG: Buộc hiển thị ngang */
+            display: flex !important; /* Buộc là flex */
+            flex-direction: row !important; /* Buộc hiển thị ngang */
             gap: 10px; 
             padding: 10px; 
             overflow-x: auto; 
@@ -45,17 +44,7 @@
             border-top: 1px solid #333; 
         }
         
-        .th { 
-            min-width: 90px; 
-            height: 90px; 
-            opacity: 0.5; 
-            border: 2px solid transparent; 
-            cursor: pointer; 
-            position: relative; 
-            border-radius: 4px; 
-            overflow: hidden; 
-            flex-shrink: 0; /* Đảm bảo không bị co lại */
-        }
+        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
         
         /* Đảm bảo ảnh đang xem và ảnh đã chọn luôn sáng */
@@ -111,22 +100,18 @@
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        // 💡 FIX LỖI: Khai báo let và KHÔNG gán giá trị DOM ngay lập tức
         let photos=[], cur=0, isDraw=false, ctx=null; 
-        let cvs, img; // KHÔNG GÁN: Gán trong init()
+        let cvs, img; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        // 💡 BIẾN LOCAL STORAGE: Dùng để lưu và tra cứu trạng thái đã chọn
         let selectedPhotoIds = new Set(); 
 
-        // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (ĐÃ XÓA RATING)
         function luuTrangThaiLocally() {
             const danhSachDaChonId = photos
                 .filter(p => String(p.selected).toLowerCase() === 'true')
@@ -135,23 +120,19 @@
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
             
-            // Đảm bảo không còn thuộc tính rating trong dữ liệu
             photos.forEach(p => delete p.rating);
             
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
 
 
-        // SỬA ĐỔI: INIT (Khởi tạo)
         async function init() {
             try {
-                // 1. GÁN GIÁ TRỊ DOM 
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 2. Tải danh sách ảnh từ Server
                 let res = await fetch(`${URL_GET}?id=${fid}`);
                 if(!res.ok) throw new Error("Lỗi Server/Kết nối");
                 
@@ -160,7 +141,6 @@
                 
                 photos = data;
 
-                // 3. Tải trạng thái đã lưu
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
@@ -170,7 +150,6 @@
                 document.getElementById('load').style.display='none';
                 render(); show(0);
                 
-                // 4. GẮN SỰ KIỆN 
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -188,7 +167,6 @@
             photos.forEach((p,i) => {
                 let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
                 
-                // LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage (Ưu tiên)
                 const identifier = p.id; 
 
                 if (selectedPhotoIds.has(identifier)) {
@@ -229,6 +207,8 @@
             let isSel=String(p.selected).toLowerCase()==='true';
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
+
+            // ĐẢM BẢO KHÔNG CÓ LOGIC CẬP NHẬT SAO
         }
 
         function togDraw(en) {
@@ -275,14 +255,13 @@
             let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
             document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
             
-            // 💡 PHẦN MỚI: Lưu trạng thái vào Local Storage sau khi thay đổi
             luuTrangThaiLocally();
 
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
 
         // HÀM rate(n) ĐÃ BỊ XÓA HOÀN TOÀN
-        
+
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
