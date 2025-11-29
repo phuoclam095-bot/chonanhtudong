@@ -1,3 +1,4 @@
+/* PHẦN ĐẦU HTML VÀ STYLE */
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -5,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V13.0 - Đã Xóa Sạch Rating & Tối ưu Flexbox */
+        /* CSS V14.0 - THAY ĐỔI HOÀN TOÀN CẤU TRÚC ĐIỀU KHIỂN */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
-        /* PHẦN TRÊN: ẢNH LỚN */
+        /* (Giữ nguyên Stage, Canvas, Nav, Tools CSS) */
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
         .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
@@ -21,32 +22,43 @@
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
 
-        /* THANH ĐIỀU KHIỂN & NÚT */
-        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        
-        /* FIX BỐ CỤC: Dùng flex-grow để căn chỉnh */
-        .info { display: flex; flex-direction: column; flex-grow: 1; } /* Giúp info chiếm không gian trống để đẩy nút sang phải */
+        /* THANH ĐIỀU KHIỂN MỚI */
+        .ctrl { 
+            height: 65px; 
+            background: var(--panel); 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; /* Chia 3 cột: Info | Buttons | Done */
+            align-items: center; 
+            padding: 0 20px; 
+            border-top: 1px solid #444; 
+            flex-shrink: 0; 
+            z-index: 50; 
+        }
+        .info { display: flex; flex-direction: column; justify-self: start; } 
         .p-count { font-size: 12px; color: #888; }
         
-        .btn-group {
+        /* Đảm bảo các nút ở giữa (chỗ 5 sao cũ) */
+        .btn-center-group {
             display: flex;
+            justify-content: center;
             align-items: center;
-            /* Xóa margin-left cho nút Draw và Sel để thay thế bằng gap */
             gap: 20px; 
+            /* Dùng min-width cố định cho nhóm nút để không bị co dãn quá mức */
+            min-width: 300px; 
         }
 
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-draw { background: #d63384; color: white; } /* Đã xóa margin-left: 20px; */
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); } /* Đã xóa margin-left: 20px; */
+        .btn-draw { background: #d63384; color: white; } 
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); } 
         .btn-sel.act { background: var(--gold); color: #000; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
+        .btn-done { background: #28a745; color: white; border-radius: 5px; justify-self: end; } /* Đẩy nút Gửi List sang phải */
 
-        /* THANH THUMBNAIL (Horizontal Fix) */
+        /* FIX LỖI THUMBNAIL NGANG */
         .strip { 
             height: 110px; 
             background: #000; 
             display: flex !important; 
-            flex-direction: row !important; 
+            flex-direction: row !important; /* Lệnh cực mạnh để buộc ngang */
             gap: 10px; 
             padding: 10px; 
             overflow-x: auto; 
@@ -90,16 +102,23 @@
             <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
             <div class="p-count" id="pCount">0 / 0</div>
         </div>
-        <div class="btn-group">
+        
+                <div class="btn-center-group">
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
             <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
+        
         <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
     </div>
 
     <div class="strip" id="strip"></div>
 
     <script>
+        // Lệnh báo lỗi nếu cache không được xóa
+        if (localStorage.getItem('layout_version') !== 'V14.0') {
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V14.0.');
+        }
+        
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
@@ -135,6 +154,8 @@
 
         async function init() {
             try {
+                localStorage.setItem('layout_version', 'V14.0'); 
+                
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
