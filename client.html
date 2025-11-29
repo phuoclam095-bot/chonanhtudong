@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V9.2 - Fix Bố Cục + Đánh Số Thứ Tự (GIỮ NGUYÊN BỐ CỤC) */
+        /* CSS V9.3 - Đã sửa lỗi bố cục và đánh số thứ tự */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
@@ -20,30 +20,37 @@
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
-        /* Xóa CSS cũ cho .stars */
-        /* .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); } */
+        
+        /* Thay thế stars bằng div trống, chỉ giữ style kích thước nếu cần, hoặc dùng cho số thứ tự */
+        .stars-placeholder { 
+            min-width: 150px; /* Ước tính kích thước 5 sao để giữ layout */
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; /* căn lề trái như 5 sao cũ */
+            font-size: 20px;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
-        /* Giữ nguyên .btn-sel để duy trì bố cục, chỉ đổi nội dung và màu sắc */
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; border: none; } /* Đổi màu khi đã chọn */
+        .btn-sel.act { background: var(--gold); color: #000; border: none; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
-        .th.act { border-color: var(--gold); transform: scale(1.05); z-index: 5; } /* Ảnh đang xem */
+        .th.act { border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
+        .th.sel { opacity: 1; border-color: var(--gold); } /* Ảnh đã chọn luôn sáng */
         
-        /* Ảnh đã chọn: luôn giữ opacity 1 và có viền vàng */
-        .th.sel { opacity: 1; border-color: var(--gold); } 
-        
-        /* Đánh số thứ tự thay cho dot */
+        /* Đánh số thứ tự thay cho dot (đã cập nhật) */
         .dot { 
             position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; 
             background: var(--gold); color: #000; border-radius: 50%; 
             display: none; box-shadow: 0 0 4px #000; font-size: 10px; 
             font-weight: bold; justify-content: center; align-items: center;
         }
-        .th.sel .dot { display: flex; } /* Hiển thị số thứ tự khi đã chọn */
+        .th.sel .dot { display: flex; } 
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
     </style>
@@ -56,7 +63,7 @@
         <button class="t-btn" onclick="cls()">🗑️</button>
         <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
         <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
-            </div>
+    </div>
 
     <div class="stage">
         <button class="nav prev" onclick="mov(-1)">&#10094;</button>
@@ -73,9 +80,10 @@
             <div class="p-count" id="pCount">0 / 0</div>
         </div>
         <div style="display:flex; align-items:center">
-                        
+                        <div class="stars-placeholder" id="stars-placeholder"></div>
+            
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
-                        <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
         <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
     </div>
@@ -99,22 +107,17 @@
 
         let selectedPhotoIds = new Set(); 
 
-        // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE + Cập nhật index
+        // HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE + Cập nhật index
         function luuTrangThaiLocally() {
-            // 1. Lọc và lấy danh sách ID đã chọn
             const danhSachDaChonId = photos
                 .filter(p => String(p.selected).toLowerCase() === 'true')
                 .map(p => p.id); 
 
-            // 2. Lưu vào Local Storage
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
-            
-            // 3. Cập nhật lại Set và tính index
             selectedPhotoIds = new Set(danhSachDaChonId);
             
             let indexCount = 1;
@@ -122,14 +125,13 @@
                 if (selectedPhotoIds.has(p.id)) {
                     p.selectIndex = indexCount++;
                 } else {
-                    p.selectIndex = 0; // 0 nghĩa là chưa chọn
+                    p.selectIndex = 0; 
                 }
-                // Xóa rating cũ để tránh lỗi (dù đã xóa logic)
                 delete p.rating;
             });
         }
 
-        // SỬA ĐỔI: INIT 
+        // SỬA ĐỔI: INIT (Khởi tạo)
         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
@@ -145,18 +147,16 @@
                 
                 photos = data;
 
-                // Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
                 const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
                 if (duLieuDaLuuJSON) {
                     const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
                     selectedPhotoIds = new Set(danhSachDaChon); 
                 }
-                // Cập nhật thuộc tính 'selected' dựa trên Local Storage
                 photos.forEach(p => {
                     p.selected = selectedPhotoIds.has(p.id) ? 'true' : 'false';
                 });
                 
-                luuTrangThaiLocally(); // Thiết lập index lần đầu
+                luuTrangThaiLocally(); 
 
                 document.getElementById('load').style.display='none';
                 render(); show(0);
@@ -185,7 +185,7 @@
                 
                 let thumb = getLink(p.id, 's220'); 
                 
-                // Thay dot bằng số thứ tự (index-num)
+                // Thay dot bằng số thứ tự
                 const dotContent = p.selectIndex > 0 ? `${p.selectIndex}` : '';
                 
                 d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot">${dotContent}</div>`; 
@@ -194,7 +194,7 @@
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
         }
 
-        // SỬA ĐỔI: SHOW (Cập nhật nút Chọn)
+        // SỬA ĐỔI: SHOW (Cập nhật nút Chọn và Xóa logic rating)
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -221,13 +221,14 @@
             
             if (isSel) {
                 btn.classList.add('act'); 
-                btn.innerText=`✔ Ch. (${p.selectIndex})`; // Hiển thị số thứ tự
+                btn.innerText=`✔ Ch. (${p.selectIndex})`; 
             } else {
                 btn.classList.remove('act');
                 btn.innerText='Chọn';
             }
-            
-            // Đã xóa logic rating
+            
+            // Đảm bảo div placeholder không hiển thị gì
+            document.getElementById('stars-placeholder').innerText = '';
         }
 
         function togDraw(en) {
@@ -275,19 +276,15 @@
             let ns=!(String(p.selected).toLowerCase()==='true'); 
             p.selected=ns;
             
-            // 1. Lưu trạng thái và tính lại index cho TẤT CẢ ảnh
             luuTrangThaiLocally(); 
 
-            // 2. Cập nhật giao diện thanh strip và nút chọn
+            // Cập nhật toàn bộ thumbnail để số thứ tự là chính xác
             render(); 
-            show(cur);
-            
-            // 3. Gửi lên Server
+            show(cur); // Cập nhật nút Chọn
+
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
 
-        // Đã xóa hàm rate(n)
-        
         function mov(d){show(cur+d);}
         async function finish(){
             if(confirm("Gửi danh sách chọn?")) {
