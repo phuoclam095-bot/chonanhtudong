@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,9 +11,10 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 200px; 
+            /* TĂNG KÍCH THƯỚC ẢNH VÀ ĐIỀU CHỈNH KHOẢNG CÁCH */
+            --grid-item-size: 250px; /* Tăng kích thước lại */
+            --grid-gap: 20px; /* Thêm biến cho khoảng cách đều */
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -43,11 +44,11 @@
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
-            padding: 20px; 
+            padding: var(--grid-gap); /* Sử dụng gap cho padding */
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: 15px;
+            gap: var(--grid-gap); /* Khoảng trống đều nhau */
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -73,6 +74,9 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
+            /* Thêm min-height để giữ tỷ lệ khung nhìn tốt hơn */
+            min-height: var(--grid-item-size);
+            background: rgba(0,0,0,0.5); /* Nền nhẹ khi ảnh chưa load */
         }
         .grid-item-wrapper:hover {
             border-color: rgba(255, 255, 255, 0.7); 
@@ -82,11 +86,11 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
-        /* SỬA LỖI: Chỉ giới hạn chiều rộng tối đa, cho phép ảnh dọc (Rectangle) hiển thị */
+        /* SỬA LỖI: Cho phép ảnh dọc hiển thị đầy đủ */
         .grid-item-wrapper img { 
             width: 100%; 
-            height: auto; /* Bỏ chiều cao cố định */
-            max-height: var(--grid-item-size); /* Chiều cao tối đa */
+            height: auto; 
+            max-height: var(--grid-item-size); 
             object-fit: contain; /* Đảm bảo không bị cắt */
             display: block; 
             border-radius: 6px; 
@@ -367,6 +371,7 @@
         // SỬA ĐỔI: INIT
         async function init() {
             try {
+                // Khai báo lại cvs, img để tránh lỗi trong các hàm vẽ/hiển thị
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
@@ -391,6 +396,7 @@
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
+                // 💡 KHẮC PHỤC LỖI VẼ: Gắn lại sự kiện cho canvas
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
                 ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
@@ -411,6 +417,7 @@
             let hd = getLink(p.id, 's2000'); 
             img.src=hd; 
             img.onload = () => { 
+                // Cập nhật kích thước canvas khi ảnh tải xong
                 cvs.width = img.offsetWidth; 
                 cvs.height = img.offsetHeight;
                 if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
@@ -427,19 +434,24 @@
             // GỌI CẬP NHẬT: Đảm bảo thanh Strip được vẽ lại chính xác
             capNhatSoThuTuVaTổngSố(); 
 
-            // 💡 FIX LỖI 3: Cập nhật trạng thái nút "Chọn"
+            // Cập nhật trạng thái nút "Chọn"
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
+        // 💡 FIX LỖI VẼ: Đảm bảo Canvas Context (ctx) được khởi tạo đúng
         function togDraw(en) {
             const tl=document.getElementById('tools');
             isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
             if(en) { 
-                ctx=cvs.getContext('2d'); 
+                // Đảm bảo ctx được khởi tạo
+                if (!ctx) {
+                    ctx=cvs.getContext('2d'); 
+                }
                 ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                // Vẽ lại ảnh lên canvas
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
             } else {
                 cls(); 
@@ -448,17 +460,18 @@
 
         let paint=false;
         function start(e){paint=true;draw(e);}
-        function end(){paint=false;ctx.beginPath();}
+        function end(){paint=false;if(ctx) ctx.beginPath();} // Kiểm tra ctx
         function draw(e){
-            if(!paint||!isDraw)return; e.preventDefault();
+            if(!paint||!isDraw||!ctx)return; // Kiểm tra ctx
+            e.preventDefault();
             const r=cvs.getBoundingClientRect();
             const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
             const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
             ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
         }
         
-        function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
-        function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
+        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
+        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
         
         function saveDraw() {
             if(!confirm("Lưu ghi chú?")) return;
