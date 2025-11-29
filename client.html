@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V12.0 - Tối ưu Flexbox & Layout Sạch sẽ */
+        /* CSS V13.0 - Đã Xóa Sạch Rating & Tối ưu Flexbox */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
@@ -23,15 +23,21 @@
 
         /* THANH ĐIỀU KHIỂN & NÚT */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; } 
+        
+        /* FIX BỐ CỤC: Dùng flex-grow để căn chỉnh */
+        .info { display: flex; flex-direction: column; flex-grow: 1; } /* Giúp info chiếm không gian trống để đẩy nút sang phải */
         .p-count { font-size: 12px; color: #888; }
         
-        /* Giữ không gian trống để không làm lệch các nút khác */
-        .empty-spacer { min-width: 130px; } 
+        .btn-group {
+            display: flex;
+            align-items: center;
+            /* Xóa margin-left cho nút Draw và Sel để thay thế bằng gap */
+            gap: 20px; 
+        }
 
         .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-draw { background: #d63384; color: white; } /* Đã xóa margin-left: 20px; */
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); } /* Đã xóa margin-left: 20px; */
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
 
@@ -39,8 +45,8 @@
         .strip { 
             height: 110px; 
             background: #000; 
-            display: flex; 
-            flex-direction: row; /* Rất quan trọng */
+            display: flex !important; 
+            flex-direction: row !important; 
             gap: 10px; 
             padding: 10px; 
             overflow-x: auto; 
@@ -84,8 +90,7 @@
             <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
             <div class="p-count" id="pCount">0 / 0</div>
         </div>
-        <div style="display:flex; align-items:center">
-                        <div class="empty-spacer"></div> 
+        <div class="btn-group">
             <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
             <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
         </div>
@@ -95,11 +100,6 @@
     <div class="strip" id="strip"></div>
 
     <script>
-        // Lỗi cố ý để buộc xóa cache
-        if (localStorage.getItem('layout_version') !== 'V12.0') {
-            alert('❌ Lỗi Buộc Xóa Cache: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã mới.');
-        }
-
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
@@ -128,7 +128,6 @@
             localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
             selectedPhotoIds = new Set(danhSachDaChonId);
             
-            // Đảm bảo không có rating
             photos.forEach(p => delete p.rating);
             console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
         }
@@ -136,8 +135,6 @@
 
         async function init() {
             try {
-                localStorage.setItem('layout_version', 'V12.0'); 
-                
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
