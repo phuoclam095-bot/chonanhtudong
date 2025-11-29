@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -  Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,7 +11,8 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            --grid-bg-image: url('https://i.imgur.com/KxJ4PzR.png'); 
+            /* ẢNH NỀN HOA VĂN TỐI */
+            --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
             --grid-item-size: 250px; 
         }
         
@@ -50,7 +51,7 @@
             max-height: 100%;
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
-            background-size: 500px 500px; 
+            background-size: cover; 
             background-position: center;
             background-attachment: fixed; 
             position: relative; 
@@ -87,9 +88,9 @@
             object-fit: cover; 
             display: block; 
             border-radius: 2px;
-            /* pointer-events: none đã được loại bỏ để sự kiện click trên ảnh có thể hoạt động riêng */
         }
 
+        /* DOT GRID: Số thứ tự */
         .grid-dot { 
             position: absolute; top: 4px; right: 4px; 
             width: 28px; height: 28px; 
@@ -127,7 +128,7 @@
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } 
-        /* DOT TRONG VIEWER: Chỉ dùng để đánh dấu trạng thái (chọn) nhưng không hiển thị số */
+        /* DOT VIEWER: Vòng tròn nhỏ (Không có số) */
         .dot { 
             position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; 
             background: var(--gold); border-radius: 50%; display: none; 
@@ -275,12 +276,10 @@
                     
                     // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
                     d.onclick = () => {
-                        // Lưu index ảnh hiện tại trước khi gọi togSel
                         const oldCur = cur;
                         cur = i;
                         togSel();
                         cur = oldCur; 
-                        // Cập nhật lại Grid View để thấy số thứ tự và khung
                         if (currentView === 'grid') {
                             capNhatSoThuTuVaTongSo();
                         }
@@ -296,7 +295,7 @@
                     
                     d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
                     
-                    // Sự kiện click ảnh (CHỈ ĐỂ MỞ VIEWER)
+                    // SỬA LỖI: Sự kiện click ảnh (CHỈ ĐỂ MỞ VIEWER)
                     d.querySelector('img').onclick = (event) => {
                         event.stopPropagation(); // Ngăn sự kiện chọn của wrapper chạy
                         setView('viewer');
