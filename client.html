@@ -1,299 +1,266 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
-    <style>
-        /* CSS V9.3 - Đã sửa lỗi bố cục và đánh số thứ tự */
-        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
-        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
-        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
-        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
-        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
-        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
-        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
-        .tools.active { display: flex; }
-        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
-        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
-        
-        /* Thay thế stars bằng div trống, chỉ giữ style kích thước nếu cần, hoặc dùng cho số thứ tự */
-        .stars-placeholder { 
-            min-width: 150px; /* Ước tính kích thước 5 sao để giữ layout */
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-start; /* căn lề trái như 5 sao cũ */
-            font-size: 20px;
-            color: var(--gold);
-            font-weight: bold;
-        }
-
-        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; border: none; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; } 
-        .th.act { border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        .th.sel { opacity: 1; border-color: var(--gold); } /* Ảnh đã chọn luôn sáng */
-        
-        /* Đánh số thứ tự thay cho dot (đã cập nhật) */
-        .dot { 
-            position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; 
-            background: var(--gold); color: #000; border-radius: 50%; 
-            display: none; box-shadow: 0 0 4px #000; font-size: 10px; 
-            font-weight: bold; justify-content: center; align-items: center;
-        }
-        .th.sel .dot { display: flex; } 
-        
-        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <style>
+        /* CSS V9.0 - Tối ưu hiển thị + Fix Canvas (GIỮ NGUYÊN) */
+        :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
+        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
+        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
+        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
+        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
+        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
+        .tools.active { display: flex; }
+        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
+        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
+        .info { display: flex; flex-direction: column; } .p-count { font-size: 12px; color: #888; }
+        .stars span { font-size: 26px; color: #555; cursor: pointer; } .stars span.act { color: var(--gold); }
+        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-sel.act { background: var(--gold); color: #000; }
+        .btn-done { background: #28a745; color: white; border-radius: 5px; }
+        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
+        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+        .th img { width: 100%; height: 100%; object-fit: cover; } 
+        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; }
+        .th.sel .dot { display: block; }
+        .dot { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; display: none; box-shadow: 0 0 4px #000; }
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
+    </style>
 </head>
 <body>
-    <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
+    <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
-    <div class="tools" id="tools">
-        <button class="t-btn act" onclick="setPen()">✏️</button>
-        <button class="t-btn" onclick="cls()">🗑️</button>
-        <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
-        <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
-    </div>
+    <div class="tools" id="tools">
+        <button class="t-btn act" onclick="setPen()">✏️</button>
+        <button class="t-btn" onclick="cls()">🗑️</button>
+        <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
+        <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
+    </div>
 
-    <div class="stage">
-        <button class="nav prev" onclick="mov(-1)">&#10094;</button>
-        <div class="canvas-box">
-            <img id="mainImg" src="">
-            <canvas id="drawCanvas"></canvas>
-        </div>
-        <button class="nav next" onclick="mov(1)">&#10095;</button>
-    </div>
+    <div class="stage">
+        <button class="nav prev" onclick="mov(-1)">&#10094;</button>
+        <div class="canvas-box">
+            <img id="mainImg" src="">
+            <canvas id="drawCanvas"></canvas>
+        </div>
+        <button class="nav next" onclick="mov(1)">&#10095;</button>
+    </div>
 
-    <div class="ctrl">
-        <div class="info">
-            <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
-            <div class="p-count" id="pCount">0 / 0</div>
-        </div>
-        <div style="display:flex; align-items:center">
-                        <div class="stars-placeholder" id="stars-placeholder"></div>
-            
-            <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
-            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
-        </div>
-        <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
-    </div>
+    <div class="ctrl">
+        <div class="info">
+            <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
+            <div class="p-count" id="pCount">0 / 0</div>
+        </div>
+        <div style="display:flex; align-items:center">
+            <div class="stars" id="stars">
+                <span onclick="rate(1)">★</span><span onclick="rate(2)">★</span><span onclick="rate(3)">★</span><span onclick="rate(4)">★</span><span onclick="rate(5)">★</span>
+            </div>
+            <button class="btn btn-draw" onclick="togDraw(true)">🖌️ Vẽ</button>
+            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+        </div>
+        <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
+    </div>
 
-    <div class="strip" id="strip"></div>
+    <div class="strip" id="strip"></div>
 
-    <script>
-        // ============================================================
-        // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
-        // ============================================================
-        const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
-        const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
-        const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
-        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
+    <script>
+        // ============================================================
+        // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
+        // ============================================================
+        const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
+        const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
+        const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
+        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        let photos=[], cur=0, isDraw=false, ctx=null; 
-        let cvs, img; 
+        // 💡 FIX LỖI: Khai báo let và KHÔNG gán giá trị DOM ngay lập tức
+        let photos=[], cur=0, isDraw=false, ctx=null; 
+        let cvs, img; // KHÔNG GÁN: Gán trong init()
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const fid = urlParams.get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        const fid = urlParams.get('id');
 
-        let selectedPhotoIds = new Set(); 
+        // 💡 BIẾN LOCAL STORAGE: Dùng để lưu và tra cứu trạng thái đã chọn
+        let selectedPhotoIds = new Set(); 
 
-        function getLink(id, size) {
-            return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
-        }
+        // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
+        function getLink(id, size) {
+            return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
+        }
 
-        // HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE + Cập nhật index
-        function luuTrangThaiLocally() {
-            const danhSachDaChonId = photos
-                .filter(p => String(p.selected).toLowerCase() === 'true')
-                .map(p => p.id); 
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
+        function luuTrangThaiLocally() {
+            const danhSachDaChonId = photos
+                .filter(p => String(p.selected).toLowerCase() === 'true')
+                .map(p => p.id); 
 
-            localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
-            selectedPhotoIds = new Set(danhSachDaChonId);
-            
-            let indexCount = 1;
-            photos.forEach(p => {
-                if (selectedPhotoIds.has(p.id)) {
-                    p.selectIndex = indexCount++;
-                } else {
-                    p.selectIndex = 0; 
-                }
-                delete p.rating;
-            });
-        }
+            localStorage.setItem('anh_da_chon_cua_khach', JSON.stringify(danhSachDaChonId));
+            selectedPhotoIds = new Set(danhSachDaChonId);
+            console.log('Đã lưu trạng thái Locally:', danhSachDaChonId.length + ' ảnh.');
+        }
 
-        // SỬA ĐỔI: INIT (Khởi tạo)
-        async function init() {
-            try {
-                cvs = document.getElementById('drawCanvas');
-                img = document.getElementById('mainImg');
 
-                if(!fid) throw new Error("Link thiếu mã Album (id)");
-                
-                let res = await fetch(`${URL_GET}?id=${fid}`);
-                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
-                
-                let data = await res.json();
-                if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
-                
-                photos = data;
+        // SỬA ĐỔI: INIT (FIX LỖI THỨ TỰ TẢI & GẮN SỰ KIỆN)
+        async function init() {
+            try {
+                // 1. 💡 FIX LỖI: GÁN GIÁ TRỊ DOM TẠI ĐÂY (Nơi DOM đã sẵn sàng)
+                cvs = document.getElementById('drawCanvas');
+                img = document.getElementById('mainImg');
 
-                const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
-                if (duLieuDaLuuJSON) {
-                    const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
-                    selectedPhotoIds = new Set(danhSachDaChon); 
-                }
-                photos.forEach(p => {
-                    p.selected = selectedPhotoIds.has(p.id) ? 'true' : 'false';
-                });
+                if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                luuTrangThaiLocally(); 
+                // 2. Tải danh sách ảnh từ Server
+                let res = await fetch(`${URL_GET}?id=${fid}`);
+                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
+                
+                let data = await res.json();
+                if (!data || !data.length) throw new Error("Album trống hoặc sai ID");
+                
+                photos = data;
 
-                document.getElementById('load').style.display='none';
-                render(); show(0);
-                
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
-                
-                document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
+                // 3. Tải trạng thái đã lưu SAU KHI có dữ liệu ảnh
+                const duLieuDaLuuJSON = localStorage.getItem('anh_da_chon_cua_khach');
+                if (duLieuDaLuuJSON) {
+                    const danhSachDaChon = JSON.parse(duLieuDaLuuJSON);
+                    selectedPhotoIds = new Set(danhSachDaChon); 
+                }
 
-            } catch(e) { 
-                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
-            }
-        }
+                document.getElementById('load').style.display='none';
+                render(); show(0);
+                
+                // 4. GẮN SỰ KIỆN SAU KHI cvs đã được gán giá trị
+                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
+                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
+                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+                
+                document.onkeydown=e=>{if(!isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
-        // SỬA ĐỔI: RENDER (Thêm số thứ tự vào dot)
-        function render() {
-            const s = document.getElementById('strip'); s.innerHTML='';
-            photos.forEach((p,i) => {
-                let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
-                
-                const isSelected = String(p.selected).toLowerCase() === 'true';
-                if (isSelected) {
-                    d.classList.add('sel');
-                }
-                
-                let thumb = getLink(p.id, 's220'); 
-                
-                // Thay dot bằng số thứ tự
-                const dotContent = p.selectIndex > 0 ? `${p.selectIndex}` : '';
-                
-                d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot">${dotContent}</div>`; 
-                s.appendChild(d);
-            });
-            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
-        }
+            } catch(e) { 
+                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
+            }
+        }
 
-        // SỬA ĐỔI: SHOW (Cập nhật nút Chọn và Xóa logic rating)
-        function show(i) {
-            if(isDraw) togDraw(false); 
-            if(i<0 || i>=photos.length) return;
-            cur=i; let p=photos[i];
-            
-            let hd = getLink(p.id, 's2000'); 
-            
-            img.src=hd; 
-            img.onload = () => { 
-                cvs.width = img.offsetWidth; 
-                cvs.height = img.offsetHeight;
-                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            };
-            
-            document.getElementById('pName').innerText=p.name;
-            document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
-            
-            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
-            let t=document.getElementById(`t-${i}`); if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
+        // SỬA ĐỔI: RENDER (Áp dụng trạng thái Local Storage)
+        function render() {
+            const s = document.getElementById('strip'); s.innerHTML='';
+            photos.forEach((p,i) => {
+                let d=document.createElement('div'); d.className='th'; d.id=`t-${i}`; d.onclick=()=>show(i);
+                
+                // LOGIC: Kiểm tra trạng thái đã chọn từ Local Storage (Ưu tiên)
+                const identifier = p.id; 
 
-            // Cập nhật nút Chọn (btnSel)
-            let isSel=String(p.selected).toLowerCase()==='true';
-            let btn=document.getElementById('btnSel');
-            
-            if (isSel) {
-                btn.classList.add('act'); 
-                btn.innerText=`✔ Ch. (${p.selectIndex})`; 
-            } else {
-                btn.classList.remove('act');
-                btn.innerText='Chọn';
-            }
+                if (selectedPhotoIds.has(identifier)) {
+                    d.classList.add('sel');
+                    p.selected = 'true'; 
+                } else if (String(p.selected).toLowerCase() === 'true') {
+                    d.classList.add('sel');
+                }
+                
+                let thumb = getLink(p.id, 's220'); 
+                d.innerHTML=`<img src="${thumb}" loading="lazy"><div class="dot"></div>`; 
+                s.appendChild(d);
+            });
+            document.getElementById('pCount').innerText = `1 / ${photos.length}`;
+        }
+
+        function show(i) {
+            if(isDraw) togDraw(false); 
+            if(i<0 || i>=photos.length) return;
+            cur=i; let p=photos[i];
             
-            // Đảm bảo div placeholder không hiển thị gì
-            document.getElementById('stars-placeholder').innerText = '';
-        }
+            let hd = getLink(p.id, 's2000'); 
+            
+            img.src=hd; 
+            img.onload = () => { 
+                cvs.width = img.offsetWidth; 
+                cvs.height = img.offsetHeight;
+                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+            };
+            
+            document.getElementById('pName').innerText=p.name;
+            document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
+            
+            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
+            let t=document.getElementById(`t-${i}`); if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-        function togDraw(en) {
-            const tl=document.getElementById('tools');
-            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
-            if(en) { 
-                ctx=cvs.getContext('2d'); 
-                ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
-                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
-            } else {
-                cls(); 
-            }
-        }
+            let isSel=String(p.selected).toLowerCase()==='true';
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${isSel?'act':''}`; btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
 
-        let paint=false;
-        function start(e){paint=true;draw(e);}
-        function end(){paint=false;ctx.beginPath();}
-        function draw(e){
-            if(!paint||!isDraw)return; e.preventDefault();
-            const r=cvs.getBoundingClientRect();
-            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
-            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
-            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
-        }
-        
-        function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
-        function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
-        
-        function saveDraw() {
-            if(!confirm("Lưu ghi chú?")) return;
-            cvs.toBlob(async function(blob) {
-                let fd=new FormData();
-                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
-                fd.append('photoId', photos[cur].id);
-                try {
-                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
-                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
-                } catch(e) { alert("Lỗi: "+e.message); }
-            }, 'image/png');
-        }
+            let r=parseInt(p.rating)||0;
+            document.querySelectorAll('#stars span').forEach((s,k)=>s.className=k<r?'act':'');
+        }
 
-        // SỬA ĐỔI: TOGGLE SEL (Tính lại index và cập nhật giao diện)
-        function togSel() {
-            let p=photos[cur]; 
-            let ns=!(String(p.selected).toLowerCase()==='true'); 
-            p.selected=ns;
-            
-            luuTrangThaiLocally(); 
+        function togDraw(en) {
+            const tl=document.getElementById('tools');
+            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
+            if(en) { 
+                ctx=cvs.getContext('2d'); 
+                ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round'; 
+                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+            } else {
+                cls(); 
+            }
+        }
 
-            // Cập nhật toàn bộ thumbnail để số thứ tự là chính xác
-            render(); 
-            show(cur); // Cập nhật nút Chọn
+        let paint=false;
+        function start(e){paint=true;draw(e);}
+        function end(){paint=false;ctx.beginPath();}
+        function draw(e){
+            if(!paint||!isDraw)return; e.preventDefault();
+            const r=cvs.getBoundingClientRect();
+            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
+            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
+            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
+        }
+        
+        function setPen(){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}
+        function cls(){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}
+        
+        function saveDraw() {
+            if(!confirm("Lưu ghi chú?")) return;
+            cvs.toBlob(async function(blob) {
+                let fd=new FormData();
+                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
+                fd.append('photoId', photos[cur].id);
+                try {
+                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
+                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
+                } catch(e) { alert("Lỗi: "+e.message); }
+            }, 'image/png');
+        }
 
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
-        }
+        // SỬA ĐỔI: TOGGLE SEL (Thêm logic lưu trạng thái)
+        function togSel() {
+            let p=photos[cur]; let ns=!(String(p.selected).toLowerCase()==='true'); p.selected=ns;
+            document.getElementById(`t-${cur}`).classList.toggle('sel', ns); show(cur);
+            
+            // 💡 PHẦN MỚI: Lưu trạng thái vào Local Storage sau khi thay đổi
+            luuTrangThaiLocally();
 
-        function mov(d){show(cur+d);}
-        async function finish(){
-            if(confirm("Gửi danh sách chọn?")) {
-                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
-                alert("✅ Đã gửi!");
-            }
-        }
-        
-        init();
-    </script>
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
+        }
+
+        function rate(n) {
+            let p=photos[cur]; p.rating=n; show(cur);
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, rating:n})});
+        }
+        function mov(d){show(cur+d);}
+        async function finish(){
+            if(confirm("Gửi danh sách chọn?")) {
+                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
+                alert("✅ Đã gửi!");
+            }
+        }
+        
+        init();
+    </script>
 </body>
 </html>
