@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -ử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -18,6 +18,7 @@
             --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
         }
         
+        /* Cấu trúc chính: body là flex column */
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
         /* HEADER VÀ TOOLBAR CHUNG */
@@ -122,7 +123,8 @@
         
         /* CHẾ ĐỘ 2: VIEWER */
         #photoViewer { 
-            position: absolute;
+            /* SỬA LỖI FLEXBOX */
+            position: absolute; 
             top: 0; left: 0; right: 0; bottom: 0;
             display: none; 
             flex-direction: column; 
@@ -130,9 +132,8 @@
             overflow: hidden;
             z-index: 50;
         }
-        /* SỬA LỖI FLEXBOX TRONG VIEWER */
         .stage { 
-            flex: 1; /* Cho phép stage chiếm hết không gian còn lại */
+            flex: 1; /* Cần flex: 1 để chiếm không gian còn lại */
             position: relative; 
             display: flex; 
             justify-content: center; 
@@ -141,14 +142,8 @@
             width: 100%; 
             overflow: hidden; 
         }
-        #mainImg { 
-            max-width: 100%; 
-            max-height: 100%; 
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            box-shadow: 0 0 20px #000; 
-        }
+        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
         
         /* THANH ĐIỀU KHIỂN CHUNG */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
@@ -343,7 +338,7 @@
                     
                     // Sự kiện click wrapper (CHỈ ĐỂ CẬP NHẬT FOCUS)
                     d.onclick = () => {
-                         // 💡 FIX: Nhấp đơn CHỈ cập nhật focus (cur)
+                         // Nhấp đơn CHỈ cập nhật focus (khung vàng)
                          cur = i;
                          capNhatSoThuTuVaTổngSố(); 
                     };
@@ -359,7 +354,7 @@
                     if (isSel) d.classList.add('sel');
                     
                     // Đánh dấu ảnh đang được focus (active)
-                    document.querySelectorAll('.grid-item-wrapper').forEach(item => item.classList.remove('active'));
+                    // Loại bỏ lớp active cũ trước khi gán mới (được xử lý trong quá trình render lại)
                     if (cur === i) d.classList.add('active'); 
                     
                     let thumb = getLink(p.id, 's500'); 
@@ -483,8 +478,12 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // Gọi cập nhật tổng thể để đảm bảo nút 'Chọn' hiển thị đúng trạng thái của ảnh cur
             capNhatSoThuTuVaTổngSố(); 
+
+            let isSel = selectedPhotoIds.includes(p.id);
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${isSel?'act':''}`; 
+            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
         // HÀM VẼ (Giữ nguyên)
@@ -550,9 +549,7 @@
 
             capNhatSoThuTuVaTổngSố();
 
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${ns?'act':''}`; 
-            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
+            // 💡 FIX: Cập nhật trạng thái nút (Đã được xử lý trong capNhatSoThuTuVaTổngSố)
             
             luuTrangThaiLocally(); 
 
