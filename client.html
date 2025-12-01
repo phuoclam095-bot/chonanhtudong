@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -  Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -206,7 +206,7 @@
         <div id="photoViewer">
             <div class="tools" id="tools">
                 <button class="t-btn act" onclick="setPen()">✏️</button>
-                <button class="t-btn" onclick="cls()">🗑️️</button>
+                <button class="t-btn" onclick="cls()">🗑️</button>
                 <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
                 <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
             </div>
@@ -284,7 +284,7 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
-            // FIX PERSISTENCE: Khóa Độc Lập FID
+            // FIX PERSISTENCE: Sử dụng Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             // Luôn lưu danh sách ID đã chọn
@@ -292,6 +292,9 @@
             
             // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
             localStorage.removeItem('anh_da_chon_cua_khach');
+            
+            // 💡 Thêm alert để xác nhận lưu thành công
+            alert("Đã lưu trạng thái!");
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -377,7 +380,7 @@
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
-                btnSel.disabled = false;
+                btnSel.disabled = isSelectionLocked;
 
                 if (currentView === 'viewer') {
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
