@@ -33,6 +33,7 @@
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 100;
         }
         .album-title { flex-grow: 1; text-align: center; } 
         .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
@@ -41,22 +42,22 @@
         .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
 
         /* KHU VỰC CHÍNH */
-        .main-container { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .main-container { flex: 1; position: relative; display: flex; flex-direction: column; overflow: hidden; }
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
             padding: var(--grid-gap); 
-            overflow-y: auto; 
+            overflow-y: auto; /* Cho phép cuộn nội dung lưới */
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
             gap: var(--grid-gap); /* Khoảng trống đều nhau */
             flex-grow: 1; 
+            position: relative; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
             background-size: cover; 
             background-position: center;
             background-attachment: fixed; 
-            position: relative; 
         }
         #photoGrid::before {
             content: "";
@@ -81,30 +82,12 @@
             align-items: center; /* Căn giữa dọc và ngang */
             background: rgba(0,0,0,0.5); 
         }
-        .grid-item-wrapper:hover {
-            border-color: rgba(255, 255, 255, 0.7); 
-            transform: translateY(-2px);
-        }
-        .grid-item-wrapper.sel { 
-            border-width: 4px; 
-            border-color: var(--blue-frame); 
-            transform: scale(1.02); 
-        }
-        .grid-item-wrapper.active {
-            border-width: 4px; 
-            border-color: var(--gold); 
-            transform: scale(1.02); 
-        }
-        .grid-item-wrapper.active.sel {
-             border-color: var(--gold); 
-        }
-        .grid-item-wrapper img { 
-            width: 100%; /* Chiếm toàn bộ khung */
-            height: 100%; /* Chiếm toàn bộ khung */
-            object-fit: cover; /* Cắt ảnh để lấp đầy khung */
-            display: block; 
-            border-radius: 6px; 
-        }
+        .grid-item-wrapper:hover { border-color: rgba(255, 255, 255, 0.7); transform: translateY(-2px); }
+        .grid-item-wrapper.sel { border-width: 4px; border-color: var(--blue-frame); transform: scale(1.02); }
+        .grid-item-wrapper.active { border-width: 4px; border-color: var(--gold); transform: scale(1.02); }
+        .grid-item-wrapper.active.sel { border-color: var(--gold); }
+        .grid-item-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 6px; }
+        
         /* DOT GRID: Số thứ tự */
         .grid-dot { 
             position: absolute; top: 8px; right: 8px; 
@@ -122,7 +105,8 @@
         
         /* CHẾ ĐỘ 2: VIEWER */
         #photoViewer { 
-            position: absolute;
+            /* SỬA LỖI FLEXBOX/VỊ TRÍ: Phủ kín toàn bộ main-container */
+            position: absolute; 
             top: 0; left: 0; right: 0; bottom: 0;
             display: none; 
             flex-direction: column; 
@@ -140,58 +124,15 @@
             width: 100%; 
             overflow: hidden; 
         }
-        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
-        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
-        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
-        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
-        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
-        .tools.active { display: flex; }
-        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
-        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-
+        
         /* THANH ĐIỀU KHIỂN CHUNG */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; width: 180px; } 
-        .p-count { font-size: 12px; color: #888; }
-        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; } 
-        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        .th.sel { opacity: 1; border-color: var(--blue-frame); } 
-        .th.sel.act { border-color: var(--gold); } 
-        .dot { 
-            position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
-            background: var(--gold); color: #000;
-            border-radius: 50%; 
-            font-size: 12px; font-weight: bold; 
-            text-align: center; line-height: 20px;
-            box-shadow: 0 0 4px #000; z-index: 10;
-            display: none; 
-        }
-        .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
+        .btn-send-list { background: #007bff; color: white; border-radius: 30px; padding: 8px 20px; font-weight: bold; margin-left: 10px; } /* Nút Gửi List riêng */
         
-        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
-        
-        /* OVERLAY KHÓA BÌNH CHỌN */
-        .locked-overlay {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            pointer-events: auto; /* Cho phép bắt sự kiện click */
-        }
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 20px; flex-direction: column; }
     </style>
 </head>
 <body>
@@ -216,7 +157,9 @@
                 <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
-            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
+            <button class="btn btn-done" onclick="luuTrangThaiLocally()">Lưu Chọn</button> 
+            
+            <button class="btn btn-send-list" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
         </div>
         
         <div id="photoGrid">
@@ -251,7 +194,7 @@
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
-        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
+        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection'; // Endpoint n8n
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
@@ -340,8 +283,6 @@
                     strip.appendChild(d);
                 });
                 
-                // ĐÁNH DẤU CHỌN TRÊN STRIP (cur)
-                document.querySelectorAll('.th').forEach(d => d.classList.remove('act'));
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -388,11 +329,14 @@
             }
 
             // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
-            const btnDone = document.querySelector('.btn-done');
-            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
+            const btnLuuChon = document.querySelector('.btn-done');
+            if (btnLuuChon) btnLuuChon.innerText = `Lưu Chọn (${count})`;
+            
+            // Cập nhật nút Gửi List
+            const btnGuiList = document.querySelector('.btn-send-list');
+            if (btnGuiList) btnGuiList.innerText = `🚀 Gửi List (${count})`;
+            
             document.getElementById('totalPhotos').innerText = photos.length;
-
-            // 4. Cập nhật tên album
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
             // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
@@ -402,7 +346,6 @@
             if (btnSel) {
                 btnSel.disabled = isSelectionLocked;
 
-                // 💡 FIX: Nút Chọn phải phản ánh đúng trạng thái ảnh đang được focus (cur)
                 btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                 btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
             }
