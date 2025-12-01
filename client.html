@@ -11,52 +11,69 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
-            /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 380px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 240px; /* Chiều cao hình chữ nhật nằm */
-            --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
+            --grid-item-size: 380px; 
+            --grid-item-height: 240px; 
+            --grid-gap: 10px; 
+            --header-height: 55px; /* Chiều cao header */
         }
         
+        /* Cấu trúc chính: body là flex column */
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
         
-        /* HEADER VÀ TOOLBAR CHUNG */
+        /* HEADER VÀ TOOLBAR CHUNG: Cố định vị trí và z-index cao */
         .header { 
             background: #155724; 
             color: white; 
-            padding: 15px 20px; 
-            text-align: center; 
-            font-size: 20px; 
-            font-weight: bold; 
-            flex-shrink: 0; 
+            padding: 10px 20px; 
+            height: var(--header-height);
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            z-index: 100; /* Đảm bảo nằm trên mọi thứ */
         }
-        .album-title { flex-grow: 1; text-align: center; } 
+        .album-title { font-size: 18px; font-weight: bold; flex-grow: 1; text-align: center; } 
         .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
         .view-btn { padding: 5px 10px; background: rgba(255, 255, 255, 0.2); border: none; color: white; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
-        .view-btn:hover { background: rgba(255, 255, 255, 0.4); }
         .view-btn.active { background: var(--gold); color: #000; font-weight: bold; }
 
-        /* KHU VỰC CHÍNH */
-        .main-container { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        /* THANH ĐIỀU KHIỂN CHUNG (Ctrl Bar) */
+        .ctrl { 
+            height: 65px; 
+            background: var(--panel); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0 20px; 
+            border-top: 1px solid #444; 
+            flex-shrink: 0; 
+            z-index: 90; /* Nằm dưới header */
+        }
+        .info { display: flex; flex-direction: column; width: 180px; } 
+        .p-count { font-size: 12px; color: #888; }
+        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
+        .btn-sel.act { background: var(--gold); color: #000; }
+        .btn-done { background: #28a745; color: white; border-radius: 5px; margin-left: 10px; } /* Đã thêm margin */
+
+        /* KHU VỰC CHÍNH CUỘN (Main Content) */
+        .main-container { 
+            flex: 1; 
+            overflow-y: auto; /* Cho phép nội dung cuộn */
+            position: relative; 
+        }
         
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
             padding: var(--grid-gap); 
-            overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
-            flex-grow: 1; 
-            background: var(--bg); 
-            background-image: var(--grid-bg-image); 
-            background-size: cover; 
-            background-position: center;
-            background-attachment: fixed; 
+            gap: var(--grid-gap); 
             position: relative; 
+            min-height: 100%;
         }
         #photoGrid::before {
             content: "";
@@ -75,10 +92,10 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            height: var(--grid-item-height); /* Đặt chiều cao cố định */
+            height: var(--grid-item-height); 
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc và ngang */
+            justify-content: center; 
+            align-items: center; 
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -95,92 +112,26 @@
             border-color: var(--gold); 
             transform: scale(1.02); 
         }
-        .grid-item-wrapper.active.sel {
-             border-color: var(--gold); 
-        }
-        .grid-item-wrapper img { 
-            width: 100%; /* Chiếm toàn bộ khung */
-            height: 100%; /* Chiếm toàn bộ khung */
-            object-fit: cover; /* Cắt ảnh để lấp đầy khung */
-            display: block; 
-            border-radius: 6px; 
-        }
-        /* DOT GRID: Số thứ tự */
-        .grid-dot { 
-            position: absolute; top: 8px; right: 8px; 
-            width: 28px; height: 28px; 
-            background: var(--gold); color: #000;
-            border-radius: 50%; 
-            font-size: 16px; font-weight: bold; 
-            text-align: center; line-height: 28px;
-            z-index: 3; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            display: flex; justify-content: center; align-items: center; 
-            display: none; 
-        }
+        .grid-item-wrapper.active.sel { border-color: var(--gold); }
+        
+        .grid-item-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 6px; }
+        .grid-dot { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; background: var(--gold); color: #000; border-radius: 50%; font-size: 16px; font-weight: bold; text-align: center; line-height: 28px; z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; display: none; }
         .grid-item-wrapper.sel .grid-dot { display: flex; }
         
-        /* CHẾ ĐỘ 2: VIEWER */
+        /* CHẾ ĐỘ 2: VIEWER (Đã sửa lỗi tràn màn hình) */
         #photoViewer { 
+            position: absolute; /* Đặt Viewer phủ kín main-container */
+            top: 0; left: 0; right: 0; bottom: 0;
             display: none; 
             flex-direction: column; 
-            flex-grow: 1; 
             background: var(--bg); 
-            overflow: hidden;
+            overflow: hidden; 
+            z-index: 50;
         }
         .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
-        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
-        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
-        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
-        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
-        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
-        .tools.active { display: flex; }
-        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
-        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-
-        /* THANH ĐIỀU KHIỂN CHUNG */
-        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; width: 180px; } 
-        .p-count { font-size: 12px; color: #888; }
-        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; } 
-        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        .th.sel { opacity: 1; border-color: var(--blue-frame); } 
-        .th.sel.act { border-color: var(--gold); } 
-        .dot { 
-            position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
-            background: var(--gold); color: #000;
-            border-radius: 50%; 
-            font-size: 12px; font-weight: bold; 
-            text-align: center; line-height: 20px;
-            box-shadow: 0 0 4px #000; z-index: 10;
-            display: none; 
-        }
-        .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
         
-        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
-        
-        /* OVERLAY KHÓA BÌNH CHỌN */
-        .locked-overlay {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            pointer-events: auto; /* Cho phép bắt sự kiện click */
-        }
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 20px; flex-direction: column; }
     </style>
 </head>
 <body>
@@ -193,20 +144,21 @@
             <button class="view-btn" id="btnViewer" onclick="setView('viewer')">🔍 Xem Chi Tiết</button>
         </div>
     </div>
+    
+    <div class="ctrl" id="commonCtrlBar">
+        <div class="info">
+            <div style="font-weight:bold; color:var(--gold)" id="pName">Chọn Ảnh Dạng Lưới</div>
+            <div class="p-count" id="pCount">Đã chọn: 0 ảnh</div>
+        </div>
+        <div style="display:flex; align-items:center">
+            <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
+            <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+        </div>
+        <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
+        <button class="btn btn-done" style="margin-left: 10px; background: #007bff;" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
+    </div>
 
     <div class="main-container">
-        
-        <div class="ctrl" id="commonCtrlBar">
-            <div class="info">
-                <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
-                <div class="p-count" id="pCount">0 / 0</div>
-            </div>
-            <div style="display:flex; align-items:center">
-                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
-                <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
-            </div>
-            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
-        </div>
         
         <div id="photoGrid">
         </div>
@@ -391,7 +343,7 @@
             if (btnSel) {
                 btnSel.disabled = isSelectionLocked;
 
-                // 💡 Nút Chọn phải phản ánh đúng trạng thái ảnh đang được focus (cur)
+                // Nút Chọn phải phản ánh đúng trạng thái ảnh đang được focus (cur)
                 btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                 btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
             }
@@ -486,12 +438,8 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
+            // Gọi cập nhật tổng thể để đảm bảo nút 'Chọn' hiển thị đúng trạng thái của ảnh cur
             capNhatSoThuTuVaTổngSố(); 
-
-            let isSel = selectedPhotoIds.includes(p.id);
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${isSel?'act':''}`; 
-            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
         // HÀM VẼ (Giữ nguyên)
