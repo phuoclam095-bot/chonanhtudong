@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -292,7 +292,6 @@
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
             } catch (e) {
                 console.error("LỖI LƯU TRỮ LOCAL STORAGE:", e);
-                // Cảnh báo khách hàng nếu việc lưu trữ thất bại
                 alert("LỖI: Trình duyệt không thể lưu trạng thái chọn. Vui lòng thử lại hoặc không refresh trang.");
             }
             
@@ -420,7 +419,7 @@
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
-                // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
+                // XÓA KHÓA CŨ (Rác)
                 localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
@@ -538,7 +537,7 @@
             }, 'image/png');
         }
 
-        // 💡 SỬA ĐỔI: TOGGLE SEL (Loại bỏ auto-save)
+        // SỬA ĐỔI: TOGGLE SEL (Loại bỏ auto-save)
         function togSel() {
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
@@ -559,25 +558,25 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            // KHÔNG LƯU CỤC BỘ Ở ĐÂY, CHỈ GỬI TÍN HIỆU CẬP NHẬT TỚI SERVER
+            // 💡 KHÔNG GỌI luuTrangThaiLocally() Ở ĐÂY!
+            
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
         function mov(d){show(cur+d);}
         
-        // 💡 HÀM MỚI: FINAL COMMIT (LƯU VÀ GỬI)
+        // 💡 HÀM MỚI: FINAL COMMIT (LƯU DỮ LIỆU BỀN VỮNG)
         async function finalCommit(){
             if(confirm("Lưu trạng thái chọn? Dữ liệu sẽ được lưu lại khi bạn tải lại trang.")) {
                 // 1. Thực hiện Lưu cục bộ để duy trì trạng thái
                 luuTrangThaiLocally(); 
                 
-                // 2. Tùy chọn: Gửi tín hiệu hoàn tất (URL_DONE) nếu cần
-                // await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
+                // 2. Gửi tín hiệu hoàn tất (URL_DONE)
+                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
                 
-                alert("✅ Đã Lưu Trạng Thái!");
-                
-                // Sau khi lưu, cập nhật lại bộ đếm trên nút
-                capNhatSoThuTuVaTổngSố();
+                // 3. Thông báo và cập nhật giao diện
+                alert("✅ Đã Lưu Trạng Thái và Gửi!");
+                capNhatSoThuTuVaTổngSố(); 
             }
         }
         
