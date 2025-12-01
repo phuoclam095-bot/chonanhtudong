@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -243,6 +243,7 @@
         const fid = urlParams.get('id');
 
         let selectedPhotoIds = []; 
+        let clickTimer = null; // Biến toàn cục để phân biệt click đơn/đúp
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
@@ -265,9 +266,8 @@
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none'; // Ẩn nút Vẽ khi ở Grid View
+                btnDraw.style.display = 'none'; 
                 
-                // Cập nhật thông tin trên thanh điều khiển cho Grid View
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
                 pCountElement.innerText = `Đã chọn: ${selectedPhotoIds.length} ảnh`;
                 
@@ -277,18 +277,16 @@
                 viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
-                btnDraw.style.display = 'block'; // Hiển thị nút Vẽ khi ở Viewer Mode
-                show(cur); // Đảm bảo Viewer Mode hiển thị ảnh đang chọn
+                btnDraw.style.display = 'block'; 
+                show(cur); 
             }
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
-            // Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             try {
-                 // Luôn lưu danh sách ID đã chọn
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
                 console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
             } catch (e) {
@@ -296,11 +294,10 @@
                 alert("LỖI: Trình duyệt không thể lưu trạng thái chọn.");
             }
             
-            // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
             localStorage.removeItem('anh_da_chon_cua_khach');
         }
 
-        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
         function capNhatSoThuTuVaTổngSố() {
             let count = selectedPhotoIds.length;
             
@@ -337,11 +334,17 @@
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
-                    // Sự kiện click wrapper (CHỈ ĐỂ CHUYỂN VIEW)
-                    d.onclick = () => {
-                         // 💡 SỬA LỖI: Nhấp đơn CHỈ chuyển View
-                         cur = i;
-                         setView('viewer');
+                    // Sự kiện click wrapper (CHẶN CLICK ĐƠN)
+                    d.onclick = (e) => {
+                        // Chặn hành động mặc định của Click đơn (như phóng to trên di động)
+                        e.preventDefault(); 
+                        
+                        // Khách hàng phải dùng nút "Chọn"
+                        
+                        // 💡 SỬA LỖI: Cần cập nhật ảnh đang được focus (cur) khi click vào Grid
+                        cur = i;
+                        capNhatSoThuTuVaTổngSố(); 
+                        
                     };
                     
                     // Sự kiện Double-click (MỞ VIEWER)
@@ -369,8 +372,6 @@
             const btnDone = document.querySelector('.btn-done');
             if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
-
-            // 4. Cập nhật tên album
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
             // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
