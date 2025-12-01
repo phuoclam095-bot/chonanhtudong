@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -287,12 +287,13 @@
             // Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
-            // Luôn lưu danh sách ID đã chọn
             try {
+                 // Luôn lưu danh sách ID đã chọn
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
+                console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
             } catch (e) {
                 console.error("LỖI LƯU TRỮ LOCAL STORAGE:", e);
-                alert("LỖI: Trình duyệt không thể lưu trạng thái chọn. Vui lòng thử lại hoặc không refresh trang.");
+                alert("LỖI: Trình duyệt không thể lưu trạng thái chọn.");
             }
             
             // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
@@ -336,16 +337,11 @@
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
-                    // Sự kiện click wrapper (CHỈ ĐỂ CHỌN/BỎ CHỌN)
+                    // Sự kiện click wrapper (CHỈ ĐỂ CHUYỂN VIEW)
                     d.onclick = () => {
-                        const oldCur = cur;
-                        cur = i;
-                        togSel();
-                        cur = oldCur; 
-                        
-                        if (currentView === 'grid') {
-                            capNhatSoThuTuVaTổngSố(); 
-                        }
+                         // 💡 SỬA LỖI: Nhấp đơn CHỈ chuyển View
+                         cur = i;
+                         setView('viewer');
                     };
                     
                     // Sự kiện Double-click (MỞ VIEWER)
@@ -385,9 +381,11 @@
                 btnSel.disabled = isSelectionLocked;
 
                 if (currentView === 'viewer') {
+                    // 💡 FIX: Nút 'Chọn' phải phản ánh đúng trạng thái ảnh đang xem
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
+                    // Khi ở Grid View, nút này chỉ phản ánh trạng thái chung
                     btnSel.className='btn btn-sel'; 
                     btnSel.innerText='Chọn';
                 }
@@ -419,7 +417,6 @@
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
-                // XÓA KHÓA CŨ (Rác)
                 localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
@@ -537,8 +534,9 @@
             }, 'image/png');
         }
 
-        // SỬA ĐỔI: TOGGLE SEL (Loại bỏ auto-save)
+        // 💡 TOGGLE SEL (Logic chính xác)
         function togSel() {
+            // HÀM NÀY CHỈ CHẠY KHI BẤM NÚT CHỌN TRÊN THANH ĐIỀU KHIỂN
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
             
@@ -558,8 +556,7 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            // 💡 KHÔNG GỌI luuTrangThaiLocally() Ở ĐÂY!
-            
+            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
