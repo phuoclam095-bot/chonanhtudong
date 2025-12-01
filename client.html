@@ -381,11 +381,9 @@
                 btnSel.disabled = isSelectionLocked;
 
                 if (currentView === 'viewer') {
-                    // 💡 FIX: Nút 'Chọn' phải phản ánh đúng trạng thái ảnh đang xem
                     btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                     btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                 } else {
-                    // Khi ở Grid View, nút này chỉ phản ánh trạng thái chung
                     btnSel.className='btn btn-sel'; 
                     btnSel.innerText='Chọn';
                 }
