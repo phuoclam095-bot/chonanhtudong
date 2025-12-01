@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -144,7 +144,7 @@
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
         
         /* THANH ĐIỀU KHIỂN CHUNG */
-        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 90; }
+        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; width: 180px; } 
         .p-count { font-size: 12px; color: #888; }
         .btn { padding: 8px 15px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; font-size: 14px; }
@@ -152,8 +152,6 @@
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 10px; }
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .btn-send-list { background: #007bff; color: white; border-radius: 30px; padding: 8px 15px; font-weight: bold; margin-left: 10px; } 
-        
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
@@ -197,7 +195,7 @@
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
             <button class="btn btn-done" onclick="luuTrangThaiLocally()">Lưu Chọn</button>
-            <button class="btn btn-send-list" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
+            <button class="btn btn-send-list" style="background: #007bff; margin-left: 10px;" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
         </div>
         
         <div id="photoGrid">
@@ -341,14 +339,13 @@
                     d.onclick = () => {
                          // Nhấp đơn CHỈ cập nhật focus (cur)
                          cur = i;
-                         capNhatSoThuTuVaTổngSố(); 
+                         setView('viewer'); // 💡 CHUYỂN NGAY SANG VIEWER MODE
                     };
                     
-                    // Sự kiện Double-click (MỞ VIEWER)
+                    // Sự kiện Double-click (BỎ)
                     d.ondblclick = (event) => {
                          event.preventDefault(); 
-                         cur = i;
-                         setView('viewer');
+                         // Chúng ta dùng single click để mở viewer, bỏ dblclick để tránh lỗi
                     }
 
                     let isSel = selectedPhotoIds.includes(p.id);
