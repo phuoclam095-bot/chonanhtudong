@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -81,12 +81,6 @@
             align-items: center; /* Căn giữa dọc và ngang */
             background: rgba(0,0,0,0.5); 
         }
-        /* THÊM KHUNG VÀNG KHI CHỈ CÓ FOCUS ĐƠN (active) */
-        .grid-item-wrapper.active {
-            border-width: 4px; 
-            border-color: var(--gold); 
-            transform: scale(1.02); 
-        }
         .grid-item-wrapper:hover {
             border-color: rgba(255, 255, 255, 0.7); 
             transform: translateY(-2px);
@@ -96,10 +90,14 @@
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
-        .grid-item-wrapper.active.sel {
-             border-color: var(--gold); /* Ưu tiên khung vàng khi đang là ảnh được xem */
+        .grid-item-wrapper.active {
+            border-width: 4px; 
+            border-color: var(--gold); 
+            transform: scale(1.02); 
         }
-        
+        .grid-item-wrapper.active.sel {
+             border-color: var(--gold); 
+        }
         .grid-item-wrapper img { 
             width: 100%; /* Chiếm toàn bộ khung */
             height: 100%; /* Chiếm toàn bộ khung */
@@ -347,9 +345,9 @@
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
-                    // Sự kiện click wrapper (CHỈ ĐỂ CHUYỂN VIEW)
+                    // Sự kiện click wrapper (CHỈ ĐỂ CẬP NHẬT FOCUS)
                     d.onclick = () => {
-                         // 💡 FIX LỖI: Nhấp đơn không làm gì ngoài cập nhật Focus
+                         // 💡 FIX: Nhấp đơn CHỈ cập nhật focus (cur)
                          cur = i;
                          capNhatSoThuTuVaTổngSố(); 
                     };
@@ -364,7 +362,7 @@
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
                     
-                    // Thêm class 'active' (Focus) nếu nó là ảnh đang được focus
+                    // Đánh dấu ảnh đang được focus (active)
                     if (cur === i) d.classList.add('active'); 
                     
                     let thumb = getLink(p.id, 's500'); 
@@ -563,7 +561,8 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
+            luuTrangThaiLocally(); 
+
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
