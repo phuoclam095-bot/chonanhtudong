@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -197,7 +197,7 @@
                 <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
-            <button class="btn btn-done" onclick="finalCommit()">🚀 Gửi List</button>
+            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button> 
         </div>
         
         <div id="photoGrid">
@@ -284,7 +284,7 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
-            // FIX PERSISTENCE: Sử dụng Khóa Độc Lập FID
+            // Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             // Luôn lưu danh sách ID đã chọn
@@ -294,7 +294,7 @@
             localStorage.removeItem('anh_da_chon_cua_khach');
             
             // 💡 Thêm alert để xác nhận lưu thành công
-            alert("Đã lưu trạng thái!");
+            // alert("Đã lưu trạng thái!"); // Tắt alert để tránh làm phiền khách
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -417,7 +417,7 @@
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
-                // FIX: Xóa khóa cũ để tránh xung đột dữ liệu rác
+                // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
                 localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
@@ -425,6 +425,7 @@
                         const loadedIds = JSON.parse(duLieuDaLuuJSON);
                         if (Array.isArray(loadedIds)) {
                             selectedPhotoIds = loadedIds;
+                            console.log(`✅ Nạp thành công ${selectedPhotoIds.length} ảnh từ FID ${fid}.`);
                         } else {
                             selectedPhotoIds = [];
                         }
@@ -447,6 +448,7 @@
 
                 document.getElementById('load').style.display='none';
                 
+                // GỌI CẬP NHẬT GIAO DIỆN SAU KHI DỮ LIỆU ẢNH VÀ DỮ LIỆU CHỌN ĐÃ ĐƯỢC NẠP
                 capNhatSoThuTuVaTổngSố(); 
                 setView('grid'); 
                 
