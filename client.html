@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh -  Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -197,7 +197,7 @@
                 <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
-            <button class="btn btn-done" onclick="finish()">🚀 Gửi List</button>
+            <button class="btn btn-done" onclick="finalCommit()">🚀 Gửi List</button>
         </div>
         
         <div id="photoGrid">
@@ -206,7 +206,7 @@
         <div id="photoViewer">
             <div class="tools" id="tools">
                 <button class="t-btn act" onclick="setPen()">✏️</button>
-                <button class="t-btn" onclick="cls()">🗑️</button>
+                <button class="t-btn" onclick="cls()">🗑️️</button>
                 <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
                 <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
             </div>
@@ -241,10 +241,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
-        
-        // SỬ DỤNG KHÓA ĐỘC LẬP THEO FID
-        const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-        
+
         let selectedPhotoIds = []; 
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
@@ -285,10 +282,16 @@
             }
         }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Đảm bảo lưu ID độc lập theo FID)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
+            // FIX PERSISTENCE: Khóa Độc Lập FID
+            const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+            
             // Luôn lưu danh sách ID đã chọn
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
+            
+            // XÓA KHÓA CŨ (Rác) nếu nó tồn tại, để tránh đọc nhầm dữ liệu
+            localStorage.removeItem('anh_da_chon_cua_khach');
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
@@ -363,7 +366,7 @@
 
             // 3. Cập nhật nút "Gửi List" và Tổng số ảnh trên thanh điều khiển chung
             const btnDone = document.querySelector('.btn-done');
-            if (btnDone) btnDone.innerText = `🚀 Gửi List (${count})`;
+            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
 
             // 4. Cập nhật tên album
@@ -408,9 +411,11 @@
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
                 // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Bền vững)
-                // KHÓA ĐỘC LẬP
-                const LOCAL_STORAGE_KEY_FID = 'anh_da_chon_cua_khach_' + fid;
-                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY_FID);
+                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+                
+                // FIX: Xóa khóa cũ để tránh xung đột dữ liệu rác
+                localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
                     try {
@@ -554,7 +559,7 @@
         }
         
         function mov(d){show(cur+d);}
-        async function finish(){
+        async function finalCommit(){
             if(confirm("Gửi danh sách chọn?")) {
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
                 alert("✅ Đã gửi!");
