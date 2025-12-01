@@ -33,6 +33,7 @@
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 100;
         }
         .album-title { flex-grow: 1; text-align: center; } 
         .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
@@ -46,17 +47,17 @@
         /* CHẾ ĐỘ 1: GRID VIEW */
         #photoGrid { 
             padding: var(--grid-gap); 
-            overflow-y: auto; 
+            overflow-y: auto; /* Cho phép cuộn nội dung lưới */
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
+            gap: var(--grid-gap); 
             flex-grow: 1; 
+            position: relative; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
             background-size: cover; 
             background-position: center;
             background-attachment: fixed; 
-            position: relative; 
         }
         #photoGrid::before {
             content: "";
@@ -77,8 +78,8 @@
             z-index: 1; 
             height: var(--grid-item-height); /* Đặt chiều cao cố định */
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc và ngang */
+            justify-content: center; 
+            align-items: center; 
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
@@ -122,13 +123,12 @@
         
         /* CHẾ ĐỘ 2: VIEWER */
         #photoViewer { 
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            /* ĐÃ SỬA: Loại bỏ vị trí tuyệt đối khỏi main-container */
             display: none; 
             flex-direction: column; 
+            flex-grow: 1; 
             background: var(--bg); 
             overflow: hidden;
-            z-index: 50;
         }
         /* FIX: Stage chiếm hết không gian giữa thanh điều khiển và strip */
         .stage { 
@@ -141,15 +141,7 @@
             width: 100%; 
             overflow: hidden; 
         }
-        /* QUAN TRỌNG: Đảm bảo ảnh luôn vừa khung nhìn */
-        #mainImg { 
-            max-width: 100%; 
-            max-height: 100%; 
-            width: auto; 
-            height: auto; 
-            object-fit: contain; 
-            box-shadow: 0 0 20px #000; 
-        }
+        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
         
         /* THANH ĐIỀU KHIỂN CHUNG */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
@@ -204,8 +196,8 @@
                 <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
-            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
-            <button class="btn btn-send-list" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
+            <button class="btn btn-done" onclick="luuTrangThaiLocally()">Lưu Chọn</button>
+            <button class="btn btn-send-list" onclick="finalCommit()">🚀 Gửi List</button> 
         </div>
         
         <div id="photoGrid">
