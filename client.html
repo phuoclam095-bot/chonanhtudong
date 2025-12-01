@@ -206,7 +206,7 @@
         <div id="photoViewer">
             <div class="tools" id="tools">
                 <button class="t-btn act" onclick="setPen()">✏️</button>
-                <button class="t-btn" onclick="cls()">🗑️</button>
+                <button class="t-btn" onclick="cls()">🗑️️</button>
                 <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
                 <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
             </div>
@@ -284,6 +284,7 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
+            // FIX PERSISTENCE: Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             // Luôn lưu danh sách ID đã chọn
@@ -421,7 +422,6 @@
                         const loadedIds = JSON.parse(duLieuDaLuuJSON);
                         if (Array.isArray(loadedIds)) {
                             selectedPhotoIds = loadedIds;
-                             console.log(`✅ Nạp thành công ${selectedPhotoIds.length} ảnh từ Local Storage.`);
                         } else {
                             selectedPhotoIds = [];
                         }
