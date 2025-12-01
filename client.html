@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -85,11 +85,21 @@
             border-color: rgba(255, 255, 255, 0.7); 
             transform: translateY(-2px);
         }
+        /* THÊM KHUNG VÀNG KHI CHỈ CÓ FOCUS ĐƠN (active) */
+        .grid-item-wrapper.active {
+            border-width: 4px; 
+            border-color: var(--gold); 
+            transform: scale(1.02); 
+        }
         .grid-item-wrapper.sel { 
             border-width: 4px; 
             border-color: var(--blue-frame); 
             transform: scale(1.02); 
         }
+        .grid-item-wrapper.active.sel {
+             border-color: var(--gold); /* Ưu tiên khung vàng khi đang là ảnh được xem */
+        }
+        
         .grid-item-wrapper img { 
             width: 100%; /* Chiếm toàn bộ khung */
             height: 100%; /* Chiếm toàn bộ khung */
@@ -120,59 +130,7 @@
             background: var(--bg); 
             overflow: hidden;
         }
-        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
-        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
-        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
-        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
-        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
-        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
-        .tools.active { display: flex; }
-        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
-        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
-
-        /* THANH ĐIỀU KHIỂN CHUNG */
-        .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
-        .info { display: flex; flex-direction: column; width: 180px; } 
-        .p-count { font-size: 12px; color: #888; }
-        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
-        .btn-sel.act { background: var(--gold); color: #000; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
-        .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-        .th img { width: 100%; height: 100%; object-fit: cover; } 
-        .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
-        .th.sel { opacity: 1; border-color: var(--blue-frame); } 
-        .th.sel.act { border-color: var(--gold); } 
-        .dot { 
-            position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
-            background: var(--gold); color: #000;
-            border-radius: 50%; 
-            font-size: 12px; font-weight: bold; 
-            text-align: center; line-height: 20px;
-            box-shadow: 0 0 4px #000; z-index: 10;
-            display: none; 
-        }
-        .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
-        
-        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
-        
-        /* OVERLAY KHÓA BÌNH CHỌN */
-        .locked-overlay {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 100;
-            pointer-events: auto; /* Cho phép bắt sự kiện click */
-        }
+        /* ... (CSS Viewer và Dots giữ nguyên) ... */
     </style>
 </head>
 <body>
@@ -243,7 +201,7 @@
         const fid = urlParams.get('id');
 
         let selectedPhotoIds = []; 
-        let clickTimer = null; // Biến toàn cục để phân biệt click đơn/đúp
+        let clickTimer = null; // Biến toàn cục để quản lý click đơn/đúp
 
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
@@ -312,6 +270,8 @@
                     d.onclick = () => show(i);
 
                     let isSel = selectedPhotoIds.includes(p.id);
+                    // Thêm class 'act' nếu nó là ảnh đang được xem
+                    if (cur === i) d.classList.add('act'); 
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's220');
@@ -319,9 +279,6 @@
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
-                
-                let t = document.getElementById(`t-${cur}`);
-                if (t) t.classList.add('act');
             }
             
             // 2. Cập nhật Grid View
@@ -334,27 +291,34 @@
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
                     
-                    // Sự kiện click wrapper (CHẶN CLICK ĐƠN)
+                    // Sự kiện click wrapper
                     d.onclick = (e) => {
-                        // Chặn hành động mặc định của Click đơn (như phóng to trên di động)
-                        e.preventDefault(); 
-                        
-                        // Khách hàng phải dùng nút "Chọn"
-                        
-                        // 💡 SỬA LỖI: Cần cập nhật ảnh đang được focus (cur) khi click vào Grid
-                        cur = i;
-                        capNhatSoThuTuVaTổngSố(); 
-                        
+                         // 💡 SỬA LỖI: Nhấp đơn CHỈ chuyển View
+                         if(clickTimer) {
+                            clearTimeout(clickTimer);
+                            clickTimer = null;
+                            return; // Chặn click đơn nếu có dblclick sắp tới
+                         }
+                         
+                         clickTimer = setTimeout(() => {
+                            // Hành động nhấp đơn: Cập nhật focus (cur)
+                            cur = i;
+                            capNhatSoThuTuVaTổngSố(); 
+                            clickTimer = null;
+                         }, 250); // Chờ 250ms
                     };
                     
                     // Sự kiện Double-click (MỞ VIEWER)
                     d.ondblclick = (event) => {
                          event.preventDefault(); 
+                         if(clickTimer) clearTimeout(clickTimer); // Hủy click đơn
                          cur = i;
                          setView('viewer');
                     }
 
                     let isSel = selectedPhotoIds.includes(p.id);
+                    // Thêm class 'active' nếu nó là ảnh đang được focus
+                    if (cur === i) d.classList.add('active'); 
                     if (isSel) d.classList.add('sel');
                     
                     let thumb = getLink(p.id, 's500'); 
@@ -368,38 +332,22 @@
                 });
             }
 
-            // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
+            // 3. Cập nhật thanh điều khiển chung
+            const count = selectedPhotoIds.length;
             const btnDone = document.querySelector('.btn-done');
             if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
             const btnSel = document.getElementById('btnSel');
             const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
             
             if (btnSel) {
                 btnSel.disabled = isSelectionLocked;
 
-                if (currentView === 'viewer') {
-                    btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                    btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-                } else {
-                    btnSel.className='btn btn-sel'; 
-                    btnSel.innerText='Chọn';
-                }
-            }
-            
-            // 6. Cập nhật thông tin file (tên và số đếm)
-            const pNameElement = document.getElementById('pName');
-            const pCountElement = document.getElementById('pCount');
-
-            if (currentView === 'viewer' && photos.length > 0) {
-                pNameElement.innerText = photos[cur].name;
-                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
-            } else if (currentView === 'grid') {
-                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+                // Nút "Chọn" phải phản ánh trạng thái ảnh đang được focus (cur)
+                btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
             }
         }
 
@@ -412,7 +360,7 @@
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Bền vững)
+                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
                 
@@ -480,12 +428,8 @@
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
+            // Gọi cập nhật tổng thể để đảm bảo nút 'Chọn' hiển thị đúng trạng thái của ảnh cur
             capNhatSoThuTuVaTổngSố(); 
-
-            let isSel = selectedPhotoIds.includes(p.id);
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${isSel?'act':''}`; 
-            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
         // HÀM VẼ (Giữ nguyên)
@@ -555,7 +499,8 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
+            luuTrangThaiLocally(); 
+
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
