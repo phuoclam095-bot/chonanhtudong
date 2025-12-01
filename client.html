@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -206,7 +206,7 @@
         <div id="photoViewer">
             <div class="tools" id="tools">
                 <button class="t-btn act" onclick="setPen()">✏️</button>
-                <button class="t-btn" onclick="cls()">🗑️️</button>
+                <button class="t-btn" onclick="cls()">🗑️</button>
                 <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
                 <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
             </div>
@@ -284,7 +284,7 @@
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
         function luuTrangThaiLocally() {
-            // FIX PERSISTENCE: Khóa Độc Lập FID
+            // Khóa Độc Lập FID
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             // Luôn lưu danh sách ID đã chọn
@@ -524,50 +524,4 @@
             cvs.toBlob(async function(blob) {
                 let fd=new FormData();
                 fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
-                fd.append('photoId', photos[cur].id);
-                try {
-                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
-                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
-                } catch(e) { alert("Lỗi: "+e.message); }
-            }, 'image/png');
-        }
-
-        // SỬA ĐỔI: TOGGLE SEL (Logic chính xác)
-        function togSel() {
-            let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); 
-            
-            if (ns) {
-                selectedPhotoIds.push(p.id);
-            } else {
-                const index = selectedPhotoIds.indexOf(p.id);
-                if (index > -1) {
-                    selectedPhotoIds.splice(index, 1);
-                }
-            }
-            p.selected = ns ? 'true' : 'false';
-
-            capNhatSoThuTuVaTổngSố();
-
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${ns?'act':''}`; 
-            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
-            
-            luuTrangThaiLocally(); 
-
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
-        }
-        
-        function mov(d){show(cur+d);}
-        async function finalCommit(){
-            if(confirm("Gửi danh sách chọn?")) {
-                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
-                alert("✅ Đã gửi!");
-            }
-        }
-        
-        init();
-    </script>
-</body>
-</html>
-
+                fd.append('photoId', photos[cur
