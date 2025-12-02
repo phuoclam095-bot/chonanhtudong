@@ -45,7 +45,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s;
-            display: flex; /* Đảm bảo nút đăng nhập có thể hiển thị flex */
+            display: flex; 
             align-items: center;
             gap: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -66,6 +66,15 @@
             width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
         }
         input:focus { border-color: var(--primary-green); }
+
+        /* PREVIEW BOX */
+        .preview-box {
+            border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; 
+            padding: 10px; border-radius: 5px; margin-bottom: 20px; 
+            display: none; /* Mặc định ẩn */
+        }
+        .preview-box p { margin: 0; }
+        .preview-box a { color: var(--dark-green); word-break: break-all; }
 
         /* TOGGLES */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
@@ -124,10 +133,14 @@
             <h2>Bắt Đầu Tạo Album Ảnh Để Chọn</h2>
             
             <div class="form-group">
-                <label>Hỗ trợ link từ thư mục Google Drive <a href="#" style="color:var(--primary-green); text-decoration: underline;">hướng dẫn</a></label>
-                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
+                <label>Dán Link Thư mục Google Drive vào đây <a href="#" style="color:var(--primary-green); text-decoration: underline;">hướng dẫn</a></label>
+                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/..." oninput="checkDriveLink()">
             </div>
             
+            <div id="previewBox" class="preview-box">
+                <p style="margin-bottom: 5px; font-weight: bold;">Tên Album: <span id="previewFolderName" style="color: var(--dark-green);">...</span></p>
+                <p style="font-size: 14px;">Link Khách: <a href="#" id="previewClientLink" target="_blank">Copy link</a></p>
+            </div>
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
@@ -174,18 +187,17 @@
 
     <script>
         // *************************************************************
-        // ✅ CẤU HÌNH GOOGLE/N8N (ĐÃ XÁC NHẬN)
+        // ✅ CẤU HÌNH GOOGLE/N8N
         // *************************************************************
         const GOOGLE_CONFIG = {
-            // CLIENT ID ĐƯỢC XÁC NHẬN TỪ TỆP BÍ MẬT CỦA BẠN
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
-            
-            // WEBHOOK N8N CẦN CHUYỂN HƯỚNG TỚI
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
-            
-            SCOPE: 'openid profile email'
+            // Phạm vi tối thiểu, không cần Drive Scope vì đã chuyển sang dùng Webhook tĩnh
+            SCOPE: 'openid profile email' 
         };
         const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        // ✅ WEBHOOK MỚI ĐỂ LẤY TÊN THƯ MỤC
+        const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info'; 
 
         // *************************************************************
         // 💡 LOGIC ĐĂNG NHẬP (OAUTH FLOW & LOCAL STORAGE)
@@ -213,12 +225,13 @@
         function logoutAdmin() {
             localStorage.removeItem('admin_is_logged_in');
             localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name'); // Xóa tên
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); // Xóa token (nếu có)
             updateUI();
         }
 
         /**
-         * 3. Hàm cập nhật trạng thái UI (Ưu tiên hiển thị TÊN)
+         * 3. Hàm cập nhật trạng thái UI (Hiển thị TÊN)
          */
         function updateUI(email = null, expiration = '90 ngày') {
             const adminTools = document.getElementById('adminTools');
@@ -237,7 +250,7 @@
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (userControl) userControl.style.display = 'flex';
                 
-                // ✅ GẮN TÊN NGƯỜI DÙNG LÊN HEADER
+                // GẮN TÊN NGƯỜI DÙNG LÊN HEADER
                 userEmailDisplay.innerText = storedName || storedEmail || 'Admin';
                 
                 if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
@@ -256,7 +269,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             const authStatus = urlParams.get('auth_status'); 
             const userEmail = urlParams.get('user_email');
-            const userName = urlParams.get('user_name'); // Lấy tham số tên mới
+            const userName = urlParams.get('user_name'); 
+            const accessToken = urlParams.get('access_token'); // Giữ lại để đề phòng cần dùng sau này
 
             if (authStatus === 'success' && userEmail) {
                 // Xóa tham số URL
@@ -266,6 +280,10 @@
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', userEmail);
                 
+                if (accessToken) {
+                    localStorage.setItem('google_access_token', accessToken); 
+                }
+
                 // LƯU TÊN: Nếu có tên, lưu tên. Nếu không, lưu email.
                 if (userName) {
                     localStorage.setItem('admin_name', userName);
@@ -276,31 +294,69 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM (GIỮ NGUYÊN)
+        // 💡 LOGIC TẠO ALBUM & PREVIEW LINK (MỚI)
         // *************************************************************
+        
+        // Hàm trích xuất Folder ID từ link
+        function extractFolderId(link) {
+            if (!link) return null;
+            let cleanedLink = link.split('?')[0]; 
+            const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
+            return match && match[1] ? match[1] : null;
+        }
 
-        async function createAlbum() {
-            const btn = document.querySelector('.btn-create');
-            const driveLink = document.getElementById('driveLink').value;
+        /**
+         * ✅ HÀM MỚI: Lắng nghe sự kiện dán/nhập link và gọi n8n để lấy thông tin Folder
+         */
+        async function checkDriveLink() {
+            const driveLinkInput = document.getElementById('driveLink');
+            const folderId = extractFolderId(driveLinkInput.value);
+            const previewBox = document.getElementById('previewBox');
+            const previewFolderName = document.getElementById('previewFolderName');
+            const previewClientLink = document.getElementById('previewClientLink');
             
-            if (!driveLink) {
-                alert("Vui lòng dán link Google Drive vào!");
+            if (!folderId) {
+                previewBox.style.display = 'none';
                 return;
             }
 
-            // 1. TRÍCH XUẤT ID
-            let folderId = "";
             try {
-                let cleanedLink = driveLink.split('?')[0]; 
-                const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
-                if (match && match[1]) {
-                    folderId = match[1];
-                } else {
-                    alert("Link Google Drive không đúng định dạng!");
-                    return;
-                }
+                previewFolderName.innerText = 'Đang tìm tên thư mục...';
+                previewBox.style.display = 'block';
+
+                // Gọi Webhook n8n mới (Workflow get-folder-info)
+                const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
+                const data = await res.json();
+                
+                const name = data.folderName || 'Không tìm thấy tên (Lỗi)';
+                const link = data.clientLink || '#';
+                
+                // Hiển thị kết quả lên Preview Box
+                previewFolderName.innerText = name;
+                previewClientLink.href = link;
+                previewClientLink.innerText = link; 
+
+                // ✅ QUAN TRỌNG: Cập nhật lại giá trị input bằng Folder ID (để createAlbum() dễ xử lý)
+                driveLinkInput.value = folderId; 
+
             } catch (e) {
-                return alert("Lỗi xử lý link Drive: " + e.message);
+                previewFolderName.innerText = 'Lỗi truy vấn Drive (Vui lòng kiểm tra lại link hoặc n8n).';
+                previewClientLink.innerText = 'Lỗi kết nối.';
+            }
+        }
+
+
+        /**
+         * 5. Hàm chính tạo Album
+         */
+        async function createAlbum() {
+            const btn = document.querySelector('.btn-create');
+            const driveLinkInput = document.getElementById('driveLink');
+            const folderId = driveLinkInput.value; // Lấy giá trị Folder ID (đã được cập nhật từ checkDriveLink)
+            
+            if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
+                alert("Vui lòng dán link Google Drive hợp lệ!");
+                return;
             }
 
             // 2. GỌI N8N ĐỂ TẠO DỮ LIỆU
@@ -323,12 +379,8 @@
                 });
 
                 if (response.ok) {
-                    // 3. TẠO LINK TUYỆT ĐỐI
-                    let currentPath = localStorage.getItem('current_admin_path') || window.location.href.split('?')[0];
-                    const directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-                    const clientFileName = 'client.html'; // Tên file client
-                    const clientLink = `${directoryPath}${clientFileName}?id=${folderId}`;
-
+                    // 3. Lấy link client từ Preview Box
+                    const clientLink = document.getElementById('previewClientLink').href;
                     prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
                 } else {
                     alert("Lỗi kết nối n8n. Vui lòng kiểm tra n8n đã lắng nghe chưa.");
@@ -342,10 +394,15 @@
             }
         }
         
-        // 5. Khởi tạo trang: Luôn kiểm tra callback trước khi cập nhật UI
+        // 6. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthCallback();
             updateUI();
+            
+            // Nếu có link trong input khi tải trang, chạy checkDriveLink (Ví dụ: từ F5)
+            if (document.getElementById('driveLink').value) {
+                checkDriveLink();
+            }
         });
         
     </script>
