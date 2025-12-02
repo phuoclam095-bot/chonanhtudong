@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Bạc Liêu</title>
+    <title>Thư Viện Ảnh -ct Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -239,10 +239,10 @@
 
     <script>
         // Lệnh báo lỗi nếu cache không được xóa
-        if (localStorage.getItem('layout_version') !== 'V16.2') { 
-            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.2.');
+        if (localStorage.getItem('layout_version') !== 'V16.3') { 
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.3.');
         }
-        localStorage.setItem('layout_version', 'V16.2'); 
+        localStorage.setItem('layout_version', 'V16.3'); 
 
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
@@ -289,7 +289,7 @@
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
                 btnDraw.style.display = 'block'; 
-                // GỌI SHOW để đảm bảo Tải Ảnh, Cập nhật thông tin và nút CHỌN chính xác
+                // Quan trọng: Luôn gọi show(cur) để đồng bộ trạng thái nút
                 show(cur); 
             }
         }
@@ -337,7 +337,7 @@
                     strip.appendChild(d);
                 });
                 
-                // V16.2: Đảm bảo class 'act' (sáng) được đặt lại chính xác
+                // Đảm bảo item đang xem trong strip luôn sáng (act)
                 document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
@@ -365,11 +365,9 @@
                         // 2. Cập nhật ảnh đang được focus (cur)
                         cur = i;
                         
-                        // 3. Cập nhật thông tin trên thanh điều khiển chung (chuyển sang mode viewer ảo)
+                        // 3. CẬP NHẬT NÚT CHỌN/ĐÃ CHỌN KHI CLICK TRÊN GRID (Đồng bộ)
                         const isSelCur = selectedPhotoIds.includes(photos[cur].id);
                         let btnSel = document.getElementById('btnSel');
-                        
-                        // Cập nhật nút Chọn và thông tin file để người dùng có thể Chọn/Bỏ Chọn ngay trên lưới
                         btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                         btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                         
@@ -387,7 +385,7 @@
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
                     
-                    // V16.2: Giữ lại trạng thái focused nếu nó đang là ảnh cur
+                    // Giữ lại trạng thái focused nếu nó đang là ảnh cur (khi refresh capNhatSoThuTuVaTổngSố)
                     if (i === cur && currentView === 'grid') {
                         d.classList.add('focused');
                     }
@@ -414,8 +412,11 @@
             const pCountElement = document.getElementById('pCount');
 
             if (currentView === 'grid') {
-                // Đảm bảo không ghi đè nếu đã có focus từ click đơn
-                // Logic cập nhật pName/pCount khi click đơn đã ở trong d.onclick
+                // Đảm bảo thanh điều khiển chung hiển thị thông tin tổng quan khi ở grid mode (chỉ khi không có focus)
+                if (document.querySelectorAll('.grid-item-wrapper.focused').length === 0) {
+                     pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
+                     pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+                }
             } else if (currentView === 'viewer' && photos.length > 0) {
                 pNameElement.innerText = photos[cur].name;
                 pCountElement.innerText = `${cur + 1} / ${photos.length}`;
@@ -490,10 +491,10 @@
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
             
-            // V16.2: Cập nhật lại class ACT trên Strip sau khi capNhatSoThuTuVaTổngSố đã vẽ lại
+            // 1. Cập nhật lại strip và count (Quan trọng)
             capNhatSoThuTuVaTổngSố(); 
-            
-            // Cập nhật nút Chọn/Đã Chọn cho viewer (CHÍNH XÁC)
+
+            // 2. Cập nhật nút Chọn/Đã Chọn cho viewer (CHÍNH XÁC VÀ CUỐI CÙNG)
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${isSel?'act':''}`; 
@@ -551,7 +552,7 @@
             if (photos.length === 0) return;
             
             let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); 
+            let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới
             
             if (ns) {
                 selectedPhotoIds.push(p.id);
@@ -579,7 +580,6 @@
                     gridItem.classList.add('focused'); 
                 }
             } 
-            // V16.2: Không cần cập nhật strip/thumb ở đây nữa vì đã gọi capNhatSoThuTuVaTổngSố()
             
             // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
