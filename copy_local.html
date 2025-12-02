@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sao Chép Ảnh Cục Bộ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS Cơ Bản (Tương tự Admin) */
+        :root { --primary-green: #147a30; --dark-green: #0e5a22; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; color: #333; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .header { background: var(--primary-green); color: white; padding: 15px 40px; width: 100%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .logo { font-size: 24px; font-weight: bold; }
+        .nav-links a { color: white; text-decoration: none; font-size: 14px; margin-left: 20px; }
+        
+        .main-container { padding: 40px 20px; width: 100%; max-width: 500px; }
+        .copy-card { background: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-top: 0; margin-bottom: 30px; color: var(--dark-green); }
+        
+        .dir-selection { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .dir-item { text-align: center; }
+        .dir-item button { background: var(--primary-green); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .dir-item button:hover { background: var(--dark-green); }
+        .dir-display { font-size: 14px; margin-top: 5px; min-height: 20px; }
+
+        input[type="text"], textarea { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; margin-bottom: 15px; resize: none;}
+        
+        #copyButton { background: var(--primary-green); color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; }
+        #copyButton:disabled { background: #ccc; cursor: not-allowed; }
+        #copyButton:hover:not(:disabled) { background: var(--dark-green); }
+
+        #statusDisplay { margin-top: 20px; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; }
+        .warning-box { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 14px; text-align: center; margin-top: 15px; border: 1px solid #ffeeba; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo"><i class="fas fa-copy"></i> Sao Chép Ảnh Cục Bộ</div>
+        <div class="nav-links">
+            <a href="admin.html"><i class="fas fa-arrow-left"></i> Trở về Admin</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="copy-card">
+            <h2>Sao Chép Ảnh Giữa Thư Mục Máy Tính</h2>
+
+            <div class="dir-selection">
+                <div class="dir-item">
+                    <button onclick="selectDirectory('source')">📂 Chọn Thư mục Nguồn</button>
+                    <div id="sourceDirDisplay" class="dir-display" style="color:#d9534f;">Chưa chọn thư mục nguồn</div>
+                </div>
+                
+                <div class="dir-item">
+                    <button onclick="selectDirectory('destination')">➕ Chọn Thư mục Đích</button>
+                    <div id="destDirDisplay" class="dir-display" style="color:#5cb85c;">Chưa chọn thư mục đích</div>
+                </div>
+            </div>
+
+            <label for="filenamesInput">Nhập tên file, cách nhau bằng dấu phẩy (file1.jpg, file2.nef, ...)</label>
+            <textarea id="filenamesInput" rows="5" placeholder="Ví dụ: IMG_1234.JPG, IMG_1235.JPG, ..."></textarea>
+
+            <button id="copyButton" onclick="startCopyProcess()">
+                <i class="fas fa-clone"></i> Thực Hiện Sao Chép
+            </button>
+            
+            <div id="statusDisplay"></div>
+            
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i> Chức năng này chỉ hoạt động với trình duyệt **Chrome và Edge** và **yêu cầu cấp quyền** cho mỗi thư mục.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // *************************************************************
+        // LOGIC SAO CHÉP CỤC BỘ (CLIENT-SIDE)
+        // *************************************************************
+        
+        let sourceDirectoryHandle = null;
+        let destinationDirectoryHandle = null;
+
+        const SOURCE_DISPLAY_ID = 'sourceDirDisplay';
+        const DEST_DISPLAY_ID = 'destDirDisplay';
+        const FILENAMES_INPUT_ID = 'filenamesInput';
+        const STATUS_DISPLAY_ID = 'statusDisplay';
+        const COPY_BUTTON_ID = 'copyButton';
+
+        /**
+         * Mở hộp thoại chọn thư mục và lưu Directory Handle
+         */
+        async function selectDirectory(type) {
+            if (!('showDirectoryPicker' in window)) {
+                alert("Trình duyệt của bạn (Chỉ Chrome/Edge) không hỗ trợ chức năng này!");
+                return;
+            }
+
+            try {
+                // Yêu cầu người dùng chọn thư mục
+                const handle = await window.showDirectoryPicker(); 
+                const displayElement = document.getElementById(type === 'source' ? SOURCE_DISPLAY_ID : DEST_DISPLAY_ID);
+
+                if (type === 'source') {
+                    sourceDirectoryHandle = handle;
+                    displayElement.innerHTML = `Nguồn: <strong>${handle.name}</strong>`;
+                    displayElement.style.color = '#d9534f';
+                } else {
+                    destinationDirectoryHandle = handle;
+                    displayElement.innerHTML = `Đích: <strong>${handle.name}</strong>`;
+                    displayElement.style.color = '#5cb85c';
+                }
+
+                document.getElementById(STATUS_DISPLAY_ID).innerHTML = `✅ Đã chọn và cấp quyền cho thư mục <strong>${handle.name}</strong>.`;
+
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    document.getElementById(STATUS_DISPLAY_ID).innerHTML = 'Người dùng đã hủy chọn thư mục.';
+                } else {
+                    console.error(err);
+                    document.getElementById(STATUS_DISPLAY_ID).innerHTML = `❌ Lỗi khi chọn: ${err.message}`;
+                }
+            }
+        }
+
+        /**
+         * Thực hiện tìm kiếm, đọc file nguồn và ghi sang file đích
+         */
+        async function startCopyProcess() {
+            const statusElement = document.getElementById(STATUS_DISPLAY_ID);
+            const copyButton = document.getElementById(COPY_BUTTON_ID);
+
+            if (!sourceDirectoryHandle || !destinationDirectoryHandle) {
+                statusElement.innerHTML = '<span style="color:red">❌ Vui lòng chọn cả Thư mục nguồn và Thư mục đích.</span>';
+                return;
+            }
+
+            const filenamesRaw = document.getElementById(FILENAMES_INPUT_ID).value;
+            if (!filenamesRaw.trim()) {
+                statusElement.innerHTML = '<span style="color:red">❌ Vui lòng nhập tên file cần sao chép.</span>';
+                return;
+            }
+
+            const filenamesToCopy = filenamesRaw.split(',').map(name => name.trim()).filter(name => name.length > 0);
+            
+            copyButton.disabled = true;
+            statusElement.innerHTML = '⏳ Bắt đầu sao chép...';
+
+            let successCount = 0;
+            let failedList = [];
+            let totalFiles = filenamesToCopy.length;
+
+            for (let i = 0; i < totalFiles; i++) {
+                const filename = filenamesToCopy[i];
+                statusElement.innerHTML = `⏳ Đang sao chép ${i + 1}/${totalFiles}: ${filename}...`;
+
+                try {
+                    // 1. Tìm và đọc File nguồn
+                    const fileHandle = await sourceDirectoryHandle.getFileHandle(filename);
+                    const file = await fileHandle.getFile();
+
+                    // 2. Tạo File đích trong thư mục đích (Tạo nếu chưa tồn tại)
+                    const destFileHandle = await destinationDirectoryHandle.getFileHandle(filename, { create: true });
+                    
+                    // 3. Ghi nội dung file nguồn vào file đích
+                    const writable = await destFileHandle.createWritable();
+                    await writable.write(file);
+                    await writable.close();
+                    
+                    successCount++;
+
+                } catch (error) {
+                    console.error(`Lỗi sao chép ${filename}:`, error);
+                    failedList.push(filename);
+                }
+            }
+
+            // 4. Báo cáo kết quả cuối cùng
+            let finalMessage = `Hoàn tất! Đã sao chép thành công ${successCount} file.`;
+            if (failedList.length > 0) {
+                 finalMessage += `<br><span style="color:red">(${failedList.length} file lỗi: ${failedList.join(', ')})</span>`;
+            }
+            statusElement.innerHTML = finalMessage;
+            copyButton.disabled = false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Khởi tạo trạng thái ban đầu
+            document.getElementById(STATUS_DISPLAY_ID).innerText = 'Sẵn sàng. Vui lòng chọn thư mục.';
+        });
+    </script>
+</body>
+</html>
