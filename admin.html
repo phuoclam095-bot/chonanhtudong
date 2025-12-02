@@ -231,96 +231,90 @@
         /**
          * Hàm chính tạo Album (BẤM NÚT TẠO TRANG)
          */
-        async function createAlbum() {
-            const btn = document.querySelector('.btn-create');
-            const driveLinkInput = document.getElementById('driveLink');
-            const previewBox = document.getElementById('previewBox');
-            const previewFolderName = document.getElementById('previewFolderName');
-            const previewClientLink = document.getElementById('previewClientLink');
-            
-            previewBox.style.display = 'none'; // Ẩn trạng thái cũ
+       async function createAlbum() {
+    const btn = document.querySelector('.btn-create');
+    const driveLinkInput = document.getElementById('driveLink');
+    const previewBox = document.getElementById('previewBox');
+    const previewFolderName = document.getElementById('previewFolderName');
+    const previewClientLink = document.getElementById('previewClientLink');
+    
+    previewBox.style.display = 'none'; // Ẩn trạng thái cũ
 
-            let folderId = driveLinkInput.value.trim(); 
+    let folderId = driveLinkInput.value.trim(); 
 
-            // 1. TỰ TRÍCH XUẤT ID NẾU CẦN
-            if (folderId.includes('drive.google.com/folders/')) {
-                folderId = extractFolderId(folderId);
-            }
-            
-            // 2. KIỂM TRA TÍNH HỢP LỆ
-            if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
-                alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
-                return;
-            }
+    // 1. TỰ TRÍCH XUẤT ID
+    if (folderId.includes('drive.google.com/folders/')) {
+        folderId = extractFolderId(folderId);
+    }
+    
+    if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
+        alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
+        return;
+    }
 
-            // 3. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-            btn.disabled = true;
+    // 2. CHUẨN BỊ DỮ LIỆU VÀ TRẠNG THÁI
+    const adminEmail = localStorage.getItem('admin_email') || 'anonymous';
+    const allowDownload = document.getElementById('allowDownload').checked;
+    const allowComment = document.getElementById('allowComment').checked;
+    
+    const queryParams = new URLSearchParams({
+        folderId: folderId,
+        adminEmail: adminEmail,
+        allowDownload: allowDownload,
+        allowComment: allowComment
+    });
+    
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    btn.disabled = true;
 
-            try {
-                // GỌI WEBHOOK: get-folder-info (Endpoint duy nhất)
-                const response = await fetch(URL_GET_FOLDER_INFO, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json' 
-                    },
-                    body: JSON.stringify({
-                        folderId: folderId, 
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked,
-                            adminEmail: localStorage.getItem('admin_email')
-                        }
-                    })
-                });
+    try {
+        // 3. GỌI WEBHOOK BẰNG PHƯƠNG THỨC GET
+        const response = await fetch(`${URL_GET_FOLDER_INFO}?${queryParams.toString()}`, {
+            method: 'GET', // ✅ ĐÃ CHUYỂN SANG GET
+            // KHÔNG CÓ HEADERS HAY BODY KHI DÙNG GET
+        });
 
-                // 4. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                
-                // 🛑 BƯỚC QUAN TRỌNG: Lấy dữ liệu dưới dạng JSON
-                const result = await response.json(); 
-                
-                // 5. HIỂN THỊ KẾT QUẢ
-                if (result && result.folderName && result.clientLink) {
-                    
-                    const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
-                    const clientLink = result.clientLink;
-
-                    // Cập nhật preview box
-                    previewFolderName.innerText = `Album: ${result.folderName}`;
-                    previewClientLink.href = clientLink;
-                    previewClientLink.innerText = clientLink;
-                    previewBox.style.display = 'block';
-
-                    alert(finalMessage);
-                    prompt("Hãy copy link dưới đây gửi cho khách:", clientLink);
-                    
-                } else {
-                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp)
-                    previewBox.style.borderColor = 'red';
-                    previewBox.style.backgroundColor = '#f8d7da'; 
-                    previewFolderName.innerText = `❌ Lỗi: Dữ liệu trả về bị thiếu.`;
-                    previewClientLink.innerText = 'Kiểm tra lại Workflow n8n.';
-                    previewBox.style.display = 'block';
-                }
-
-            } catch (error) {
-                // LỖI MẠNG/CÚ PHÁP
-                previewBox.style.borderColor = 'red';
-                previewBox.style.backgroundColor = '#f8d7da'; 
-                previewFolderName.innerText = `❌ Lỗi: ${error.message}.`;
-                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12).';
-                previewBox.style.display = 'block';
-            } finally {
-                // KHÔI PHỤC NÚT
-                btn.innerHTML = oldText;
-                btn.disabled = false;
-            }
+        // 4. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
         }
+        
+        // Cố gắng lấy JSON (dù GET thường trả về HTML)
+        const result = await response.json(); 
+        
+        // 5. HIỂN THỊ KẾT QUẢ
+        if (result && result.folderName && result.clientLink) {
+            
+            const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
+            const clientLink = result.clientLink;
+
+            previewFolderName.innerText = `Album: ${result.folderName}`;
+            previewClientLink.href = clientLink;
+            previewClientLink.innerText = clientLink;
+            previewBox.style.display = 'block';
+
+            alert(finalMessage);
+            prompt("Link Khách:", clientLink);
+            
+        } else {
+            // LỖI: Dữ liệu không khớp hoặc n8n trả về HTML
+            previewFolderName.innerText = `❌ Lỗi: Phản hồi không phải JSON hợp lệ.`;
+            previewClientLink.innerText = 'Kiểm tra Node Respond to Webhook (trả về JSON).';
+            previewBox.style.display = 'block';
+        }
+
+    } catch (error) {
+        // LỖI MẠNG/CÚ PHÁP
+        previewFolderName.innerText = `❌ Lỗi mạng/JavaScript: ${error.message}.`;
+        previewClientLink.innerText = 'Kiểm tra Console (F12) và Webhook (GET) trên n8n.';
+        previewBox.style.display = 'block';
+    } finally {
+        // KHÔI PHỤC NÚT
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    }
+}
         
         // 6. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
