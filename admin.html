@@ -308,56 +308,41 @@
          * ✅ HÀM MỚI: Lắng nghe sự kiện dán/nhập link và gọi n8n để lấy thông tin Folder
          */
         async function checkDriveLink() {
-    const driveLinkInput = document.getElementById('driveLink');
-    const folderId = extractFolderId(driveLinkInput.value);
-    const previewBox = document.getElementById('previewBox');
-    const previewFolderName = document.getElementById('previewFolderName');
-    const previewClientLink = document.getElementById('previewClientLink');
-    
-    if (!folderId) {
-        previewBox.style.display = 'none';
-        return;
-    }
+            const driveLinkInput = document.getElementById('driveLink');
+            const folderId = extractFolderId(driveLinkInput.value);
+            const previewBox = document.getElementById('previewBox');
+            const previewFolderName = document.getElementById('previewFolderName');
+            const previewClientLink = document.getElementById('previewClientLink');
+            
+            if (!folderId) {
+                previewBox.style.display = 'none';
+                return;
+            }
 
-    try {
-        previewFolderName.innerText = 'Đang tìm tên thư mục...';
-        previewClientLink.innerText = 'Đang tạo link...';
-        previewBox.style.display = 'block';
+            try {
+                previewFolderName.innerText = 'Đang tìm tên thư mục...';
+                previewClientLink.innerText = 'Đang tạo link...';
+                previewBox.style.display = 'block';
 
-        // Gọi Webhook n8n mới 
-        const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
-        
-        const result = await res.json(); 
-        
-        // ✅ CÁCH TRUY CẬP DỮ LIỆU ĐÁNG TIN CẬY NHẤT:
-        const data = result && result.length > 0 ? result[0] : null; 
-        
-        if (!data || !data.folderName) {
-             // Lỗi nếu mảng rỗng hoặc trường folderName bị thiếu
-             previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Phản hồi bị thiếu).';
-             previewClientLink.innerText = 'Kiểm tra lại Workflow n8n.';
-             return;
-        }
+                // Gọi Webhook n8n mới 
+                const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
+                
+                const result = await res.json(); 
+                
+                // ✅ CÁCH TRUY CẬP DỮ LIỆU ĐÁNG TIN CẬY NHẤT:
+                const data = result && result.length > 0 ? result[0] : null; 
+                
+                if (!data || !data.folderName) {
+                     // Lỗi nếu mảng rỗng hoặc trường folderName bị thiếu
+                     previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Phản hồi bị thiếu).';
+                     previewClientLink.innerText = 'Kiểm tra lại Workflow n8n.';
+                     return;
+                }
 
-        const name = data.folderName;
-        const link = data.clientLink;
-        
-        // Cập nhật và hiển thị Preview Box
-        previewFolderName.innerText = name;
-        previewClientLink.href = link;
-        previewClientLink.innerText = link; 
-
-        // Cập nhật giá trị input thành Folder ID
-        driveLinkInput.value = folderId; 
-
-    } catch (e) {
-        console.error("Error in checkDriveLink:", e);
-        // Hiển thị lỗi kết nối (Nếu không nhận được JSON từ n8n)
-        previewFolderName.innerText = 'Lỗi kết nối. (Không nhận được dữ liệu từ n8n).';
-        previewClientLink.innerText = 'Vui lòng kiểm tra lại URL Webhook.';
-    }
-}
-        // Cập nhật và hiển thị Preview Box
+                const name = data.folderName;
+                const link = data.clientLink;
+                
+                // Cập nhật và hiển thị Preview Box
                 previewFolderName.innerText = name;
                 previewClientLink.href = link;
                 previewClientLink.innerText = link; 
@@ -366,8 +351,10 @@
                 driveLinkInput.value = folderId; 
 
             } catch (e) {
-                previewFolderName.innerText = 'Lỗi truy vấn Drive. (Kiểm tra kết nối n8n).';
-                previewClientLink.innerText = 'Vui lòng kiểm tra lại link.';
+                console.error("Error in checkDriveLink:", e);
+                // Hiển thị lỗi kết nối (Nếu không nhận được JSON từ n8n)
+                previewFolderName.innerText = 'Lỗi kết nối. (Không nhận được dữ liệu từ n8n).';
+                previewClientLink.innerText = 'Vui lòng kiểm tra lại URL Webhook.';
             }
         }
 
@@ -380,17 +367,19 @@
             const driveLinkInput = document.getElementById('driveLink');
             const folderId = driveLinkInput.value; 
             
+            // 1. KIỂM TRA TÍNH HỢP LỆ CỦA ID DRIVE
             if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
-                alert("Vui lòng dán link Google Drive hợp lệ!");
+                alert("Vui lòng dán link Google Drive hợp lệ và đợi tên thư mục xuất hiện!");
                 return;
             }
 
-            // 2. GỌI N8N ĐỂ TẠO DỮ LIỆU
+            // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
             btn.disabled = true;
 
             try {
+                // 3. GỌI WEBHOOK TẠO ALBUM
                 const response = await fetch(URL_CREATE_ALBUM, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -405,16 +394,24 @@
                 });
 
                 if (response.ok) {
-                    // Lấy link client từ Preview Box
+                    // 4. THÀNH CÔNG: Lấy link client từ Preview Box và hiện Prompt
                     const clientLink = document.getElementById('previewClientLink').href;
-                    prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
+                    // Kiểm tra xem link có hợp lệ không trước khi hiển thị
+                    if (clientLink && clientLink !== '#') {
+                        prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
+                    } else {
+                        alert("✅ Tạo thành công trên n8n, nhưng không lấy được Link Khách. Vui lòng kiểm tra Workflow!");
+                    }
                 } else {
-                    alert("Lỗi kết nối n8n. Vui lòng kiểm tra n8n đã lắng nghe chưa.");
+                    // 5. LỖI KẾT NỐI HTTP
+                    alert("Lỗi kết nối n8n. Vui lòng kiểm tra xem Webhook TẠO ALBUM đã lắng nghe chưa.");
                 }
 
             } catch (error) {
-                alert("Lỗi: " + error.message);
+                // 6. LỖI JAVASCRIPT/MẠNG
+                alert("Lỗi mạng/JavaScript khi gọi n8n: " + error.message);
             } finally {
+                // 7. KHÔI PHỤC NÚT
                 btn.innerHTML = oldText;
                 btn.disabled = false;
             }
