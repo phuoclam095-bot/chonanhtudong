@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - IN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS (Đã rút gọn) --- */
@@ -143,8 +143,8 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // ✅ WEBHOOK TẠO ALBUM THEO YÊU CẦU CỦA BẠN (SỬ DỤNG LẠI LINK GỐC)
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/get-folder-info'; 
+        // ✅ WEBHOOK TẠO ALBUM ĐẦY ĐỦ (SỬ DỤNG POST METHOD)
+        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
 
         // *************************************************************
         // 💡 HÀM HỖ TRỢ VÀ LOGIC ĐĂNG NHẬP
@@ -234,7 +234,7 @@
                 return match[1]; 
             }
             
-            // Nếu không tìm thấy /folders/, kiểm tra ID thô
+            // Thử kiểm tra ID thô
             if (cleanedLink.match(/^[a-zA-Z0-9_-]+$/)) {
                 return cleanedLink;
             }
@@ -273,7 +273,7 @@
             let inputLink = driveLinkInput.value.trim(); 
             const folderId = extractFolderId(inputLink); // Lấy ID
 
-            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI CHẶN)
+            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI CHẶN MẠNG)
             if (!folderId) {
                 alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
                 return;
@@ -285,22 +285,25 @@
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU GET REQUEST (SỬ DỤNG QUERY PARAMS)
+                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY
                 const dataToSend = {
-                    folderId: folderId, 
-                    download: document.getElementById('allowDownload').checked,
-                    comment: document.getElementById('allowComment').checked,
-                    limitPhotos: document.getElementById('limitPhotos').checked,
+                    folderId: folderId, // Gửi ID đã trích xuất
+                    settings: {
+                        download: document.getElementById('allowDownload').checked,
+                        comment: document.getElementById('allowComment').checked,
+                        limitPhotos: document.getElementById('limitPhotos').checked,
+                    },
                     adminEmail: localStorage.getItem('admin_email')
                 };
 
-                const queryParams = new URLSearchParams(dataToSend).toString();
-                const finalUrl = `${URL_CREATE_ALBUM}?${queryParams}`;
-
-                // 4. GỌI WEBHOOK BẰNG PHƯƠNG THỨC GET
-                const response = await fetch(finalUrl, {
-                    method: 'GET', 
-                    headers: { 'Accept': 'application/json' }
+                // 4. GỌI WEBHOOK BẰNG PHƯƠNG THỨC POST (POST body chứa dữ liệu)
+                const response = await fetch(URL_CREATE_ALBUM, {
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' 
+                    },
+                    body: JSON.stringify(dataToSend) // GỬI DỮ LIỆU TRONG BODY
                 });
 
                 // 5. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
