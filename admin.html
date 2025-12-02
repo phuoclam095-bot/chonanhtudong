@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - MIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -271,7 +271,7 @@
 
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    // ✅ HIỂN THỊ THÔNG BÁO FLASH SAO CHÉP
+                    // ✅ KÍCH HOẠT THÔNG BÁO FLASH SAO CHÉP
                     notification.innerText = '✅ Đã sao chép link!';
                     notification.classList.add('active');
                     setTimeout(() => {
@@ -355,6 +355,10 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
+                // Cập nhật trạng thái
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+
+
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -385,8 +389,8 @@
                     
                     const clientLink = result.clientLink;
 
-                    // Cập nhật preview box (Goal 2: Chỉ hiển thị tên Album)
-                    previewFolderName.innerText = result.folderName;
+                    // Cập nhật preview box
+                    previewFolderName.innerText = `✅ ${result.folderName}`; // Tên Album + Dấu tích
                     previewClientLink.href = clientLink;
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
@@ -405,7 +409,7 @@
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU MỚI
+                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU CUỐI CÙNG
                 previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
                 previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
                 previewBox.style.display = 'block';
