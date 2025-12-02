@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - MIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -314,7 +314,7 @@
             btn.disabled = true;
 
             try {
-                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -382,7 +382,7 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // ✅ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
                     showNotification(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
@@ -403,19 +403,6 @@
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
-            }
-        }
-
-        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
-        function showNotification(message) {
-            const notification = document.getElementById('copyNotification');
-            if (notification) {
-                notification.innerText = message; 
-                notification.classList.add('active');
-                setTimeout(() => {
-                    notification.classList.remove('active');
-                    notification.innerText = '✅ Đã sao chép!'; // Reset message
-                }, 3000); // Hiển thị 3 giây
             }
         }
         
