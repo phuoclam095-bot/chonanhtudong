@@ -67,11 +67,11 @@
         }
         input:focus { border-color: var(--primary-green); }
 
-        /* PREVIEW BOX - HIỂN THỊ KẾT QUẢ/LỖI */
+        /* PREVIEW BOX */
         .preview-box {
             border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; 
             padding: 10px; border-radius: 5px; margin-bottom: 20px; 
-            display: none; /* Mặc định ẩn, chỉ hiện khi có lỗi/kết quả */
+            display: none; /* Mặc định ẩn */
         }
         .preview-box p { margin: 0; }
         .preview-box a { color: var(--dark-green); word-break: break-all; }
@@ -138,8 +138,8 @@
             </div>
             
             <div id="previewBox" class="preview-box">
-                <p style="margin-bottom: 5px; font-weight: bold;">Trạng thái: <span id="previewFolderName" style="color: var(--dark-green);"></span></p>
-                <p style="font-size: 14px;">Chi tiết: <a href="#" id="previewClientLink" target="_blank"></a></p>
+                <p style="margin-bottom: 5px; font-weight: bold;">Tên Album: <span id="previewFolderName" style="color: var(--dark-green);">...</span></p>
+                <p style="font-size: 14px;">Link Khách: <a href="#" id="previewClientLink" target="_blank"></a></p>
             </div>
             <div class="switch-group">
                 <div class="switch-label">
@@ -194,7 +194,6 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // CHỈ CẦN WEBHOOK TẠO ALBUM, BỎ QUA WEBHOOK GET_FOLDER_INFO CŨ
         const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
 
         // *************************************************************
@@ -275,7 +274,7 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM (MỚI: GỌI TẠO ALBUM DUY NHẤT)
+        // 💡 LOGIC TẠO ALBUM (ĐÃ SỬA LỖI TRÍCH XUẤT ID)
         // *************************************************************
         
         // Hàm trích xuất Folder ID từ link
@@ -286,102 +285,96 @@
             return match && match[1] ? match[1] : null;
         }
 
-
         /**
-         * ✅ HÀM MỚI: Chỉ xử lý tạo Album và hiển thị kết quả trả về từ n8n
+         * 5. Hàm chính tạo Album (BẤM NÚT TẠO TRANG)
          */
-        // admin.html - Thay thế hàm createAlbum()
+        async function createAlbum() {
+            const btn = document.querySelector('.btn-create');
+            const driveLinkInput = document.getElementById('driveLink');
+            const previewBox = document.getElementById('previewBox');
+            const previewFolderName = document.getElementById('previewFolderName');
+            const previewClientLink = document.getElementById('previewClientLink');
+            
+            previewBox.style.display = 'none'; // Ẩn trạng thái cũ
 
-async function createAlbum() {
-    const btn = document.querySelector('.btn-create');
-    const driveLinkInput = document.getElementById('driveLink');
-    const previewBox = document.getElementById('previewBox');
-    const previewFolderName = document.getElementById('previewFolderName');
-    const previewClientLink = document.getElementById('previewClientLink');
-    
-    previewBox.style.display = 'none'; 
-    
-    let folderId = driveLinkInput.value.trim(); 
-    let responseText = ''; // Biến để lưu phản hồi thô
+            let folderId = driveLinkInput.value.trim(); 
 
-    // 1. TỰ TRÍCH XUẤT ID NẾU CẦN
-    if (folderId.includes('drive.google.com/folders/')) {
-        folderId = extractFolderId(folderId);
-    }
-    
-    if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
-        alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
-        return;
-    }
+            // 1. TỰ TRÍCH XUẤT ID NẾU CẦN
+            if (folderId.includes('drive.google.com/folders/')) {
+                folderId = extractFolderId(folderId);
+                // KHÔNG cập nhật lại driveLinkInput.value = folderId để tránh lỗi double-update
+            }
+            
+            // 2. KIỂM TRA TÍNH HỢP LỆ VÀ DỮ LIỆU CẦN THIẾT
+            if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
+                alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
+                return;
+            }
 
-    // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
-    const oldText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-    btn.disabled = true;
+            // 3. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+            btn.disabled = true;
 
-    try {
-        const response = await fetch(URL_CREATE_ALBUM, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json' 
-            },
-            body: JSON.stringify({
-                folderId: folderId,
-                settings: {
-                    download: document.getElementById('allowDownload').checked,
-                    comment: document.getElementById('allowComment').checked,
-                    adminEmail: localStorage.getItem('admin_email')
+            try {
+                // GỌI WEBHOOK TẠO ALBUM 
+                const response = await fetch(URL_CREATE_ALBUM, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        folderId: folderId, // Gửi ID đã trích xuất
+                        settings: {
+                            download: document.getElementById('allowDownload').checked,
+                            comment: document.getElementById('allowComment').checked,
+                            adminEmail: localStorage.getItem('admin_email')
+                        }
+                    })
+                });
+
+                // 4. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
                 }
-            })
-        });
+                
+                const result = await response.json(); 
+                
+                // 5. HIỂN THỊ KẾT QUẢ
+                if (result && result.folderName && result.clientLink) {
+                    
+                    // THÀNH CÔNG: Hiển thị thông báo và prompt link
+                    const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
+                    const clientLink = result.clientLink;
 
-        // 🛑 BƯỚC DEBUG 1: ĐỌC PHẢN HỒI THÔ (TEXT)
-        responseText = await response.text(); 
-        
-        if (!response.ok) {
-             throw new Error(`HTTP Error: ${response.status} - Lỗi Webhook.`);
+                    // Cập nhật preview box
+                    previewFolderName.innerText = `Album: ${result.folderName}`;
+                    previewClientLink.href = clientLink;
+                    previewClientLink.innerText = clientLink;
+                    previewBox.style.display = 'block';
+
+                    alert(finalMessage);
+                    prompt("Hãy copy link dưới đây gửi cho khách:", clientLink);
+                    
+                } else {
+                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp)
+                    previewFolderName.innerText = `❌ Lỗi n8n: ${result.message || 'Lỗi dữ liệu trả về bị thiếu.'}`;
+                    previewClientLink.innerText = 'Kiểm tra lại cấu hình Output Workflow.';
+                    previewBox.style.display = 'block';
+                }
+
+            } catch (error) {
+                // LỖI MẠNG/CÚ PHÁP
+                previewFolderName.innerText = `❌ Lỗi mạng/JavaScript: ${error.message}`;
+                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) để xem lỗi.';
+                previewBox.style.display = 'block';
+            } finally {
+                // KHÔI PHỤC NÚT
+                btn.innerHTML = oldText;
+                btn.disabled = false;
+            }
         }
-        
-        // 🛑 BƯỚC DEBUG 2: CỐ GẮNG PARSE JSON
-        const result = JSON.parse(responseText); 
-        
-        // 5. HIỂN THỊ KẾT QUẢ
-        if (result && result.folderName && result.clientLink) {
-            
-            const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
-            const clientLink = result.clientLink;
-
-            alert(finalMessage);
-            prompt("Link Khách:", clientLink);
-            
-        } else {
-            // LỖI: HIỂN THỊ LỖI JSON BỊ THIẾU
-            previewFolderName.innerText = `❌ LỖI DỮ LIỆU THIẾU.`;
-            previewClientLink.innerText = `Phản hồi thô: ${responseText.substring(0, 100)}...`;
-            previewBox.style.display = 'block';
-        }
-
-    } catch (error) {
-        // 🛑 BƯỚC DEBUG 3: XUẤT LỖI VÀ DỮ LIỆU THÔ RA ALERT
-        const debugMessage = `
-            ❌ LỖI NGHIÊM TRỌNG TRONG HÀM CREATE ALBUM ❌
-            
-            1. Loại lỗi: ${error.message}
-            2. PHẢN HỒI THÔ (RAW): 
-               ------------------------
-               ${responseText || 'Không nhận được dữ liệu (Lỗi mạng/CORS).'}
-               ------------------------
-            
-            Vui lòng kiểm tra Console (F12) để xem chi tiết JSON.
-        `;
-        alert(debugMessage);
-        
-    } finally {
-        btn.innerHTML = oldText;
-        btn.disabled = false;
-    }
-}
         
         // 6. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
