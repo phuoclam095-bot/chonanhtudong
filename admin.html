@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - MIN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -272,11 +272,7 @@
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
                     // ✅ KÍCH HOẠT THÔNG BÁO FLASH SAO CHÉP
-                    notification.innerText = '✅ Đã sao chép link!';
-                    notification.classList.add('active');
-                    setTimeout(() => {
-                        notification.classList.remove('active');
-                    }, 1500);
+                    showNotification('✅ Đã sao chép link!');
                 }).catch(err => {
                     console.error('Không thể sao chép:', err);
                     alert('❌ Lỗi: Không thể sao chép link.');
@@ -294,7 +290,7 @@
                 notification.classList.add('active');
                 setTimeout(() => {
                     notification.classList.remove('active');
-                    notification.innerText = '✅ Đã sao chép!'; // Reset message
+                    // Không có dòng reset text, chỉ để nó fade out
                 }, 3000); // Hiển thị 3 giây
             }
         }
@@ -356,7 +352,7 @@
                 }
                 
                 // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; 
 
 
                 // -----------------------------------------------------------------
@@ -389,8 +385,8 @@
                     
                     const clientLink = result.clientLink;
 
-                    // Cập nhật preview box
-                    previewFolderName.innerText = `✅ ${result.folderName}`; // Tên Album + Dấu tích
+                    // Cập nhật preview box (Goal 2: Chỉ hiển thị tên Album)
+                    previewFolderName.innerText = result.folderName;
                     previewClientLink.href = clientLink;
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
@@ -409,7 +405,7 @@
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU CUỐI CÙNG
+                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU MỚI
                 previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
                 previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
                 previewBox.style.display = 'block';
