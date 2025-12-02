@@ -308,39 +308,56 @@
          * ✅ HÀM MỚI: Lắng nghe sự kiện dán/nhập link và gọi n8n để lấy thông tin Folder
          */
         async function checkDriveLink() {
-            const driveLinkInput = document.getElementById('driveLink');
-            const folderId = extractFolderId(driveLinkInput.value);
-            const previewBox = document.getElementById('previewBox');
-            const previewFolderName = document.getElementById('previewFolderName');
-            const previewClientLink = document.getElementById('previewClientLink');
-            
-            if (!folderId) {
-                previewBox.style.display = 'none';
-                return;
-            }
+    const driveLinkInput = document.getElementById('driveLink');
+    const folderId = extractFolderId(driveLinkInput.value);
+    const previewBox = document.getElementById('previewBox');
+    const previewFolderName = document.getElementById('previewFolderName');
+    const previewClientLink = document.getElementById('previewClientLink');
+    
+    if (!folderId) {
+        previewBox.style.display = 'none';
+        return;
+    }
 
-            try {
-                previewFolderName.innerText = 'Đang tìm tên thư mục...';
-                previewClientLink.innerText = 'Đang tạo link...';
-                previewBox.style.display = 'block';
+    try {
+        previewFolderName.innerText = 'Đang tìm tên thư mục...';
+        previewClientLink.innerText = 'Đang tạo link...';
+        previewBox.style.display = 'block';
 
-                // Gọi Webhook n8n mới (Workflow get-folder-info)
-                const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
-                
-                // ✅ SỬA LỖI: Chắc chắn lấy và xử lý mảng trả về (result[0])
-                const result = await res.json(); 
-                const data = result && result.length > 0 ? result[0] : null; 
-                
-                if (!data || !data.folderName) {
-                     previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Drive ID không tồn tại).';
-                     previewClientLink.innerText = 'Kiểm tra lại link Drive.';
-                     return;
-                }
+        // Gọi Webhook n8n mới 
+        const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
+        
+        const result = await res.json(); 
+        
+        // ✅ CÁCH TRUY CẬP DỮ LIỆU ĐÁNG TIN CẬY NHẤT:
+        const data = result && result.length > 0 ? result[0] : null; 
+        
+        if (!data || !data.folderName) {
+             // Lỗi nếu mảng rỗng hoặc trường folderName bị thiếu
+             previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Phản hồi bị thiếu).';
+             previewClientLink.innerText = 'Kiểm tra lại Workflow n8n.';
+             return;
+        }
 
-                const name = data.folderName;
-                const link = data.clientLink;
-                
-                // Cập nhật và hiển thị Preview Box
+        const name = data.folderName;
+        const link = data.clientLink;
+        
+        // Cập nhật và hiển thị Preview Box
+        previewFolderName.innerText = name;
+        previewClientLink.href = link;
+        previewClientLink.innerText = link; 
+
+        // Cập nhật giá trị input thành Folder ID
+        driveLinkInput.value = folderId; 
+
+    } catch (e) {
+        console.error("Error in checkDriveLink:", e);
+        // Hiển thị lỗi kết nối (Nếu không nhận được JSON từ n8n)
+        previewFolderName.innerText = 'Lỗi kết nối. (Không nhận được dữ liệu từ n8n).';
+        previewClientLink.innerText = 'Vui lòng kiểm tra lại URL Webhook.';
+    }
+}
+        // Cập nhật và hiển thị Preview Box
                 previewFolderName.innerText = name;
                 previewClientLink.href = link;
                 previewClientLink.innerText = link; 
