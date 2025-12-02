@@ -45,7 +45,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s;
-            display: flex;
+            display: flex; /* Đảm bảo nút đăng nhập có thể hiển thị flex */
             align-items: center;
             gap: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -62,7 +62,7 @@
 
         /* FORM ELEMENTS */
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        input[type="text"], input[type="password"] {
+        input[type="text"] {
             width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
         }
         input:focus { border-color: var(--primary-green); }
@@ -90,9 +90,6 @@
         .logged-in-user { display: flex; align-items: center; gap: 10px; }
         .user-email { font-weight: bold; }
         .btn-logout { background: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        /* Thêm style ẩn/hiện cho trạng thái mặc định */
-        .hidden-on-load { display: none !important; } 
-
     </style>
 </head>
 <body>
@@ -103,19 +100,19 @@
         <div class="nav-links">
             <a href="index.html"><i class="fas fa-home"></i> Trang Chủ</a>
             
-            <div id="adminTools" class="hidden-on-load">
+            <div id="adminTools" style="display: none; align-items: center; gap: 15px;">
                 <a href="#"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
                 <a href="managa.html" id="albumManagerLink"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
                 <a href="#"><i class="fas fa-user-circle"></i> Trang Cá Nhân</a>
             </div>
             
             <div id="authControl">
-                <button id="loginLink" class="btn-google" onclick="startGoogleLogin()">
+                <button id="loginBtn" class="btn-google" onclick="startGoogleLogin()">
                     <i class="fab fa-google"></i> Đăng Nhập
                 </button>
-                <div id="userControl" class="logged-in-user hidden-on-load">
+                <div id="userControl" class="logged-in-user" style="display: none;">
                     <span id="userEmailDisplay" class="user-email"></span>
-                    <span id="usageInfoStatus" style="font-size: 13px;"></span> 
+                    <span id="usageInfoStatus" style="font-size: 13px;"></span>
                     <button class="btn-logout" onclick="logoutAdmin()">Đăng Xuất</button>
                 </div>
             </div>
@@ -177,19 +174,18 @@
 
     <script>
         // *************************************************************
-        // ⚠️ CẤU HÌNH GOOGLE/N8N (PHẢI CÓ)
+        // ✅ CẤU HÌNH GOOGLE/N8N (ĐÃ XÁC NHẬN)
         // *************************************************************
         const GOOGLE_CONFIG = {
-            // ✅ CLIENT ID ĐƯỢC XÁC NHẬN
+            // CLIENT ID ĐƯỢC XÁC NHẬN TỪ TỆP BÍ MẬT CỦA BẠN
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
             
-            // ✅ WEBHOOK N8N CẦN CHUYỂN HƯỚNG TỚI
+            // WEBHOOK N8N CẦN CHUYỂN HƯỚNG TỚI
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             
             SCOPE: 'openid profile email'
         };
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto'; // Webhook tạo album
-        // ⚠️ BẠN PHẢI DÙNG CLIENT SECRET TRONG NODE N8N CỦA BẠN: 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
+        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
 
         // *************************************************************
         // 💡 LOGIC ĐĂNG NHẬP (OAUTH FLOW & LOCAL STORAGE)
@@ -198,7 +194,6 @@
         /** * 1. Hàm khởi tạo luồng OAuth khi bấm nút "Đăng nhập"
          */
         function startGoogleLogin() {
-            // Lưu trang hiện tại để biết URL redirect trở về
             localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
             
             const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
@@ -213,51 +208,55 @@
         }
 
         /**
-         * 2. Hàm đăng xuất
+         * 2. Hàm đăng xuất: Xóa tất cả các khóa lưu trữ.
          */
         function logoutAdmin() {
             localStorage.removeItem('admin_is_logged_in');
             localStorage.removeItem('admin_email');
-            updateUI(); // Cập nhật giao diện về trạng thái Logout
+            localStorage.removeItem('admin_name'); // Xóa tên
+            updateUI();
         }
 
         /**
-         * 3. Hàm cập nhật trạng thái UI (Quan trọng)
+         * 3. Hàm cập nhật trạng thái UI (Ưu tiên hiển thị TÊN)
          */
         function updateUI(email = null, expiration = '90 ngày') {
             const adminTools = document.getElementById('adminTools');
-            const loginLink = document.getElementById('loginLink');
+            const loginBtn = document.getElementById('loginBtn');
             const userControl = document.getElementById('userControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             const usageInfoStatus = document.getElementById('usageInfoStatus');
             
-            // Đọc trạng thái từ Local Storage
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const storedName = localStorage.getItem('admin_name');
+            const storedEmail = localStorage.getItem('admin_email');
 
             if (isLoggedIn) {
-                // ĐÃ ĐĂNG NHẬP: Hiện công cụ Admin
+                // ĐÃ ĐĂNG NHẬP: Ẩn Login, Hiện Admin tools
                 if (adminTools) adminTools.style.display = 'flex';
-                if (loginLink) loginLink.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'none';
                 if (userControl) userControl.style.display = 'flex';
                 
-                userEmailDisplay.innerText = email || localStorage.getItem('admin_email') || 'Admin';
-                usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
+                // ✅ GẮN TÊN NGƯỜI DÙNG LÊN HEADER
+                userEmailDisplay.innerText = storedName || storedEmail || 'Admin';
+                
+                if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
             } else {
-                // CHƯA ĐĂNG NHẬP: Ẩn công cụ Admin
+                // CHƯA ĐĂNG NHẬP: Hiện Login, Ẩn Admin tools
                 if (adminTools) adminTools.style.display = 'none';
-                if (loginLink) loginLink.style.display = 'flex';
+                if (loginBtn) loginBtn.style.display = 'flex';
                 if (userControl) userControl.style.display = 'none';
             }
         }
 
         /**
-         * 4. Hàm kiểm tra URL sau khi n8n chuyển hướng về
+         * 4. Hàm kiểm tra URL sau khi n8n chuyển hướng về: LƯU TÊN và EMAIL
          */
         function checkAuthCallback() {
             const urlParams = new URLSearchParams(window.location.search);
-            // Chúng ta đang sử dụng 'user_email' trong Node 4 (Respond to Webhook)
-            const userEmail = urlParams.get('user_email'); 
             const authStatus = urlParams.get('auth_status'); 
+            const userEmail = urlParams.get('user_email');
+            const userName = urlParams.get('user_name'); // Lấy tham số tên mới
 
             if (authStatus === 'success' && userEmail) {
                 // Xóa tham số URL
@@ -266,11 +265,18 @@
                 // Thiết lập trạng thái đăng nhập
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', userEmail);
+                
+                // LƯU TÊN: Nếu có tên, lưu tên. Nếu không, lưu email.
+                if (userName) {
+                    localStorage.setItem('admin_name', userName);
+                } else {
+                    localStorage.setItem('admin_name', userEmail.split('@')[0]);
+                }
             }
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM 
+        // 💡 LOGIC TẠO ALBUM (GIỮ NGUYÊN)
         // *************************************************************
 
         async function createAlbum() {
