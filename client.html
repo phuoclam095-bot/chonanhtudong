@@ -491,10 +491,9 @@
 
             capNhatSoThuTuVaTổngSố(); 
 
-            // Cập nhật nút Chọn/Đã Chọn cho viewer
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${isSel?'act':''}`; 
+            btn.className=`btn btn-sel ${isSel?'act':''}`; 
             btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
@@ -543,50 +542,45 @@
             }, 'image/png');
         }
 
-        // 💡 TOGGLE SEL (ĐÃ SỬA LỖI CẬP NHẬT TRẠNG THÁI NÚT)
+        // 💡 TOGGLE SEL (Logic chính xác)
         function togSel() {
             // Chỉ chạy khi có ảnh được focus (ở viewer mode hoặc đã click vào lưới)
             if (photos.length === 0) return;
             
-            let p = photos[cur];
-            let isCurrentlySelected = selectedPhotoIds.includes(p.id);
-            let newState = !isCurrentlySelected; // Trạng thái MỚI sau khi toggle
+            let p=photos[cur]; 
+            let ns = !selectedPhotoIds.includes(p.id); 
             
-            if (newState) {
-                // Hành động: Chọn ảnh (ADD)
+            if (ns) {
                 selectedPhotoIds.push(p.id);
             } else {
-                // Hành động: Bỏ chọn ảnh (REMOVE)
                 const index = selectedPhotoIds.indexOf(p.id);
                 if (index > -1) {
                     selectedPhotoIds.splice(index, 1);
                 }
             }
-            
-            p.selected = newState ? 'true' : 'false';
+            p.selected = ns ? 'true' : 'false';
 
-            // 1. Cập nhật giao diện và nút Chọn (Dùng newState)
-            capNhatSoThuTuVaTổngSố(); // Cập nhật lại Grid/Strip/Total Count với số thứ tự mới
+            // Cập nhật giao diện và nút Chọn
+            capNhatSoThuTuVaTổngSố(); 
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${ns?'act':''}`; 
+            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            let btn = document.getElementById('btnSel');
-            btn.className = `btn btn-sel ${newState ? 'act' : ''}`; // Sử dụng trạng thái MỚI
-            btn.innerText = newState ? '✔ Đã Chọn' : 'Chọn'; // Sử dụng trạng thái MỚI
-            
-            // 2. Cập nhật trạng thái 'sel' trên lưới (Grid View)
+            // Trong chế độ lưới, cập nhật lớp 'sel' cho ảnh vừa được chọn/bỏ chọn
             if (currentView === 'grid') {
                 let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
                 if (gridItem) {
-                    gridItem.classList.toggle('sel', newState);
-                    gridItem.classList.add('focused'); 
+                    gridItem.classList.toggle('sel', ns);
+                    gridItem.classList.add('focused'); // Giữ focus sau khi chọn/bỏ chọn
                 }
             } else {
-                // Trong viewer mode, cập nhật thumbnail strip
-                let thumbItem = document.getElementById(`t-${cur}`);
-                if (thumbItem) thumbItem.classList.toggle('sel', newState);
+                 // Trong viewer mode, cập nhật thumbnail strip
+                 let thumbItem = document.getElementById(`t-${cur}`);
+                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
             }
             
             // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:newState})});
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
         function mov(d){show(cur+d);}
