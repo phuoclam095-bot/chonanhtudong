@@ -46,7 +46,25 @@
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* ĐÃ XÓA COPY NOTIFICATION CSS */
+        /* ✅ ĐÃ SỬA: DÙNG VỊ TRÍ 50PX */
+        #copyNotification {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        #copyNotification.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -132,6 +150,8 @@
         </div>
     </div>
     
+    <div id="copyNotification">✅ Đã sao chép!</div>
+
     <div class="footer">
         © 2025 1Touch Pro. Tất cả các quyền được bảo lưu.
     </div>
@@ -245,13 +265,18 @@
             return null; 
         }
 
+        // ✅ HÀM SAO CHÉP: CHỈ DÙNG CHO HÀNH ĐỘNG SAO CHÉP
         function copyFinalLink() {
             const linkElement = document.getElementById('previewClientLink');
+            const notification = document.getElementById('copyNotification');
 
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
-                // Thay thế Flash Notification bằng alert tiêu chuẩn
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    alert('✅ Đã sao chép link khách!');
+                    notification.innerText = '✅ Đã sao chép link!'; // Set specific text
+                    notification.classList.add('active');
+                    setTimeout(() => {
+                        notification.classList.remove('active');
+                    }, 1500);
                 }).catch(err => {
                     console.error('Không thể sao chép:', err);
                     alert('❌ Lỗi: Không thể sao chép link.');
@@ -285,11 +310,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ BƯỚC 1/2
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'; // ĐÃ BỎ HIỂN THỊ BƯỚC
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -317,10 +342,6 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
-                // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ BƯỚC 2/2
-
-
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -352,13 +373,11 @@
                     const clientLink = result.clientLink;
 
                     // Cập nhật preview box
-                    previewFolderName.innerText = result.folderName;
+                    previewFolderName.innerText = `✅ Đã tạo Link Album thành công: ${result.folderName}`;
                     previewClientLink.href = clientLink;
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // ✅ HIỂN THỊ THÔNG BÁO TẠO LINK THÀNH CÔNG (KHÔNG DÙNG ALERT)
-                    previewFolderName.innerText = `✅ Đã tạo Link Album thành công! Tên: ${result.folderName}`; 
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
@@ -366,15 +385,15 @@
                 }
 
             } catch (error) {
-                // XỬ LÝ LỖI CHUNG (Dùng thông báo cụ thể bạn yêu cầu)
+                // XỬ LÝ LỖI CHUNG
                 previewBox.style.borderColor = 'red';
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
+                // ✅ HIỂN THỊ THÔNG BÁO LỖI CHÍNH XÁC
                 previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
                 previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
                 previewBox.style.display = 'block';
-
             } finally {
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
