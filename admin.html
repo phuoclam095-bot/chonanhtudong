@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - IN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -46,7 +46,7 @@
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* STYLE CHO THÔNG BÁO SAO CHÉP */
+        /* ✅ STYLE CHO THÔNG BÁO SAO CHÉP */
         #copyNotification {
             position: fixed;
             bottom: 50px;
@@ -165,9 +165,9 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // URL WEBHOOK TẠO ALBUM ĐẦY ĐỦ (SỬ DỤNG POST METHOD)
+        // URL WEBHOOK 1: LƯU SHEET (POST)
         const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
-        // URL WEBHOOK LẤY TÊN VÀ LINK ALBUM
+        // URL WEBHOOK 2: LẤY TÊN VÀ LINK ALBUM (GET)
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
         // *************************************************************
@@ -217,7 +217,7 @@
                 if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
             } else {
                 if (adminTools) adminTools.style.display = 'none';
-                if (loginBtn) loginBtn.style.display = 'flex';
+                if (loginBtn) loginLink.style.display = 'flex';
                 if (userControl) userControl.style.display = 'none';
             }
         }
@@ -308,11 +308,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... ';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -340,10 +340,6 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
-                // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-
-
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -380,7 +376,8 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // KHÔNG DÙNG ALERT/PROMPT: CHỈ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    // ✅ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    showNotification(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
@@ -393,13 +390,26 @@
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                previewFolderName.innerText = `❌ Kiểm tra lại link driver đã công khai chưa ? `;
-                previewClientLink.innerText = 'Vui lòng công khai link trước khi tạo link';
+                previewFolderName.innerText = `❌ Lỗi xử lý: ${error.message}`;
+                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) và Network tab.';
                 previewBox.style.display = 'block';
             } finally {
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
+            }
+        }
+
+        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
+        function showNotification(message) {
+            const notification = document.getElementById('copyNotification');
+            if (notification) {
+                notification.innerText = message; 
+                notification.classList.add('active');
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                    notification.innerText = '✅ Đã sao chép!'; // Reset message for copy function
+                }, 3000); // Display for 3 seconds
             }
         }
         
