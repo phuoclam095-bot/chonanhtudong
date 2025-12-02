@@ -69,6 +69,7 @@
 
         /* PREVIEW BOX */
         .preview-box {
+            /* Màu xanh lá cây cho kết quả thành công */
             border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; 
             padding: 10px; border-radius: 5px; margin-bottom: 20px; 
             display: none; /* Mặc định ẩn */
@@ -194,7 +195,8 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        // ⚠️ WEBHOOK TẠO ALBUM THEO YÊU CẦU CỦA BẠN ⚠️
+        const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info'; 
 
         // *************************************************************
         // 💡 LOGIC ĐĂNG NHẬP (OAUTH FLOW & LOCAL STORAGE)
@@ -274,10 +276,10 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM (ĐÃ SỬA LỖI TRÍCH XUẤT ID)
+        // 💡 LOGIC TẠO ALBUM
         // *************************************************************
         
-        // Hàm trích xuất Folder ID từ link
+        // Hàm trích xuất Folder ID từ link (Đã sửa lỗi)
         function extractFolderId(link) {
             if (!link) return null;
             let cleanedLink = link.split('?')[0]; 
@@ -285,8 +287,9 @@
             return match && match[1] ? match[1] : null;
         }
 
+
         /**
-         * 5. Hàm chính tạo Album (BẤM NÚT TẠO TRANG)
+         * Hàm chính tạo Album (BẤM NÚT TẠO TRANG)
          */
         async function createAlbum() {
             const btn = document.querySelector('.btn-create');
@@ -295,14 +298,18 @@
             const previewFolderName = document.getElementById('previewFolderName');
             const previewClientLink = document.getElementById('previewClientLink');
             
-            previewBox.style.display = 'none'; // Ẩn trạng thái cũ
+            // Ẩn trạng thái cũ và reset màu lỗi
+            previewBox.style.display = 'none'; 
+            previewBox.style.borderColor = '#c3e6cb';
+            previewBox.style.backgroundColor = '#d4edda';
+            previewFolderName.style.color = 'var(--dark-green)';
+
 
             let folderId = driveLinkInput.value.trim(); 
 
             // 1. TỰ TRÍCH XUẤT ID NẾU CẦN
             if (folderId.includes('drive.google.com/folders/')) {
                 folderId = extractFolderId(folderId);
-                // KHÔNG cập nhật lại driveLinkInput.value = folderId để tránh lỗi double-update
             }
             
             // 2. KIỂM TRA TÍNH HỢP LỆ VÀ DỮ LIỆU CẦN THIẾT
@@ -317,8 +324,8 @@
             btn.disabled = true;
 
             try {
-                // GỌI WEBHOOK TẠO ALBUM 
-                const response = await fetch(URL_CREATE_ALBUM, {
+                // GỌI WEBHOOK: get-folder-info
+                const response = await fetch(URL_GET_FOLDER_INFO, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -339,6 +346,7 @@
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
+                // Lấy dữ liệu dưới dạng JSON
                 const result = await response.json(); 
                 
                 // 5. HIỂN THỊ KẾT QUẢ
@@ -349,25 +357,34 @@
                     const clientLink = result.clientLink;
 
                     // Cập nhật preview box
-                    previewFolderName.innerText = `Album: ${result.folderName}`;
+                    previewFolderName.innerText = result.folderName;
                     previewClientLink.href = clientLink;
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
                     alert(finalMessage);
+                    // Hiển thị prompt để user dễ copy link
                     prompt("Hãy copy link dưới đây gửi cho khách:", clientLink);
                     
                 } else {
-                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp)
-                    previewFolderName.innerText = `❌ Lỗi n8n: ${result.message || 'Lỗi dữ liệu trả về bị thiếu.'}`;
-                    previewClientLink.innerText = 'Kiểm tra lại cấu hình Output Workflow.';
+                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp hoặc thiếu)
+                    previewBox.style.borderColor = '#f5c6cb'; 
+                    previewBox.style.backgroundColor = '#f8d7da'; 
+                    previewFolderName.style.color = '#721c24';
+
+                    previewFolderName.innerText = `❌ Lỗi n8n: ${result.message || 'Lỗi: Phản hồi bị thiếu.'}`;
+                    previewClientLink.innerText = 'Vui lòng kiểm tra lại cấu hình Output Workflow n8n.';
                     previewBox.style.display = 'block';
                 }
 
             } catch (error) {
                 // LỖI MẠNG/CÚ PHÁP
+                previewBox.style.borderColor = '#f5c6cb'; 
+                previewBox.style.backgroundColor = '#f8d7da'; 
+                previewFolderName.style.color = '#721c24';
+
                 previewFolderName.innerText = `❌ Lỗi mạng/JavaScript: ${error.message}`;
-                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) để xem lỗi.';
+                previewClientLink.innerText = 'Kiểm tra lại Console (F12) và kết nối mạng.';
                 previewBox.style.display = 'block';
             } finally {
                 // KHÔI PHỤC NÚT
