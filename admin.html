@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - MIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -265,14 +265,14 @@
             return null; 
         }
 
-        // ✅ HÀM SAO CHÉP ĐÃ SỬA: CHỈ KÍCH HOẠT THÔNG BÁO FLASH SAO CHÉP
         function copyFinalLink() {
             const linkElement = document.getElementById('previewClientLink');
             const notification = document.getElementById('copyNotification');
 
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    notification.innerText = '✅ Đã sao chép link!'; 
+                    // ✅ HIỂN THỊ THÔNG BÁO FLASH SAO CHÉP
+                    notification.innerText = '✅ Đã sao chép link!';
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
@@ -283,6 +283,19 @@
                 });
             } else {
                  alert('❌ Lỗi: Link chưa được tạo thành công.');
+            }
+        }
+
+        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
+        function showNotification(message) {
+            const notification = document.getElementById('copyNotification');
+            if (notification) {
+                notification.innerText = message; 
+                notification.classList.add('active');
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                    notification.innerText = '✅ Đã sao chép!'; // Reset message
+                }, 3000); // Hiển thị 3 giây
             }
         }
 
@@ -342,10 +355,6 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
-                // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-
-
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -382,9 +391,8 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // HIỂN THỊ THÔNG BÁO TẠO LINK THÀNH CÔNG (FLASH NOTIFICATION)
-                    // Dùng alert để thay thế cho thông báo đã tạo thành công
-                    alert(`✅ Đã tạo Link Album thành công!`); 
+                    // HIỂN THỊ THÔNG BÁO TẠO LINK THÀNH CÔNG TRÊN MÀN HÌNH
+                    showNotification(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
@@ -392,12 +400,12 @@
                 }
 
             } catch (error) {
-                // XỬ LÝ LỖI CHUNG (Dùng thông báo cụ thể bạn yêu cầu)
+                // XỬ LÝ LỖI CHUNG
                 previewBox.style.borderColor = 'red';
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                // ✅ SỬA LỖI HIỂN THỊ
+                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU MỚI
                 previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
                 previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
                 previewBox.style.display = 'block';
