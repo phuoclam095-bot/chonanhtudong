@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - IN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -265,13 +265,14 @@
             return null; 
         }
 
+        // ✅ HÀM SAO CHÉP ĐÃ SỬA: CHỈ KÍCH HOẠT THÔNG BÁO FLASH SAO CHÉP
         function copyFinalLink() {
             const linkElement = document.getElementById('previewClientLink');
             const notification = document.getElementById('copyNotification');
 
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    notification.innerText = '✅ Đã sao chép link!';
+                    notification.innerText = '✅ Đã sao chép link!'; 
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
@@ -313,7 +314,7 @@
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -342,7 +343,7 @@
                 }
                 
                 // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ HIỂN THỊ BƯỚC 2
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
 
 
                 // -----------------------------------------------------------------
@@ -375,15 +376,15 @@
                     
                     const clientLink = result.clientLink;
 
-                    // Cập nhật preview box
-                    previewFolderName.innerText = `✅ Đã tạo Link Album thành công: ${result.folderName}`;
+                    // Cập nhật preview box (Goal 2: Chỉ hiển thị tên Album)
+                    previewFolderName.innerText = result.folderName;
                     previewClientLink.href = clientLink;
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
-                    // GỌI HÀM NÀY SAU CÙNG ĐỂ CHẮC CHẮN NÓ KHÔNG XUNG ĐỘT
-                    showNotification(`✅ Đã tạo Link Album thành công!`); 
+                    // HIỂN THỊ THÔNG BÁO TẠO LINK THÀNH CÔNG (FLASH NOTIFICATION)
+                    // Dùng alert để thay thế cho thông báo đã tạo thành công
+                    alert(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
@@ -404,19 +405,6 @@
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
-            }
-        }
-
-        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
-        function showNotification(message) {
-            const notification = document.getElementById('copyNotification');
-            if (notification) {
-                notification.innerText = message; 
-                notification.classList.add('active');
-                setTimeout(() => {
-                    notification.classList.remove('active');
-                    notification.innerText = '✅ Đã sao chép!'; // Reset message
-                }, 3000); // Hiển thị 3 giây
             }
         }
         
