@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - IN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -46,7 +46,7 @@
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* ✅ ĐÃ SỬA: DÙNG VỊ TRÍ 50PX */
+        /* STYLE CHO THÔNG BÁO SAO CHÉP */
         #copyNotification {
             position: fixed;
             bottom: 50px;
@@ -265,14 +265,13 @@
             return null; 
         }
 
-        // ✅ HÀM SAO CHÉP: CHỈ DÙNG CHO HÀNH ĐỘNG SAO CHÉP
         function copyFinalLink() {
             const linkElement = document.getElementById('previewClientLink');
             const notification = document.getElementById('copyNotification');
 
             if (linkElement && linkElement.href && linkElement.innerText !== '...') {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    notification.innerText = '✅ Đã sao chép link!'; // Set specific text
+                    notification.innerText = '✅ Đã sao chép link!';
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
@@ -310,11 +309,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...'; // ĐÃ BỎ HIỂN THỊ BƯỚC
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ HIỂN THỊ BƯỚC
             btn.disabled = true;
 
             try {
-                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -342,6 +341,10 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
+                // Cập nhật trạng thái
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ HIỂN THỊ BƯỚC 2
+
+
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -378,6 +381,9 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
+                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    // GỌI HÀM NÀY SAU CÙNG ĐỂ CHẮC CHẮN NÓ KHÔNG XUNG ĐỘT
+                    showNotification(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
@@ -385,12 +391,12 @@
                 }
 
             } catch (error) {
-                // XỬ LÝ LỖI CHUNG
+                // XỬ LÝ LỖI CHUNG (Dùng thông báo cụ thể bạn yêu cầu)
                 previewBox.style.borderColor = 'red';
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                // ✅ HIỂN THỊ THÔNG BÁO LỖI CHÍNH XÁC
+                // ✅ SỬA LỖI HIỂN THỊ
                 previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
                 previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
                 previewBox.style.display = 'block';
@@ -398,6 +404,19 @@
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
+            }
+        }
+
+        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
+        function showNotification(message) {
+            const notification = document.getElementById('copyNotification');
+            if (notification) {
+                notification.innerText = message; 
+                notification.classList.add('active');
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                    notification.innerText = '✅ Đã sao chép!'; // Reset message
+                }, 3000); // Hiển thị 3 giây
             }
         }
         
