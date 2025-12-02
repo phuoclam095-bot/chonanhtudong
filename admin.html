@@ -325,44 +325,42 @@
                 previewBox.style.display = 'block';
 
                 // Gọi Webhook n8n mới 
-               const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
+                const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
                 
-                // 2. KIỂM TRA LỖI HTTP
+                // 1. KIỂM TRA LỖI HTTP/CORS
                 if (!res.ok) {
-                    throw new Error(`HTTP Error: ${res.status}`);
+                    // Nếu lỗi mạng/HTTP, throw để chuyển sang catch
+                    throw new Error(`HTTP Error: ${res.status} (Có thể do CORS bị chặn!)`);
                 }
                 
-                // 3. ĐỌC DỮ LIỆU JSON
                 const result = await res.json(); 
                 
-                // ✅ BƯỚC QUAN TRỌNG NHẤT: TRUY CẬP PHẦN TỬ ĐẦU TIÊN CỦA MẢNG
+                // 2. TRUY CẬP DỮ LIỆU VÀ KIỂM TRA TÍNH HỢP LỆ
                 const data = result && Array.isArray(result) && result.length > 0 ? result[0] : null; 
                 
-                // 4. KIỂM TRA DỮ LIỆU CÓ TÊN KHÔNG
                 if (!data || !data.folderName) {
-                     // Nếu dữ liệu rỗng hoặc không có tên, sẽ hiển thị lỗi
-                     previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Phản hồi bị thiếu).';
+                     // Nếu dữ liệu rỗng hoặc trường folderName bị thiếu
+                     previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Dữ liệu thiếu).';
                      previewClientLink.innerText = 'Vui lòng kiểm tra lại Workflow n8n.';
                      return;
                 }
 
-                // 5. HIỂN THỊ DỮ LIỆU CHÍNH XÁC TỪ data
                 const name = data.folderName;
                 const link = data.clientLink;
                 
-                // Cập nhật và hiển thị Preview Box
+                // 3. Cập nhật và hiển thị Preview Box
                 previewFolderName.innerText = name;
                 previewClientLink.href = link;
-                previewClientLink.innerText = link;
+                previewClientLink.innerText = link; 
 
-                // Cập nhật giá trị input thành Folder ID
+                // 4. Cập nhật giá trị input thành Folder ID
                 driveLinkInput.value = folderId; 
 
             } catch (e) {
                 console.error("Error in checkDriveLink:", e);
                 // Hiển thị lỗi kết nối (Nếu không nhận được JSON từ n8n)
-                previewFolderName.innerText = 'Lỗi kết nối. (Không nhận được dữ liệu từ n8n).';
-                previewClientLink.innerText = 'Vui lòng kiểm tra lại URL Webhook.';
+                previewFolderName.innerText = `Lỗi kết nối. (Kiểm tra Console: ${e.message})`;
+                previewClientLink.innerText = 'Vui lòng kiểm tra lại link Drive.';
             }
         }
 
@@ -375,10 +373,10 @@
             const driveLinkInput = document.getElementById('driveLink');
             let folderId = driveLinkInput.value; 
             
-            // ✅ SỬA LỖI: TỰ TRÍCH XUẤT ID NẾU CẦN
+            // TỰ TRÍCH XUẤT ID NẾU CẦN
             if (folderId.includes('drive.google.com/folders/')) {
                 folderId = extractFolderId(folderId);
-                driveLinkInput.value = folderId; // Cập nhật lại giá trị
+                driveLinkInput.value = folderId; 
             }
             
             // 1. KIỂM TRA TÍNH HỢP LỆ CỦA ID DRIVE
