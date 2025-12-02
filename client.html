@@ -239,10 +239,10 @@
 
     <script>
         // Lệnh báo lỗi nếu cache không được xóa
-        if (localStorage.getItem('layout_version') !== 'V16.1') { // Đã cập nhật version
-            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.1.');
+        if (localStorage.getItem('layout_version') !== 'V16.2') { 
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.2.');
         }
-        localStorage.setItem('layout_version', 'V16.1'); 
+        localStorage.setItem('layout_version', 'V16.2'); 
 
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
@@ -267,7 +267,7 @@
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM (ĐÃ SỬA LỖI CẬP NHẬT TRẠNG THÁI NÚT)
+        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM
         function setView(view) {
             currentView = view;
             const gridDiv = document.getElementById('photoGrid');
@@ -289,7 +289,7 @@
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
                 btnDraw.style.display = 'block'; 
-                // GỌI SHOW ĐỂ ĐẢM BẢO TẢI ẢNH VÀ CẬP NHẬT NÚT CHÍNH XÁC THEO ẢNH cur
+                // GỌI SHOW để đảm bảo Tải Ảnh, Cập nhật thông tin và nút CHỌN chính xác
                 show(cur); 
             }
         }
@@ -337,6 +337,8 @@
                     strip.appendChild(d);
                 });
                 
+                // V16.2: Đảm bảo class 'act' (sáng) được đặt lại chính xác
+                document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -385,6 +387,11 @@
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
                     
+                    // V16.2: Giữ lại trạng thái focused nếu nó đang là ảnh cur
+                    if (i === cur && currentView === 'grid') {
+                        d.classList.add('focused');
+                    }
+                    
                     let thumb = getLink(p.id, 's500'); 
                     
                     // DOT Grid: Hiển thị số thứ tự
@@ -407,8 +414,8 @@
             const pCountElement = document.getElementById('pCount');
 
             if (currentView === 'grid') {
-                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+                // Đảm bảo không ghi đè nếu đã có focus từ click đơn
+                // Logic cập nhật pName/pCount khi click đơn đã ở trong d.onclick
             } else if (currentView === 'viewer' && photos.length > 0) {
                 pNameElement.innerText = photos[cur].name;
                 pCountElement.innerText = `${cur + 1} / ${photos.length}`;
@@ -448,12 +455,12 @@
                 if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
 
                 document.getElementById('load').style.display='none';
-                
-                capNhatSoThuTuVaTổngSố(); 
-                setView('grid'); 
 
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
+                
+                capNhatSoThuTuVaTổngSố(); 
+                setView('grid'); 
                 
                 ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
                 ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
@@ -466,7 +473,7 @@
             }
         }
 
-        // HÀM SHOW (Chạy trong Viewer)
+        // 💡 HÀM SHOW (ĐÃ SỬA LỖI FOCUS VÀ CẬP NHẬT NÚT)
         function show(i) {
             if(isDraw) togDraw(false); 
             if(i<0 || i>=photos.length) return;
@@ -483,12 +490,9 @@
             document.getElementById('pName').innerText=p.name;
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
             
-            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
-            let t=document.getElementById(`t-${i}`); 
-            if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
-
+            // V16.2: Cập nhật lại class ACT trên Strip sau khi capNhatSoThuTuVaTổngSố đã vẽ lại
             capNhatSoThuTuVaTổngSố(); 
-
+            
             // Cập nhật nút Chọn/Đã Chọn cho viewer (CHÍNH XÁC)
             let isSel = selectedPhotoIds.includes(p.id);
             let btn=document.getElementById('btnSel');
@@ -559,7 +563,7 @@
             }
             p.selected = ns ? 'true' : 'false';
 
-            // 1. Cập nhật giao diện và số thứ tự
+            // 1. Cập nhật giao diện và số thứ tự (bao gồm cả strip và grid)
             capNhatSoThuTuVaTổngSố(); 
             
             // 2. Cập nhật trạng thái nút Chọn dựa trên trạng thái mới (ns)
@@ -567,22 +571,21 @@
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            // 3. Cập nhật trạng thái 'sel' trên lưới/strip
+            // 3. Cập nhật trạng thái 'sel' trên lưới (Grid view: giữ focus)
             if (currentView === 'grid') {
                 let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
                 if (gridItem) {
                     gridItem.classList.toggle('sel', ns);
-                    gridItem.classList.add('focused'); // Giữ focus sau khi chọn/bỏ chọn
+                    gridItem.classList.add('focused'); 
                 }
-            } else {
-                 let thumbItem = document.getElementById(`t-${cur}`);
-                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
-            }
+            } 
+            // V16.2: Không cần cập nhật strip/thumb ở đây nữa vì đã gọi capNhatSoThuTuVaTổngSố()
             
             // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
+        // 💡 MOVE: Dùng để chuyển ảnh trong Viewer
         function mov(d){show(cur+d);}
         
         // 💡 HÀM FINAL COMMIT
