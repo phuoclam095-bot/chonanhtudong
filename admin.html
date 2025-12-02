@@ -369,66 +369,70 @@
         /**
          * 5. Hàm chính tạo Album
          */
-        async function createAlbum() {
-            const btn = document.querySelector('.btn-create');
-            const driveLinkInput = document.getElementById('driveLink');
-            let folderId = driveLinkInput.value; 
-            
-            // TỰ TRÍCH XUẤT ID NẾU CẦN
-            if (folderId.includes('drive.google.com/folders/')) {
-                folderId = extractFolderId(folderId);
-                driveLinkInput.value = folderId; 
-            }
-            
-            // 1. KIỂM TRA TÍNH HỢP LỆ CỦA ID DRIVE
-            if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
-                alert("Vui lòng dán link Google Drive hợp lệ và đợi tên thư mục xuất hiện!");
-                return;
-            }
+       // admin.html - Thay thế hàm createAlbum()
+async function createAlbum() {
+    const btn = document.querySelector('.btn-create');
+    const driveLinkInput = document.getElementById('driveLink');
+    let folderId = driveLinkInput.value; 
+    
+    // 1. TỰ TRÍCH XUẤT ID NẾU CẦN
+    if (folderId.includes('drive.google.com/folders/')) {
+        folderId = extractFolderId(folderId);
+        driveLinkInput.value = folderId; // Cập nhật lại giá trị
+    }
+    
+    // 2. KIỂM TRA TÍNH HỢP LỆ CỦA ID DRIVE
+    if (!folderId || !folderId.match(/^[-a-zA-Z0-9_]+$/)) {
+        alert("Vui lòng dán link Google Drive hợp lệ!");
+        return;
+    }
 
-            // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-            btn.disabled = true;
+    // 3. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    btn.disabled = true;
 
-            try {
-                // 3. GỌI WEBHOOK TẠO ALBUM
-                const response = await fetch(URL_CREATE_ALBUM, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        folderId: folderId,
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked,
-                            adminEmail: localStorage.getItem('admin_email') // Gửi kèm email đã lưu
-                        }
-                    })
-                });
-
-                if (response.ok) {
-                    // 4. THÀNH CÔNG: Lấy link client từ Preview Box và hiện Prompt
-                    const clientLink = document.getElementById('previewClientLink').href;
-                    // Kiểm tra xem link có hợp lệ không trước khi hiển thị
-                    if (clientLink && clientLink !== '#') {
-                        prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
-                    } else {
-                        alert("✅ Tạo thành công trên n8n, nhưng không lấy được Link Khách. Vui lòng kiểm tra Workflow!");
-                    }
-                } else {
-                    // 5. LỖI KẾT NỐI HTTP
-                    alert("Lỗi kết nối n8n. Vui lòng kiểm tra xem Webhook TẠO ALBUM đã lắng nghe chưa.");
+    try {
+        // GỌI WEBHOOK TẠO ALBUM
+        const response = await fetch(URL_CREATE_ALBUM, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                // ✅ THÊM HEADER NÀY ĐỂ N8N NHẬN DIỆN YÊU CẦU ĐÚNG CÁCH
+                'Accept': 'application/json' 
+            },
+            body: JSON.stringify({
+                folderId: folderId,
+                settings: {
+                    download: document.getElementById('allowDownload').checked,
+                    comment: document.getElementById('allowComment').checked,
+                    adminEmail: localStorage.getItem('admin_email')
                 }
+            })
+        });
 
-            } catch (error) {
-                // 6. LỖI JAVASCRIPT/MẠNG
-                alert("Lỗi mạng/JavaScript khi gọi n8n: " + error.message);
-            } finally {
-                // 7. KHÔI PHỤC NÚT
-                btn.innerHTML = oldText;
-                btn.disabled = false;
-            }
+        const result = await response.json(); // Lấy JSON phản hồi
+        
+        if (response.ok && result.status === 'success') {
+            // ✅ HIỂN THỊ KẾT QUẢ VÀ LINK CHO KHÁCH
+            const finalMessage = `✅ Album: ${result.folderName} đã được tạo thành công.`;
+            const clientLink = result.clientLink;
+
+            alert(finalMessage);
+            prompt("Hãy copy link dưới đây gửi cho khách:", clientLink);
+
+        } else {
+            // LỖI XỬ LÝ TỪ N8N
+            alert(`❌ Lỗi tạo Album: ${result.message || 'Lỗi không xác định từ n8n.'}`);
         }
+
+    } catch (error) {
+        alert("Lỗi mạng hoặc JSON: Vui lòng kiểm tra Console (F12).");
+    } finally {
+        btn.innerHTML = oldText;
+        btn.disabled = false;
+    }
+}
         
         // 6. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
