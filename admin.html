@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - IN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -46,7 +46,7 @@
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* ✅ STYLE CHO THÔNG BÁO SAO CHÉP */
+        /* STYLE CHO THÔNG BÁO SAO CHÉP */
         #copyNotification {
             position: fixed;
             bottom: 50px;
@@ -217,7 +217,7 @@
                 if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
             } else {
                 if (adminTools) adminTools.style.display = 'none';
-                if (loginBtn) loginLink.style.display = 'flex';
+                if (loginBtn) loginBtn.style.display = 'flex';
                 if (userControl) userControl.style.display = 'none';
             }
         }
@@ -271,9 +271,11 @@
 
             if (linkElement && linkElement.href) {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
+                    notification.innerText = '✅ Đã sao chép link!';
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
+                        notification.innerText = '✅ Đã sao chép!'; // Reset message
                     }, 1500);
                 }).catch(err => {
                     console.error('Không thể sao chép:', err);
@@ -308,7 +310,7 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 1/2: Lưu Sheet)';
             btn.disabled = true;
 
             try {
@@ -340,6 +342,10 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
+                // Cập nhật trạng thái
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 2/2: Lấy Tên Album)';
+
+
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -408,8 +414,8 @@
                 notification.classList.add('active');
                 setTimeout(() => {
                     notification.classList.remove('active');
-                    notification.innerText = '✅ Đã sao chép!'; // Reset message for copy function
-                }, 3000); // Display for 3 seconds
+                    notification.innerText = '✅ Đã sao chép!'; // Reset message
+                }, 3000); // Hiển thị 3 giây
             }
         }
         
