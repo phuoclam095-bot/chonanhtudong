@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - dN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -46,7 +46,7 @@
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* ✅ STYLE CHO THÔNG BÁO SAO CHÉP */
+        /* STYLE CHO THÔNG BÁO SAO CHÉP */
         #copyNotification {
             position: fixed;
             bottom: 20px;
@@ -165,10 +165,9 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // URL WEBHOOK TẠO ALBUM ĐẦY ĐỦ (POST METHOD)
+        // URL WEBHOOK TẠO ALBUM ĐẦY ĐỦ (SỬ DỤNG POST METHOD)
         const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
-        // URL WEBHOOK THỨ HAI (GET INFO)
-        const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
+        const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info'; // URL này hiện KHÔNG được sử dụng trực tiếp trong hàm createAlbum
 
         // *************************************************************
         // 💡 HÀM HỖ TRỢ VÀ LOGIC ĐĂNG NHẬP
@@ -285,7 +284,7 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM (SINGLE POST REQUEST)
+        // 💡 LOGIC TẠO ALBUM
         // *************************************************************
         
         async function createAlbum() {
@@ -298,9 +297,9 @@
             previewBox.style.display = 'none'; // Ẩn trạng thái cũ
 
             let inputLink = driveLinkInput.value.trim(); 
-            const folderId = extractFolderId(inputLink); 
+            const folderId = extractFolderId(inputLink); // Lấy ID
 
-            // 1. KIỂM TRA TÍNH HỢP LỆ
+            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI CHẶN)
             if (!folderId) {
                 alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
                 return;
@@ -351,11 +350,10 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG (KHÔNG DÙNG POPUP)
-                    alert(`✅ Đã tạo Album: "${result.folderName}" thành công.`);
+                    alert(`✅ Album: "${result.folderName}" đã được tạo thành công.`);
                     
                 } else {
-                    // LỖI: Dữ liệu bị thiếu
+                    // LỖI: Dữ liệu trả về bị thiếu
                     previewBox.style.borderColor = 'red';
                     previewBox.style.backgroundColor = '#f8d7da'; 
                     previewFolderName.style.color = '#721c24';
