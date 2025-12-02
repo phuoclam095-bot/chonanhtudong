@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
     <style>
-        /* CSS V17.0 - FIX LỖI ĐỒNG BỘ NÚT CHỌN */
+        /* CSS V18.0 - FIX LỖI ĐỒNG BỘ NÚT CHỌN */
         :root { --bg: #1a1a1a; --gold: #c5a059; --text: #f0f0f0; --panel: #2b2b2b; --blue-frame: #007bff; --focus-frame: #f0c300; --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); --grid-item-size: 380px; --grid-item-height: 240px; --grid-gap: 10px; }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -138,7 +138,6 @@
         .btn-draw { background: #d63384; color: white; margin-left: 20px; }
         .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
         .btn-sel.act { background: var(--gold); color: #000; }
-        .btn-done { background: #28a745; color: white; border-radius: 5px; }
         
         /* FIX LỖI THUMBNAIL DỌC (CỰC KỲ TRIỆT ĐỂ) */
         .strip { 
@@ -159,6 +158,7 @@
         .th.act { opacity: 1; border-color: var(--gold); transform: scale(1.05); z-index: 5; } 
         .th.sel { opacity: 1; border-color: var(--blue-frame); } 
         .th.sel.act { border-color: var(--gold); } 
+        .btn-done { background: #28a745; color: white; border-radius: 5px; }
         .dot { 
             position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; 
             background: var(--gold); color: #000;
@@ -236,29 +236,29 @@
     </div>
 
     <script>
-        // Lệnh báo lỗi nếu cache không được xóa
-        if (localStorage.getItem('layout_version') !== 'V17.0') {
-            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V17.0.');
-        }
+        // Lệnh báo lỗi nếu cache không được xóa
+        if (localStorage.getItem('layout_version') !== 'V18.0') {
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V18.0.');
+        }
 
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
-        const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
-        const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
+        const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
+        const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
-        let cvs, img; 
-        let albumTitle = "Thư Viện Ảnh"; 
-        let isSelectionLocked = false; 
+        let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
+        let cvs, img; 
+        let albumTitle = "Thư Viện Ảnh"; 
+        let isSelectionLocked = false; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
 
-        let selectedPhotoIds = []; 
-        
+        let selectedPhotoIds = []; 
+        
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
@@ -271,29 +271,27 @@
             const viewerDiv = document.getElementById('photoViewer');
             const btnGrid = document.getElementById('btnGrid');
             const btnViewer = document.getElementById('btnViewer');
-            const btnDraw = document.getElementById('btnDraw'); 
-            
+            const btnDraw = document.getElementById('btnDraw'); 
+            
             if (view === 'grid') {
                 gridDiv.style.display = 'grid';
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none'; 
-                
-                // Cập nhật lại toàn bộ lưới và đồng bộ nút Chọn
-                capNhatSoThuTuVaTổngSố(); 
+                btnDraw.style.display = 'none'; 
+                // Sau khi chuyển, cập nhật lại trạng thái (quan trọng cho đồng bộ nút)
+                capNhatSoThuTuVaTổngSố(); 
             } else {
                 gridDiv.style.display = 'none';
-                viewerDiv.style.display = 'flex'; 
+                viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
-                btnDraw.style.display = 'block'; 
-                
-                // ⚠️ QUAN TRỌNG: Cần chạy show(cur) để tải ảnh lớn và sau đó đồng bộ nút
-                show(cur); 
+                btnDraw.style.display = 'block'; 
+                // Chạy show để tải ảnh và gọi capNhat để đồng bộ nút
+                show(cur); 
             }
         }
-        
+        
         // 💡 HÀM ĐỂ XÓA MỌI TRẠNG THÁI FOCUS TRÊN LƯỚI
         function removeGridFocus() {
             document.querySelectorAll('.grid-item-wrapper').forEach(d => d.classList.remove('focused'));
@@ -302,7 +300,7 @@
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-            
+            
             try {
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
                 console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
@@ -310,15 +308,15 @@
                 console.error("LỖI LƯU TRỮ LOCAL STORAGE:", e);
                 alert("LỖI: Trình duyệt không thể lưu trạng thái chọn.");
             }
-            
+            
             localStorage.removeItem('anh_da_chon_cua_khach');
         }
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (ĐỒNG BỘ CHÍNH)
         function capNhatSoThuTuVaTổngSố() {
             let count = selectedPhotoIds.length;
-            
-            // 1. Cập nhật Viewer Strip (Thumbnail dưới cùng)
+            
+            // 1. Cập nhật Viewer Strip 
             const strip = document.getElementById('strip');
             if (strip) {
                 strip.innerHTML = '';
@@ -330,261 +328,273 @@
 
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
-                    
+                    
                     let thumb = getLink(p.id, 's220');
                     const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
                     d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
                     strip.appendChild(d);
                 });
-                
+                
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
-            
-            // 2. Cập nhật Grid View (Phần ảnh lớn)
+            
+            // 2. Cập nhật Grid View
             const grid = document.getElementById('photoGrid');
             if (grid) {
                 // Chỉ tạo lại lưới nếu đang ở chế độ lưới để tránh tạo DOM quá nhiều lần
-                if (currentView === 'grid' && grid.children.length === 0 || currentView === 'grid' && grid.children.length !== photos.length) {
-                    grid.innerHTML = '';
-                    photos.forEach((p, i) => {
-                        let d = document.createElement('div');
-                        d.className = 'grid-item-wrapper'; 
-                        d.setAttribute('data-index', i);
-                        
-                        // Sự kiện single-click (bo viền vàng)
-                        d.onclick = (e) => {
-                            e.preventDefault(); 
-                            removeGridFocus();
-                            d.classList.add('focused');
-                            cur = i;
-                            capNhatSoThuTuVaTổngSố(); 
-                        };
-                        
-                        // Sự kiện Double-click (MỞ VIEWER)
-                        d.ondblclick = (event) => {
-                             event.preventDefault(); 
-                             cur = i;
-                             setView('viewer');
-                        }
+                if (currentView === 'grid' && (grid.children.length === 0 || grid.children.length !== photos.length)) {
+                    grid.innerHTML = '';
+                    photos.forEach((p, i) => {
+                        let d = document.createElement('div');
+                        d.className = 'grid-item-wrapper'; 
+                        d.setAttribute('data-index', i);
+                        
+                        // Sự kiện single-click (bo viền vàng)
+                        d.onclick = (e) => {
+                            e.preventDefault(); 
+                            removeGridFocus();
+                            d.classList.add('focused');
+                            cur = i;
+                            capNhatSoThuTuVaTổngSố(); 
+                        };
+                        
+                        // Sự kiện Double-click (MỞ VIEWER)
+                        d.ondblclick = (event) => {
+                             event.preventDefault(); 
+                             cur = i;
+                             setView('viewer');
+                        }
 
-                        let isSel = selectedPhotoIds.includes(p.id);
-                        if (isSel) d.classList.add('sel');
-                        
-                        let thumb = getLink(p.id, 's500'); 
-                        let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
-                        
-                        d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
-                        grid.appendChild(d);
-                    });
-                } else if (currentView === 'grid') {
-                    // Nếu đang ở Grid view, chỉ cập nhật trạng thái selected/dot/focused
-                    photos.forEach((p, i) => {
-                        let d = document.querySelector(`.grid-item-wrapper[data-index="${i}"]`);
-                        if (d) {
-                            let isSel = selectedPhotoIds.includes(p.id);
-                            d.classList.toggle('sel', isSel);
-                            
-                            // Cập nhật số thứ tự trong dot
-                            const dot = d.querySelector('.grid-dot');
-                            if (dot) {
-                                const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
-                                dot.innerText = dotIndex;
-                            }
-                            // Giữ trạng thái focused nếu ảnh hiện tại (cur) đang được focus
-                            d.classList.toggle('focused', i === cur && currentView === 'grid');
-                        }
-                    });
-                }
+                        let isSel = selectedPhotoIds.includes(p.id);
+                        if (isSel) d.classList.add('sel');
+                        
+                        let thumb = getLink(p.id, 's500'); 
+                        let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
+                        
+                        d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
+                        
+                        grid.appendChild(d);
+                    });
+                } else if (currentView === 'grid') {
+                    // Cập nhật trạng thái selected/dot/focused cho lưới hiện tại
+                    photos.forEach((p, i) => {
+                        let d = document.querySelector(`.grid-item-wrapper[data-index="${i}"]`);
+                        if (d) {
+                            let isSel = selectedPhotoIds.includes(p.id);
+                            d.classList.toggle('sel', isSel);
+                            
+                            const dot = d.querySelector('.grid-dot');
+                            if (dot) {
+                                const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
+                                dot.innerText = dotIndex;
+                            }
+                            d.classList.toggle('focused', i === cur);
+                        }
+                    });
+                }
+            }
+
+            // 3. Cập nhật thông tin chung
+            const btnDone = document.querySelector('.btn-done');
+            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
+            document.getElementById('totalPhotos').innerText = photos.length;
+            document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
+
+            // 4. CẬP NHẬT TRẠNG THÁI NÚT CHỌN (ĐỒNG BỘ NÚT)
+            const pNameElement = document.getElementById('pName');
+            const pCountElement = document.getElementById('pCount');
+            const btnSel = document.getElementById('btnSel');
+
+            if (photos.length > 0) {
+                const isSelCur = selectedPhotoIds.includes(photos[cur].id);
+                
+                // Cập nhật nút
+                btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
+                
+                // Cập nhật thông tin chi tiết
+                if (currentView === 'grid') {
+                    pNameElement.innerText = photos[cur].name; // Hiển thị tên file đang focus
+                    pCountElement.innerText = `${cur + 1} / ${photos.length}`; 
+                } else {
+                    pNameElement.innerText = photos[cur].name;
+                    pCountElement.innerText = `${cur + 1} / ${photos.length}`;
+                }
+            } else {
+                pNameElement.innerText = 'Không có ảnh';
+                pCountElement.innerText = '0 / 0';
             }
+        }
 
-            // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
-            const btnDone = document.querySelector('.btn-done');
-            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
-            document.getElementById('totalPhotos').innerText = photos.length;
-            document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-            // 4. CẬP NHẬT TRẠNG THÁI NÚT CHỌN (FIX LỖI ĐỒNG BỘ TẠI ĐÂY)
-            const pNameElement = document.getElementById('pName');
-            const pCountElement = document.getElementById('pCount');
-            const btnSel = document.getElementById('btnSel');
+        // SỬA ĐỔI: INIT
+        async function init() {
+            try {
+                localStorage.setItem('layout_version', 'V18.0'); 
+                
+                cvs = document.getElementById('drawCanvas');
+                img = document.getElementById('mainImg');
 
-            if (currentView === 'grid') {
-                // Ở chế độ lưới, luôn hiển thị thông tin chung
-                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+                if(!fid) throw new Error("Link thiếu mã Album (id)");
+                
+                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
+                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+                
+                if (duLieuDaLuuJSON) {
+                    try {
+                        const loadedIds = JSON.parse(duLieuDaLuuJSON);
+                        if (Array.isArray(loadedIds)) selectedPhotoIds = loadedIds;
+                    } catch (e) {
+                        selectedPhotoIds = [];
+                    }
+                }
+                
+                // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
+                let res = await fetch(`${URL_GET}?id=${fid}`);
+                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
+                
+                let data = await res.json();
+                
+                photos = data.photos || data; 
+                if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
                 
-                // Đồng bộ trạng thái nút Chọn dựa trên ảnh đang được focus (cur)
-                if (photos.length > 0) {
-                    const isSelCur = selectedPhotoIds.includes(photos[cur].id);
-                    btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                    btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-                }
-                
-            } else if (currentView === 'viewer' && photos.length > 0) {
-                // Ở chế độ Viewer, thông tin đã được show(cur) cập nhật, nhưng ta gọi lại để đảm bảo nút
-                const isSelCur = selectedPhotoIds.includes(photos[cur].id);
-                btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-                pNameElement.innerText = photos[cur].name;
-                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
-            }
-        }
+                // Khởi tạo cur (index ảnh đang xem)
+                cur = 0;
 
+                document.getElementById('load').style.display='none';
+                
+                capNhatSoThuTuVaTổngSố(); 
+                setView('grid'); 
+                
+                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
+                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
+                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+                
+                document.onkeydown=e=>{if(currentView==='viewer' && !isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
-        // SỬA ĐỔI: INIT
-        async function init() {
-            try {
-                localStorage.setItem('layout_version', 'V17.0'); 
-                
-                cvs = document.getElementById('drawCanvas');
-                img = document.getElementById('mainImg');
+            } catch(e) { 
+                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
+            }
+        }
 
-                if(!fid) throw new Error("Link thiếu mã Album (id)");
-                
-                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-                
-                if (duLieuDaLuuJSON) {
-                    try {
-                        const loadedIds = JSON.parse(duLieuDaLuuJSON);
-                        if (Array.isArray(loadedIds)) selectedPhotoIds = loadedIds;
-                    } catch (e) {
-                        selectedPhotoIds = [];
-                    }
-                }
-                
-                let res = await fetch(`${URL_GET}?id=${fid}`);
-                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
-                
-                let data = await res.json();
-                
-                photos = data.photos || data; 
-                if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
+        // HÀM SHOW (Chạy trong Viewer)
+        function show(i) {
+            if(isDraw) togDraw(false); 
+            if(i<0 || i>=photos.length) return;
+            cur=i; let p=photos[i];
+            
+            let hd = getLink(p.id, 's2000'); 
+            img.src=hd; 
+            img.onload = () => { 
+                cvs.width = img.offsetWidth; 
+                cvs.height = img.offsetHeight;
+                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+            };
+            
+            // Xóa trạng thái active cũ trên strip và đặt lại cho ảnh hiện tại
+            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
+            let t=document.getElementById(`t-${i}`); 
+            if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-                document.getElementById('load').style.display='none';
-                
-                capNhatSoThuTuVaTổngSố(); 
-                setView('grid'); 
-                
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
-                
-                document.onkeydown=e=>{if(currentView==='viewer' && !isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
+            capNhatSoThuTuVaTổngSố(); 
+        }
+        
+        // HÀM VẼ (Giữ nguyên)
+        function togDraw(en) {
+            const tl=document.getElementById('tools');
+            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
+            if (en && !ctx) {
+                ctx=cvs.getContext('2d'); 
+            }
+            if (en && ctx) {
+                ctx.strokeStyle='red'; 
+                ctx.lineWidth=5; 
+                ctx.lineCap='round'; 
+                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+            } else if (!en) {
+                cls(); 
+            }
+        }
 
-            } catch(e) { 
-                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
-            }
-        }
+        let paint=false;
+        function start(e){paint=true;draw(e);}
+        function end(){paint=false;if(ctx) ctx.beginPath();} 
+        function draw(e){
+            if(!paint||!isDraw||!ctx)return; 
+            e.preventDefault();
+            const r=cvs.getBoundingClientRect();
+            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
+            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
+            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
+        }
+        
+        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
+        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
+        
+        function saveDraw() {
+            if(!confirm("Lưu ghi chú?")) return;
+            cvs.toBlob(async function(blob) {
+                let fd=new FormData();
+                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
+                fd.append('photoId', photos[cur].id);
+                try {
+                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
+                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
+                } catch(e) { alert("Lỗi: "+e.message); }
+            }, 'image/png');
+        }
 
-        // HÀM SHOW (Chạy trong Viewer)
-        function show(i) {
-            if(isDraw) togDraw(false); 
-            if(i<0 || i>=photos.length) return;
-            cur=i; let p=photos[i];
-            
-            let hd = getLink(p.id, 's2000'); 
-            img.src=hd; 
-            img.onload = () => { 
-                cvs.width = img.offsetWidth; 
-                cvs.height = img.offsetHeight;
-                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            };
-            
-            document.getElementById('pName').innerText=p.name;
-            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
-            
-            // Xóa trạng thái active cũ trên strip và đặt lại cho ảnh hiện tại
-            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
-            let t=document.getElementById(`t-${i}`); 
-            if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
+        // 💡 TOGGLE SEL (Logic chính xác)
+        function togSel() {
+            if (photos.length === 0) return;
+            
+            let p=photos[cur]; 
+            let ns = !selectedPhotoIds.includes(p.id); 
+            
+            if (ns) {
+                selectedPhotoIds.push(p.id);
+            } else {
+                const index = selectedPhotoIds.indexOf(p.id);
+                if (index > -1) {
+                    selectedPhotoIds.splice(index, 1);
+                }
+            }
+            p.selected = ns ? 'true' : 'false';
 
-            // Đồng bộ trạng thái nút Chọn sau khi chuyển ảnh
-            capNhatSoThuTuVaTổngSố(); 
-        }
-        
-        // HÀM VẼ (Giữ nguyên)
-        function togDraw(en) {
-            const tl=document.getElementById('tools');
-            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
-            if (en && !ctx) {
-                ctx=cvs.getContext('2d'); 
-            }
-            if (en && ctx) {
-                ctx.strokeStyle='red'; 
-                ctx.lineWidth=5; 
-                ctx.lineCap='round'; 
-                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
-            } else if (!en) {
-                cls(); 
-            }
-        }
-
-        let paint=false;
-        function start(e){paint=true;draw(e);}
-        function end(){paint=false;if(ctx) ctx.beginPath();} 
-        function draw(e){
-            if(!paint||!isDraw||!ctx)return; 
-            e.preventDefault();
-            const r=cvs.getBoundingClientRect();
-            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
-            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
-            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
-        }
-        
-        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
-        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
-        
-        function saveDraw() {
-            if(!confirm("Lưu ghi chú?")) return;
-            cvs.toBlob(async function(blob) {
-                let fd=new FormData();
-                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
-                fd.append('photoId', photos[cur].id);
-                try {
-                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
-                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
-                } catch(e) { alert("Lỗi: "+e.message); }
-            }, 'image/png');
-        }
-
-        // 💡 TOGGLE SEL (Logic chính xác)
-        function togSel() {
-            if (photos.length === 0) return;
-            
-            let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); 
-            
-            if (ns) {
-                selectedPhotoIds.push(p.id);
-            } else {
-                const index = selectedPhotoIds.indexOf(p.id);
-                if (index > -1) {
-                    selectedPhotoIds.splice(index, 1);
-                }
-            }
-            p.selected = ns ? 'true' : 'false';
-
-            // Cập nhật giao diện và nút Chọn
-            capNhatSoThuTuVaTổngSố(); 
-            
-            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
-        }
-        
-        function mov(d){show(cur+d);}
-        
-        // 💡 HÀM FINAL COMMIT
-        async function finalCommit(){
-            if(confirm("Lưu trạng thái chọn? Dữ liệu sẽ được lưu lại khi bạn tải lại trang.")) {
-                luuTrangThaiLocally(); 
-                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
-                
-                alert("✅ Đã Lưu Trạng Thái và Gửi!");
-                capNhatSoThuTuVaTổngSố(); 
-            }
-        }
-        
-        init();
-    </script></body></html>
+            // Cập nhật giao diện và nút Chọn
+            capNhatSoThuTuVaTổngSố(); 
+            
+            // Trong chế độ lưới, cập nhật lớp 'sel' cho ảnh vừa được chọn/bỏ chọn
+            if (currentView === 'grid') {
+                let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
+                if (gridItem) {
+                    gridItem.classList.toggle('sel', ns);
+                    gridItem.classList.add('focused'); 
+                }
+            } else {
+                 // Trong viewer mode, cập nhật thumbnail strip
+                 let thumbItem = document.getElementById(`t-${cur}`);
+                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
+            }
+            
+            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
+        }
+        
+        function mov(d){show(cur+d);}
+        
+        // 💡 HÀM FINAL COMMIT
+        async function finalCommit(){
+            if(confirm("Lưu trạng thái chọn? Dữ liệu sẽ được lưu lại khi bạn tải lại trang.")) {
+                luuTrangThaiLocally(); 
+                await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
+                
+                alert("✅ Đã Lưu Trạng Thái và Gửi!");
+                capNhatSoThuTuVaTổngSố(); 
+            }
+        }
+        
+        init();
+    </script></body></html>
