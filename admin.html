@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - IN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -45,11 +45,11 @@
         .btn-copy-link { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* ✅ STYLE CHO THÔNG BÁO SAO CHÉP */
+        
+        /* ✅ ĐÃ SỬA: TĂNG BOTTOM OFFSET ĐỂ ĐẨY THÔNG BÁO LÊN CAO HƠN */
         #copyNotification {
             position: fixed;
-            bottom: 20px;
+            bottom: 50px; /* Đã tăng từ 20px lên 50px */
             left: 50%;
             transform: translateX(-50%);
             background-color: #28a745;
@@ -165,9 +165,9 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // URL WEBHOOK TẠO ALBUM ĐẦY ĐỦ (SỬ DỤNG POST METHOD)
+        // URL WEBHOOK 1: LƯU SHEET (POST)
         const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
-        // URL WEBHOOK LẤY TÊN VÀ LINK ALBUM
+        // URL WEBHOOK 2: LẤY TÊN VÀ LINK ALBUM (GET)
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
         // *************************************************************
@@ -285,7 +285,7 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM (GỌI 2 WEBHOOK TUẦN TỰ)
+        // 💡 LOGIC TẠO ALBUM
         // *************************************************************
         
         async function createAlbum() {
@@ -308,11 +308,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... ';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 1/2: Lưu Sheet)';
             btn.disabled = true;
 
             try {
-                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -341,7 +341,7 @@
                 }
                 
                 // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... ';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 2/2: Lấy Tên Album)';
 
 
                 // -----------------------------------------------------------------
@@ -381,7 +381,7 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG (Không dùng alert/popup)
+                    // KHÔNG DÙNG ALERT/PROMPT: CHỈ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
                     
                 } else {
                     // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
