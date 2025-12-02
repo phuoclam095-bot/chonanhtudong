@@ -424,14 +424,14 @@ async function createAlbum() {
         
         // 6. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuthCallback();
-            updateUI();
-            
-            // Nếu có link trong input khi tải trang, chạy checkDriveLink
-            if (document.getElementById('driveLink') && document.getElementById('driveLink').value) {
-                checkDriveLink();
-            }
-        });
+    checkAuthCallback();
+    updateUI();
+    
+    // Nếu có link trong input khi tải trang, chạy checkDriveLink (SỰ KIỆN NÀY)
+    if (document.getElementById('driveLink') && document.getElementById('driveLink').value) {
+        checkDriveLink();
+    }
+});
         
     </script>
 </body>
