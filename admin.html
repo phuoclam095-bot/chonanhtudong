@@ -174,13 +174,13 @@
 
     <script>
         // *************************************************************
-        // ⚠️ CẤU HÌNH WEBHOOK N8N VÀ GOOGLE (PHẢI THAY THẾ)
+        // ✅ CẤU HÌNH WEBHOOK N8N VÀ GOOGLE (ĐÃ SỬA CLIENT ID)
         // *************************************************************
         const GOOGLE_CONFIG = {
-            // ⚠️ TẠO WEB: LẤY TỪ GOOGLE CLOUD CONSOLE
+            // ✅ CLIENT ID CHÍNH XÁC TỪ FILE BÍ MẬT CỦA BẠN
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
             
-            // 💡 WEBHOOK CỦA BẠN (ĐÃ XÁC NHẬN)
+            // ✅ WEBHOOK N8N CẦN CHUYỂN HƯỚNG TỚI
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             
             SCOPE: 'openid profile email'
@@ -198,7 +198,7 @@
             localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
             
             const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
-                'client_id=' +781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com + 
+                'client_id=' + GOOGLE_CONFIG.CLIENT_ID + 
                 '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI) + 
                 '&response_type=code' + 
                 '&scope=' + encodeURIComponent(GOOGLE_CONFIG.SCOPE) + 
