@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - MIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -45,26 +45,6 @@
         .btn-copy-link { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* ✅ ĐÃ SỬA: TĂNG BOTTOM OFFSET ĐỂ ĐẨY THÔNG BÁO LÊN CAO HƠN */
-        #copyNotification {
-            position: fixed;
-            bottom: 50px; /* Đã tăng từ 20px lên 50px */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
-        }
-        #copyNotification.active {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -149,8 +129,6 @@
             </div>
         </div>
     </div>
-    
-    <div id="copyNotification">✅ Đã sao chép!</div>
 
     <div class="footer">
         © 2025 1Touch Pro. Tất cả các quyền được bảo lưu.
@@ -165,9 +143,9 @@
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
-        // URL WEBHOOK 1: LƯU SHEET (POST)
-        const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
-        // URL WEBHOOK 2: LẤY TÊN VÀ LINK ALBUM (GET)
+        // URL WEBHOOK LƯU SHEET VÀ TẠO ALBUM ĐẦY ĐỦ (POST METHOD)
+        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
+        // URL WEBHOOK LẤY TÊN VÀ LINK ALBUM
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
         // *************************************************************
@@ -271,6 +249,7 @@
 
             if (linkElement && linkElement.href) {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
+                    // Hiển thị thông báo sao chép
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
@@ -308,13 +287,13 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 1/2: Lưu Sheet)';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY (POST)
                 const dataToSend = {
-                    folderId: folderId, 
+                    folderId: folderId, // Gửi ID đã trích xuất
                     settings: {
                         download: document.getElementById('allowDownload').checked,
                         comment: document.getElementById('allowComment').checked,
@@ -323,11 +302,8 @@
                     adminEmail: localStorage.getItem('admin_email')
                 };
 
-                // -----------------------------------------------------------------
-                // ✅ BƯỚC 1: GỌI WEBHOOK LƯU SHEET (create-album-auto) - POST METHOD
-                // -----------------------------------------------------------------
-                
-                const responseSave = await fetch(URL_CREATE_ALBUM_SAVE, {
+                // 4. GỌI WEBHOOK BẰNG PHƯƠNG THỨC POST
+                const response = await fetch(URL_CREATE_ALBUM_SAVE, {
                     method: 'POST', 
                     headers: { 
                         'Content-Type': 'application/json',
@@ -336,43 +312,16 @@
                     body: JSON.stringify(dataToSend) // GỬI DỮ LIỆU TRONG BODY
                 });
 
-                if (!responseSave.ok) {
-                    throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
+                // 5. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
-                // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 2/2: Lấy Tên Album)';
-
-
-                // -----------------------------------------------------------------
-                // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
-                // -----------------------------------------------------------------
-
-                // Chuẩn bị Query Parameters cho Webhook GET INFO
-                const infoParams = new URLSearchParams({ 
-                    folderId: folderId, 
-                    adminEmail: localStorage.getItem('admin_email') 
-                }).toString();
-                const infoUrl = `${URL_GET_FOLDER_INFO}?${infoParams}`;
-
-                const responseInfo = await fetch(infoUrl, {
-                    method: 'GET', // Giả định là GET cho truy vấn
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (!responseInfo.ok) {
-                    throw new Error(`Lỗi HTTP (${responseInfo.status}) khi Lấy Thông Tin Album.`);
-                }
+                const result = await response.json(); 
                 
-                const result = await responseInfo.json(); 
-                
-                // -----------------------------------------------------------------
-                // ✅ BƯỚC 3: HIỂN THỊ KẾT QUẢ
-                // -----------------------------------------------------------------
-
+                // 6. HIỂN THỊ KẾT QUẢ
                 if (result && result.folderName && result.clientLink) {
                     
-                    const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
                     const clientLink = result.clientLink;
 
                     // Cập nhật preview box
@@ -381,20 +330,27 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // KHÔNG DÙNG ALERT/PROMPT: CHỈ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    // ✅ HIỂN THỊ THÔNG BÁO THÀNH CÔNG (Không dùng alert/popup)
+                    alert(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
-                    // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
-                    throw new Error('Dữ liệu trả về từ Webhook Get Info bị thiếu (folderName/clientLink).');
+                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp)
+                    previewBox.style.borderColor = 'red';
+                    previewBox.style.backgroundColor = '#f8d7da'; 
+                    previewFolderName.style.color = '#721c24';
+
+                    previewFolderName.innerText = `❌ Lỗi n8n: Dữ liệu trả về bị thiếu.`;
+                    previewClientLink.innerText = 'Kiểm tra lại cấu hình Output Workflow.';
+                    previewBox.style.display = 'block';
                 }
 
             } catch (error) {
-                // XỬ LÝ LỖI CHUNG
+                // LỖI MẠNG/CÚ PHÁP
                 previewBox.style.borderColor = 'red';
                 previewBox.style.backgroundColor = '#f8d7da'; 
                 previewFolderName.style.color = '#721c24';
 
-                previewFolderName.innerText = `❌ Lỗi xử lý: ${error.message}`;
+                previewFolderName.innerText = `❌ Lỗi kết nối: ${error.message}`;
                 previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) và Network tab.';
                 previewBox.style.display = 'block';
             } finally {
