@@ -3,351 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - aN</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Công cụ Tạo Album - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* CSS (Đã rút gọn) */
-        :root { --primary-green: #147a30; --dark-green: #0e5a22; --info-box: #d1ecf1; --info-text: #0c5460; }
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #111; background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; display: flex; flex-direction: column; }
-        .header { background: var(--primary-green); color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover { background-color: var(--dark-green); }
-        .btn-google { background: #f0f0f0; color: #333; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .btn-google:hover { background: #e0e0e0; }
-        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .create-card { background: #fff; width: 100%; max-width: 450px; border-radius: 10px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; }
-        h2 { text-align: center; margin-top: 0; margin-bottom: 30px; font-weight: 600; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        input[type="text"] { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        input:focus { border-color: var(--primary-green); }
-        .preview-box { border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 20px; display: none; }
-        .preview-box p { margin: 0; }
-        .preview-box a { color: var(--dark-green); word-break: break-all; }
-        .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
-        .switch-label { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; cursor: pointer; }
-        .toggle-switch { position: relative; width: 50px; height: 26px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary-green); }
-        input:checked + .slider:before { transform: translateX(24px); }
-        .btn-create { background: var(--primary-green); color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-create:hover { background: var(--dark-green); }
-        .info-box { background: var(--info-box); color: var(--info-text); padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 14px; display: flex; align-items: center; gap: 10px; clear: both; }
-        .footer { background: var(--primary-green); color: white; text-align: center; padding: 10px; font-size: 13px; }
-        .logged-in-user { display: flex; align-items: center; gap: 10px; }
-        .user-email { font-weight: bold; }
-        .btn-logout { background: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        
-        /* STYLE CHO LINK SAO CHÉP */
-        #finalLinkBox {
-            background: #0e5a22; /* Màu xanh đậm */
-            color: white;
+        /* CSS Cơ bản mô phỏng giao diện từ ảnh */
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .main-container {
+            background-color: #333;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
             padding: 10px;
-            border-radius: 5px;
-            margin-top: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #444;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .toggle-switch-group {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-top: 1px dashed #444;
         }
-        #finalLinkBox a { color: white; text-decoration: underline; flex-grow: 1; margin-right: 10px; word-break: break-all; }
-        .btn-copy-link { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
-        .btn-copy-link:hover { background: #388e3c; }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .btn-create {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .btn-create:hover {
+            background-color: #45a049;
+        }
+        .btn-create:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        .info-box {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            text-align: center;
+            display: none; /* Ban đầu ẩn */
+        }
+        .success-box {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            margin-top: 15px;
+            display: none;
+        }
+        .success-box a {
+            color: #155724;
+            font-weight: bold;
+        }
+        /* Style cho phần tên Album và Link Khách sau khi tạo thành công */
+        .preview-text {
+            color: #155724;
+            margin: 5px 0;
+            text-align: left;
+        }
+        .preview-text strong {
+            display: inline-block;
+            width: 100px; /* Căn chỉnh */
+        }
+        .preview-text a {
+            word-break: break-all;
+        }
+        .error-message {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo"><i class="fas fa-camera"></i> Công cụ Tạo Album</div>
-        
-        <div class="nav-links">
-            <a href="index.html"><i class="fas fa-home"></i> Trang Chủ</a>
-            
-            <div id="adminTools" style="display: none; align-items: center; gap: 15px;">
-                <a href="copy_local.html"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
-                <a href="managa.html" id="albumManagerLink"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
-                <a href="#"><i class="fas fa-user-circle"></i> Trang Cá Nhân</a>
-            </div>
-            
-            <div id="authControl">
-                <button id="loginBtn" class="btn-google" onclick="startGoogleLogin()">
-                    <i class="fab fa-google"></i> Đăng Nhập
-                </button>
-                <div id="userControl" class="logged-in-user" style="display: none;">
-                    <span id="userEmailDisplay" class="user-email"></span>
-                    <span id="usageInfoStatus" style="font-size: 13px;"></span>
-                    <button class="btn-logout" onclick="logoutAdmin()">Đăng Xuất</button>
-                </div>
-            </div>
-        </div>
+<div class="main-container">
+    <h2>Bắt Đầu Tạo Album Ảnh Để Chọn</h2>
+    
+    <div class="form-group">
+        <label for="driveLink">Hỗ trợ link từ thư mục Google Drive: <a href="javascript:void(0);" onclick="alert('Hướng dẫn dán link Google Drive: Đảm bảo link chia sẻ ở chế độ "Bất kỳ ai có đường liên kết" hoặc "Người dùng cụ thể". Ví dụ: https://drive.google.com/drive/folders/ID_THU_MUC?usp=sharing');">hướng dẫn</a></label>
+        <input type="text" id="driveLink" placeholder="Dán Link Thư mục Google Drive vào đây" value="">
     </div>
 
-    <div class="main-container">
-        <div class="create-card" id="createCard">
-            <h2>Bắt Đầu Tạo Album Ảnh Để Chọn</h2>
-            
-            <div class="form-group">
-                <label>Dán Link Thư mục Google Drive vào đây <a href="#" style="color:var(--primary-green); text-decoration: underline;">hướng dẫn</a></label>
-                <input type="text" class="form-control" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
-            </div>
-            
-            <div id="previewBox" class="preview-box">
-                <p style="margin-bottom: 5px; font-weight: bold;">Tên Album: <span id="previewFolderName" style="color: var(--dark-green);">...</span></p>
-                <div id="finalLinkBox">
-                    <a href="#" id="previewClientLink" target="_blank"></a>
-                    <button class="btn-copy-link" onclick="copyFinalLink()">Sao chép link</button>
-                </div>
-            </div>
-            <div class="switch-group">
-                <div class="switch-label">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="allowDownload" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <i class="fas fa-download"></i> Cho phép tải xuống
-                </div>
-            </div>
+    <div id="statusMessage" class="error-message"></div>
 
-            <div class="switch-group">
-                <div class="switch-label">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="allowComment" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <i class="fas fa-comment"></i> Cho phép comment
-                </div>
-            </div>
-
-            <div class="switch-group">
-                <div class="switch-label">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="limitPhotos"> 
-                        <span class="slider"></span>
-                    </label>
-                    <i class="fas fa-list-ol"></i> Số ảnh được phép chọn
-                </div>
-            </div>
-            
-            <button class="btn-create" onclick="createAlbum()">
-                <i class="fas fa-plus"></i> Tạo trang cho khách
-            </button>
-
-            <div class="info-box">
-                <i class="fas fa-info-circle"></i> Hiện tại Google Drive chưa hỗ trợ thumbnail file CR3
-            </div>
-        </div>
+    <div class="toggle-switch-group">
+        <span><i class="fas fa-download"></i> Cho phép tải xuống</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="allowDownload" checked>
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <div class="toggle-switch-group">
+        <span><i class="fas fa-comment"></i> Cho phép comment</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="allowComment" checked>
+            <span class="slider round"></span>
+        </label>
     </div>
 
-    <div class="footer">
-        © 2025 1Touch Pro. Tất cả các quyền được bảo lưu.
+    <div class="toggle-switch-group">
+        <span><i class="fas fa-list-ol"></i> Số ảnh được phép chọn</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="limitPhotos">
+            <span class="slider round"></span>
+        </label>
     </div>
 
-    <script>
-        // *************************************************************
-        // ✅ CẤU HÌNH GOOGLE/N8N
-        // *************************************************************
-        const GOOGLE_CONFIG = {
-            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
-            N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
-            SCOPE: 'openid profile email' 
-        };
-        // URL WEBHOOK TẠO ALBUM
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/get-folder-info'; 
+    <button type="button" class="btn-create" onclick="createAlbum()">+ Tạo trang cho khách</button>
 
-        // *************************************************************
-        // 💡 HÀM HỖ TRỢ VÀ LOGIC ĐĂNG NHẬP
-        // *************************************************************
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i> Hiện tại Google Drive chưa hỗ trợ thumbnail file CR3
+    </div>
+
+    <div id="previewBox" class="success-box">
+        <p class="preview-text"><strong>Tên Album:</strong> <span id="previewFolderName"></span></p>
+        <p class="preview-text"><strong>Link Khách:</strong> <a id="previewClientLink" href="#" target="_blank"></a></p>
+    </div>
+
+</div>
+
+<script>
+    // ----------------------------------------------------------------------
+    // CẤU HÌNH WEBHOOK N8N (THAY THẾ BẰNG URL CỦA BẠN)
+    // ----------------------------------------------------------------------
+    const URL_CREATE_ALBUM = 'YOUR_N8N_WEBHOOK_URL_FOR_CREATING_ALBUM'; 
+    // Ví dụ: https://dichvufb.tino.page/webhook/tao-album
+    
+    // ----------------------------------------------------------------------
+    // HÀM TRÍCH XUẤT FOLDER ID ĐÃ SỬA LỖI
+    // ----------------------------------------------------------------------
+    /**
+     * Trích xuất ID thư mục Drive từ URL hoặc trả về ID thô nếu link chỉ là ID.
+     * @param {string} link - Link Google Drive.
+     * @returns {string|null} - Folder ID hoặc null nếu không tìm thấy.
+     */
+    function extractFolderId(link) {
+        if (!link) return null;
         
-        function extractFolderId(link) {
-            if (!link) return null;
-            let cleanedLink = link.split('?')[0]; 
-            const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
-            return match && match[1] ? match[1] : null;
+        // Loại bỏ mọi tham số truy vấn và dấu gạch chéo cuối cùng
+        let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
+        
+        // 1. Regex tìm ID sau /folders/
+        const match = cleanedLink.match(/\/folders\/([-a-zA-Z0-9_]+)/);
+        
+        if (match) {
+            return match[1]; // Trả về ID từ nhóm capture
         }
 
-        function startGoogleLogin() { /* Logic đăng nhập */
-            localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
-            const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
-                'client_id=' + GOOGLE_CONFIG.CLIENT_ID + 
-                '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI) + 
-                '&response_type=code' + 
-                '&scope=' + encodeURIComponent(GOOGLE_CONFIG.SCOPE) + 
-                '&access_type=offline' +
-                '&prompt=consent'; 
-            window.location.href = authUrl;
+        // 2. Nếu không tìm thấy /folders/, thử kiểm tra xem chuỗi có phải là ID thô không
+        // ID thô Google Drive thường là chữ, số, gạch dưới, gạch ngang
+        if (cleanedLink.match(/^[a-zA-Z0-9_-]+$/)) {
+            return cleanedLink;
         }
 
-        function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
-            updateUI(); 
+        return null; // Không phải link hợp lệ và không phải ID thô
+    }
+
+    // ----------------------------------------------------------------------
+    // HÀM TẠO ALBUM ĐÃ SỬA LỖI (Sử dụng Folder ID đã trích xuất)
+    // ----------------------------------------------------------------------
+    async function createAlbum() {
+        const btn = document.querySelector('.btn-create');
+        const driveLinkInput = document.getElementById('driveLink');
+        const previewBox = document.getElementById('previewBox');
+        const previewFolderName = document.getElementById('previewFolderName');
+        const previewClientLink = document.getElementById('previewClientLink');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Ẩn các hộp trạng thái cũ
+        previewBox.style.display = 'none';
+        statusMessage.style.display = 'none';
+
+        let inputLink = driveLinkInput.value.trim(); 
+        
+        // 1. TRÍCH XUẤT VÀ KIỂM TRA ID
+        const folderId = extractFolderId(inputLink);
+        
+        if (!folderId) {
+            // LỖI: Không tìm thấy ID
+            statusMessage.innerText = '❌ Vui lòng dán link Google Drive hợp lệ (ID thư mục)!';
+            statusMessage.style.display = 'block';
+            statusMessage.style.backgroundColor = '#f8d7da';
+            statusMessage.style.color = '#721c24';
+            return;
         }
 
-        function checkAuthCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const authStatus = urlParams.get('auth_status'); 
-            const userEmail = urlParams.get('user_email');
-            const userName = urlParams.get('user_name'); 
-            const accessToken = urlParams.get('access_token'); 
+        // Bắt đầu trạng thái Loading
+        const oldText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+        btn.disabled = true;
 
-            if (authStatus === 'success' && userEmail) {
-                history.replaceState(null, null, window.location.pathname); 
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', userEmail);
-                if (accessToken) { localStorage.setItem('google_access_token', accessToken); }
-                if (userName) { localStorage.setItem('admin_name', userName); } else { localStorage.setItem('admin_name', userEmail.split('@')[0]); }
+        try {
+            // Lấy thông tin admin email (nếu bạn có lưu local)
+            const adminEmail = localStorage.getItem('admin_email') || 'default_admin@example.com'; 
+
+            // 2. CHUẨN BỊ DỮ LIỆU VÀ TẠO QUERY STRING CHO GET REQUEST
+            const dataToSend = {
+                folderId: folderId,
+                download: document.getElementById('allowDownload').checked ? 1 : 0, // Chuyển boolean sang 1/0
+                comment: document.getElementById('allowComment').checked ? 1 : 0,
+                limitPhotos: document.getElementById('limitPhotos').checked ? 1 : 0,
+                adminEmail: adminEmail 
+            };
+            const queryParams = new URLSearchParams(dataToSend).toString();
+            const finalUrl = `${URL_CREATE_ALBUM}?${queryParams}`;
+
+            // 3. GỌI WEBHOOK BẰNG GET REQUEST (Như đã sửa trong luồng n8n)
+            const response = await fetch(finalUrl, {
+                method: 'GET', 
+                headers: { 'Accept': 'application/json' } // Đảm bảo n8n Response Node trả về JSON
+            });
+
+            const result = await response.json(); 
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status} - ${result.message || 'Lỗi server không xác định.'}`);
             }
-        }
-        
-        function updateUI(email = null, expiration = '90 ngày') {
-            const adminTools = document.getElementById('adminTools');
-            const loginBtn = document.getElementById('loginBtn');
-            const userControl = document.getElementById('userControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            const usageInfoStatus = document.getElementById('usageInfoStatus');
             
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const storedName = localStorage.getItem('admin_name');
-            const storedEmail = localStorage.getItem('admin_email');
-
-            if (isLoggedIn) {
-                if (adminTools) adminTools.style.display = 'flex';
-                if (loginBtn) loginBtn.style.display = 'none';
-                if (userControl) userControl.style.display = 'flex';
-                userEmailDisplay.innerText = storedName || storedEmail || 'Admin';
-                if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
-            } else {
-                if (adminTools) adminTools.style.display = 'none';
-                if (loginBtn) loginBtn.style.display = 'flex';
-                if (userControl) userControl.style.display = 'none';
-            }
-        }
-
-        /**
-         * Hàm sao chép link hiển thị trong finalLinkBox
-         */
-        function copyFinalLink() {
-            const linkElement = document.getElementById('previewClientLink');
-            if (linkElement && linkElement.href) {
-                navigator.clipboard.writeText(linkElement.href).then(() => {
-                    alert('✅ Đã sao chép link khách!');
-                }).catch(err => {
-                    console.error('Không thể sao chép:', err);
-                    alert('❌ Lỗi: Không thể sao chép link.');
-                });
-            }
-        }
-
-        // *************************************************************
-        // 💡 LOGIC TẠO ALBUM
-        // *************************************************************
-        
-        /**
-         * Hàm chính tạo Album (BẤM NÚT TẠO TRANG)
-         */
-        async function createAlbum() {
-            const btn = document.querySelector('.btn-create');
-            const driveLinkInput = document.getElementById('driveLink');
-            const previewBox = document.getElementById('previewBox');
-            const previewFolderName = document.getElementById('previewFolderName');
-            const previewClientLink = document.getElementById('previewClientLink');
-            
-            previewBox.style.display = 'none'; // Ẩn trạng thái cũ
-
-            let inputLink = driveLinkInput.value.trim(); 
-            let folderId = extractFolderId(inputLink); // Lấy ID
-
-            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI ĐANG XẢY RA Ở ĐÂY)
-            if (!folderId) {
-                alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
-                return;
-            }
-
-            // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
-            btn.disabled = true;
-
-            try {
-                // 3. CHUẨN BỊ DỮ LIỆU GET REQUEST
-                const dataToSend = {
-                    folderId: folderId, 
-                    download: document.getElementById('allowDownload').checked,
-                    comment: document.getElementById('allowComment').checked,
-                    limitPhotos: document.getElementById('limitPhotos').checked,
-                    adminEmail: localStorage.getItem('admin_email')
-                };
-                const queryParams = new URLSearchParams(dataToSend).toString();
-                const finalUrl = `${URL_CREATE_ALBUM}?${queryParams}`;
-
-                // 4. GỌI WEBHOOK BẰNG PHƯƠNG THỨC GET
-                const response = await fetch(finalUrl, {
-                    method: 'GET', 
-                    headers: { 
-                        'Accept': 'application/json' 
-                    }
-                });
-
-                // 5. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                
-                const result = await response.json(); 
-                
-                // 6. HIỂN THỊ KẾT QUẢ
-                if (result && result.folderName && result.clientLink) {
-                    
-                    const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
-                    const clientLink = result.clientLink;
-
-                    // Cập nhật preview box
-                    previewFolderName.innerText = `Album: ${result.folderName}`;
-                    previewClientLink.href = clientLink;
-                    previewClientLink.innerText = clientLink;
-                    previewBox.style.display = 'block';
-
-                    alert(finalMessage);
-                    // Không dùng prompt nữa, chỉ dùng hộp thoại đẹp hơn
-                    
-                } else {
-                    // LỖI: Hiển thị lỗi từ n8n (Dữ liệu không khớp)
-                    previewBox.style.borderColor = 'red';
-                    previewBox.style.backgroundColor = '#f8d7da'; 
-                    previewFolderName.style.color = '#721c24';
-
-                    previewFolderName.innerText = `❌ Lỗi n8n: Dữ liệu trả về bị thiếu.`;
-                    previewClientLink.innerText = 'Kiểm tra lại cấu hình Output Workflow.';
-                    previewBox.style.display = 'block';
-                }
-
-            } catch (error) {
-                // LỖI MẠNG/CÚ PHÁP
-                previewBox.style.borderColor = 'red';
-                previewBox.style.backgroundColor = '#f8d7da'; 
-                previewFolderName.style.color = '#721c24';
-
-                previewFolderName.innerText = `❌ Lỗi kết nối: ${error.message}.`;
-                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) và Network tab.';
+            // 4. HIỂN THỊ KẾT QUẢ THÀNH CÔNG (Dựa trên cấu trúc JSON n8n trả về)
+            if (result && result.folderName && result.clientLink) {
+                previewFolderName.innerText = result.folderName;
+                previewClientLink.href = result.clientLink;
+                previewClientLink.innerText = result.clientLink;
                 previewBox.style.display = 'block';
-            } finally {
-                // KHÔI PHỤC NÚT
-                btn.innerHTML = oldText;
-                btn.disabled = false;
+                previewBox.style.borderColor = '#c3e6cb';
+                previewBox.style.backgroundColor = '#d4edda';
+
+                alert(`✅ Album: "${result.folderName}" đã được tạo thành công.`);
+                
+            } else {
+                // LỖI: Dữ liệu trả về bị thiếu (Giống lỗi bạn thấy trong ảnh)
+                statusMessage.innerText = `❌ LỖI: Phản hồi bị thiếu (Workflow n8n không trả về folderName hoặc clientLink). Kiểm tra lại node Respond to Webhook.`;
+                statusMessage.style.display = 'block';
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.color = '#721c24';
             }
+
+        } catch (error) {
+            // LỖI MẠNG/CÚ PHÁP
+            statusMessage.innerText = `❌ LỖI GỌI WEBHOOK: ${error.message}. Kiểm tra URL và CORS/Cấu hình Respond to Webhook.`;
+            statusMessage.style.display = 'block';
+            statusMessage.style.backgroundColor = '#f8d7da';
+            statusMessage.style.color = '#721c24';
+        } finally {
+            // Tắt trạng thái Loading
+            btn.innerHTML = oldText;
+            btn.disabled = false;
         }
-        
-        // 7. Khởi tạo trang: 
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthCallback();
-            updateUI();
-        });
-        
-    </script>
+    }
+</script>
+
 </body>
 </html>
