@@ -1,34 +1,9 @@
-Tôi vô cùng xin lỗi bạn vì lỗi mất dữ liệu này đã làm lãng phí thời gian của bạn. Đây là một vấn đề cực kỳ khó chịu khi lập trình với **Local Storage** trên các thiết bị di động (nơi bộ nhớ bị kiểm soát chặt chẽ).
-
-Tôi đã xác định được nguyên nhân chính xác của vấn đề này: **Trình duyệt đang ưu tiên hành động mặc định của nhấp đơn (chuyển View) hơn là lắng nghe sự kiện nhấp đúp (Double-click)**.
-
-## 🔑 Giải pháp Khắc phục Cuối cùng: Phân biệt Click 100%
-
-Để khắc phục lỗi này triệt để, chúng ta phải loại bỏ hoàn toàn sự kiện `ondblclick` và thay thế nó bằng logic **phân biệt click (Click Delay)** trong hàm `onclick` duy nhất.
-
-Tôi sẽ thực hiện các thay đổi sau:
-
-1.  **Loại bỏ `ondblclick`**: Xóa sự kiện nhấp đúp để tránh xung đột.
-2.  **Sử dụng `clickTimer`**: Dùng `setTimeout` để xác định xem hai lần nhấp chuột đơn có xảy ra đủ gần nhau để tính là "nhấp đúp" hay không.
-3.  **Chức năng Click Đơn (Chọn):** Nếu không có nhấp đúp, click đơn **sẽ là Chọn/Bỏ Chọn** (như bạn yêu cầu ở các bước trước: *dạng lưới vẫn chọn được ảnh chứ*).
-
-**Lưu ý:** Nếu bạn muốn **click đơn KHÔNG LÀM GÌ**, chúng ta sẽ phải quay lại logic trước đó, nhưng vì bạn muốn Grid View vẫn chọn được, tôi sẽ áp dụng **Click đơn = CHỌN** và **Click đúp = MỞ VIEWER**.
-
-Đây là khối code đã được sửa chữa triệt để:
-
-## 🛠️ Code Hoàn Chỉnh (Click đơn = Chọn, Double Click = View)
-
-### 1\. Thay đổi trong JavaScript (`capNhatSoThuTuVaTổngSố`)
-
-Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
-
-```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -36,11 +11,12 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
+            --focus-frame: #f0c300; /* Màu vàng mới cho bo viền khi click đơn */
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 380px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 240px; /* Chiều cao hình chữ nhật nằm */
-            --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
+            --grid-item-size: 380px; 
+            --grid-item-height: 240px; 
+            --grid-gap: 10px; 
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -74,7 +50,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
+            gap: var(--grid-gap); 
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -100,25 +76,39 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            height: var(--grid-item-height); /* Đặt chiều cao cố định */
+            height: var(--grid-item-height); 
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc và ngang */
+            justify-content: center; 
+            align-items: center; 
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
             border-color: rgba(255, 255, 255, 0.7); 
             transform: translateY(-2px);
         }
+        
+        /* --- ĐIỀU CHỈNH MỚI CHO TRẠNG THÁI FOCUS/SINGLE CLICK --- */
+        .grid-item-wrapper.focused {
+            border-width: 4px;
+            border-color: var(--focus-frame); /* MÀU VÀNG KHI NHẤP ĐƠN */
+            transform: scale(1.02);
+        }
+        
+        /* Trạng thái đã chọn (Màu Xanh Cố Định) */
         .grid-item-wrapper.sel { 
             border-width: 4px; 
-            border-color: var(--blue-frame); 
+            border-color: var(--blue-frame); /* MÀU XANH KHI ĐÃ CHỌN */
             transform: scale(1.02); 
         }
+        /* Ưu tiên viền xanh nếu đã chọn, nếu không thì dùng viền vàng khi focus */
+        .grid-item-wrapper.sel.focused {
+             border-color: var(--blue-frame); 
+        }
+        
         .grid-item-wrapper img { 
-            width: 100%; /* Chiếm toàn bộ khung */
-            height: 100%; /* Chiếm toàn bộ khung */
-            object-fit: cover; /* Cắt ảnh để lấp đầy khung */
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
             display: block; 
             border-radius: 6px; 
         }
@@ -137,7 +127,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
         }
         .grid-item-wrapper.sel .grid-dot { display: flex; }
         
-        /* CHẾ ĐỘ 2: VIEWER */
+        /* CHẾ ĐỘ 2: VIEWER (Giữ nguyên) */
         #photoViewer { 
             display: none; 
             flex-direction: column; 
@@ -156,7 +146,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
         .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
         .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
 
-        /* THANH ĐIỀU KHIỂN CHUNG */
+        /* THANH ĐIỀU KHIỂN CHUNG (Giữ nguyên) */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; width: 180px; } 
         .p-count { font-size: 12px; color: #888; }
@@ -184,7 +174,6 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
         
         #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
         
-        /* OVERLAY KHÓA BÌNH CHỌN */
         .locked-overlay {
             position: absolute;
             top: 0; right: 0; bottom: 0; left: 0;
@@ -196,11 +185,9 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             font-size: 24px;
             font-weight: bold;
             z-index: 100;
-            pointer-events: auto; /* Cho phép bắt sự kiện click */
+            pointer-events: auto; 
         }
-    </style>
-</head>
-<body>
+    </style></head><body>
     <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
     <div class="header">
@@ -219,7 +206,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
                 <div class="p-count" id="pCount">0 / 0</div>
             </div>
             <div style="display:flex; align-items:center">
-                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
+                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)" style="display: none;">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
             <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
@@ -251,6 +238,11 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
     </div>
 
     <script>
+        // Lệnh báo lỗi nếu cache không được xóa
+        if (localStorage.getItem('layout_version') !== 'V16.0') {
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.0.');
+        }
+
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
@@ -268,8 +260,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
         const fid = urlParams.get('id');
 
         let selectedPhotoIds = []; 
-        let clickTimer = null; // Biến toàn cục để phân biệt click đơn/đúp
-
+        
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
@@ -283,8 +274,6 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             const btnGrid = document.getElementById('btnGrid');
             const btnViewer = document.getElementById('btnViewer');
             const btnDraw = document.getElementById('btnDraw'); 
-            const pNameElement = document.getElementById('pName');
-            const pCountElement = document.getElementById('pCount');
             
             if (view === 'grid') {
                 gridDiv.style.display = 'grid';
@@ -292,10 +281,6 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
                 btnDraw.style.display = 'none'; 
-                
-                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${selectedPhotoIds.length} ảnh`;
-                
                 capNhatSoThuTuVaTổngSố(); 
             } else {
                 gridDiv.style.display = 'none';
@@ -305,6 +290,11 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
                 btnDraw.style.display = 'block'; 
                 show(cur); 
             }
+        }
+        
+        // 💡 HÀM ĐỂ XÓA MỌI TRẠNG THÁI FOCUS TRÊN LƯỚI
+        function removeGridFocus() {
+            document.querySelectorAll('.grid-item-wrapper').forEach(d => d.classList.remove('focused'));
         }
 
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
@@ -358,18 +348,29 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
+                    d.setAttribute('data-index', i); // Gán index vào data attribute
                     
-                    // Sự kiện click wrapper (CHẶN CLICK ĐƠN)
+                    // Sự kiện single-click (bo viền vàng)
                     d.onclick = (e) => {
-                        // Chặn hành động mặc định của Click đơn (như phóng to trên di động)
                         e.preventDefault(); 
                         
-                        // Khách hàng phải dùng nút "Chọn"
+                        // 1. Xóa focus cũ, gán focus mới
+                        removeGridFocus();
+                        d.classList.add('focused');
                         
-                        // 💡 SỬA LỖI: Cần cập nhật ảnh đang được focus (cur) khi click vào Grid
+                        // 2. Cập nhật ảnh đang được focus (cur)
                         cur = i;
-                        capNhatSoThuTuVaTổngSố(); 
                         
+                        // 3. Cập nhật thông tin trên thanh điều khiển chung (chuyển sang mode viewer ảo)
+                        const isSelCur = selectedPhotoIds.includes(photos[cur].id);
+                        let btnSel = document.getElementById('btnSel');
+                        
+                        // Cập nhật nút Chọn và thông tin file để người dùng có thể Chọn/Bỏ Chọn ngay trên lưới
+                        btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                        btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
+                        
+                        document.getElementById('pName').innerText = photos[cur].name;
+                        document.getElementById('pCount').innerText = `${i + 1} / ${photos.length}`;
                     };
                     
                     // Sự kiện Double-click (MỞ VIEWER)
@@ -399,49 +400,33 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             document.getElementById('totalPhotos').innerText = photos.length;
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
-            const btnSel = document.getElementById('btnSel');
-            const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
-            
-            if (btnSel) {
-                btnSel.disabled = isSelectionLocked;
-
-                if (currentView === 'viewer') {
-                    btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                    btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-                } else {
-                    btnSel.className='btn btn-sel'; 
-                    btnSel.innerText='Chọn';
-                }
-            }
-            
-            // 6. Cập nhật thông tin file (tên và số đếm)
+            // 4. Đặt lại thông tin thanh điều khiển chung nếu đang ở chế độ Grid ban đầu
             const pNameElement = document.getElementById('pName');
             const pCountElement = document.getElementById('pCount');
 
-            if (currentView === 'viewer' && photos.length > 0) {
-                pNameElement.innerText = photos[cur].name;
-                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
-            } else if (currentView === 'grid') {
+            if (currentView === 'grid') {
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
                 pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+            } else if (currentView === 'viewer' && photos.length > 0) {
+                 pNameElement.innerText = photos[cur].name;
+                 pCountElement.innerText = `${cur + 1} / ${photos.length}`;
             }
         }
 
 
-        // SỬA ĐỔI: INIT (Khắc phục lỗi mất dữ liệu khi refresh)
+        // SỬA ĐỔI: INIT
         async function init() {
             try {
+                localStorage.setItem('layout_version', 'V16.0'); 
+                
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Bền vững)
+                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-                
-                localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
                     try {
@@ -452,7 +437,6 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
                             selectedPhotoIds = [];
                         }
                     } catch (e) {
-                        console.error("Lỗi parse Local Storage, thiết lập lại:", e);
                         selectedPhotoIds = [];
                     }
                 } else {
@@ -499,7 +483,7 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             };
             
             document.getElementById('pName').innerText=p.name;
-            document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
+            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
             
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
             let t=document.getElementById(`t-${i}`); 
@@ -560,7 +544,9 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
 
         // 💡 TOGGLE SEL (Logic chính xác)
         function togSel() {
-            // HÀM NÀY CHỈ CHẠY KHI BẤM NÚT CHỌN TRÊN THANH ĐIỀU KHIỂN
+            // Chỉ chạy khi có ảnh được focus (ở viewer mode hoặc đã click vào lưới)
+            if (photos.length === 0) return;
+            
             let p=photos[cur]; 
             let ns = !selectedPhotoIds.includes(p.id); 
             
@@ -574,11 +560,24 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
             }
             p.selected = ns ? 'true' : 'false';
 
-            capNhatSoThuTuVaTổngSố();
-
+            // Cập nhật giao diện và nút Chọn
+            capNhatSoThuTuVaTổngSố(); 
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
+            
+            // Trong chế độ lưới, cập nhật lớp 'sel' cho ảnh vừa được chọn/bỏ chọn
+            if (currentView === 'grid') {
+                let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
+                if (gridItem) {
+                    gridItem.classList.toggle('sel', ns);
+                    gridItem.classList.add('focused'); // Giữ focus sau khi chọn/bỏ chọn
+                }
+            } else {
+                 // Trong viewer mode, cập nhật thumbnail strip
+                 let thumbItem = document.getElementById(`t-${cur}`);
+                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
+            }
             
             // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
@@ -586,23 +585,16 @@ Tôi đã thêm biến toàn cục `clickTimer` và logic phân biệt click.
         
         function mov(d){show(cur+d);}
         
-        // 💡 HÀM MỚI: FINAL COMMIT (LƯU DỮ LIỆU BỀN VỮNG)
+        // 💡 HÀM FINAL COMMIT
         async function finalCommit(){
             if(confirm("Lưu trạng thái chọn? Dữ liệu sẽ được lưu lại khi bạn tải lại trang.")) {
-                // 1. Thực hiện Lưu cục bộ để duy trì trạng thái
                 luuTrangThaiLocally(); 
-                
-                // 2. Gửi tín hiệu hoàn tất (URL_DONE)
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
                 
-                // 3. Thông báo và cập nhật giao diện
                 alert("✅ Đã Lưu Trạng Thái và Gửi!");
                 capNhatSoThuTuVaTổngSố(); 
             }
         }
         
         init();
-    </script>
-</body>
-</html>
-```
+    </script></body></html>
