@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - IN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -45,8 +45,8 @@
         .btn-copy-link { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
         .btn-copy-link:hover { background: #388e3c; }
         #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* STYLE CHO THÔNG BÁO SAO CHÉP */
+
+        /* ✅ STYLE CHO THÔNG BÁO SAO CHÉP */
         #copyNotification {
             position: fixed;
             bottom: 20px;
@@ -247,7 +247,7 @@
             }
         }
 
-        // Hàm trích xuất Folder ID từ link
+        // Hàm trích xuất Folder ID từ link (ĐÃ SỬA LỖI CHẶN)
         function extractFolderId(link) {
             if (!link) return null;
             let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
@@ -285,7 +285,7 @@
         }
 
         // *************************************************************
-        // 💡 LOGIC TẠO ALBUM
+        // 💡 LOGIC TẠO ALBUM (GỌI 2 WEBHOOK TUẦN TỰ)
         // *************************************************************
         
         async function createAlbum() {
@@ -300,7 +300,7 @@
             let inputLink = driveLinkInput.value.trim(); 
             const folderId = extractFolderId(inputLink); // Lấy ID
 
-            // 1. KIỂM TRA TÍNH HỢP LỆ
+            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI CHẶN)
             if (!folderId) {
                 alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
                 return;
@@ -308,14 +308,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 1/2: Lưu Sheet)';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... ';
             btn.disabled = true;
 
             try {
-                // -----------------------------------------------------------------
-                // ✅ BƯỚC 1: GỌI WEBHOOK LƯU SHEET (create-album-auto) - POST METHOD
-                // -----------------------------------------------------------------
-                
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -325,6 +322,10 @@
                     },
                     adminEmail: localStorage.getItem('admin_email')
                 };
+
+                // -----------------------------------------------------------------
+                // ✅ BƯỚC 1: GỌI WEBHOOK LƯU SHEET (create-album-auto) - POST METHOD
+                // -----------------------------------------------------------------
                 
                 const responseSave = await fetch(URL_CREATE_ALBUM_SAVE, {
                     method: 'POST', 
@@ -340,13 +341,14 @@
                 }
                 
                 // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 2/2: Lấy Tên Album)';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... ';
 
 
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
-                
+
+                // Chuẩn bị Query Parameters cho Webhook GET INFO
                 const infoParams = new URLSearchParams({ 
                     folderId: folderId, 
                     adminEmail: localStorage.getItem('admin_email') 
