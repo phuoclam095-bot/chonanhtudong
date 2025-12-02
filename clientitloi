@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh - Công Tử Bạc Liêu</title>
+    <title>Thư Viện Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -11,11 +11,12 @@
             --text: #f0f0f0; 
             --panel: #2b2b2b; 
             --blue-frame: #007bff; 
+            --focus-frame: #f0c300; /* Màu vàng mới cho bo viền khi click đơn */
             /* ẢNH NỀN HOA VĂN TỐI */
             --grid-bg-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482888PMq/anh-mo-ta.png'); 
-            --grid-item-size: 380px; /* Chiều rộng item lưới (lớn) */
-            --grid-item-height: 240px; /* Chiều cao hình chữ nhật nằm */
-            --grid-gap: 10px; /* Khoảng cách tiêu chuẩn */
+            --grid-item-size: 380px; 
+            --grid-item-height: 240px; 
+            --grid-gap: 10px; 
         }
         
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
@@ -33,7 +34,6 @@
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            z-index: 100;
         }
         .album-title { flex-grow: 1; text-align: center; } 
         .view-toggle { display: flex; gap: 10px; flex-shrink: 0; }
@@ -50,7 +50,7 @@
             overflow-y: auto; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--grid-item-size), 1fr));
-            gap: var(--grid-gap); /* Khoảng trống đều nhau */
+            gap: var(--grid-gap); 
             flex-grow: 1; 
             background: var(--bg); 
             background-image: var(--grid-bg-image); 
@@ -76,29 +76,35 @@
             border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             z-index: 1; 
-            height: var(--grid-item-height); /* Đặt chiều cao cố định */
+            height: var(--grid-item-height); 
             display: flex; 
-            justify-content: center; /* Căn giữa ngang */
-            align-items: center; /* Căn giữa dọc và ngang */
+            justify-content: center; 
+            align-items: center; 
             background: rgba(0,0,0,0.5); 
         }
         .grid-item-wrapper:hover {
             border-color: rgba(255, 255, 255, 0.7); 
             transform: translateY(-2px);
         }
+        
+        /* --- ĐIỀU CHỈNH MỚI CHO TRẠNG THÁI FOCUS/SINGLE CLICK --- */
+        .grid-item-wrapper.focused {
+            border-width: 4px;
+            border-color: var(--focus-frame); /* MÀU VÀNG KHI NHẤP ĐƠN */
+            transform: scale(1.02);
+        }
+        
+        /* Trạng thái đã chọn (Màu Xanh Cố Định) */
         .grid-item-wrapper.sel { 
             border-width: 4px; 
-            border-color: var(--blue-frame); 
+            border-color: var(--blue-frame); /* MÀU XANH KHI ĐÃ CHỌN */
             transform: scale(1.02); 
         }
-        .grid-item-wrapper.active {
-            border-width: 4px; 
-            border-color: var(--gold); 
-            transform: scale(1.02); 
+        /* Ưu tiên viền xanh nếu đã chọn, nếu không thì dùng viền vàng khi focus */
+        .grid-item-wrapper.sel.focused {
+             border-color: var(--blue-frame); 
         }
-        .grid-item-wrapper.active.sel {
-             border-color: var(--gold); 
-        }
+        
         .grid-item-wrapper img { 
             width: 100%; 
             height: 100%; 
@@ -121,41 +127,34 @@
         }
         .grid-item-wrapper.sel .grid-dot { display: flex; }
         
-        /* CHẾ ĐỘ 2: VIEWER */
+        /* CHẾ ĐỘ 2: VIEWER (Giữ nguyên) */
         #photoViewer { 
-            /* QUAN TRỌNG: Đã đổi lại thành display:flex và flex-grow: 1, loại bỏ absolute */
             display: none; 
             flex-direction: column; 
             flex-grow: 1; 
             background: var(--bg); 
             overflow: hidden;
-            z-index: 50;
         }
-        /* FIX: Stage chiếm hết không gian giữa thanh điều khiển và strip */
-        .stage { 
-            flex: 1; /* Cho phép stage chiếm hết không gian còn lại */
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            background: radial-gradient(circle, #333, #000); 
-            width: 100%; 
-            overflow: hidden; 
-        }
-        /* FIX: Ảnh chính luôn vừa khung nhìn */
+        .stage { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #333, #000); width: 100%; overflow: hidden; }
+        .canvas-box { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #mainImg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 20px #000; }
-        
-        /* THANH ĐIỀU KHIỂN CHUNG */
+        #drawCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: crosshair; display: none; z-index: 10; }
+        .nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; padding: 15px; cursor: pointer; font-size: 24px; z-index: 20; border-radius: 5px; }
+        .nav:hover { background: var(--gold); } .prev { left: 10px; } .next { right: 10px; }
+        .tools { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); padding: 8px 15px; border-radius: 50px; display: none; gap: 15px; z-index: 100; border: 1px solid var(--gold); }
+        .tools.active { display: flex; }
+        .t-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 1px solid #555; background: #444; color: #fff; font-size: 18px; }
+        .t-btn:hover { transform: scale(1.1); } .t-btn.act { background: var(--gold); color: #000; }
+
+        /* THANH ĐIỀU KHIỂN CHUNG (Giữ nguyên) */
         .ctrl { height: 65px; background: var(--panel); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; border-top: 1px solid #444; flex-shrink: 0; z-index: 50; }
         .info { display: flex; flex-direction: column; width: 180px; } 
         .p-count { font-size: 12px; color: #888; }
-        .btn { padding: 8px 15px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; font-size: 14px; }
-        .btn-draw { background: #d63384; color: white; margin-left: 10px; }
-        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 10px; }
+        .btn { padding: 8px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-draw { background: #d63384; color: white; margin-left: 20px; }
+        .btn-sel { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-left: 20px; }
         .btn-sel.act { background: var(--gold); color: #000; }
         .btn-done { background: #28a745; color: white; border-radius: 5px; }
-        .btn-send-list { background: #007bff; color: white; border-radius: 30px; padding: 8px 15px; font-weight: bold; margin-left: 10px; } 
-        
         .strip { height: 110px; background: #000; display: flex; gap: 10px; padding: 10px; overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333; }
         .th { min-width: 90px; height: 90px; opacity: 0.5; border: 2px solid transparent; cursor: pointer; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
         .th img { width: 100%; height: 100%; object-fit: cover; } 
@@ -173,10 +172,22 @@
         }
         .th.sel .dot { display: flex; justify-content: center; align-items: center; } 
         
-        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 20px; flex-direction: column; }
-    </style>
-</head>
-<body>
+        #load { position: fixed; inset: 0; background: #1a1a1a; color: var(--gold); display: flex; justify-content: center; align-items: center; z-index: 999; font-size: 20px; flex-direction: column; }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: auto; 
+        }
+    </style></head><body>
     <div id="load"><div>⏳</div><div>Đang tải dữ liệu...</div></div>
 
     <div class="header">
@@ -195,11 +206,10 @@
                 <div class="p-count" id="pCount">0 / 0</div>
             </div>
             <div style="display:flex; align-items:center">
-                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)">🖌️ Vẽ</button>
+                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)" style="display: none;">🖌️ Vẽ</button>
                 <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
             </div>
-            <button class="btn btn-done" onclick="luuTrangThaiLocally()">Lưu Chọn</button>
-            <button class="btn btn-send-list" onclick="gửiDanhSachHoanTat()">🚀 Gửi List</button> 
+            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
         </div>
         
         <div id="photoGrid">
@@ -228,6 +238,11 @@
     </div>
 
     <script>
+        // Lệnh báo lỗi nếu cache không được xóa
+        if (localStorage.getItem('layout_version') !== 'V16.0') {
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.0.');
+        }
+
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
@@ -245,7 +260,7 @@
         const fid = urlParams.get('id');
 
         let selectedPhotoIds = []; 
-
+        
         // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
@@ -259,37 +274,34 @@
             const btnGrid = document.getElementById('btnGrid');
             const btnViewer = document.getElementById('btnViewer');
             const btnDraw = document.getElementById('btnDraw'); 
-            const pNameElement = document.getElementById('pName');
-            const pCountElement = document.getElementById('pCount');
             
             if (view === 'grid') {
                 gridDiv.style.display = 'grid';
                 viewerDiv.style.display = 'none';
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none'; // Ẩn nút Vẽ khi ở Grid View
-                
-                // Cập nhật thông tin trên thanh điều khiển cho Grid View
-                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                pCountElement.innerText = `Đã chọn: ${selectedPhotoIds.length} ảnh`;
-                
+                btnDraw.style.display = 'none'; 
                 capNhatSoThuTuVaTổngSố(); 
             } else {
                 gridDiv.style.display = 'none';
                 viewerDiv.style.display = 'flex'; 
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
-                btnDraw.style.display = 'block'; // Hiển thị nút Vẽ khi ở Viewer Mode
-                show(cur); // Đảm bảo Viewer Mode hiển thị ảnh đang chọn
+                btnDraw.style.display = 'block'; 
+                show(cur); 
             }
         }
+        
+        // 💡 HÀM ĐỂ XÓA MỌI TRẠNG THÁI FOCUS TRÊN LƯỚI
+        function removeGridFocus() {
+            document.querySelectorAll('.grid-item-wrapper').forEach(d => d.classList.remove('focused'));
+        }
 
-        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE (Sử dụng Khóa Độc Lập FID)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
             
             try {
-                 // Luôn lưu danh sách ID đã chọn
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
                 console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
             } catch (e) {
@@ -300,7 +312,7 @@
             localStorage.removeItem('anh_da_chon_cua_khach');
         }
 
-        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH (CHUNG CHO CẢ HAI CHẾ ĐỘ)
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
         function capNhatSoThuTuVaTổngSố() {
             let count = selectedPhotoIds.length;
             
@@ -323,8 +335,6 @@
                     strip.appendChild(d);
                 });
                 
-                // ĐÁNH DẤU CHỌN TRÊN STRIP (cur)
-                document.querySelectorAll('.th').forEach(d => d.classList.remove('act'));
                 let t = document.getElementById(`t-${cur}`);
                 if (t) t.classList.add('act');
             }
@@ -338,12 +348,29 @@
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
+                    d.setAttribute('data-index', i); // Gán index vào data attribute
                     
-                    // Sự kiện click wrapper (CHỈ ĐỂ CẬP NHẬT FOCUS)
-                    d.onclick = () => {
-                         // Nhấp đơn CHỈ cập nhật focus (cur)
-                         cur = i;
-                         setView('viewer');
+                    // Sự kiện single-click (bo viền vàng)
+                    d.onclick = (e) => {
+                        e.preventDefault(); 
+                        
+                        // 1. Xóa focus cũ, gán focus mới
+                        removeGridFocus();
+                        d.classList.add('focused');
+                        
+                        // 2. Cập nhật ảnh đang được focus (cur)
+                        cur = i;
+                        
+                        // 3. Cập nhật thông tin trên thanh điều khiển chung (chuyển sang mode viewer ảo)
+                        const isSelCur = selectedPhotoIds.includes(photos[cur].id);
+                        let btnSel = document.getElementById('btnSel');
+                        
+                        // Cập nhật nút Chọn và thông tin file để người dùng có thể Chọn/Bỏ Chọn ngay trên lưới
+                        btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                        btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
+                        
+                        document.getElementById('pName').innerText = photos[cur].name;
+                        document.getElementById('pCount').innerText = `${i + 1} / ${photos.length}`;
                     };
                     
                     // Sự kiện Double-click (MỞ VIEWER)
@@ -355,9 +382,6 @@
 
                     let isSel = selectedPhotoIds.includes(p.id);
                     if (isSel) d.classList.add('sel');
-                    
-                    // Đánh dấu ảnh đang được focus (active)
-                    if (cur === i) d.classList.add('active'); 
                     
                     let thumb = getLink(p.id, 's500'); 
                     
@@ -371,54 +395,38 @@
             }
 
             // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
-            const btnLuuChon = document.querySelector('.btn-done');
-            if (btnLuuChon) btnLuuChon.innerText = `Lưu Chọn (${count})`;
-            
-            const btnGuiList = document.querySelector('.btn-send-list');
-            if (btnGuiList) btnGuiList.innerText = `🚀 Gửi List (${count})`;
-            
+            const btnDone = document.querySelector('.btn-done');
+            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
             document.getElementById('totalPhotos').innerText = photos.length;
             document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-            // 5. Cập nhật trạng thái nút Chọn trên thanh điều khiển chung
-            const btnSel = document.getElementById('btnSel');
-            const isSelCur = photos.length > 0 && selectedPhotoIds.includes(photos[cur].id);
-            
-            if (btnSel) {
-                btnSel.disabled = isSelectionLocked;
-
-                // Nút Chọn phải phản ánh đúng trạng thái ảnh đang được focus (cur)
-                btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-            }
-            
-            // 6. Cập nhật thông tin file (tên và số đếm)
+            // 4. Đặt lại thông tin thanh điều khiển chung nếu đang ở chế độ Grid ban đầu
             const pNameElement = document.getElementById('pName');
             const pCountElement = document.getElementById('pCount');
 
-            if (currentView === 'viewer' && photos.length > 0) {
-                pNameElement.innerText = photos[cur].name;
-                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
-            } else if (currentView === 'grid') {
+            if (currentView === 'grid') {
                 pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
                 pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+            } else if (currentView === 'viewer' && photos.length > 0) {
+                pNameElement.innerText = photos[cur].name;
+                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
             }
         }
 
 
-        // SỬA ĐỔI: INIT (Khắc phục lỗi mất dữ liệu khi refresh)
+        // SỬA ĐỔI: INIT
         async function init() {
             try {
+                localStorage.setItem('layout_version', 'V16.0'); 
+                
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE (Bền vững)
+                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-                
-                localStorage.removeItem('anh_da_chon_cua_khach'); 
                 
                 if (duLieuDaLuuJSON) {
                     try {
@@ -429,7 +437,6 @@
                             selectedPhotoIds = [];
                         }
                     } catch (e) {
-                        console.error("Lỗi parse Local Storage, thiết lập lại:", e);
                         selectedPhotoIds = [];
                     }
                 } else {
@@ -476,14 +483,19 @@
             };
             
             document.getElementById('pName').innerText=p.name;
-            document.getElementById('pCount').innerText = `${i+1} / ${photos.length}`;
+            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
             
             document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
             let t=document.getElementById(`t-${i}`); 
             if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-            // Gọi cập nhật tổng thể để đảm bảo nút 'Chọn' hiển thị đúng trạng thái của ảnh cur
             capNhatSoThuTuVaTổngSố(); 
+
+            // Cập nhật nút Chọn/Đã Chọn cho viewer
+            let isSel = selectedPhotoIds.includes(p.id);
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${isSel?'act':''}`; 
+            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
         }
         
         // HÀM VẼ (Giữ nguyên)
@@ -531,11 +543,13 @@
             }, 'image/png');
         }
 
-        // 💡 TOGGLE SEL (Logic chính xác)
+        // 💡 TOGGLE SEL (Logic chính xác - ĐÃ LOẠI BỎ ĐOẠN CẬP NHẬT GÂY LỖI)
         function togSel() {
-            // HÀM NÀY CHỈ CHẠY KHI BẤM NÚT CHỌN TRÊN THANH ĐIỀU KHIỂN
+            // Chỉ chạy khi có ảnh được focus (ở viewer mode hoặc đã click vào lưới)
+            if (photos.length === 0) return;
+            
             let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); 
+            let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới (new state)
             
             if (ns) {
                 selectedPhotoIds.push(p.id);
@@ -547,35 +561,43 @@
             }
             p.selected = ns ? 'true' : 'false';
 
-            capNhatSoThuTuVaTổngSố();
-
+            // Cập nhật giao diện và số thứ tự
+            capNhatSoThuTuVaTổngSố(); 
+            
+            // Cập nhật trạng thái nút Chọn dựa trên trạng thái mới (ns)
             let btn=document.getElementById('btnSel');
             btn.className=`btn btn-sel ${ns?'act':''}`; 
             btn.innerText=ns?'✔ Đã Chọn':'Chọn';
             
-            luuTrangThaiLocally(); 
-
+            // Trong chế độ lưới, cập nhật lớp 'sel' cho ảnh vừa được chọn/bỏ chọn
+            if (currentView === 'grid') {
+                let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
+                if (gridItem) {
+                    gridItem.classList.toggle('sel', ns);
+                    gridItem.classList.add('focused'); // Giữ focus sau khi chọn/bỏ chọn
+                }
+            } else {
+                 // Trong viewer mode, cập nhật thumbnail strip
+                 let thumbItem = document.getElementById(`t-${cur}`);
+                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
+            }
+            
+            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
             fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
         }
         
         function mov(d){show(cur+d);}
         
-        // 💡 HÀM MỚI: FINAL COMMIT (LƯU DỮ LIỆU BỀN VỮNG)
+        // 💡 HÀM FINAL COMMIT
         async function finalCommit(){
             if(confirm("Lưu trạng thái chọn? Dữ liệu sẽ được lưu lại khi bạn tải lại trang.")) {
-                // 1. Thực hiện Lưu cục bộ để duy trì trạng thái
                 luuTrangThaiLocally(); 
-                
-                // 2. Gửi tín hiệu hoàn tất (URL_DONE)
                 await fetch(URL_DONE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid})});
                 
-                // 3. Thông báo và cập nhật giao diện
                 alert("✅ Đã Lưu Trạng Thái và Gửi!");
                 capNhatSoThuTuVaTổngSố(); 
             }
         }
         
         init();
-    </script>
-</body>
-</html>
+    </script></body></html>
