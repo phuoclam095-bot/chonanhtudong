@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - ADMIN</title>
+    <title>Tạo Album Ảnh - adz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS (Đã rút gọn) --- */
@@ -260,32 +260,37 @@
             btn.disabled = true;
 
             try {
-                // GỌI WEBHOOK: get-folder-info
-                const response = await fetch(URL_GET_FOLDER_INFO, {
-                    method: 'POST',
+                // 3.1. CHUẨN BỊ DỮ LIỆU ĐỂ GỬI QUA QUERY PARAMS
+                const dataToSend = {
+                    folderId: folderId, // Gửi ID đã trích xuất
+                    download: document.getElementById('allowDownload').checked,
+                    comment: document.getElementById('allowComment').checked,
+                    limitPhotos: document.getElementById('limitPhotos').checked, // Thêm tham số này
+                    adminEmail: localStorage.getItem('admin_email')
+                };
+
+                // 3.2. CHUYỂN OBJECT THÀNH CHUỖI QUERY PARAMETER
+                const urlParams = new URLSearchParams(dataToSend).toString();
+                const finalUrl = `${URL_CREATE_ALBUM}?${urlParams}`;
+
+                // 4. GỌI WEBHOOK BẰNG PHƯƠNG THỨC GET (Khớp với cấu hình n8n)
+                const response = await fetch(finalUrl, {
+                    method: 'GET', // *** Đã sửa thành GET ***
                     headers: { 
-                        'Content-Type': 'application/json',
                         'Accept': 'application/json' 
-                    },
-                    body: JSON.stringify({
-                        folderId: folderId, // Gửi ID đã trích xuất
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked,
-                            adminEmail: localStorage.getItem('admin_email')
-                        }
-                    })
+                    }
+                    // KHÔNG CÓ BODY cho GET request
                 });
 
-                // 4. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
+                // 5. KIỂM TRA LỖI VÀ LẤY DỮ LIỆU
                 if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
+                    throw new Error(`HTTP Error: ${response.status} (Không tìm thấy Webhook hoặc lỗi máy chủ)`);
                 }
                 
                 // Lấy dữ liệu dưới dạng JSON
                 const result = await response.json(); 
                 
-                // 5. HIỂN THỊ KẾT QUẢ
+                // 6. HIỂN THỊ KẾT QUẢ
                 if (result && result.folderName && result.clientLink) {
                     
                     const finalMessage = `✅ Album: "${result.folderName}" đã được tạo thành công.`;
@@ -306,7 +311,7 @@
                     previewBox.style.backgroundColor = '#f8d7da'; 
                     previewFolderName.style.color = '#721c24';
 
-                    previewFolderName.innerText = `❌ Lỗi n8n: Dữ liệu trả về bị thiếu.`;
+                    previewFolderName.innerText = `❌ Lỗi n8n: Dữ liệu trả về bị thiếu hoặc không đúng định dạng.`;
                     previewClientLink.innerText = 'Kiểm tra lại cấu hình Output Workflow.';
                     previewBox.style.display = 'block';
                 }
@@ -315,8 +320,8 @@
                 // LỖI MẠNG/CÚ PHÁP
                 previewBox.style.borderColor = 'red';
                 previewBox.style.backgroundColor = '#f8d7da'; 
-                previewFolderName.innerText = `❌ Lỗi mạng/JavaScript: ${error.message}.`;
-                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12).';
+                previewFolderName.innerText = `❌ Lỗi kết nối mạng: ${error.message}.`;
+                previewClientLink.innerText = 'Vui lòng kiểm tra Console (F12) và Network tab.';
                 previewBox.style.display = 'block';
             } finally {
                 // KHÔI PHỤC NÚT
@@ -325,7 +330,7 @@
             }
         }
         
-        // 6. Khởi tạo trang: 
+        // 7. Khởi tạo trang: 
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthCallback();
             updateUI();
