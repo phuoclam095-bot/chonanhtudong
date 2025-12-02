@@ -307,62 +307,63 @@
         /**
          * ✅ HÀM MỚI: Lắng nghe sự kiện dán/nhập link và gọi n8n để lấy thông tin Folder
          */
-        async function checkDriveLink() {
-            const driveLinkInput = document.getElementById('driveLink');
-            const folderId = extractFolderId(driveLinkInput.value);
-            const previewBox = document.getElementById('previewBox');
-            const previewFolderName = document.getElementById('previewFolderName');
-            const previewClientLink = document.getElementById('previewClientLink');
-            
-            if (!folderId) {
-                previewBox.style.display = 'none';
-                return;
-            }
+       async function checkDriveLink() {
+    const driveLinkInput = document.getElementById('driveLink');
+    const folderId = extractFolderId(driveLinkInput.value);
+    const previewBox = document.getElementById('previewBox');
+    const previewFolderName = document.getElementById('previewFolderName');
+    const previewClientLink = document.getElementById('previewClientLink');
+    
+    if (!folderId) {
+        previewBox.style.display = 'none';
+        return;
+    }
 
-            try {
-                previewFolderName.innerText = 'Đang tìm tên thư mục...';
-                previewClientLink.innerText = 'Đang tạo link...';
-                previewBox.style.display = 'block';
+    try {
+        previewFolderName.innerText = 'Đang tìm tên thư mục...';
+        previewClientLink.innerText = 'Đang tạo link...';
+        previewBox.style.display = 'block';
 
-                // Gọi Webhook n8n mới 
-                const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
-                
-                // 1. KIỂM TRA LỖI HTTP/CORS
-                if (!res.ok) {
-                    // Nếu lỗi mạng/HTTP, throw để chuyển sang catch
-                    throw new Error(`HTTP Error: ${res.status} (Có thể do CORS bị chặn!)`);
-                }
-                
-                const result = await res.json(); 
-                
-                // 2. TRUY CẬP DỮ LIỆU VÀ KIỂM TRA TÍNH HỢP LỆ
-                const data = result && Array.isArray(result) && result.length > 0 ? result[0] : null; 
-                
-                if (!data || !data.folderName) {
-                     // Nếu dữ liệu rỗng hoặc trường folderName bị thiếu
-                     previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Dữ liệu thiếu).';
-                     previewClientLink.innerText = 'Vui lòng kiểm tra lại Workflow n8n.';
-                     return;
-                }
-
-                const name = data.folderName;
-                const link = data.clientLink;
-                
-                // 3. Cập nhật và hiển thị Preview Box
-                previewFolderName.innerText = name;
-                previewClientLink.href = link;
-                previewClientLink.innerText = link; 
-
-                // 4. Cập nhật giá trị input thành Folder ID
-                driveLinkInput.value = folderId; 
-
-            } catch (e) {
-                console.error("Error in checkDriveLink:", e);
-                // Hiển thị lỗi kết nối (Nếu không nhận được JSON từ n8n)
-                previewFolderName.innerText = `Lỗi kết nối. (Kiểm tra Console: ${e.message})`;
-                previewClientLink.innerText = 'Vui lòng kiểm tra lại link Drive.';
-            }
+        const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}`);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP Error: ${res.status}`);
         }
+        
+        // 🛑 BƯỚC KHẮC PHỤC LỖI PARSING CUỐI CÙNG: ĐỌC DƯỚI DẠNG VĂN BẢN VÀ PARSE THỦ CÔNG
+        const textResponse = await res.text(); 
+        
+        // Cố gắng parse JSON
+        const result = JSON.parse(textResponse); 
+        
+        // TRUY CẬP DỮ LIỆU ĐÃ PARSE
+        const data = result && Array.isArray(result) && result.length > 0 ? result[0] : null; 
+        
+        if (!data || !data.folderName) {
+             previewFolderName.innerText = 'Không tìm thấy tên (Lỗi: Dữ liệu thiếu).';
+             previewClientLink.innerText = 'Kiểm tra lại Workflow n8n.';
+             return;
+        }
+
+        const name = data.folderName;
+        const link = data.clientLink;
+        
+        // Cập nhật và hiển thị Preview Box
+        previewFolderName.innerText = name;
+        previewClientLink.href = link;
+        previewClientLink.innerText = link; 
+
+        // Cập nhật giá trị input thành Folder ID
+        driveLinkInput.value = folderId; 
+
+    } catch (e) {
+        console.error("LỖI CÚ PHÁP HOẶC MẠNG:", e);
+        
+        // Hiển thị lỗi cuối cùng
+        previewFolderName.innerText = `Lỗi nghiêm trọng. (Kiểm tra Console: ${e.message})`;
+        previewClientLink.innerText = 'Vui lòng kiểm tra lại link Drive.';
+    }
+}
 
 
         /**
