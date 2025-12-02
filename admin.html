@@ -24,10 +24,28 @@
         .header { background: var(--primary-green); color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
+        /* NÚT ĐĂNG NHẬP GOOGLE */
+        .btn-google { 
+            background: #db4437; /* Google Red */
+            color: white; 
+            border: none; 
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-google:hover { background: #c33d31; }
 
         /* MAIN CONTENT */
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .create-card { background: #fff; width: 100%; max-width: 450px; border-radius: 10px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; }
+        .create-card, .login-card { 
+            background: #fff; width: 100%; max-width: 450px; border-radius: 10px; padding: 40px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; 
+        }
         h2 { text-align: center; margin-top: 0; margin-bottom: 30px; font-weight: 600; }
 
         /* FORM ELEMENTS */
@@ -55,25 +73,46 @@
         .btn-create:hover { background: var(--dark-green); }
         .info-box { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 14px; display: flex; align-items: center; gap: 10px; clear: both; }
         .footer { background: var(--primary-green); color: white; text-align: center; padding: 10px; font-size: 13px; }
+        
+        /* CẬP NHẬT TRẠNG THÁI LOGIN */
+        #logoutContainer { margin-top: 15px; text-align: right; }
+        #adminEmail { font-weight: 600; color: #333; margin-right: 10px; }
+        .btn-logout { background: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">Công cụ Tạo Album</div>
+    <div class="header">
+        <div class="logo"><i class="fas fa-camera"></i> Công cụ Tạo Album</div>
+        <div class="nav-links">
+            <a href="managa.html"><i class="fas fa-list"></i> Quản lý Album</a>
+            <div id="logoutContainer" style="display: none;">
+                <span id="adminEmail"></span>
+                <button class="btn-logout" onclick="logoutAdmin()">Đăng Xuất</button>
+            </div>
+        </div>
+    </div>
 
     <div class="main-container">
-        <div class="create-card">
+        <div class="login-card" id="loginCard">
+            <h2>Đăng nhập Quản trị</h2>
+            <p style="text-align: center; color: #555; margin-bottom: 30px;">Vui lòng đăng nhập bằng tài khoản Google để tiếp tục.</p>
+            <button class="btn-google" onclick="startGoogleLogin()">
+                <i class="fab fa-google"></i> Đăng nhập bằng Google
+            </button>
+        </div>
+        
+        <div class="create-card" id="createCard" style="display: none;">
             <h2>Tạo Album Ảnh Mới</h2>
-
             <div class="form-group">
                 <label>Link Google Drive Thư mục Ảnh</label>
-                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
+                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/..."><br>
             </div>
             
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="allowDownload">
+                        <input type="checkbox" id="allowDownload" checked>
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-download"></i> Cho phép tải xuống
@@ -83,7 +122,7 @@
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="allowComment">
+                        <input type="checkbox" id="allowComment" checked>
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-comment"></i> Cho phép comment
@@ -93,12 +132,12 @@
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="limitPhotos">
+                        <input type="checkbox" id="limitPhotos" disabled> 
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-list-ol"></i> Số ảnh được phép chọn
                 </div>
-            </div>
+                </div>
             
             <button class="btn-create" onclick="createAlbum()">
                 <i class="fas fa-plus"></i> Tạo trang cho khách
@@ -115,10 +154,95 @@
     </div>
 
     <script>
-        // ⚠️ THAY LINK WEBHOOK 'CREATE' VÀO ĐÂY
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        // *************************************************************
+        // ⚠️ CẤU HÌNH WEBHOOK N8N VÀ GOOGLE (PHẢI THAY THẾ)
+        // *************************************************************
+        const GOOGLE_CONFIG = {
+            // ⚠️ LẤY TỪ GOOGLE CLOUD CONSOLE
+            CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com', 
+            
+            // ⚠️ WEBHOOK N8N ĐỂ NHẬN CODE VÀ XỬ LÝ TOKEN (PHẢI TẠO TRONG N8N)
+            N8N_OAUTH_REDIRECT_URI: 'https://your.n8n.cloud/webhook/google-oauth-callback', 
+            
+            SCOPE: 'openid profile email'
+        };
+        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto'; // Webhook tạo album
+
+        // *************************************************************
+        // 💡 LOGIC ĐĂNG NHẬP (OAUTH FLOW)
+        // *************************************************************
+        
+        /** * 1. Hàm khởi tạo luồng OAuth khi bấm nút "Đăng nhập"
+         */
+        function startGoogleLogin() {
+            const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
+                'client_id=' + GOOGLE_CONFIG.CLIENT_ID + 
+                '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI) + 
+                '&response_type=code' + 
+                '&scope=' + encodeURIComponent(GOOGLE_CONFIG.SCOPE) + 
+                '&access_type=offline' +
+                '&prompt=consent'; 
+
+            window.location.href = authUrl;
+        }
+
+        /**
+         * 2. Hàm đăng xuất
+         */
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            updateUI(); // Cập nhật giao diện về trạng thái Logout
+            alert("Đã đăng xuất.");
+        }
+
+        /**
+         * 3. Hàm cập nhật trạng thái UI (Quan trọng)
+         */
+        function updateUI(email = null) {
+            const loginCard = document.getElementById('loginCard');
+            const createCard = document.getElementById('createCard');
+            const logoutContainer = document.getElementById('logoutContainer');
+            const adminEmail = document.getElementById('adminEmail');
+            
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
+            if (isLoggedIn) {
+                loginCard.style.display = 'none';
+                createCard.style.display = 'block';
+                logoutContainer.style.display = 'flex';
+                adminEmail.innerText = email || localStorage.getItem('admin_email') || 'Admin';
+            } else {
+                loginCard.style.display = 'block';
+                createCard.style.display = 'none';
+                logoutContainer.style.display = 'none';
+            }
+        }
+
+        /**
+         * 4. Hàm kiểm tra URL sau khi n8n chuyển hướng về
+         */
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authStatus = urlParams.get('auth_status'); // auth_status sẽ được n8n thiết lập
+            const userEmail = urlParams.get('email');
+
+            if (authStatus === 'success' && userEmail) {
+                // Xóa tham số URL
+                history.replaceState(null, null, window.location.pathname); 
+
+                // Thiết lập trạng thái đăng nhập
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', userEmail);
+            }
+        }
+
+        // *************************************************************
+        // 💡 LOGIC TẠO ALBUM (GIỮ NGUYÊN LOGIC CŨ)
+        // *************************************************************
 
         async function createAlbum() {
+            // ... (Giữ nguyên logic hàm createAlbum của bạn)
             const btn = document.querySelector('.btn-create');
             const driveLink = document.getElementById('driveLink').value;
             
@@ -153,10 +277,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         folderId: folderId,
-                        // ⚠️ ĐÃ BỎ THAM SỐ PASSWORD
                         settings: {
                             download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked
+                            comment: document.getElementById('allowComment').checked,
+                            // Gửi kèm email Admin để n8n biết ai đã tạo album này
+                            adminEmail: localStorage.getItem('admin_email')
                         }
                     })
                 });
@@ -180,6 +305,10 @@
                 btn.disabled = false;
             }
         }
+        
+        // 5. Khởi tạo trang: Luôn kiểm tra callback trước khi cập nhật UI
+        checkAuthCallback();
+        updateUI();
     </script>
 </body>
 </html>
