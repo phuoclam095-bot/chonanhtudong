@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Album Ảnh - MIN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS (Đã rút gọn) */
@@ -247,7 +247,7 @@
             }
         }
 
-        // Hàm trích xuất Folder ID từ link (ĐÃ SỬA LỖI CHẶN)
+        // Hàm trích xuất Folder ID từ link
         function extractFolderId(link) {
             if (!link) return null;
             let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
@@ -271,11 +271,11 @@
 
             if (linkElement && linkElement.href) {
                 navigator.clipboard.writeText(linkElement.href).then(() => {
-                    notification.innerText = '✅ Đã sao chép link!';
+                    // Cập nhật thông báo sao chép
+                    notification.innerText = '✅ Đã sao chép link!'; 
                     notification.classList.add('active');
                     setTimeout(() => {
                         notification.classList.remove('active');
-                        notification.innerText = '✅ Đã sao chép!'; // Reset message
                     }, 1500);
                 }).catch(err => {
                     console.error('Không thể sao chép:', err);
@@ -310,11 +310,11 @@
 
             // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 1/2: Lưu Sheet)';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // Bỏ hiển thị bước
             btn.disabled = true;
 
             try {
-                // 3. CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
                 const dataToSend = {
                     folderId: folderId, 
                     settings: {
@@ -342,10 +342,6 @@
                     throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
                 }
                 
-                // Cập nhật trạng thái
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo... (Bước 2/2: Lấy Tên Album)';
-
-
                 // -----------------------------------------------------------------
                 // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
                 // -----------------------------------------------------------------
@@ -382,7 +378,7 @@
                     previewClientLink.innerText = clientLink;
                     previewBox.style.display = 'block';
 
-                    // HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
+                    // ✅ HIỂN THỊ THÔNG BÁO THÀNH CÔNG TRÊN MÀN HÌNH
                     showNotification(`✅ Đã tạo Link Album thành công!`); 
                     
                 } else {
@@ -403,6 +399,19 @@
                 // KHÔI PHỤC NÚT
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
+            }
+        }
+
+        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
+        function showNotification(message) {
+            const notification = document.getElementById('copyNotification');
+            if (notification) {
+                notification.innerText = message; 
+                notification.classList.add('active');
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                    notification.innerText = '✅ Đã sao chép!'; // Reset message for copy function
+                }, 3000); // Hiển thị 3 giây
             }
         }
         
