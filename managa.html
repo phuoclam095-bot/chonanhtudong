@@ -154,6 +154,9 @@
             const albumCount = document.getElementById('albumCount');
             const userInfoHeader = document.getElementById('userInfoHeader');
             
+            const adminEmail = localStorage.getItem('admin_email');
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
@@ -161,11 +164,11 @@
                 return;
             }
             
-            // Cập nhật Header
             userInfoHeader.innerHTML = `Đang đăng nhập: <strong>${localStorage.getItem('admin_name')}</strong>`;
 
             try {
                 // 2. GỌI WEBHOOK N8N ĐỂ LẤY DỮ LIỆU
+                // Gửi email để lọc
                 const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' }
@@ -175,17 +178,29 @@
                     throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
                 }
                 
-                const albums = await response.json();
+                const rawData = await response.json();
+                
+                // ✅ KIỂM TRA AN TOÀN: Đảm bảo dữ liệu là MẢNG
+                if (!Array.isArray(rawData)) {
+                    throw new Error("Dữ liệu trả về không phải là mảng album hợp lệ.");
+                }
+
+                // 3. Xử lý và gom nhóm Album (Vì dữ liệu bạn gửi là file, ta cần Gom nhóm theo folder_id)
+                // LƯU Ý: Nếu Workflow của bạn đã trả về dữ liệu album (Folder), bạn không cần bước này.
+                // Nhưng nếu nó trả về danh sách File (như JSON bạn gửi), ta phải gom nhóm.
+                
+                // Tạm thời, tôi sẽ giả định Workflow đã trả về MẢNG CÁC ALBUM (Folders).
+                const albums = rawData; 
                 
                 albumGrid.innerHTML = ''; // Xóa thông báo loading
 
-                if (!albums || albums.length === 0) {
+                if (albums.length === 0) {
                     albumGrid.innerHTML = '<div style="color: white; text-align: center;">Chưa có album nào được tạo.</div>';
                     albumCount.innerText = 0;
                     return;
                 }
 
-                // 3. RENDER TỪNG CARD ALBUM
+                // 4. RENDER TỪNG CARD ALBUM
                 albums.forEach(album => {
                     const card = createAlbumCard(album);
                     albumGrid.appendChild(card);
@@ -198,7 +213,6 @@
                 console.error("Lỗi tải Album:", error);
             }
         }
-
         // -------------------------------------------------------------
         // HÀM TẠO CARD HTML
         // -------------------------------------------------------------
