@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý A - Dashboard</title>
+    <title>Quản Lý Album - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
@@ -217,11 +217,13 @@
             
             // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
             const id = albumUniqueId || 'UNKNOWN_ID'; 
+            // Escape dấu nháy đơn trong tên cho hàm onclick
             const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
+            // Link ảnh nền (đã được n8n tính toán hoặc dùng Placeholder)
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
@@ -258,7 +260,7 @@
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                window.location.href = 'admin.html'; 
+                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
                 return;
             }
             
@@ -276,14 +278,13 @@
                     throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
                 }
                 
-                const albums = await response.json();
+                const rawData = await response.json();
                 
                 albumGrid.innerHTML = ''; // Xóa thông báo loading
 
-                // 3. KIỂM TRA AN TOÀN: Đảm bảo dữ liệu là MẢNG
-                if (!Array.isArray(albums)) {
-                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ."); 
-                }
+                // 3. KIỂM TRA AN TOÀN VÀ ĐẢM BẢO KHÔNG CÓ LỖI JSON
+                // FIX: Chuyển dữ liệu thành mảng rỗng nếu không phải mảng (Khắc phục lỗi JSON Parsing)
+                const albums = Array.isArray(rawData) ? rawData : []; 
 
                 if (albums.length === 0) {
                     // ✅ XỬ LÝ TRẠNG THÁI RỖNG
@@ -305,7 +306,7 @@
                 // HIỂN THỊ LỖI LỚN
                 albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
                     ❌ Lỗi tải dữ liệu: ${error.message}. <br>
-                    Vui lòng kiểm tra lại cấu hình Workflow n8n.
+                    Vui lòng kiểm tra lại cấu hình Workflow n8n (Respond to Webhook: All Incoming Items).
                 </div>`;
                 console.error("Lỗi tải Album:", error);
             }
