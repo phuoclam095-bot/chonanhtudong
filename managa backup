@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
+        :root {
+            --primary-green: #147a30; 
+            --dark-green: #0e5a22;
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --card-bg: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
+            background-size: 60px 60px;
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 70px; /* Offset cho header fixed */
+        }
+        
+        /* Cấu hình HEADER MỚI */
+        .header {
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between; /* Căn đều 2 bên */
+            align-items: center;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .nav-links a, #userControl a.nav-link { 
+            color: white; 
+            text-decoration: none; 
+            font-size: 14px; 
+            transition: 0.3s; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        
+        .nav-links a:hover, #userControl a.nav-link:hover { 
+            background-color: var(--dark-green); 
+        }
+
+        /* ALBUM GRID */
+        .dashboard-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
+        
+        #albumGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+        
+        .album-card {
+            background: var(--card-bg);
+            color: #333;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.2s;
+        }
+        .album-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .album-title-card {
+            font-size: 16px; 
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-green);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .album-card-header {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 10px -20px; 
+            position: relative;
+            box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4);
+        }
+        
+        .stats-item {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .stats-item i {
+            width: 20px;
+            text-align: center;
+            color: #888;
+        }
+        .stats-item strong {
+            color: #000;
+        }
+        .status-badge {
+            background-color: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-selected { color: white; background-color: #28a745; }
+        
+        .action-btns {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-view { background: #007bff; color: white; }
+        .btn-export { background: #ffc107; color: #333; }
+        .btn-delete { background: #dc3545; color: white; }
+
+        /* STYLE CHO DROPDOWN BOOTSTRAP */
+        #userControl {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-menu {
+            background-color: var(--dark-green) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item {
+            color: white !important;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-green) !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><i class="fas fa-chart-line"></i> Dashboard Quản Lý</div>
+        
+        <div class="nav-links">
+            <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album Mới</a>
+            <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
+            <a href="#" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a>
+            <a href="#" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> <div id="authControl">
+                <div id="userControl" class="dropdown" style="display: none;">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
+                        <li><a class="dropdown-item active" href="managa.html"><i class="fas fa-folder-open"></i> Quản Lý Album</a></li> 
+                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <h2>Danh Sách Album (<span id="albumCount">0</span> Album)</h2>
+        <div id="albumGrid">
+            <div id="loadingMessage" style="color: white; text-align: center;">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu album...
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ✅ CẤU HÌNH WEBHOOK GET ALBUM LIST VÀ DOMAIN CLIENT
+        const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
+        const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
+        const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
+        const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+
+
+        // Lấy thông tin Admin đã đăng nhập từ localStorage
+        const adminEmail = localStorage.getItem('admin_email');
+        const adminName = localStorage.getItem('admin_name') || 'Admin';
+        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
+        // -------------------------------------------------------------
+        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
+        // -------------------------------------------------------------
+        
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); 
+            window.location.href = 'admin.html';
+        }
+
+        async function deleteAlbum(albumId, albumName) {
+            // Xác nhận từ người dùng
+            if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
+                return;
+            }
+
+            const cardElement = document.getElementById(`card-${albumId}`);
+            if (cardElement) cardElement.style.opacity = 0.5; // Giảm opacity khi xử lý
+
+            const deletePayload = {
+                folderId: albumId,
+                adminEmail: adminEmail 
+            };
+
+            try {
+                const response = await fetch(URL_DELETE_ALBUM, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(deletePayload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert(`✅ Album "${albumName}" đã được xóa thành công khỏi database!`);
+                    loadAlbums(); 
+                } else {
+                    throw new Error(result.message || `Lỗi xóa Album: Server không phản hồi thành công.`);
+                }
+
+            } catch (error) {
+                alert(`❌ Lỗi Xóa: ${error.message}`);
+                console.error("Lỗi xóa Album:", error);
+            } finally {
+                // Phục hồi nút sau khi quá trình hoàn tất hoặc thất bại
+                document.querySelectorAll('.album-card button').forEach(btn => btn.disabled = false);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // HÀM TẠO CARD HTML
+        // -------------------------------------------------------------
+        
+        function createAlbumCard(album) {
+            const card = document.createElement('div');
+            // Gán ID cho card để dễ dàng thay đổi trạng thái khi xóa
+            const albumUniqueId = album.folder_id || album.folderId;
+            card.id = `card-${albumUniqueId}`; 
+            card.className = 'album-card';
+            
+            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
+            const id = albumUniqueId || 'UNKNOWN_ID'; 
+            // Escape dấu nháy đơn trong tên cho hàm onclick
+            const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
+            const totalPhotos = album.total_photos || 0;
+            const selectedPhotos = album.selected_photos || 0;
+            const comments = album.comments || 0; 
+            
+            const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
+
+            const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
+
+            card.innerHTML = `
+                <div class="album-card-header" 
+                     style="background-image: url('${previewImageURL}');">
+                </div>
+                
+                <div class="album-title-card">${name}</div>
+                
+                <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
+                <div class="stats-item"><i class="fas fa-images"></i> Tổng số: <strong>${totalPhotos}</strong> ảnh</div>
+                <div class="stats-item"><i class="fas fa-comment-dots"></i> Bình luận: <strong>${comments}</strong></div>
+                
+                <div class="action-btns">
+                    <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem Album</button>
+                    <button class="btn-export" onclick="alert('Thực hiện chức năng Export cho Album ID: ${id}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button>
+                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${name}')"><i class="fas fa-trash-alt"></i> Xóa</button>
+                </div>
+            `;
+            return card;
+        }
+
+        // -------------------------------------------------------------
+        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
+        // -------------------------------------------------------------
+
+        function updateHeaderUI() {
+            const userControl = document.getElementById('userControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (isLoggedIn) {
+                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
+                userControl.style.display = 'flex'; 
+            } else {
+                window.location.href = 'admin.html'; 
+            }
+        }
+
+        async function loadAlbums() {
+            const albumGrid = document.getElementById('albumGrid');
+            const albumCount = document.getElementById('albumCount');
+            
+            // 1. Kiểm tra xác thực (Đã chuyển lên updateHeaderUI)
+            if (!isLoggedIn) {
+                return;
+            }
+            
+            try {
+                // 2. GỌI WEBHOOK N8N ĐỂ LẤY DỮ LIỆU
+                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' } 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
+                }
+                
+                const rawData = await response.json();
+                
+                albumGrid.innerHTML = ''; // Xóa thông báo loading
+
+                // 3. KIỂM TRA AN TOÀN VÀ XỬ LÝ LỖI DỮ LIỆU RỖNG
+                const albums = Array.isArray(rawData) ? rawData : []; 
+
+                if (albums.length === 0) {
+                    // ✅ XỬ LÝ TRẠNG THÁI RỖNG
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center;">Bạn chưa có album nào đã tạo . <br>Vui lòng bấm Tạo Album Mới</div>';
+                    albumCount.innerText = 0;
+                    return;
+                }
+
+                // 4. RENDER TỪNG CARD ALBUM
+                albums.forEach(album => {
+                    const card = createAlbumCard(album);
+                    albumGrid.appendChild(card);
+                });
+                
+                // Cập nhật bộ đếm
+                albumCount.innerText = albums.length;
+
+            } catch (error) {
+                // HIỂN THỊ THÔNG BÁO LỖI (Sửa theo yêu cầu)
+                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
+                    Bạn chưa có album nào đã tạo . <br>
+                    Vui lòng bấm Tạo Album Mới
+                </div>`;
+                albumCount.innerText = 0;
+                console.error("Lỗi tải Album:", error);
+            }
+        }
+
+        // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHeaderUI();
+            loadAlbums();
+        });
+    </script>
+</body>
+</html>
