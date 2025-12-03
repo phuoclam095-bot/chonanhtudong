@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ảnh -ct Bạc Liêu</title>
+    <title>Thư Viện Ảnh -ct Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -247,7 +247,6 @@
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
-        // ✅ CẤU HÌNH WEBHOOKS CỦA BẠN
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
@@ -281,67 +280,176 @@
             if (view === 'grid') {
                 gridDiv.style.display = 'grid';
                 viewerDiv.style.display = 'none';
-    1. **Kiểm tra Response Header** (Respond to Webhook): Đảm bảo bạn trả về `Content-Type: application/json`.
-    2. **Kiểm tra Output:** Đảm bảo dữ liệu **đang được trả về** (không bị lỗi 404/Timeout).
-    3. **Kiểm tra JavaScript Frontend:** Đảm bảo `res.json()` được gọi đúng cách và không bị lỗi Parsing.
+                btnGrid.classList.add('active');
+                btnViewer.classList.remove('active');
+                btnDraw.style.display = 'none'; 
+                capNhatSoThuTuVaTổngSố(); 
+            } else {
+                gridDiv.style.display = 'none';
+                viewerDiv.style.display = 'flex'; 
+                btnGrid.classList.remove('active');
+                btnViewer.classList.add('active');
+                btnDraw.style.display = 'block'; 
+                // Quan trọng: Luôn gọi show(cur) để đồng bộ trạng thái nút
+                show(cur); 
+            }
+        }
+        
+        // 💡 HÀM ĐỂ XÓA MỌI TRẠNG THÁI FOCUS TRÊN LƯỚI
+        function removeGridFocus() {
+            document.querySelectorAll('.grid-item-wrapper').forEach(d => d.classList.remove('focused'));
+        }
 
-### 2. 🛠️ Cấu Hình N8N (Fix JSON Parsing)
+        // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
+        function luuTrangThaiLocally() {
+            const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+            
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
+                console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
+            } catch (e) {
+                console.error("LỖI LƯU TRỮ LOCAL STORAGE:", e);
+                alert("LỖI: Trình duyệt không thể lưu trạng thái chọn.");
+            }
+            
+            localStorage.removeItem('anh_da_chon_cua_khach');
+        }
 
-Vì lỗi là **`Failed to execute 'json' on 'Response': Unexpected end of JSON input`**, lỗi xảy ra vì phản hồi JSON bị lỗi ở Backend.
+        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
+        function capNhatSoThuTuVaTổngSố() {
+            let count = selectedPhotoIds.length;
+            
+            // 1. Cập nhật Viewer Strip 
+            const strip = document.getElementById('strip');
+            if (strip) {
+                strip.innerHTML = '';
+                photos.forEach((p, i) => {
+                    let d = document.createElement('div');
+                    d.className = 'th';
+                    d.id = `t-${i}`;
+                    d.onclick = () => show(i);
 
-**Bạn phải kiểm tra lại cấu hình Node Respond to Webhook** trong Workflow **`get-album-list`** của n8n.
+                    let isSel = selectedPhotoIds.includes(p.id);
+                    if (isSel) d.classList.add('sel');
+                    
+                    let thumb = getLink(p.id, 's220');
+                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
+                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
+                    strip.appendChild(d);
+                });
+                
+                let t = document.getElementById(`t-${cur}`);
+                if (t) t.classList.add('act');
+            }
+            
+            // 2. Cập nhật Grid View
+            const grid = document.getElementById('photoGrid');
+            if (grid) {
+                
+                grid.innerHTML = '';
+                
+                photos.forEach((p, i) => {
+                    let d = document.createElement('div');
+                    d.className = 'grid-item-wrapper'; 
+                    d.setAttribute('data-index', i); 
+                    
+                    // Sự kiện single-click (bo viền vàng)
+                    d.onclick = (e) => {
+                        e.preventDefault(); 
+                        
+                        removeGridFocus();
+                        d.classList.add('focused');
+                        
+                        cur = i;
+                        
+                        // 3. CẬP NHẬT NÚT CHỌN/ĐÃ CHỌN KHI CLICK TRÊN GRID (Đồng bộ)
+                        const isSelCur = selectedPhotoIds.includes(photos[cur].id);
+                        let btnSel = document.getElementById('btnSel');
+                        btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
+                        btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
+                        
+                        document.getElementById('pName').innerText = photos[cur].name;
+                        document.getElementById('pCount').innerText = `${i + 1} / ${photos.length}`;
+                    };
+                    
+                    // Sự kiện Double-click (MỞ VIEWER)
+                    d.ondblclick = (event) => {
+                         event.preventDefault(); 
+                         cur = i;
+                         setView('viewer');
+                    }
 
-* **Respond With:** Chọn **Response JSON**.
-* **Body:** Đảm bảo bạn chỉ trả về **Dữ liệu JSON thuần** (không phải một Array rỗng, một chuỗi báo lỗi, hay HTML).
+                    let isSel = selectedPhotoIds.includes(p.id);
+                    if (isSel) d.classList.add('sel');
+                    
+                    let thumb = getLink(p.id, 's500'); 
+                    
+                    // DOT Grid: Hiển thị số thứ tự
+                    let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
+                    
+                    d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
+                    
+                    grid.appendChild(d);
+                });
+            }
 
-### 3. 💻 Mã JavaScript (`managa.html`)
+            // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
+            const btnDone = document.querySelector('.btn-done');
+            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
+            document.getElementById('totalPhotos').innerText = photos.length;
+            document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
 
-Mã Frontend đã có sẵn logic để xử lý Array rỗng. Vui lòng kiểm tra lại logic này để đảm bảo nó vẫn ổn định (không cần thay đổi, chỉ cần xác nhận):
+            // 4. Đặt lại thông tin thanh điều khiển chung nếu đang ở chế độ Grid ban đầu
+            const pNameElement = document.getElementById('pName');
+            const pCountElement = document.getElementById('pCount');
 
-```javascript
-// managa.html - Sửa hàm loadAlbums()
+            if (currentView === 'grid') {
+                // Đảm bảo thanh điều khiển chung hiển thị thông tin tổng quan khi ở grid mode (chỉ khi không có focus)
+                if (document.querySelectorAll('.grid-item-wrapper.focused').length === 0) {
+                     pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
+                     pCountElement.innerText = `Đã chọn: ${count} ảnh`;
+                }
+            } else if (currentView === 'viewer' && photos.length > 0) {
+                pNameElement.innerText = photos[cur].name;
+                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
+            }
+        }
 
-async function loadAlbums() {
-    const albumGrid = document.getElementById('albumGrid');
-    const albumCount = document.getElementById('albumCount');
-    const userInfoHeader = document.getElementById('userInfoHeader');
-    
-    // ... (Khối kiểm tra đăng nhập) ...
 
-    try {
-        // ... (Gọi fetch và kiểm tra response.ok) ...
-        
-        const rawData = await response.json();
-        
-        // ✅ Lớp kiểm tra an toàn (rất quan trọng)
-        const albums = Array.isArray(rawData) ? rawData : []; 
+        // SỬA ĐỔI: INIT
+        async function init() {
+            try {
+                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
+                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
+                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+                
+                if (duLieuDaLuuJSON) {
+                    try {
+                        const loadedIds = JSON.parse(duLieuDaLuuJSON);
+      0. **Context:** Supabase connection is failing.
+    1. **Diagnosis:** Error is likely due to the highly secured nature of the Supabase PostgreSQL port (5432) or a misconfigured SSL setting in the n8n credential.
+    2. **User Request:** Validate the Supabase credential configuration in the n8n UI again, as the user cannot find the SSL setting.
 
-        albumGrid.innerHTML = ''; // Xóa thông báo loading
+### 🛠️ Hướng Dẫn Kích Hoạt SSL/TLS (Postgres Credential)
 
-        // 3. KIỂM TRA TRẠNG THÁI RỖNG (Sẽ chạy nếu albums.length === 0)
-        if (albums.length === 0) {
-            // ✅ Đặt lại Grid về trạng thái Rỗng/Không lỗi
-            albumGrid.innerHTML = '<div style="color: white; text-align: center;">Bạn chưa có album nào đã tạo . <br>Vui lòng bấm Tạo Album Mới</div>';
-            albumCount.innerText = 0;
-            return;
-        }
+Bạn đã cung cấp danh sách đầy đủ các trường. Để kết nối thành công với Supabase, bạn **bắt buộc** phải kích hoạt SSL/TLS.
 
-        // 4. RENDER TỪNG CARD ALBUM (Chỉ chạy nếu có dữ liệu)
-        albums.forEach(album => {
-            const card = createAlbumCard(album);
-            albumGrid.appendChild(card);
-        });
-        
-        // Cập nhật bộ đếm
-        albumCount.innerText = albums.length;
+Nếu bạn không thấy **SSL** ở cuối màn hình sau `Password` và `Maximum Number of Connections`, hãy làm theo các bước sau trong Credential Node:
 
-    } catch (error) {
-        // ... (Chỉ giữ lại thông báo lỗi cuối cùng)
-        albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-            ❌ Lỗi tải dữ liệu: Dữ liệu trả về không phải là mảng hợp lệ. <br>
-            Vui lòng kiểm tra lại cấu hình Workflow n8n.
-        </div>`;
-        albumCount.innerText = 0;
-        console.error("Lỗi tải Album:", error);
-    }
-}
+1.  **Cuộn Xuống/Tìm kiếm:** Cuộn xuống dưới cùng của tab **Parameters** (Tham số).
+
+2.  **Tìm Trường SSL (Bị ẩn):** Dựa trên danh sách bạn cung cấp, trường **SSL** có tồn tại, nhưng có thể là một dropdown ẩn.
+
+    | Trường | Giá trị/Cấu hình | Lý do |
+    | :--- | :--- | :--- |
+    | **Host** | **Địa chỉ DB Host** (Ví dụ: `db.xxxxxx.supabase.co`) | |
+    | **Port** | `5432` | |
+    | **SSL** | **Require** (Chọn từ Dropdown) | **BẮT BUỘC BẬT:** Supabase yêu cầu kết nối bảo mật. |
+
+### 🚨 Lỗi Có Thể Xảy Ra (Nếu SSL không hiển thị)
+
+Nếu trường **SSL** là một dropdown bị khóa hoặc không hiển thị giá trị, bạn cần kiểm tra xem có cần thiết lập **Tham số bổ sung (Additional Parameters)** thủ công không.
+
+Nếu Node của bạn hiển thị trường **`Password`** và sau đó là **`Maximum Number of Connections`**, thì trường **`SSL`** sẽ là một dropdown **ngay bên dưới** `Ignore SSL Issues (Insecure)`.
+
+**Hãy kiểm tra lại: Nếu trường SSL là dropdown, bạn phải đặt nó là Require để kết nối.**
