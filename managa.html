@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Aum - Dashboard</title>
+    <title>Quản Lý Album - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
@@ -69,8 +69,9 @@
             transform: translateY(-3px);
         }
 
+        /* ✅ SỬA KÍCH THƯỚC FONT TÊN ALBUM */
         .album-title-card {
-            font-size: 18px;
+            font-size: 16px; 
             font-weight: bold;
             margin-bottom: 10px;
             color: var(--primary-green);
@@ -78,6 +79,17 @@
             padding-bottom: 8px;
         }
 
+        /* ✅ SỬA KHOẢNG CÁCH ẢNH */
+        .album-card-header {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 10px -20px; /* Đã giảm khoảng cách từ 20px xuống 10px */
+            position: relative;
+            box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4);
+        }
+        
         .stats-item {
             margin-bottom: 5px;
             font-size: 14px;
@@ -98,16 +110,6 @@
             font-weight: 600;
         }
         .status-selected { color: white; background-color: #28a745; }
-        
-        .album-card-header {
-            height: 150px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px 8px 0 0;
-            margin: -20px -20px 20px -20px; /* Đẩy ra sát viền card */
-            position: relative;
-            box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4);
-        }
         
         .action-btns {
             margin-top: 15px;
@@ -150,6 +152,8 @@
         // ✅ CẤU HÌNH WEBHOOK GET ALBUM LIST VÀ DOMAIN CLIENT
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
+        const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+
 
         // Lấy thông tin Admin đã đăng nhập từ localStorage
         const adminEmail = localStorage.getItem('admin_email');
@@ -164,15 +168,15 @@
             const card = document.createElement('div');
             card.className = 'album-card';
             
-            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON CUNG CẤP
-            const id = album.folderId || 'UNKNOWN_ID'; 
-            const name = album.folderName || 'Album Mới'; 
+            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
+            const id = album.folder_id || album.folderId || 'UNKNOWN_ID'; 
+            const name = album.folderName || album.name || 'Album Mới'; 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
-            const comments = album.comments || 0; // Giả định comments = 0
-
-            // Giả định bạn đã sửa Workflow n8n để lấy previewImageURL
-            const previewImageURL = album.previewImageURL || 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80'; // Placeholder URL
+            const comments = album.comments || 0; 
+            
+            // Link ảnh nền (đã được n8n tính toán hoặc dùng Placeholder)
+            const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
@@ -208,7 +212,7 @@
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
+                window.location.href = 'admin.html'; 
                 return;
             }
             
@@ -232,7 +236,7 @@
 
                 // 3. KIỂM TRA AN TOÀN: Đảm bảo dữ liệu là MẢNG
                 if (!Array.isArray(albums)) {
-                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ.");
+                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ."); 
                 }
 
                 if (albums.length === 0) {
