@@ -6,74 +6,114 @@
     <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* --- CSS (Màu xanh lá cây chuyên nghiệp) --- */
-        :root {
-            --primary-green: #147a30; 
-            --dark-green: #0e5a22;
-        }
-
-        body {
-            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
-            background-color: #111;
-            background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
-            background-size: 60px 60px; background-position: 0 0, 30px 30px;
-            color: #333; height: 100vh; display: flex; flex-direction: column;
-        }
-
-        /* HEADER */
+        /* CSS (Đã rút gọn) */
+        :root { --primary-green: #147a30; --dark-green: #0e5a22; --info-box: #d1ecf1; --info-text: #0c5460; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #111; background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; display: flex; flex-direction: column; }
         .header { background: var(--primary-green); color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
-
-        /* MAIN CONTENT */
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
+        .nav-links a:hover { background-color: var(--dark-green); }
+        .btn-google { background: #f0f0f0; color: #333; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .btn-google:hover { background: #e0e0e0; }
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .create-card { background: #fff; width: 100%; max-width: 450px; border-radius: 10px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; }
         h2 { text-align: center; margin-top: 0; margin-bottom: 30px; font-weight: 600; }
-
-        /* FORM ELEMENTS */
+        .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        input[type="text"], input[type="password"] {
-            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
-        }
+        input[type="text"] { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         input:focus { border-color: var(--primary-green); }
-
-        /* TOGGLES (Giữ nguyên cấu trúc nếu cần) */
+        .preview-box { border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 20px; display: none; }
+        .preview-box p { margin: 0; }
+        .preview-box a { color: var(--dark-green); word-break: break-all; }
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
         .switch-label { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; cursor: pointer; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { background-color: #ccc; border-radius: 34px; transition: .4s; position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
-
-        /* BUTTONS & FOOTER */
-        .btn-create {
-            background: var(--primary-green); color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%;
-            font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        .btn-create { background: var(--primary-green); color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-create:hover { background: var(--dark-green); }
-        .info-box { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 14px; display: flex; align-items: center; gap: 10px; clear: both; }
+        .info-box { background: var(--info-box); color: var(--info-text); padding: 15px; border-radius: 5px; margin-top: 20px; font-size: 14px; display: flex; align-items: center; gap: 10px; clear: both; }
         .footer { background: var(--primary-green); color: white; text-align: center; padding: 10px; font-size: 13px; }
+        .logged-in-user { display: flex; align-items: center; gap: 10px; }
+        .user-email { font-weight: bold; }
+        .btn-logout { background: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        #finalLinkBox a { color: white; text-decoration: underline; flex-grow: 1; margin-right: 10px; word-break: break-all; }
+        .btn-copy-link { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+        .btn-copy-link:hover { background: #388e3c; }
+        #finalLinkBox { background: #0e5a22; color: white; padding: 10px; border-radius: 5px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* STYLE CHO THÔNG BÁO SAO CHÉP */
+        #copyNotification {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        #copyNotification.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">Công cụ Tạo Album</div>
+    <div class="header">
+        <div class="logo"><i class="fas fa-camera"></i> Công cụ Tạo Album</div>
+        
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> Trang Chủ</a>
+            
+            <div id="adminTools" style="display: none; align-items: center; gap: 15px;">
+                <a href="copy_local.html"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
+                <a href="managa.html" id="albumManagerLink"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
+                <a href="#"><i class="fas fa-user-circle"></i> Trang Cá Nhân</a>
+            </div>
+            
+            <div id="authControl">
+                <button id="loginBtn" class="btn-google" onclick="startGoogleLogin()">
+                    <i class="fab fa-google"></i> Đăng Nhập
+                </button>
+                <div id="userControl" class="logged-in-user" style="display: none;">
+                    <span id="userEmailDisplay" class="user-email"></span>
+                    <span id="usageInfoStatus" style="font-size: 13px;"></span>
+                    <button class="btn-logout" onclick="logoutAdmin()">Đăng Xuất</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="main-container">
-        <div class="create-card">
-            <h2>Tạo Album Ảnh Mới</h2>
-
+        <div class="create-card" id="createCard">
+            <h2>Bắt Đầu Tạo Album Ảnh Để Chọn</h2>
+            
             <div class="form-group">
-                <label>Link Google Drive Thư mục Ảnh</label>
+                <label>Dán Link Thư mục Google Drive vào đây <a href="#" style="color:var(--primary-green); text-decoration: underline;">hướng dẫn</a></label>
                 <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
             </div>
             
+            <div id="previewBox" class="preview-box">
+                <p style="margin-bottom: 5px; font-weight: bold;">Tên Album: <span id="previewFolderName" style="color: var(--dark-green);">...</span></p>
+                <div id="finalLinkBox">
+                    <a href="#" id="previewClientLink" target="_blank"></a>
+                    <button class="btn-copy-link" onclick="copyFinalLink()">Sao chép link</button>
+                </div>
+            </div>
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="allowDownload">
+                        <input type="checkbox" id="allowDownload" checked>
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-download"></i> Cho phép tải xuống
@@ -83,7 +123,7 @@
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="allowComment">
+                        <input type="checkbox" id="allowComment" checked>
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-comment"></i> Cho phép comment
@@ -93,7 +133,7 @@
             <div class="switch-group">
                 <div class="switch-label">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="limitPhotos">
+                        <input type="checkbox" id="limitPhotos"> 
                         <span class="slider"></span>
                     </label>
                     <i class="fas fa-list-ol"></i> Số ảnh được phép chọn
@@ -109,77 +149,279 @@
             </div>
         </div>
     </div>
+    
+    <div id="copyNotification">✅ Đã sao chép!</div>
 
     <div class="footer">
-        © 2025 CongTuBacLieu Hotel & Studio. Tất cả các quyền được bảo lưu.
+        © 2025 1Touch Pro. Tất cả các quyền được bảo lưu.
     </div>
 
     <script>
-        // ⚠️ THAY LINK WEBHOOK 'CREATE' VÀO ĐÂY
-        const URL_CREATE_ALBUM = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        // *************************************************************
+        // ✅ CẤU HÌNH WEBHOOKS
+        // *************************************************************
+        const GOOGLE_CONFIG = {
+            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
+            N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
+            SCOPE: 'openid profile email' 
+        };
+        // URL WEBHOOK 1: LƯU SHEET (POST)
+        const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
+        // URL WEBHOOK 2: LẤY TÊN VÀ LINK ALBUM (GET)
+        const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
+        // *************************************************************
+        // 💡 HÀM HỖ TRỢ VÀ LOGIC ĐĂNG NHẬP
+        // *************************************************************
+        
+        function startGoogleLogin() {
+            localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
+            
+            const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
+                'client_id=' + GOOGLE_CONFIG.CLIENT_ID + 
+                '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI) + 
+                '&response_type=code' + 
+                '&scope=' + encodeURIComponent(GOOGLE_CONFIG.SCOPE) + 
+                '&access_type=offline' +
+                '&prompt=consent'; 
+
+            window.location.href = authUrl;
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); 
+            updateUI(); 
+        }
+
+        function updateUI(email = null, expiration = '90 ngày') {
+            const adminTools = document.getElementById('adminTools');
+            const loginBtn = document.getElementById('loginBtn');
+            const userControl = document.getElementById('userControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            const usageInfoStatus = document.getElementById('usageInfoStatus');
+            
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const storedName = localStorage.getItem('admin_name');
+            const storedEmail = localStorage.getItem('admin_email');
+
+            if (isLoggedIn) {
+                if (adminTools) adminTools.style.display = 'flex';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userControl) userControl.style.display = 'flex';
+                
+                userEmailDisplay.innerText = storedName || storedEmail || 'Admin';
+                
+                if (usageInfoStatus) usageInfoStatus.innerText = ` | Hạn SD: ${expiration}`;
+            } else {
+                if (adminTools) adminTools.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (userControl) userControl.style.display = 'none';
+            }
+        }
+
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authStatus = urlParams.get('auth_status'); 
+            const userEmail = urlParams.get('user_email');
+            const userName = urlParams.get('user_name'); 
+            const accessToken = urlParams.get('access_token'); 
+
+            if (authStatus === 'success' && userEmail) {
+                history.replaceState(null, null, window.location.pathname); 
+
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', userEmail);
+                
+                if (accessToken) {
+                    localStorage.setItem('google_access_token', accessToken); 
+                }
+
+                if (userName) {
+                    localStorage.setItem('admin_name', userName);
+                } else {
+                    localStorage.setItem('admin_name', userEmail.split('@')[0]);
+                }
+            }
+        }
+
+        // Hàm trích xuất Folder ID từ link
+        function extractFolderId(link) {
+            if (!link) return null;
+            let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
+            
+            const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
+            
+            if (match) {
+                return match[1]; 
+            }
+            
+            if (cleanedLink.match(/^[a-zA-Z0-9_-]+$/)) {
+                return cleanedLink;
+            }
+
+            return null; 
+        }
+
+        function copyFinalLink() {
+            const linkElement = document.getElementById('previewClientLink');
+            const notification = document.getElementById('copyNotification');
+
+            if (linkElement && linkElement.href && linkElement.innerText !== '...') {
+                navigator.clipboard.writeText(linkElement.href).then(() => {
+                    // ✅ KÍCH HOẠT THÔNG BÁO FLASH SAO CHÉP
+                    showNotification('✅ Đã sao chép link!');
+                }).catch(err => {
+                    console.error('Không thể sao chép:', err);
+                    alert('❌ Lỗi: Không thể sao chép link.');
+                });
+            } else {
+                 alert('❌ Lỗi: Link chưa được tạo thành công.');
+            }
+        }
+
+        // ✅ HÀM HIỂN THỊ THÔNG BÁO CHUNG
+        function showNotification(message) {
+            const notification = document.getElementById('copyNotification');
+            if (notification) {
+                notification.innerText = message; 
+                notification.classList.add('active');
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                    // Không có dòng reset text, chỉ để nó fade out
+                }, 3000); // Hiển thị 3 giây
+            }
+        }
+
+        // *************************************************************
+        // 💡 LOGIC TẠO ALBUM
+        // *************************************************************
+        
         async function createAlbum() {
             const btn = document.querySelector('.btn-create');
-            const driveLink = document.getElementById('driveLink').value;
+            const driveLinkInput = document.getElementById('driveLink');
+            const previewBox = document.getElementById('previewBox');
+            const previewFolderName = document.getElementById('previewFolderName');
+            const previewClientLink = document.getElementById('previewClientLink');
             
-            if (!driveLink) {
-                alert("Vui lòng dán link Google Drive vào!");
+            previewBox.style.display = 'none'; // Ẩn trạng thái cũ
+
+            let inputLink = driveLinkInput.value.trim(); 
+            const folderId = extractFolderId(inputLink); // Lấy ID
+
+            // 1. KIỂM TRA TÍNH HỢP LỆ (LỖI CHẶN)
+            if (!folderId) {
+                alert("Vui lòng dán link Google Drive hợp lệ (ID thư mục)!");
                 return;
             }
 
-            // 1. TRÍCH XUẤT ID
-            let folderId = "";
-            try {
-                let cleanedLink = driveLink.split('?')[0]; 
-                const match = cleanedLink.match(/folders\/([-a-zA-Z0-9_]+)/);
-                if (match && match[1]) {
-                    folderId = match[1];
-                } else {
-                    alert("Link Google Drive không đúng định dạng!");
-                    return;
-                }
-            } catch (e) {
-                return alert("Lỗi xử lý link Drive: " + e.message);
-            }
-
-            // 2. GỌI N8N ĐỂ TẠO DỮ LIỆU
+            // 2. HIỂN THỊ TRẠNG THÁI ĐANG XỬ LÝ
             const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; // ĐÃ BỎ HIỂN THỊ BƯỚC
             btn.disabled = true;
 
             try {
-                const response = await fetch(URL_CREATE_ALBUM, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        folderId: folderId,
-                        // ⚠️ ĐÃ BỎ THAM SỐ PASSWORD
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked
-                        }
-                    })
+                // CHUẨN BỊ DỮ LIỆU JSON BODY CHUNG
+                const dataToSend = {
+                    folderId: folderId, 
+                    settings: {
+                        download: document.getElementById('allowDownload').checked,
+                        comment: document.getElementById('allowComment').checked,
+                        limitPhotos: document.getElementById('limitPhotos').checked,
+                    },
+                    adminEmail: localStorage.getItem('admin_email')
+                };
+
+                // -----------------------------------------------------------------
+                // ✅ BƯỚC 1: GỌI WEBHOOK LƯU SHEET (create-album-auto) - POST METHOD
+                // -----------------------------------------------------------------
+                
+                const responseSave = await fetch(URL_CREATE_ALBUM_SAVE, {
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' 
+                    },
+                    body: JSON.stringify(dataToSend) // GỬI DỮ LIỆU TRONG BODY
                 });
 
-                if (response.ok) {
-                    // 3. TẠO LINK TUYỆT ĐỐI
-                    let currentUrl = window.location.href.split('?')[0];
-                    const directoryPath = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
-                    const clientFileName = 'client.html'; // Tên file client
-                    const clientLink = `${directoryPath}${clientFileName}?id=${folderId}`;
+                if (!responseSave.ok) {
+                    throw new Error(`Lỗi HTTP (${responseSave.status}) khi Lưu Dữ Liệu vào Sheet.`);
+                }
+                
+                // Cập nhật trạng thái
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...'; 
 
-                    prompt("✅ Tạo thành công! Hãy copy link dưới đây gửi cho khách:", clientLink);
+
+                // -----------------------------------------------------------------
+                // ✅ BƯỚC 2: GỌI WEBHOOK LẤY TÊN VÀ LINK (get-folder-info) - GET METHOD
+                // -----------------------------------------------------------------
+
+                // Chuẩn bị Query Parameters cho Webhook GET INFO
+                const infoParams = new URLSearchParams({ 
+                    folderId: folderId, 
+                    adminEmail: localStorage.getItem('admin_email') 
+                }).toString();
+                const infoUrl = `${URL_GET_FOLDER_INFO}?${infoParams}`;
+
+                const responseInfo = await fetch(infoUrl, {
+                    method: 'GET', // Giả định là GET cho truy vấn
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!responseInfo.ok) {
+                    throw new Error(`Lỗi HTTP (${responseInfo.status}) khi Lấy Thông Tin Album.`);
+                }
+                
+                const result = await responseInfo.json(); 
+                
+                // -----------------------------------------------------------------
+                // ✅ BƯỚC 3: HIỂN THỊ KẾT QUẢ
+                // -----------------------------------------------------------------
+
+                if (result && result.folderName && result.clientLink) {
+                    
+                    const clientLink = result.clientLink;
+
+                    // Cập nhật preview box (Goal 2: Chỉ hiển thị tên Album)
+                    previewFolderName.innerText = result.folderName;
+                    previewClientLink.href = clientLink;
+                    previewClientLink.innerText = clientLink;
+                    previewBox.style.display = 'block';
+
+                    // HIỂN THỊ THÔNG BÁO TẠO LINK THÀNH CÔNG TRÊN MÀN HÌNH
+                    showNotification(`✅ Đã tạo Link Album thành công!`); 
+                    
                 } else {
-                    alert("Lỗi kết nối n8n. Vui lòng kiểm tra n8n đã lắng nghe chưa.");
+                    // LỖI: Dữ liệu JSON trả về bị thiếu trường folderName hoặc clientLink
+                    throw new Error('Dữ liệu trả về từ Webhook Get Info bị thiếu (folderName/clientLink).');
                 }
 
             } catch (error) {
-                alert("Lỗi: " + error.message);
+                // XỬ LÝ LỖI CHUNG
+                previewBox.style.borderColor = 'red';
+                previewBox.style.backgroundColor = '#f8d7da'; 
+                previewFolderName.style.color = '#721c24';
+
+                // HIỂN THỊ LỖI CHÍNH XÁC THEO YÊU CẦU MỚI
+                previewFolderName.innerText = `❌ Vui Lòng Kiểm Tra lại link !`;
+                previewClientLink.innerText = 'Chỉ hỗ trợ link đã công khai';
+                previewBox.style.display = 'block';
             } finally {
-                btn.innerHTML = oldText;
+                // KHÔI PHỤC NÚT
+                btn.innerHTML = '<i class="fas fa-plus"></i> Tạo trang cho khách';
                 btn.disabled = false;
             }
         }
+        
+        // 7. Khởi tạo trang: 
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthCallback();
+            updateUI();
+        });
+        
     </script>
 </body>
 </html>
