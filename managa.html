@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Album - Dashboard</title>
+    <title>Quản Lý Aum - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
@@ -99,6 +99,16 @@
         }
         .status-selected { color: white; background-color: #28a745; }
         
+        .album-card-header {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px; /* Đẩy ra sát viền card */
+            position: relative;
+            box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4);
+        }
+        
         .action-btns {
             margin-top: 15px;
             display: flex;
@@ -138,9 +148,7 @@
 
     <script>
         // ✅ CẤU HÌNH WEBHOOK GET ALBUM LIST VÀ DOMAIN CLIENT
-        // Đảm bảo URL này là chính xác
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
-        // Bạn cần thay thế bằng domain thực tế của bạn
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
 
         // Lấy thông tin Admin đã đăng nhập từ localStorage
@@ -156,18 +164,23 @@
             const card = document.createElement('div');
             card.className = 'album-card';
             
-            // Dữ liệu từ n8n (sử dụng các tên trường đã lưu trong Sheet/Database)
-            // Cần đảm bảo n8n trả về chính xác các trường này
-            const id = album.folder_id || album.folderId || 'UNKNOWN_ID'; 
-            const name = album.folderName || album.name || 'Album Mới'; 
+            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON CUNG CẤP
+            const id = album.folderId || 'UNKNOWN_ID'; 
+            const name = album.folderName || 'Album Mới'; 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
-            const comments = album.comments || 0;
-            
-            // Tạo link khách
+            const comments = album.comments || 0; // Giả định comments = 0
+
+            // Giả định bạn đã sửa Workflow n8n để lấy previewImageURL
+            const previewImageURL = album.previewImageURL || 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80'; // Placeholder URL
+
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
             card.innerHTML = `
+                <div class="album-card-header" 
+                     style="background-image: url('${previewImageURL}');">
+                </div>
+                
                 <div class="album-title-card">${name}</div>
                 
                 <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
@@ -195,8 +208,7 @@
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                // Điều hướng về trang đăng nhập
-                window.location.href = 'admin.html'; 
+                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
                 return;
             }
             
@@ -205,10 +217,8 @@
 
             try {
                 // 2. GỌI WEBHOOK N8N ĐỂ LẤY DỮ LIỆU
-                // Gửi email để lọc
                 const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
                     method: 'GET',
-                    // Đảm bảo Webhook n8n cho phép CORS
                     headers: { 'Accept': 'application/json' } 
                 });
 
@@ -222,8 +232,7 @@
 
                 // 3. KIỂM TRA AN TOÀN: Đảm bảo dữ liệu là MẢNG
                 if (!Array.isArray(albums)) {
-                    // Lỗi này xảy ra khi Respond to Webhook không chọn "All Incoming Items"
-                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ."); 
+                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ.");
                 }
 
                 if (albums.length === 0) {
@@ -241,7 +250,6 @@
                 albumCount.innerText = albums.length;
 
             } catch (error) {
-                // HIỂN THỊ LỖI LỚN TRÊN MÀN HÌNH
                 albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
                     ❌ Lỗi tải dữ liệu: ${error.message}. <br>
                     Vui lòng kiểm tra lại cấu hình Workflow n8n (Respond to Webhook: All Incoming Items).
