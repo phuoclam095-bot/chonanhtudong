@@ -147,9 +147,8 @@
     </div>
 
     <script>
-        // ✅ CẤU HÌNH WEBHOOKS VÀ DOMAIN CLIENT
+        // ✅ CẤU HÌNH WEBHOOK GET ALBUM LIST VÀ DOMAIN CLIENT
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
-        // ⚠️ WEBHOOK MỚI CHO CHỨC NĂNG XÓA
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
         const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
@@ -190,7 +189,7 @@
 
                 if (response.ok && result.success) {
                     alert(`✅ Album "${albumName}" đã được xóa thành công khỏi database!`);
-                    // Tải lại danh sách album sau khi xóa thành công
+                    // Sau khi xóa thành công, tải lại danh sách album
                     loadAlbums(); 
                 } else {
                     throw new Error(result.message || `Lỗi xóa Album: Server không phản hồi thành công.`);
@@ -200,11 +199,11 @@
                 alert(`❌ Lỗi Xóa: ${error.message}`);
                 console.error("Lỗi xóa Album:", error);
             } finally {
-                // Đảm bảo phục hồi trạng thái nếu thất bại
+                // Phục hồi nút sau khi quá trình hoàn tất hoặc thất bại
                 document.querySelectorAll('.album-card button').forEach(btn => btn.disabled = false);
             }
         }
-        
+
         // -------------------------------------------------------------
         // HÀM TẠO CARD HTML
         // -------------------------------------------------------------
@@ -212,12 +211,12 @@
         function createAlbumCard(album) {
             const card = document.createElement('div');
             // Gán ID cho card để dễ dàng thay đổi trạng thái khi xóa
-            card.id = `card-${album.folderId || album.folder_id}`; 
+            const albumUniqueId = album.folder_id || album.folderId;
+            card.id = `card-${albumUniqueId}`; 
             card.className = 'album-card';
             
-            // ÁNH XẠ DỮ LIỆU TỪ JSON
-            const id = album.folderId || album.folder_id || 'UNKNOWN_ID'; 
-            // Escape dấu nháy đơn trong tên cho hàm onclick
+            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
+            const id = albumUniqueId || 'UNKNOWN_ID'; 
             const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
@@ -259,7 +258,7 @@
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
+                window.location.href = 'admin.html'; 
                 return;
             }
             
@@ -287,6 +286,7 @@
                 }
 
                 if (albums.length === 0) {
+                    // ✅ XỬ LÝ TRẠNG THÁI RỖNG
                     albumGrid.innerHTML = '<div style="color: white; text-align: center;">Chưa có album nào được tạo.</div>';
                     albumCount.innerText = 0;
                     return;
@@ -298,12 +298,14 @@
                     albumGrid.appendChild(card);
                 });
                 
+                // Cập nhật bộ đếm
                 albumCount.innerText = albums.length;
 
             } catch (error) {
+                // HIỂN THỊ LỖI LỚN
                 albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
                     ❌ Lỗi tải dữ liệu: ${error.message}. <br>
-                    Vui lòng kiểm tra lại cấu hình Workflow n8n (Respond to Webhook: All Incoming Items).
+                    Vui lòng kiểm tra lại cấu hình Workflow n8n.
                 </div>`;
                 console.error("Lỗi tải Album:", error);
             }
