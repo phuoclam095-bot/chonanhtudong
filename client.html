@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -ct Bạc Liêu</title>
+    <title> -ct Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -247,10 +247,12 @@
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
+        // ✅ CẤU HÌNH WEBHOOKS CỦA BẠN
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
-        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection'; // FINAL COMMIT WEBHOOK
+        // ✅ WEBHOOK CHO LƯU CHỌN CUỐI CÙNG
+        const URL_DONE = 'https://dichvufb.tino.page/webhook/commit-final-selection'; 
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
@@ -316,316 +318,60 @@
 
         // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
         function capNhatSoThuTuVaTổngSố() {
-            let count = selectedPhotoIds.length;
-            
-            // 1. Cập nhật Viewer Strip 
-            const strip = document.getElementById('strip');
-            if (strip) {
-                strip.innerHTML = '';
-                photos.forEach((p, i) => {
-                    let d = document.createElement('div');
-                    d.className = 'th';
-                    d.id = `t-${i}`;
-                    d.onclick = () => show(i);
+    1. **Dữ liệu có đang được trả về không?** (Vâng, lỗi không phải lỗi mạng)
+    2. **Kiểu dữ liệu có đúng không?** (Frontend mong đợi Array, nhưng có thể nhận được Object/String)
+    3. **Logic có bị chặn không?** (Có, hàm `forEach` bị lỗi)
+    4. **Sửa lỗi** bằng cách đảm bảo dữ liệu luôn là một Array (Mảng).
 
-                    let isSel = selectedPhotoIds.includes(p.id);
-                    if (isSel) d.classList.add('sel');
-                    
-                    let thumb = getLink(p.id, 's220');
-                    const dotIndex = isSel ? selectedPhotoIds.indexOf(p.id) + 1 : '';
-                    d.innerHTML = `<img src="${thumb}" loading="lazy"><div class="dot">${dotIndex}</div>`;
-                    strip.appendChild(d);
-                });
-                
-                // Đảm bảo item đang xem trong strip luôn sáng (act)
-                document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
-                let t = document.getElementById(`t-${cur}`);
-                if (t) t.classList.add('act');
-            }
-            
-            // 2. Cập nhật Grid View
-            const grid = document.getElementById('photoGrid');
-            if (grid) {
-                
-                grid.innerHTML = '';
-                
-                photos.forEach((p, i) => {
-                    let d = document.createElement('div');
-                    d.className = 'grid-item-wrapper'; 
-                    d.setAttribute('data-index', i); // Gán index vào data attribute
-                    
-                    // Sự kiện single-click (bo viền vàng)
-                    d.onclick = (e) => {
-                        e.preventDefault(); 
-                        
-                        // 1. Xóa focus cũ, gán focus mới
-                        removeGridFocus();
-                        d.classList.add('focused');
-                        
-                        // 2. Cập nhật ảnh đang được focus (cur)
-                        cur = i;
-                        
-                        // 3. CẬP NHẬT NÚT CHỌN/ĐÃ CHỌN KHI CLICK TRÊN GRID (Đồng bộ)
-                        const isSelCur = selectedPhotoIds.includes(photos[cur].id);
-                        let btnSel = document.getElementById('btnSel');
-                        btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
-                        btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
-                        
-                        document.getElementById('pName').innerText = photos[cur].name;
-                        document.getElementById('pCount').innerText = `${i + 1} / ${photos.length}`;
-                    };
-                    
-                    // Sự kiện Double-click (MỞ VIEWER)
-                    d.ondblclick = (event) => {
-                         event.preventDefault(); 
-                         cur = i;
-                         setView('viewer');
-                    }
+### 2. 🛠️ Sửa Lỗi Gốc (`managa.html`)
 
-                    let isSel = selectedPhotoIds.includes(p.id);
-                    if (isSel) d.classList.add('sel');
-                    
-                    // Giữ lại trạng thái focused nếu nó đang là ảnh cur (khi refresh capNhatSoThuTuVaTổngSố)
-                    if (i === cur && currentView === 'grid') {
-                        d.classList.add('focused');
-                    }
-                    
-                    let thumb = getLink(p.id, 's500'); 
-                    
-                    // DOT Grid: Hiển thị số thứ tự
-                    let dotContent = isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>` : '';
-                    
-                    d.innerHTML = `<img src="${thumb}" loading="lazy">${dotContent}`;
-                    
-                    grid.appendChild(d);
-                });
-            }
+Bạn phải thay thế toàn bộ mã JavaScript trong file `managa.html` bằng đoạn code sau.
 
-            // 3. Cập nhật nút "Lưu Chọn" và Tổng số ảnh trên thanh điều khiển chung
-            const btnDone = document.querySelector('.btn-done');
-            if (btnDone) btnDone.innerText = `Lưu Chọn (${count})`;
-            document.getElementById('totalPhotos').innerText = photos.length;
-            document.querySelector('.album-title').innerText = `${albumTitle} (${photos.length} ảnh)`;
+```javascript
+// managa.html - Sửa hàm loadAlbums()
 
-            // 4. Đặt lại thông tin thanh điều khiển chung nếu đang ở chế độ Grid ban đầu
-            const pNameElement = document.getElementById('pName');
-            const pCountElement = document.getElementById('pCount');
+async function loadAlbums() {
+    const albumGrid = document.getElementById('albumGrid');
+    const albumCount = document.getElementById('albumCount');
+    const userInfoHeader = document.getElementById('userInfoHeader');
+    
+    // ... (Khối kiểm tra đăng nhập) ...
 
-            if (currentView === 'grid') {
-                // Đảm bảo thanh điều khiển chung hiển thị thông tin tổng quan khi ở grid mode (chỉ khi không có focus)
-                if (document.querySelectorAll('.grid-item-wrapper.focused').length === 0) {
-                     pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                     pCountElement.innerText = `Đã chọn: ${count} ảnh`;
-                }
-            } else if (currentView === 'viewer' && photos.length > 0) {
-                pNameElement.innerText = photos[cur].name;
-                pCountElement.innerText = `${cur + 1} / ${photos.length}`;
-            }
-        }
+    try {
+        // ... (Gọi fetch và kiểm tra response.ok) ...
+        
+        const rawData = await response.json();
+        
+        // ✅ FIX LỖI: Đảm bảo biến albums LUÔN LÀ MẢNG (Array)
+        // Nếu rawData không phải mảng (ví dụ: null, {}), gán nó là mảng rỗng [].
+        const albums = Array.isArray(rawData) ? rawData : []; 
 
+        albumGrid.innerHTML = ''; // Xóa thông báo loading
 
-        // SỬA ĐỔI: INIT
-        async function init() {
-            try {
-                // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
-                const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-                const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-                
-                if (duLieuDaLuuJSON) {
-                    try {
-                        const loadedIds = JSON.parse(duLieuDaLuuJSON);
-                        if (Array.isArray(loadedIds)) {
-                            selectedPhotoIds = loadedIds;
-                        } else {
-                            selectedPhotoIds = [];
-                        }
-                    } catch (e) {
-                        selectedPhotoIds = [];
-                    }
-                } else {
-                    selectedPhotoIds = [];
-                }
-                
-                // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
-                let res = await fetch(`${URL_GET}?id=${fid}`);
-                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
-                
-                let data = await res.json();
-                
-                photos = data.photos || data; 
-                if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
+        // 3. KIỂM TRA TRẠNG THÁI RỖNG (Sẽ chạy nếu albums.length === 0)
+        if (albums.length === 0) {
+            // ✅ Đặt lại Grid về trạng thái Rỗng/Không lỗi
+            albumGrid.innerHTML = '<div style="color: white; text-align: center;">Bạn chưa có album nào đã tạo . <br>Vui lòng bấm Tạo Album Mới</div>';
+            albumCount.innerText = 0;
+            return;
+        }
 
-                document.getElementById('load').style.display='none';
+        // 4. RENDER TỪNG CARD ALBUM (Chỉ chạy nếu có dữ liệu)
+        albums.forEach(album => {
+            const card = createAlbumCard(album);
+            albumGrid.appendChild(card);
+        });
+        
+        // Cập nhật bộ đếm
+        albumCount.innerText = albums.length;
 
-                cvs = document.getElementById('drawCanvas');
-                img = document.getElementById('mainImg');
-                
-                capNhatSoThuTuVaTổngSố(); 
-                setView('grid'); 
-                
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
-                
-                document.onkeydown=e=>{if(currentView==='viewer' && !isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
-
-            } catch(e) { 
-                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
-            }
-        }
-
-        // 💡 HÀM SHOW (ĐÃ SỬA LỖI FOCUS VÀ CẬP NHẬT NÚT)
-        function show(i) {
-            if(isDraw) togDraw(false); 
-            if(i<0 || i>=photos.length) return;
-            cur=i; let p=photos[i];
-            
-            let hd = getLink(p.id, 's2000'); 
-            img.src=hd; 
-            img.onload = () => { 
-                cvs.width = img.offsetWidth; 
-                cvs.height = img.offsetHeight;
-                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            };
-            
-            document.getElementById('pName').innerText=p.name;
-            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
-            
-            // 1. Cập nhật lại strip và count (Quan trọng)
-            capNhatSoThuTuVaTổngSố(); 
-
-            // 2. Cập nhật nút Chọn/Đã Chọn cho viewer (CHÍNH XÁC VÀ CUỐI CÙNG)
-            let isSel = selectedPhotoIds.includes(p.id);
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${isSel?'act':''}`; 
-            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
-        }
-        
-        // HÀM VẼ (Giữ nguyên)
-        function togDraw(en) {
-            const tl=document.getElementById('tools');
-            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
-            if(en) { 
-                if (!ctx) {
-                    ctx=cvs.getContext('2d'); 
-                }
-                ctx.strokeStyle='red'; 
-                ctx.lineWidth=5; 
-                ctx.lineCap='round'; 
-                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
-            } else {
-                cls(); 
-            }
-        }
-
-        let paint=false;
-        function start(e){paint=true;draw(e);}
-        function end(){paint=false;if(ctx) ctx.beginPath();} 
-        function draw(e){
-            if(!paint||!isDraw||!ctx)return; 
-            e.preventDefault();
-            const r=cvs.getBoundingClientRect();
-            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
-            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
-            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
-        }
-        
-        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
-        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
-        
-        function saveDraw() {
-            if(!confirm("Lưu ghi chú?")) return;
-            cvs.toBlob(async function(blob) {
-                let fd=new FormData();
-                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
-                fd.append('photoId', photos[cur].id);
-                try {
-                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
-                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
-                } catch(e) { alert("Lỗi: "+e.message); }
-            }, 'image/png');
-        }
-
-        // 💡 TOGGLE SEL (Logic chính xác)
-        function togSel() {
-            // Chỉ chạy khi có ảnh được focus (ở viewer mode hoặc đã click vào lưới)
-            if (photos.length === 0) return;
-            
-            let p=photos[cur]; 
-            let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới
-            
-            if (ns) {
-                selectedPhotoIds.push(p.id);
-            } else {
-                const index = selectedPhotoIds.indexOf(p.id);
-                if (index > -1) {
-                    selectedPhotoIds.splice(index, 1);
-                }
-            }
-            p.selected = ns ? 'true' : 'false';
-
-            // 1. Cập nhật giao diện và số thứ tự (bao gồm cả strip và grid)
-            capNhatSoThuTuVaTổngSố(); 
-            
-            // 2. Cập nhật trạng thái nút Chọn dựa trên trạng thái mới (ns)
-            let btn=document.getElementById('btnSel');
-            btn.className=`btn btn-sel ${ns?'act':''}`; 
-            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
-            
-            // 3. Cập nhật trạng thái 'sel' trên lưới (Grid view: giữ focus)
-            if (currentView === 'grid') {
-                let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
-                if (gridItem) {
-                    gridItem.classList.toggle('sel', ns);
-                    gridItem.classList.add('focused'); 
-                }
-            } 
-            
-            // LƯU TRẠNG THÁI TẠM THỜI QUA SERVER
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
-        }
-        
-        // 💡 MOVE: Dùng để chuyển ảnh trong Viewer
-        function mov(d){show(cur+d);}
-        
-        // 💡 HÀM FINAL COMMIT
-        async function finalCommit(){
-            const totalSelected = selectedPhotoIds.length;
-            
-            // 1. Xác nhận và Chuẩn bị Payload
-            if(!confirm(`Bạn đã chọn ${totalSelected} ảnh. Bạn có chắc chắn muốn lưu lại lần chọn cuối cùng này không?`)) {
-                return;
-            }
-            
-            luuTrangThaiLocally(); 
-            
-            const payload = {
-                folderId: fid,
-                selectedCount: totalSelected,
-                selectedIds: selectedPhotoIds
-            };
-
-            // 2. Gửi Webhook Final Commit
-            try {
-                const response = await fetch(URL_DONE, {
-                    method:'POST', 
-                    headers:{'Content-Type':'application/json'}, 
-                    body:JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Lỗi Server: HTTP ${response.status}`);
-                }
-                
-                // Xử lý phản hồi thành công (nếu n8n trả về JSON xác nhận)
-                alert("✅ Đã Lưu Trạng Thái và Gửi!");
-                capNhatSoThuTuVaTổngSố(); 
-
-            } catch (e) {
-                console.error("Lỗi khi gửi dữ liệu cuối cùng:", e);
-                alert(`❌ Lỗi lưu dữ liệu: ${e.message}`);
-            }
-        }
-        
-        init();
-    </script></body></html>
+    } catch (error) {
+        // ... (Chỉ giữ lại thông báo lỗi cuối cùng)
+        albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
+            Bạn chưa có album nào đã tạo . <br>
+            Vui lòng bấm Tạo Album Mới
+        </div>`;
+        albumCount.innerText = 0;
+        console.error("Lỗi tải Album:", error);
+    }
+}
