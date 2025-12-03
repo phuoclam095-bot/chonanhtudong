@@ -252,66 +252,50 @@
         // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
         // -------------------------------------------------------------
 
-        async function loadAlbums() {
-            const albumGrid = document.getElementById('albumGrid');
-            const albumCount = document.getElementById('albumCount');
-            const userInfoHeader = document.getElementById('userInfoHeader');
-            
-            // 1. Kiểm tra xác thực
-            if (!isLoggedIn || !adminEmail) {
-                alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
-                return;
-            }
-            
-            // Cập nhật Header
-            userInfoHeader.innerHTML = `Đang đăng nhập: <strong>${adminName}</strong>`;
+       async function loadAlbums() {
+    const albumGrid = document.getElementById('albumGrid');
+    const albumCount = document.getElementById('albumCount');
+    const userInfoHeader = document.getElementById('userInfoHeader');
+    
+    // ... (Khối kiểm tra đăng nhập) ...
 
-            try {
-                // 2. GỌI WEBHOOK N8N ĐỂ LẤY DỮ LIỆU
-                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' } 
-                });
+    try {
+        // ... (Gọi fetch và kiểm tra response.ok) ...
+        
+        const rawData = await response.json();
+        
+        // ✅ FIX LỖI: Đảm bảo biến albums LUÔN LÀ MẢNG (Array)
+        // Nếu rawData không phải mảng (ví dụ: null, {}), gán nó là mảng rỗng [].
+        const albums = Array.isArray(rawData) ? rawData : []; 
 
-                if (!response.ok) {
-                    throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
-                }
-                
-                const rawData = await response.json();
-                
-                albumGrid.innerHTML = ''; // Xóa thông báo loading
+        albumGrid.innerHTML = ''; // Xóa thông báo loading
 
-                // 3. KIỂM TRA AN TOÀN VÀ ĐẢM BẢO KHÔNG CÓ LỖI JSON
-                // FIX: Chuyển dữ liệu thành mảng rỗng nếu không phải mảng (Khắc phục lỗi JSON Parsing)
-                const albums = Array.isArray(rawData) ? rawData : []; 
-
-                if (albums.length === 0) {
-                    // ✅ XỬ LÝ TRẠNG THÁI RỖNG
-                    albumGrid.innerHTML = '<div style="color: white; text-align: center;">Chưa có album nào được tạo.</div>';
-                    albumCount.innerText = 0;
-                    return;
-                }
-
-                // 4. RENDER TỪNG CARD ALBUM
-                albums.forEach(album => {
-                    const card = createAlbumCard(album);
-                    albumGrid.appendChild(card);
-                });
-                
-                // Cập nhật bộ đếm
-                albumCount.innerText = albums.length;
-
-            } catch (error) {
-                // HIỂN THỊ LỖI LỚN
-                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-                    ❌ Lỗi tải dữ liệu: ${error.message}. <br>
-                    Vui lòng kiểm tra lại cấu hình Workflow n8n (Respond to Webhook: All Incoming Items).
-                </div>`;
-                console.error("Lỗi tải Album:", error);
-            }
+        // 3. KIỂM TRA TRẠNG THÁI RỖNG (Sẽ chạy nếu albums.length === 0)
+        if (albums.length === 0) {
+            // ✅ Đặt lại Grid về trạng thái Rỗng/Không lỗi
+            albumGrid.innerHTML = '<div style="color: white; text-align: center;">Chưa có album nào được tạo.</div>';
+            albumCount.innerText = 0;
+            return;
         }
 
+        // 4. RENDER TỪNG CARD ALBUM (Chỉ chạy nếu có dữ liệu)
+        albums.forEach(album => {
+            const card = createAlbumCard(album);
+            albumGrid.appendChild(card);
+        });
+        
+        // Cập nhật bộ đếm
+        albumCount.innerText = albums.length;
+
+    } catch (error) {
+        // Hiển thị lỗi nếu mạng hoặc JSON bị lỗi (không liên quan đến rỗng)
+        albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
+            ❌ Lỗi tải dữ liệu: ${error.message}.
+        </div>`;
+        albumCount.innerText = 0; // Đặt lại bộ đếm về 0 khi có lỗi tải
+        console.error("Lỗi tải Album:", error);
+    }
+}
         // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
         loadAlbums();
     </script>
