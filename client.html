@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> -ct Bạc Liêu</title>
+    <title>Thư Viện Ảnh -ct Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -247,7 +247,6 @@
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
         // ============================================================
-        // ✅ CẤU HÌNH WEBHOOKS CỦA BẠN
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
@@ -304,28 +303,107 @@
         // 💡 HÀM LƯU TRẠNG THÁI VÀO LOCAL STORAGE
         function luuTrangThaiLocally() {
             const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
-            
-            try {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selectedPhotoIds));
-                console.log(`✅ LƯU BỀN VỮNG: ${selectedPhotoIds.length} ảnh vào ${LOCAL_STORAGE_KEY}`);
-            } catch (e) {
-                console.error("LỖI LƯU TRỮ LOCAL STORAGE:", e);
-                alert("LỖI: Trình duyệt không thể lưu trạng thái chọn.");
-            }
-            
-            localStorage.removeItem('anh_da_chon_cua_khach');
+    4. **Xác nhận và Lưu Local Storage**
+    5. **Gửi Webhook** (URL\_DONE) với toàn bộ payload: `folderId`, `selectedCount`, `selectedIds`.
+
+Tôi sẽ sửa đổi **Hàm `finalCommit()`** trong mã Client của bạn và **thay thế Webhook `URL_DONE`** bằng phiên bản gửi dữ liệu đầy đủ.
+
+```javascript
+// client.html - SỬA LỖI BỐ CỤC (Đã khôi phục code gốc)
+
+// ... (code không thay đổi) ...
+
+    <div class="header">
+        <div class="album-title">Thư Viện Ảnh (<span id="totalPhotos">0</span> ảnh)</div>
+        <div class="view-toggle">
+            <button class="view-btn active" id="btnGrid" onclick="setView('grid')">🖼️ Dạng Lưới</button>
+            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">🔍 Xem Chi Tiết</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="ctrl" id="commonCtrlBar">
+            <div class="info">
+                <div style="font-weight:bold; color:var(--gold)" id="pName">...</div>
+                <div class="p-count" id="pCount">0 / 0</div>
+            </div>
+            <div style="display:flex; align-items:center">
+                <button class="btn btn-draw" id="btnDraw" onclick="togDraw(true)" style="display: none;">🖌️ Vẽ</button>
+                <button class="btn btn-sel" id="btnSel" onclick="togSel()">Chọn</button>
+            </div>
+            <button class="btn btn-done" onclick="finalCommit()">Lưu Chọn</button>
+        </div>
+        
+        <div id="photoGrid">
+        </div>
+
+        <div id="photoViewer">
+            <div class="tools" id="tools">
+                <button class="t-btn act" onclick="setPen()">✏️</button>
+                <button class="t-btn" onclick="cls()">🗑️</button>
+                <button class="t-btn" style="background:green" onclick="saveDraw()">💾</button>
+                <button class="t-btn" style="background:red" onclick="togDraw(false)">❌</button>
+            </div>
+
+            <div class="stage">
+                <button class="nav prev" onclick="mov(-1)">&#10094;</button>
+                <div class="canvas-box">
+                    <img id="mainImg" src="">
+                    <canvas id="drawCanvas"></canvas>
+                </div>
+                <button class="nav next" onclick="mov(1)">&#10095;</button>
+            </div>
+
+            <div class="strip" id="strip"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Lệnh báo lỗi nếu cache không được xóa
+        if (localStorage.getItem('layout_version') !== 'V16.3') { 
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.3.');
+        }
+        localStorage.setItem('layout_version', 'V16.3'); 
+
+        // ============================================================
+        // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
+        // ============================================================
+        const URL_GET = '[https://dichvufb.tino.page/webhook/get-photos](https://dichvufb.tino.page/webhook/get-photos)'; 
+        const URL_SAVE = '[https://dichvufb.tino.page/webhook/save-selection](https://dichvufb.tino.page/webhook/save-selection)'; 
+        const URL_DRAW = '[https://dichvufb.tino.page/webhook/upload-drawing](https://dichvufb.tino.page/webhook/upload-drawing)';
+        // ✅ WEBHOOK CHO LƯU CHỌN CUỐI CÙNG
+        const URL_DONE = '[https://dichvufb.tino.page/webhook/commit-final-selection](https://dichvufb.tino.page/webhook/commit-final-selection)'; 
+
+        let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
+        let cvs, img; 
+        let albumTitle = "Thư Viện Ảnh"; 
+        let isSelectionLocked = false; 
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const fid = urlParams.get('id'); // Folder ID
+
+        let selectedPhotoIds = []; 
+        
+        // --- HÀM TẠO LINK THÔNG MINH (Dùng /thumbnail) ---
+        function getLink(id, size) {
+            return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // 💡 HÀM CẬP NHẬT SỐ THỨ TỰ VÀ TỔNG SỐ ẢNH
-        function capNhatSoThuTuVaTổngSố() {
+        // 💡 HÀM CHUYỂN ĐỔI CHẾ ĐỘ XEM
+        function setView(view) {
+            currentView = view;
+            const gridDiv = document.getElementById('photoGrid');
+            const viewerDiv = document.getElementById('photoViewer');
     1. **Dữ liệu có đang được trả về không?** (Vâng, lỗi không phải lỗi mạng)
     2. **Kiểu dữ liệu có đúng không?** (Frontend mong đợi Array, nhưng có thể nhận được Object/String)
     3. **Logic có bị chặn không?** (Có, hàm `forEach` bị lỗi)
-    4. **Sửa lỗi** bằng cách đảm bảo dữ liệu luôn là một Array (Mảng).
+    4. **Sửa lỗi** bằng cách đảm bảo dữ liệu luôn là một Array (Mảng).
 
 ### 2. 🛠️ Sửa Lỗi Gốc (`managa.html`)
 
-Bạn phải thay thế toàn bộ mã JavaScript trong file `managa.html` bằng đoạn code sau.
+Bạn hãy thay thế toàn bộ mã JavaScript trong file `managa.html` bằng đoạn code sau:
 
 ```javascript
 // managa.html - Sửa hàm loadAlbums()
