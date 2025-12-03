@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Alum - Dashboard</title>
+    <title>Quản Lý Album - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* (Style cho dashboard, card, grid, và header cố định) */
+        /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
         :root {
             --primary-green: #147a30; 
             --dark-green: #0e5a22;
@@ -15,6 +15,7 @@
             --card-bg: #fff;
             --shadow-color: rgba(0, 0, 0, 0.5);
         }
+
         body {
             background-color: var(--bg-color);
             background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
@@ -23,8 +24,9 @@
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
             margin: 0;
-            padding-top: 70px;
+            padding-top: 70px; /* Offset cho header fixed */
         }
+        
         .header {
             background: var(--primary-green);
             color: white;
@@ -38,6 +40,8 @@
             width: 100%;
             z-index: 1000;
         }
+
+        /* ALBUM GRID */
         .dashboard-container {
             width: 90%;
             max-width: 1200px;
@@ -45,12 +49,14 @@
             padding: 20px;
         }
         h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
+        
         #albumGrid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
             padding-bottom: 50px;
         }
+        
         .album-card {
             background: var(--card-bg);
             color: #333;
@@ -59,6 +65,10 @@
             box-shadow: 0 4px 12px var(--shadow-color);
             transition: transform 0.2s;
         }
+        .album-card:hover {
+            transform: translateY(-3px);
+        }
+
         .album-title-card {
             font-size: 18px;
             font-weight: bold;
@@ -67,15 +77,47 @@
             border-bottom: 1px solid #ddd;
             padding-bottom: 8px;
         }
-        .stats-item { margin-bottom: 5px; font-size: 14px; }
-        .stats-item i { width: 20px; text-align: center; color: #888; }
-        .stats-item strong { color: #000; }
-        .status-badge { color: white; background-color: #28a745; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-        .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+
+        .stats-item {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .stats-item i {
+            width: 20px;
+            text-align: center;
+            color: #888;
+        }
+        .stats-item strong {
+            color: #000;
+        }
+        .status-badge {
+            background-color: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-selected { color: white; background-color: #28a745; }
+        
+        .action-btns {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
         .btn-view { background: #007bff; color: white; }
         .btn-export { background: #ffc107; color: #333; }
         .btn-delete { background: #dc3545; color: white; }
+
     </style>
 </head>
 <body>
@@ -96,10 +138,14 @@
 
     <script>
         // ✅ CẤU HÌNH WEBHOOK GET ALBUM LIST VÀ DOMAIN CLIENT
+        // Đảm bảo URL này là chính xác
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
-        const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/';
+        // Bạn cần thay thế bằng domain thực tế của bạn
+        const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
 
+        // Lấy thông tin Admin đã đăng nhập từ localStorage
         const adminEmail = localStorage.getItem('admin_email');
+        const adminName = localStorage.getItem('admin_name') || 'Admin';
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         // -------------------------------------------------------------
@@ -110,26 +156,28 @@
             const card = document.createElement('div');
             card.className = 'album-card';
             
-            // Dữ liệu từ n8n (phải khớp với output Workflow n8n của bạn)
-            const id = album.folder_id || album.folderId || 'UNKNOWN_ID'; // Lấy folder_id hoặc folderId
-            const name = album.folderName || album.name || 'Album Mới'; // Lấy folderName hoặc name
+            // Dữ liệu từ n8n (sử dụng các tên trường đã lưu trong Sheet/Database)
+            // Cần đảm bảo n8n trả về chính xác các trường này
+            const id = album.folder_id || album.folderId || 'UNKNOWN_ID'; 
+            const name = album.folderName || album.name || 'Album Mới'; 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0;
             
+            // Tạo link khách
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
             card.innerHTML = `
                 <div class="album-title-card">${name}</div>
                 
-                <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge">${selectedPhotos}</span> ảnh</div>
+                <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
                 <div class="stats-item"><i class="fas fa-images"></i> Tổng số: <strong>${totalPhotos}</strong> ảnh</div>
                 <div class="stats-item"><i class="fas fa-comment-dots"></i> Bình luận: <strong>${comments}</strong></div>
                 
                 <div class="action-btns">
                     <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem Album</button>
-                    <button class="btn-export"><i class="fas fa-file-export"></i> Xuất File Chọn</button>
-                    <button class="btn-delete"><i class="fas fa-trash-alt"></i> Xóa</button>
+                    <button class="btn-export" onclick="alert('Thực hiện chức năng Export cho Album ID: ${id}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button>
+                    <button class="btn-delete" onclick="if(confirm('Chắc chắn xóa Album ${name}?')) { alert('Album đã xóa!'); }"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </div>
             `;
             return card;
@@ -147,19 +195,21 @@
             // 1. Kiểm tra xác thực
             if (!isLoggedIn || !adminEmail) {
                 alert("Vui lòng đăng nhập Admin để xem trang quản lý!");
-                window.location.href = 'admin.html'; // Chuyển về trang đăng nhập
+                // Điều hướng về trang đăng nhập
+                window.location.href = 'admin.html'; 
                 return;
             }
             
             // Cập nhật Header
-            userInfoHeader.innerHTML = `Đang đăng nhập: <strong>${localStorage.getItem('admin_name')}</strong>`;
+            userInfoHeader.innerHTML = `Đang đăng nhập: <strong>${adminName}</strong>`;
 
             try {
                 // 2. GỌI WEBHOOK N8N ĐỂ LẤY DỮ LIỆU
                 // Gửi email để lọc
                 const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
                     method: 'GET',
-                    headers: { 'Accept': 'application/json' }
+                    // Đảm bảo Webhook n8n cho phép CORS
+                    headers: { 'Accept': 'application/json' } 
                 });
 
                 if (!response.ok) {
@@ -170,11 +220,10 @@
                 
                 albumGrid.innerHTML = ''; // Xóa thông báo loading
 
-                // ✅ BƯỚC QUAN TRỌNG: Kiểm tra và đảm bảo là MẢNG
+                // 3. KIỂM TRA AN TOÀN: Đảm bảo dữ liệu là MẢNG
                 if (!Array.isArray(albums)) {
-                    // Nếu n8n trả về một Object (ví dụ: {0: {...}, 1: {...}}) 
-                    // hoặc chỉ là một thông báo lỗi, ta phải xử lý.
-                    throw new Error("Dữ liệu trả về không phải là mảng hợp lệ. (Kiểm tra lại cấu trúc JSON của n8n)");
+                    // Lỗi này xảy ra khi Respond to Webhook không chọn "All Incoming Items"
+                    throw new Error("Dữ liệu trả về không phải là danh sách album hợp lệ."); 
                 }
 
                 if (albums.length === 0) {
@@ -183,7 +232,7 @@
                     return;
                 }
 
-                // 3. RENDER TỪNG CARD ALBUM
+                // 4. RENDER TỪNG CARD ALBUM
                 albums.forEach(album => {
                     const card = createAlbumCard(album);
                     albumGrid.appendChild(card);
@@ -192,12 +241,16 @@
                 albumCount.innerText = albums.length;
 
             } catch (error) {
-                albumGrid.innerHTML = `<div style="color: red; text-align: center;">❌ Lỗi tải dữ liệu: ${error.message}</div>`;
+                // HIỂN THỊ LỖI LỚN TRÊN MÀN HÌNH
+                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
+                    ❌ Lỗi tải dữ liệu: ${error.message}. <br>
+                    Vui lòng kiểm tra lại cấu hình Workflow n8n (Respond to Webhook: All Incoming Items).
+                </div>`;
                 console.error("Lỗi tải Album:", error);
             }
         }
 
-        // BẮT ĐẦU TẢI DỮ LIỆU
+        // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
         loadAlbums();
     </script>
 </body>
