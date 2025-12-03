@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Ảnh -ct Bạc Liêu</title>
+    <title>Ảnh - Bạc Liêu</title>
     <style>
         :root { 
             --bg: #1a1a1a; 
@@ -239,10 +239,9 @@
 
     <script>
         // Lệnh báo lỗi nếu cache không được xóa
-        if (localStorage.getItem('layout_version') !== 'V16.3') { 
-            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.3.');
+        if (localStorage.getItem('layout_version') !== 'V16.0') {
+            alert('⚠️ YÊU CẦU XÓA CACHE: Vui lòng XÓA CACHE TRÌNH DUYỆT (Ctrl+Shift+R) và thử lại để áp dụng mã V16.0.');
         }
-        localStorage.setItem('layout_version', 'V16.3'); 
 
         // ============================================================
         // ⚠️ CẤU HÌNH LINK SẢN PHẨM (PRODUCTION)
@@ -250,8 +249,7 @@
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
         const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
-        // ✅ WEBHOOK CHO LƯU CHỌN CUỐI CÙNG
-        const URL_DONE = 'https://dichvufb.tino.page/webhook/commit-final-selection'; 
+        const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
         let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
         let cvs, img; 
@@ -259,7 +257,7 @@
         let isSelectionLocked = false; 
 
         const urlParams = new URLSearchParams(window.location.search);
-        const fid = urlParams.get('id'); // Folder ID
+        const fid = urlParams.get('id');
 
         let selectedPhotoIds = []; 
         
@@ -290,7 +288,6 @@
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
                 btnDraw.style.display = 'block'; 
-                // Quan trọng: Luôn gọi show(cur) để đồng bộ trạng thái nút
                 show(cur); 
             }
         }
@@ -351,20 +348,24 @@
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'grid-item-wrapper'; 
-                    d.setAttribute('data-index', i); 
+                    d.setAttribute('data-index', i); // Gán index vào data attribute
                     
                     // Sự kiện single-click (bo viền vàng)
                     d.onclick = (e) => {
                         e.preventDefault(); 
                         
+                        // 1. Xóa focus cũ, gán focus mới
                         removeGridFocus();
                         d.classList.add('focused');
                         
+                        // 2. Cập nhật ảnh đang được focus (cur)
                         cur = i;
                         
-                        // 3. CẬP NHẬT NÚT CHỌN/ĐÃ CHỌN KHI CLICK TRÊN GRID (Đồng bộ)
+                        // 3. Cập nhật thông tin trên thanh điều khiển chung (chuyển sang mode viewer ảo)
                         const isSelCur = selectedPhotoIds.includes(photos[cur].id);
                         let btnSel = document.getElementById('btnSel');
+                        
+                        // Cập nhật nút Chọn và thông tin file để người dùng có thể Chọn/Bỏ Chọn ngay trên lưới
                         btnSel.className=`btn btn-sel ${isSelCur?'act':''}`; 
                         btnSel.innerText=isSelCur?'✔ Đã Chọn':'Chọn';
                         
@@ -404,11 +405,8 @@
             const pCountElement = document.getElementById('pCount');
 
             if (currentView === 'grid') {
-                // Đảm bảo thanh điều khiển chung hiển thị thông tin tổng quan khi ở grid mode (chỉ khi không có focus)
-                if (document.querySelectorAll('.grid-item-wrapper.focused').length === 0) {
-                     pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
-                     pCountElement.innerText = `Đã chọn: ${count} ảnh`;
-                }
+                pNameElement.innerText = 'Chọn Ảnh Dạng Lưới';
+                pCountElement.innerText = `Đã chọn: ${count} ảnh`;
             } else if (currentView === 'viewer' && photos.length > 0) {
                 pNameElement.innerText = photos[cur].name;
                 pCountElement.innerText = `${cur + 1} / ${photos.length}`;
@@ -419,6 +417,13 @@
         // SỬA ĐỔI: INIT
         async function init() {
             try {
+                localStorage.setItem('layout_version', 'V16.0'); 
+                
+                cvs = document.getElementById('drawCanvas');
+                img = document.getElementById('mainImg');
+
+                if(!fid) throw new Error("Link thiếu mã Album (id)");
+                
                 // 1. TẢI DỮ LIỆU ĐÃ CHỌN TỪ LOCAL STORAGE
                 const LOCAL_STORAGE_KEY = 'anh_da_chon_cua_khach_' + fid;
                 const duLieuDaLuuJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -426,30 +431,195 @@
                 if (duLieuDaLuuJSON) {
                     try {
                         const loadedIds = JSON.parse(duLieuDaLuuJSON);
-      0. **Context:** Supabase connection is failing.
-    1. **Diagnosis:** Error is likely due to the highly secured nature of the Supabase PostgreSQL port (5432) or a misconfigured SSL setting in the n8n credential.
-    2. **User Request:** Validate the Supabase credential configuration in the n8n UI again, as the user cannot find the SSL setting.
+                        if (Array.isArray(loadedIds)) {
+                            selectedPhotoIds = loadedIds;
+                        } else {
+                            selectedPhotoIds = [];
+                        }
+                    } catch (e) {
+                        selectedPhotoIds = [];
+                    }
+                } else {
+                    selectedPhotoIds = [];
+                }
+                
+                // 2. TẢI DỮ LIỆU ẢNH (Từ Server)
+                let res = await fetch(`${URL_GET}?id=${fid}`);
+                if(!res.ok) throw new Error("Lỗi Server/Kết nối");
+                
+                let data = await res.json();
+                
+                photos = data.photos || data; 
+                if (!photos || !photos.length) throw Error("Album trống hoặc sai ID");
 
-### 🛠️ Hướng Dẫn Kích Hoạt SSL/TLS (Postgres Credential)
+                document.getElementById('load').style.display='none';
+                
+                capNhatSoThuTuVaTổngSố(); 
+                setView('grid'); 
+                
+                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
+                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
+                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
+                
+                document.onkeydown=e=>{if(currentView==='viewer' && !isDraw){if(e.key=='ArrowRight')mov(1);if(e.key=='ArrowLeft')mov(-1);if(e.key==' ')togSel();}};
 
-Bạn đã cung cấp danh sách đầy đủ các trường. Để kết nối thành công với Supabase, bạn **bắt buộc** phải kích hoạt SSL/TLS.
+            } catch(e) { 
+                document.getElementById('load').innerHTML = `<span style="color:red">Lỗi tải dữ liệu: ${e.message}</span>`; 
+            }
+        }
 
-Nếu bạn không thấy **SSL** ở cuối màn hình sau `Password` và `Maximum Number of Connections`, hãy làm theo các bước sau trong Credential Node:
+        // HÀM SHOW (Chạy trong Viewer)
+        function show(i) {
+            if(isDraw) togDraw(false); 
+            if(i<0 || i>=photos.length) return;
+            cur=i; let p=photos[i];
+            
+            let hd = getLink(p.id, 's2000'); 
+            img.src=hd; 
+            img.onload = () => { 
+                cvs.width = img.offsetWidth; 
+                cvs.height = img.offsetHeight;
+                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+            };
+            
+            document.getElementById('pName').innerText=p.name;
+            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
+            
+            document.querySelectorAll('.th').forEach(d=>d.classList.remove('act'));
+            let t=document.getElementById(`t-${i}`); 
+            if(t){t.classList.add('act'); t.scrollIntoView({behavior:'smooth',inline:'center'});}
 
-1.  **Cuộn Xuống/Tìm kiếm:** Cuộn xuống dưới cùng của tab **Parameters** (Tham số).
+            capNhatSoThuTuVaTổngSố(); 
 
-2.  **Tìm Trường SSL (Bị ẩn):** Dựa trên danh sách bạn cung cấp, trường **SSL** có tồn tại, nhưng có thể là một dropdown ẩn.
+            // Cập nhật nút Chọn/Đã Chọn cho viewer
+            let isSel = selectedPhotoIds.includes(p.id);
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${isSel?'act':''}`; 
+            btn.innerText=isSel?'✔ Đã Chọn':'Chọn';
+        }
+        
+        // HÀM VẼ (Giữ nguyên)
+        function togDraw(en) {
+            const tl=document.getElementById('tools');
+            isDraw=en; tl.classList.toggle('active', en); cvs.style.display=en?'block':'none';
+            if(en) { 
+                if (!ctx) {
+                    ctx=cvs.getContext('2d'); 
+                }
+                ctx.strokeStyle='red'; 
+                ctx.lineWidth=5; 
+                ctx.lineCap='round'; 
+                ctx.drawImage(img, 0, 0, cvs.width, cvs.height); 
+            } else {
+                cls(); 
+            }
+        }
 
-    | Trường | Giá trị/Cấu hình | Lý do |
-    | :--- | :--- | :--- |
-    | **Host** | **Địa chỉ DB Host** (Ví dụ: `db.xxxxxx.supabase.co`) | |
-    | **Port** | `5432` | |
-    | **SSL** | **Require** (Chọn từ Dropdown) | **BẮT BUỘC BẬT:** Supabase yêu cầu kết nối bảo mật. |
+        let paint=false;
+        function start(e){paint=true;draw(e);}
+        function end(){paint=false;if(ctx) ctx.beginPath();} 
+        function draw(e){
+            if(!paint||!isDraw||!ctx)return; 
+            e.preventDefault();
+            const r=cvs.getBoundingClientRect();
+            const x=((e.clientX||e.touches[0].clientX)-r.left) * (cvs.width/r.width);
+            const y=((e.clientY||e.touches[0].clientY)-r.top) * (cvs.height/r.height);
+            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
+        }
+        
+        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
+        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
+        
+        function saveDraw() {
+            if(!confirm("Lưu ghi chú?")) return;
+            cvs.toBlob(async function(blob) {
+                let fd=new FormData();
+                fd.append('file', blob, `Ve_${fid}_${photos[cur].name}.png`);
+                fd.append('photoId', photos[cur].id);
+                try {
+                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
+                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
+                } catch(e) { alert("Lỗi: "+e.message); }
+            }, 'image/png');
+        }
 
-### 🚨 Lỗi Có Thể Xảy Ra (Nếu SSL không hiển thị)
+        // 💡 TOGGLE SEL (Logic chính xác - ĐÃ THÊM LƯU LOCALLY)
+        function togSel() {
+            // Chỉ chạy khi có ảnh được focus (ở viewer mode hoặc đã click vào lưới)
+            if (photos.length === 0) return;
+            
+            let p=photos[cur]; 
+            let ns = !selectedPhotoIds.includes(p.id); // Trạng thái mới (new state)
+            
+            if (ns) {
+                selectedPhotoIds.push(p.id);
+            } else {
+                const index = selectedPhotoIds.indexOf(p.id);
+                if (index > -1) {
+                    selectedPhotoIds.splice(index, 1);
+                }
+            }
+            p.selected = ns ? 'true' : 'false';
 
-Nếu trường **SSL** là một dropdown bị khóa hoặc không hiển thị giá trị, bạn cần kiểm tra xem có cần thiết lập **Tham số bổ sung (Additional Parameters)** thủ công không.
+            // Cập nhật giao diện và số thứ tự
+            capNhatSoThuTuVaTổngSố(); 
+            
+            // Cập nhật trạng thái nút Chọn dựa trên trạng thái mới (ns)
+            let btn=document.getElementById('btnSel');
+            btn.className=`btn btn-sel ${ns?'act':''}`; 
+            btn.innerText=ns?'✔ Đã Chọn':'Chọn';
+            
+            // Trong chế độ lưới, cập nhật lớp 'sel' cho ảnh vừa được chọn/bỏ chọn
+            if (currentView === 'grid') {
+                let gridItem = document.querySelector(`.grid-item-wrapper[data-index="${cur}"]`);
+                if (gridItem) {
+                    gridItem.classList.toggle('sel', ns);
+                    gridItem.classList.add('focused'); // Giữ focus sau khi chọn/bỏ chọn
+                }
+            } else {
+                 // Trong viewer mode, cập nhật thumbnail strip
+                 let thumbItem = document.getElementById(`t-${cur}`);
+                 if (thumbItem) thumbItem.classList.toggle('sel', ns);
+            }
 
-Nếu Node của bạn hiển thị trường **`Password`** và sau đó là **`Maximum Number of Connections`**, thì trường **`SSL`** sẽ là một dropdown **ngay bên dưới** `Ignore SSL Issues (Insecure)`.
+            // LƯU TRẠNG THÁI TẠM THỜI QUA LOCAL STORAGE VÀ SERVER
+            luuTrangThaiLocally(); 
+            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:ns})});
+        }
+        
+        function mov(d){show(cur+d);}
+        
+        // 💡 HÀM FINAL COMMIT ĐÃ ĐƯỢC CHỈNH SỬA
+        async function finalCommit(){
+            if(confirm("Bạn có chắc chắn muốn GỬI kết quả lựa chọn cuối cùng?")) {
+                // Bước 1: Lưu trạng thái cuối cùng vào Local Storage (đảm bảo)
+                luuTrangThaiLocally();
 
-**Hãy kiểm tra lại: Nếu trường SSL là dropdown, bạn phải đặt nó là Require để kết nối.**
+                // Bước 2: Gọi Webhook URL_DONE để thông báo hoàn tất
+                try {
+                    // Đang giả định URL_DONE chỉ cần gửi ID album
+                    const res = await fetch(URL_DONE, {
+                        method:'POST', 
+                        headers:{'Content-Type':'application/json'}, 
+                        body:JSON.stringify({id:fid})
+                    });
+
+                    if (res.ok) {
+                        alert("✅ GỬI KẾT QUẢ THÀNH CÔNG! Lựa chọn của bạn đã được lưu lại.");
+                    } else {
+                        // Xử lý lỗi từ server (ví dụ: HTTP status code != 200)
+                        const errorText = await res.text();
+                        throw new Error(`Server phản hồi lỗi (${res.status}): ${errorText.substring(0, 100)}...`);
+                    }
+                } catch (e) {
+                    console.error("LỖI GỬI KẾT QUẢ CUỐI CÙNG:", e);
+                    alert(`⚠️ LỖI: Không thể gửi kết quả cuối cùng lên Server. Vui lòng thử lại. Chi tiết lỗi: ${e.message}`);
+                }
+
+                // Bước 3: Cập nhật lại giao diện (để hiển thị trạng thái đã lưu)
+                capNhatSoThuTuVaTổngSố(); 
+            }
+        }
+        
+        init();
+    </script></body></html>
