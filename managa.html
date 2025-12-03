@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Album - Dashboard</title>
+    <title>Album - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- CSS CƠ BẢN VÀ CARD STYLE --- */
@@ -304,13 +304,8 @@
 
             } catch (error) {
                 // 🛑 BỎ THÔNG BÁO LỖI NẾU CÓ LỖI TẢI (nhưng không phải là trường hợp rỗng)
-                // Chỉ hiển thị lỗi khi có lỗi mạng/server thực sự (Không phải lỗi Album rỗng)
-                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-                    ❌ Lỗi tải dữ liệu: ${error.message}. <br>
-                    Vui lòng kiểm tra lại cấu hình Workflow n8n.
-                </div>`;
+                // Chỉ hiển thị lỗi khi có lỗi mạng/server thực sự (Không phải lỗi Album rỗng)          
                 albumCount.innerText = 0;
-                console.error("Lỗi tải Album:", error);
             }
         }
 
