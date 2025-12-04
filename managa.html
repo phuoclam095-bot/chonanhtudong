@@ -213,61 +213,75 @@
         // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
         // -------------------------------------------------------------
 
-        async function handleExportClick(albumId, albumName) {
-            // Xác nhận xuất file
-            if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
-                return;
-            }
-            
-            // Bắt đầu loading
-            const cardElement = document.getElementById(`card-${albumId}`);
-            if (cardElement) cardElement.style.opacity = 0.5;
+       async function handleExportClick(albumId, albumName) {
+    if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
+        return;
+    }
+    
+    const cardElement = document.getElementById(`card-${albumId}`);
+    if (cardElement) cardElement.style.opacity = 0.5;
 
-            const payload = {
-                folderId: albumId,
-                adminEmail: adminEmail, 
-                action: 'export_filenames_request' // Hành động cho n8n
-            };
+    const payload = {
+        folderId: albumId,
+        adminEmail: adminEmail, 
+        action: 'export_filenames_request'
+    };
 
-            try {
-                const response = await fetch(URL_EXPORT_FILENAMES, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+    try {
+        const response = await fetch(URL_EXPORT_FILENAMES, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-                const result = await response.json();
+        if (!response.ok) {
+            throw new Error(`Lỗi HTTP: ${response.status}. Server n8n phản hồi không thành công.`);
+        }
 
-                if (response.ok && result.file_names_for_copy) {
-                    
-                    // Tạo chuỗi hiển thị trong PROMPT SAO CHÉP
-                    const namesList = result.file_names_for_copy;
+        // ⭐ 1. Lấy phản hồi dưới dạng TEXT (Không phải JSON) ⭐
+        const responseText = await response.text();
+        
+        let namesList = '';
+        let selectedCount = 'Không rõ';
 
-                    const formattedNote = `--- TÊN FILE ĐÃ CHỌN TRONG ALBUM: ${albumName} ---
-Tổng số ảnh được chọn: ${result.selected_photos || 'Không rõ'}
+        // 2. PHÂN TÍCH CHUỖI TEXT TRẢ VỀ: Tìm kiếm giá trị tên file
+        try {
+            // Giả định n8n trả về JSON, dù bị lỗi cú pháp, ta vẫn cố gắng parse nó
+            const result = JSON.parse(responseText); 
+            namesList = result.file_names_for_copy || result.names || '';
+            selectedCount = result.selected_photos || 'Không rõ';
 
-Vui lòng sao chép chuỗi dưới đây:
-----------------------------------------------------------------------------------------------------------------------
-${namesList}
-----------------------------------------------------------------------------------------------------------------------`;
-                    
-                    // Dùng prompt() để hiển thị và cho phép người dùng dễ dàng sao chép
-                    prompt('✅ ĐÃ XUẤT THÀNH CÔNG! Sao chép chuỗi này:', namesList);
-
-                } else {
-                    throw new Error(result.message || `Lỗi xuất file: Server không phản hồi thành công.`);
-                }
-
-            } catch (error) {
-                alert(`❌ Lỗi Xuất File: ${error.message}`);
-                console.error("Lỗi Export File:", error);
-            } finally {
-                // Phục hồi opacity
-                if (cardElement) cardElement.style.opacity = 1;
-            }
+        } catch (e) {
+            // Nếu JSON không hợp lệ (lỗi cú pháp n8n), chúng ta cố gắng trích xuất chuỗi thô.
+            // (Thường là khi n8n trả về cú pháp lỗi, nó nằm trong body)
+            namesList = responseText; 
+            selectedCount = 'Lỗi dịch dữ liệu';
         }
 
 
+        if (namesList && namesList.length > 5 && !namesList.includes('{{$items')) {
+            
+            // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
+            document.getElementById('modalAlbumName').innerText = albumName;
+            document.getElementById('modalSelectedCount').innerText = selectedCount;
+            document.getElementById('fileNamesOutput').value = namesList; // Gán chuỗi tên file
+
+            // Mở Modal
+            const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+            exportModal.show();
+
+        } else {
+            // Nếu không tìm thấy chuỗi tên file hoặc chuỗi chứa cú pháp lỗi
+            throw new Error(`Lỗi dữ liệu: Không tìm thấy chuỗi tên file hợp lệ. Phản hồi Server: ${namesList.substring(0, 50)}`);
+        }
+
+    } catch (error) {
+        alert(`❌ Lỗi Xuất File: ${error.message}`);
+        console.error("Lỗi Export File:", error);
+    } finally {
+        if (cardElement) cardElement.style.opacity = 1;
+    }
+}
         // -------------------------------------------------------------
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT (Không thay đổi)
         // -------------------------------------------------------------
