@@ -344,7 +344,7 @@
                     method: 'GET',
                     headers: { 'Accept': 'application/json' } 
                 });
-
+        
                 if (!response.ok) {
                     throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
                 }
@@ -352,23 +352,29 @@
                 const rawData = await response.json();
                 
                 albumGrid.innerHTML = ''; 
-
+        
                 const albums = Array.isArray(rawData) ? rawData : []; 
-
+        
                 if (albums.length === 0) {
-                    albumGrid.innerHTML = '<div style="color: white; text-align: center;">Bạn chưa có album nào đã tạo . <br>Vui lòng bấm Tạo Album Mới</div>';
+                    // ⭐ ĐIỂM SỬA LỖI: HIỂN THỊ THÔNG BÁO KHI SUPABASE TRỐNG ⭐
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
+                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
+                                          '</div>';
                     albumCount.innerText = 0;
                     return;
                 }
-
+        
+                // 4. RENDER TỪNG CARD ALBUM
                 albums.forEach(album => {
                     const card = createAlbumCard(album);
                     albumGrid.appendChild(card);
                 });
                 
+                // Cập nhật bộ đếm
                 albumCount.innerText = albums.length;
-
+        
             } catch (error) {
+                // HIỂN THỊ LỖI KẾT NỐI/JSON không hợp lệ
                 albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
                     LỖI TẢI ALBUM: Không thể kết nối hoặc nhận dữ liệu JSON hợp lệ.<br>
                     Chi tiết: ${error.message}
