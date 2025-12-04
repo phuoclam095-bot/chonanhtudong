@@ -29,45 +29,23 @@
             padding-top: 70px;
         }
         
-        .header {
-            background: var(--primary-green);
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px var(--shadow-color);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
-
-        /* ALBUM GRID */
-        .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
-        h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
+        .header { /* ... */ }
+        .logo { /* ... */ }
+        .nav-links { /* ... */ }
+        .dashboard-container { /* ... */ }
+        h2 { /* ... */ }
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
-        .album-card { background: var(--card-bg); color: #333; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, opacity 0.2s; }
-        .album-card:hover { transform: translateY(-3px); }
-        .album-title-card { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--primary-green); border-bottom: 1px solid #ddd; padding-bottom: 8px; }
-        .album-card-header { height: 150px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; margin: -20px -20px 10px -20px; position: relative; box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4); }
-        .stats-item { margin-bottom: 5px; font-size: 14px; }
-        .stats-item i { width: 20px; text-align: center; color: #888; }
-        .stats-item strong { color: #000; }
-        .status-badge { background-color: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .album-card { /* ... */ }
+        .album-title-card { /* ... */ }
+        .album-card-header { /* ... */ }
+        .stats-item { /* ... */ }
         .status-selected { color: white; background-color: #28a745; }
         .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .btn-view { background: #007bff; color: white; }
         .btn-export { background: #ffc107; color: #333; }
         .btn-delete { background: #dc3545; color: white; }
         
-        /* STYLE CHO MODAL (Sử dụng Bootstrap) */
+        /* STYLE CHO MODAL */
         .modal-content { background-color: #f8f9fa !important; color: #212529 !important; }
         .modal-header { background-color: var(--primary-green) !important; color: white !important; border-bottom: none; }
         .btn-close-white { filter: invert(1); }
@@ -190,7 +168,8 @@
                     body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                // ⭐ ĐIỂM SỬA LỖI QUAN TRỌNG: Server phải trả về JSON đúng
+                const result = await response.json(); 
 
                 if (response.ok && result.file_names_for_copy) {
                     
@@ -200,13 +179,15 @@
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount;
-                    document.getElementById('fileNamesOutput').value = namesList;
+                    // ⭐ GÁN CHUỖI TÊN FILE ĐÃ ĐƯỢC XỬ LÝ (Không phải cú pháp n8n) ⭐
+                    document.getElementById('fileNamesOutput').value = namesList; 
 
                     // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
 
                 } else {
+                    // Nếu n8n trả về lỗi nhưng response.ok = true
                     throw new Error(result.message || `Lỗi xuất file: Server không phản hồi thành công.`);
                 }
 
@@ -276,14 +257,14 @@
             
             const id = albumUniqueId || 'UNKNOWN_ID';
             const rawName = album.folderName || album.name || 'Album Mới';
-            // ⭐ SỬA LỖI: Dùng replace để thoát dấu nháy đơn trong chuỗi tham số
+            // Dùng replace để thoát dấu nháy đơn
             const escapedName = rawName.replace(/'/g, "\\'"); 
             
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
-            // ⭐ Đảm bảo ảnh mặc định hiển thị khi link trống
+            // Đảm bảo ảnh mặc định hiển thị khi link trống
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
