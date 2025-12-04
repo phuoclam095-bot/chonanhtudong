@@ -29,7 +29,6 @@
             padding-top: 70px;
         }
         
-        /* Cấu hình HEADER MỚI */
         .header {
             background: var(--primary-green);
             color: white;
@@ -45,121 +44,33 @@
         }
 
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        
-        .nav-links { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-        }
-
-        .nav-links a, #userControl a.nav-link { 
-            color: white; 
-            text-decoration: none; 
-            font-size: 14px; 
-            transition: 0.3s; 
-            padding: 5px 10px; 
-            border-radius: 5px; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-        }
-        
-        .nav-links a:hover, #userControl a.nav-link:hover { 
-            background-color: var(--dark-green); 
-        }
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
+        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
 
         /* ALBUM GRID */
-        .dashboard-container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
+        .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
         h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
-        
-        #albumGrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            padding-bottom: 50px;
-        }
-        
-        .album-card {
-            background: var(--card-bg);
-            color: #333;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 12px var(--shadow-color);
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .album-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .album-title-card {
-            font-size: 16px; 
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--primary-green);
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 8px;
-        }
-
-        .album-card-header {
-            height: 150px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px 8px 0 0;
-            margin: -20px -20px 10px -20px; 
-            position: relative;
-            box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4);
-        }
-        
-        .stats-item {
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        .stats-item i {
-            width: 20px;
-            text-align: center;
-            color: #888;
-        }
-        .stats-item strong {
-            color: #000;
-        }
-        .status-badge {
-            background-color: #f0f0f0;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
+        .album-card { background: var(--card-bg); color: #333; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, opacity 0.2s; }
+        .album-card:hover { transform: translateY(-3px); }
+        .album-title-card { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--primary-green); border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+        .album-card-header { height: 150px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; margin: -20px -20px 10px -20px; position: relative; box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4); }
+        .stats-item { margin-bottom: 5px; font-size: 14px; }
+        .stats-item i { width: 20px; text-align: center; color: #888; }
+        .stats-item strong { color: #000; }
+        .status-badge { background-color: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
         .status-selected { color: white; background-color: #28a745; }
-        
-        .action-btns {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .action-btns button {
-            flex: 1;
-            padding: 8px 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .btn-view { background: #007bff; color: white; }
         .btn-export { background: #ffc107; color: #333; }
         .btn-delete { background: #dc3545; color: white; }
-
-        /* STYLE CHO DROPDOWN BOOTSTRAP */
-        #userControl { display: flex; align-items: center; }
-        .dropdown-menu { background-color: var(--dark-green) !important; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .dropdown-item { color: white !important; transition: background-color 0.2s; }
-        .dropdown-item:hover { background-color: var(--primary-green) !important; color: white !important; }
+        
+        /* STYLE CHO MODAL (Sử dụng Bootstrap) */
+        .modal-content { background-color: #f8f9fa !important; color: #212529 !important; }
+        .modal-header { background-color: var(--primary-green) !important; color: white !important; border-bottom: none; }
+        .btn-close-white { filter: invert(1); }
     </style>
 </head>
 <body>
@@ -192,12 +103,38 @@
         </div>
     </div>
 
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">
+                        <i class="fas fa-file-export me-2"></i> DANH SÁCH FILE ĐÃ CHỌN
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">Vui lòng sao chép toàn bộ chuỗi bên dưới để sử dụng.</p>
+                    
+                    <div class="alert alert-info py-2" role="alert">
+                        Album: <strong id="modalAlbumName"></strong> | Ảnh được chọn: <strong id="modalSelectedCount"></strong>
+                    </div>
+
+                    <textarea id="fileNamesOutput" class="form-control" rows="15" readonly style="font-family: monospace; background-color: #e9ecef; border: 1px solid #ced4da;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn" id="copyBtn" onclick="copyFileNames()" style="background-color: #007bff; color: white;">
+                        <i class="fas fa-copy me-2"></i> SAO CHÉP TẤT CẢ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // --- 1. CẤU HÌNH WEBHOOK URL VÀ HẰNG SỐ ---
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
-        // ⭐ WEBHOOK EXPORT MỚI ⭐
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
         
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
@@ -210,23 +147,40 @@
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         // -------------------------------------------------------------
+        // HÀM XỬ LÝ SAO CHÉP TRONG MODAL
+        // -------------------------------------------------------------
+        function copyFileNames() {
+            const textarea = document.getElementById('fileNamesOutput');
+            textarea.select();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
+                }).catch(() => {
+                    alert('Lỗi sao chép tự động: Vui lòng sao chép thủ công.');
+                });
+            } else {
+                document.execCommand('copy');
+                alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
+            }
+        }
+
+
+        // -------------------------------------------------------------
         // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
         // -------------------------------------------------------------
 
         async function handleExportClick(albumId, albumName) {
-            // Xác nhận xuất file
             if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
                 return;
             }
             
-            // Bắt đầu loading
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
 
             const payload = {
                 folderId: albumId,
                 adminEmail: adminEmail, 
-                action: 'export_filenames_request' // Hành động cho n8n
+                action: 'export_filenames_request'
             };
 
             try {
@@ -236,40 +190,45 @@
                     body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
+                }
+                
+                // ⭐ SỬA LỖI: Lấy phản hồi JSON từ Server
+                const result = await response.json(); 
+                
+                // Lấy Item chính xác (vì Node 4 trả về Item JSON chuẩn)
+                const finalResult = Array.isArray(result) ? result[0] : result;
 
-                if (response.ok && result.file_names_for_copy) {
+                if (finalResult && finalResult.file_names_for_copy) {
                     
-                    // Tạo chuỗi hiển thị trong PROMPT SAO CHÉP
-                    const namesList = result.file_names_for_copy;
-
-                    const formattedNote = `--- TÊN FILE ĐÃ CHỌN TRONG ALBUM: ${albumName} ---
-Tổng số ảnh được chọn: ${result.selected_photos || 'Không rõ'}
-
-Vui lòng sao chép chuỗi dưới đây:
-----------------------------------------------------------------------------------------------------------------------
-${namesList}
-----------------------------------------------------------------------------------------------------------------------`;
+                    const namesList = finalResult.file_names_for_copy;
+                    const selectedCount = finalResult.selected_photos || 'Không rõ';
                     
-                    // Dùng prompt() để hiển thị và cho phép người dùng dễ dàng sao chép
-                    prompt('✅ ĐÃ XUẤT THÀNH CÔNG! Sao chép chuỗi này:', namesList);
+                    // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
+                    document.getElementById('modalAlbumName').innerText = albumName;
+                    document.getElementById('modalSelectedCount').innerText = selectedCount;
+                    // ⭐ GÁN CHUỖI TÊN FILE THỰC TẾ ⭐
+                    document.getElementById('fileNamesOutput').value = namesList; 
+
+                    // Mở Modal
+                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+                    exportModal.show();
 
                 } else {
-                    throw new Error(result.message || `Lỗi xuất file: Server không phản hồi thành công.`);
+                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
 
             } catch (error) {
                 alert(`❌ Lỗi Xuất File: ${error.message}`);
                 console.error("Lỗi Export File:", error);
             } finally {
-                // Phục hồi opacity
                 if (cardElement) cardElement.style.opacity = 1;
             }
         }
 
-
         // -------------------------------------------------------------
-        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT (Không thay đổi)
+        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
         
         function logoutAdmin() {
@@ -281,7 +240,6 @@ ${namesList}
         }
 
         async function deleteAlbum(albumId, albumName) {
-            // Xác nhận từ người dùng
             if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
                 return;
             }
@@ -289,10 +247,7 @@ ${namesList}
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5; 
 
-            const deletePayload = {
-                folderId: albumId,
-                adminEmail: adminEmail 
-            };
+            const deletePayload = { folderId: albumId, adminEmail: adminEmail };
 
             try {
                 const response = await fetch(URL_DELETE_ALBUM, {
@@ -319,7 +274,7 @@ ${namesList}
         }
 
         // -------------------------------------------------------------
-        // HÀM TẠO CARD HTML (Sửa lại nút Export)
+        // HÀM TẠO CARD HTML (Đảm bảo gọi hàm Export an toàn)
         // -------------------------------------------------------------
         
         function createAlbumCard(album) {
@@ -328,24 +283,23 @@ ${namesList}
             card.id = `card-${albumUniqueId}`; 
             card.className = 'album-card';
             
-            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
-            const id = albumUniqueId || 'UNKNOWN_ID'; 
-            const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
+            const id = albumUniqueId || 'UNKNOWN_ID';
+            const rawName = album.folderName || album.name || 'Album Mới';
+            // Dùng replace để thoát dấu nháy đơn
+            const escapedName = rawName.replace(/'/g, "\\'"); 
+            
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
+            // Đảm bảo ảnh mặc định hiển thị khi link trống
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
             card.innerHTML = `
-                <div class="album-card-header" 
-                    style="background-image: url('${previewImageURL}');">
-                </div>
-                
-                <div class="album-title-card">${name}</div>
-                
+                <div class="album-card-header" style="background-image: url('${previewImageURL}');"></div>
+                <div class="album-title-card">${rawName}</div>
                 <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
                 <div class="stats-item"><i class="fas fa-images"></i> Tổng số: <strong>${totalPhotos}</strong> ảnh</div>
                 <div class="stats-item"><i class="fas fa-comment-dots"></i> Bình luận: <strong>${comments}</strong></div>
@@ -353,16 +307,16 @@ ${namesList}
                 <div class="action-btns">
                     <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem Album</button>
                     
-                    <button class="btn-export" onclick="handleExportClick('${id}', '${name}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
+                    <button class="btn-export" onclick="handleExportClick('${id}', '${escapedName}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
                     
-                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${name}')"><i class="fas fa-trash-alt"></i> Xóa</button>
+                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${escapedName}')"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </div>
             `;
             return card;
         }
 
         // -------------------------------------------------------------
-        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU (Không thay đổi)
+        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
         // -------------------------------------------------------------
 
         function updateHeaderUI() {
@@ -416,8 +370,8 @@ ${namesList}
 
             } catch (error) {
                 albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-                    Bạn chưa có album nào đã tạo . <br>
-                    Vui lòng bấm Tạo Album Mới
+                    LỖI TẢI ALBUM: Không thể kết nối hoặc nhận dữ liệu JSON hợp lệ.<br>
+                    Chi tiết: ${error.message}
                 </div>`;
                 albumCount.innerText = 0;
                 console.error("Lỗi tải Album:", error);
