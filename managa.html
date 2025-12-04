@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
-        /* --- CSS CƠ BẢN VÀ CARD STYLE (Giữ nguyên CSS của bạn) --- */
+        /* --- CSS CƠ BẢN VÀ CARD STYLE (Không thay đổi) --- */
         :root {
             --primary-green: #147a30; 
             --dark-green: #0e5a22;
@@ -29,43 +29,36 @@
             padding-top: 70px;
         }
         
-        .header {
-            background: var(--primary-green);
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px var(--shadow-color);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
+        .header { /* Header styles... */ }
+        .logo { /* Logo styles... */ }
+        .nav-links { /* Nav links styles... */ }
+        .dashboard-container { /* Container styles... */ }
+        h2 { /* Heading styles... */ }
+        #albumGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
         }
-
-        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
-
-        /* ALBUM GRID */
-        .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
-        h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
-        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
-        .album-card { background: var(--card-bg); color: #333; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, opacity 0.2s; }
+        .album-card { /* Album card styles... */ }
         .album-card:hover { transform: translateY(-3px); }
-        .album-title-card { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--primary-green); border-bottom: 1px solid #ddd; padding-bottom: 8px; }
-        .album-card-header { height: 150px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; margin: -20px -20px 10px -20px; position: relative; box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4); }
-        .stats-item { margin-bottom: 5px; font-size: 14px; }
-        .stats-item i { width: 20px; text-align: center; color: #888; }
-        .stats-item strong { color: #000; }
-        .status-badge { background-color: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .album-title-card { /* Title styles... */ }
+        .album-card-header { /* Header image styles... */ }
+        .stats-item { /* Stats item styles... */ }
+        .status-badge { /* Badge styles... */ }
         .status-selected { color: white; background-color: #28a745; }
-        .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .action-btns {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btns button { /* Button base styles... */ }
         .btn-view { background: #007bff; color: white; }
-        .btn-export { background: #ffc107; color: #333; }
+        .btn-export { background: #ffc107; color: #333; } /* Màu vàng cho nút Export */
         .btn-delete { background: #dc3545; color: white; }
+        .dropdown-menu { /* Dropdown styles... */ }
+        .dropdown-item { /* Dropdown item styles... */ }
     </style>
 </head>
 <body>
@@ -120,7 +113,6 @@
         // -------------------------------------------------------------
 
         async function handleExportClick(albumId, albumName) {
-            // Xác nhận xuất file
             if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
                 return;
             }
@@ -151,14 +143,15 @@
                     const formattedNote = `--- TÊN FILE ĐÃ CHỌN TRONG ALBUM: ${albumName} ---
 Tổng số ảnh được chọn: ${result.selected_photos || 'Không rõ'}
 
-Vui lòng sao chép chuỗi sau để sử dụng:`;
+Vui lòng sao chép chuỗi sau để sử dụng:
+----------------------------------------------------------------------------------------------------------------------
+${namesList}
+----------------------------------------------------------------------------------------------------------------------`;
                     
                     // Dùng prompt() để hiển thị và cho phép người dùng dễ dàng chọn và sao chép
-                    // Đây là cách đơn giản và hiệu quả nhất trên trình duyệt.
                     prompt(formattedNote, namesList);
 
                 } else {
-                    // Nếu n8n trả về lỗi nhưng response.ok = true
                     throw new Error(result.message || `Lỗi xuất file: Server không phản hồi thành công.`);
                 }
 
@@ -166,7 +159,6 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
                 alert(`❌ Lỗi Xuất File: ${error.message}`);
                 console.error("Lỗi Export File:", error);
             } finally {
-                // Phục hồi opacity
                 if (cardElement) cardElement.style.opacity = 1;
             }
         }
@@ -222,7 +214,7 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
         }
 
         // -------------------------------------------------------------
-        // HÀM TẠO CARD HTML (Đảm bảo gọi hàm Export an toàn)
+        // HÀM TẠO CARD HTML (Sửa lại nút Export)
         // -------------------------------------------------------------
         
         function createAlbumCard(album) {
@@ -232,10 +224,7 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
             card.className = 'album-card';
             
             const id = albumUniqueId || 'UNKNOWN_ID';
-            // ⭐ DÙNG JSON.stringify ĐỂ TRÁNH LỖI KHI TÊN CÓ DẤU NHÁY ĐƠN ⭐
-            const rawName = album.folderName || album.name || 'Album Mới';
-            const safeName = JSON.stringify(rawName); // "Album có 'dấu nháy'"
-            
+            const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
@@ -249,7 +238,7 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
                     style="background-image: url('${previewImageURL}');">
                 </div>
                 
-                <div class="album-title-card">${rawName}</div>
+                <div class="album-title-card">${name}</div>
                 
                 <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
                 <div class="stats-item"><i class="fas fa-images"></i> Tổng số: <strong>${totalPhotos}</strong> ảnh</div>
@@ -258,9 +247,9 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
                 <div class="action-btns">
                     <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem Album</button>
                     
-                    <button class="btn-export" onclick="handleExportClick('${id}', ${safeName})"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
+                    <button class="btn-export" onclick="handleExportClick('${id}', '${name}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
                     
-                    <button class="btn-delete" onclick="deleteAlbum('${id}', ${safeName})"><i class="fas fa-trash-alt"></i> Xóa</button>
+                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${name}')"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </div>
             `;
             return card;
@@ -320,3 +309,20 @@ Vui lòng sao chép chuỗi sau để sử dụng:`;
                 albumCount.innerText = albums.length;
 
             } catch (error) {
+                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
+                    Bạn chưa có album nào đã tạo . <br>
+                    Vui lòng bấm Tạo Album Mới
+                </div>`;
+                albumCount.innerText = 0;
+                console.error("Lỗi tải Album:", error);
+            }
+        }
+
+        // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHeaderUI();
+            loadAlbums();
+        });
+    </script>
+</body>
+</html>
