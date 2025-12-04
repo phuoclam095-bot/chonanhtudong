@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>a - Dashboard</title>
+    <title>hong - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -160,6 +160,11 @@
         .dropdown-menu { background-color: var(--dark-green) !important; border: 1px solid rgba(255, 255, 255, 0.1); }
         .dropdown-item { color: white !important; transition: background-color 0.2s; }
         .dropdown-item:hover { background-color: var(--primary-green) !important; color: white !important; }
+
+        /* STYLE CHO MODAL */
+        .modal-content { background-color: #f8f9fa !important; color: #212529 !important; }
+        .modal-header { background-color: var(--primary-green) !important; color: white !important; border-bottom: none; }
+        .btn-close-white { filter: invert(1); }
     </style>
 </head>
 <body>
@@ -192,6 +197,35 @@
         </div>
     </div>
 
+    <!-- MODAL: Hiển thị danh sách file để copy -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">
+                        <i class="fas fa-file-export me-2"></i> DANH SÁCH FILE ĐÃ CHỌN
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">Vui lòng sao chép toàn bộ chuỗi bên dưới để sử dụng.</p>
+                    
+                    <div class="alert alert-info py-2" role="alert">
+                        Album: <strong id="modalAlbumName"></strong> | Ảnh được chọn: <strong id="modalSelectedCount"></strong>
+                    </div>
+
+                    <textarea id="fileNamesOutput" class="form-control" rows="8" readonly style="font-family: monospace; background-color: #e9ecef; border: 1px solid #ced4da;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn" id="copyBtn" onclick="copyFileNames()" style="background-color: #007bff; color: white;">
+                        <i class="fas fa-copy me-2"></i> SAO CHÉP TẤT CẢ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // --- 1. CẤU HÌNH WEBHOOK URL VÀ HẰNG SỐ ---
@@ -210,77 +244,102 @@
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         // -------------------------------------------------------------
-        // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
+        // HÀM SAO CHÉP NỘI DUNG textarea
         // -------------------------------------------------------------
-
-     async function handleExportClick(albumId, albumName) {
-    if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
-        return;
-    }
-    
-    const cardElement = document.getElementById(`card-${albumId}`);
-    if (cardElement) cardElement.style.opacity = 0.5;
-
-    const payload = {
-        folderId: albumId,
-        adminEmail: adminEmail, 
-        action: 'export_filenames_request'
-    };
-
-    try {
-        const response = await fetch(URL_EXPORT_FILENAMES, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-        const finalResult = Array.isArray(result) ? result[0] : result;
-
-        if (response.ok && finalResult && finalResult.file_names_for_copy) {
-            let namesList = finalResult.file_names_for_copy || "";
-            namesList = namesList
-                .split(",")
-                .map(n => n.trim())
-                .filter(n => n.length > 0)
-                .join(", ");
-
-            const selectedCount = finalResult.selected_photos || 'Không rõ';
-
-            // --- AN TOÀN: kiểm tra phần tử modal trước khi gán ---
-            const modalAlbumEl = document.getElementById('modalAlbumName');
-            const modalCountEl = document.getElementById('modalSelectedCount');
-            const fileNamesEl = document.getElementById('fileNamesOutput');
-
-            if (!modalAlbumEl || !modalCountEl || !fileNamesEl) {
-                console.error('Modal elements missing:', { modalAlbumEl, modalCountEl, fileNamesEl });
-                alert('Lỗi: phần tử hiển thị modal không tồn tại. Mở console để xem chi tiết.');
+        function copyFileNames() {
+            const textarea = document.getElementById('fileNamesOutput');
+            if (!textarea) {
+                alert('Không tìm thấy vùng chứa tên file.');
                 return;
             }
-
-            modalAlbumEl.textContent = albumName;
-            modalCountEl.textContent = selectedCount;
-            fileNamesEl.value = namesList;
-
-            const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
-            exportModal.show();
-
-        } else {
-            throw new Error(result.message || `Server không trả về trường 'file_names_for_copy'.`);
+            // chọn & copy
+            textarea.select();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
+                }).catch(() => {
+                    alert('Lỗi sao chép tự động: Vui lòng sao chép thủ công.');
+                });
+            } else {
+                try {
+                    document.execCommand('copy');
+                    alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
+                } catch (e) {
+                    alert('Lỗi sao chép: Vui lòng sao chép thủ công.');
+                }
+            }
         }
 
-    } catch (error) {
-        alert(`❌ Lỗi Xuất File: ${error.message}`);
-        console.error("Lỗi Export File:", error);
-    } finally {
-        if (cardElement) cardElement.style.opacity = 1;
-    }
-}
+        // -------------------------------------------------------------
+        // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT) — FULL, ROBUST
+        // -------------------------------------------------------------
+        async function handleExportClick(albumId, albumName) {
+            if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
+                return;
+            }
+            
+            const cardElement = document.getElementById(`card-${albumId}`);
+            if (cardElement) cardElement.style.opacity = 0.5;
+
+            const payload = {
+                folderId: albumId,
+                adminEmail: adminEmail, 
+                action: 'export_filenames_request'
+            };
+
+            try {
+                const response = await fetch(URL_EXPORT_FILENAMES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const finalResult = Array.isArray(result) ? result[0] : result;
+
+                if (response.ok && finalResult && finalResult.file_names_for_copy) {
+                    let namesList = finalResult.file_names_for_copy || "";
+                    namesList = namesList
+                        .split(",")
+                        .map(n => n.trim())
+                        .filter(n => n.length > 0)
+                        .join(", ");
+
+                    const selectedCount = finalResult.selected_photos || 'Không rõ';
+
+                    // --- AN TOÀN: kiểm tra phần tử modal trước khi gán ---
+                    const modalAlbumEl = document.getElementById('modalAlbumName');
+                    const modalCountEl = document.getElementById('modalSelectedCount');
+                    const fileNamesEl = document.getElementById('fileNamesOutput');
+
+                    if (!modalAlbumEl || !modalCountEl || !fileNamesEl) {
+                        console.error('Modal elements missing:', { modalAlbumEl, modalCountEl, fileNamesEl });
+                        alert('Lỗi: phần tử hiển thị modal không tồn tại. Mở console để xem chi tiết.');
+                        return;
+                    }
+
+                    modalAlbumEl.textContent = albumName;
+                    modalCountEl.textContent = selectedCount;
+                    fileNamesEl.value = namesList;
+
+                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+                    exportModal.show();
+
+                } else {
+                    throw new Error(result.message || `Server không trả về trường 'file_names_for_copy'.`);
+                }
+
+            } catch (error) {
+                alert(`❌ Lỗi Xuất File: ${error.message}`);
+                console.error("Lỗi Export File:", error);
+            } finally {
+                if (cardElement) cardElement.style.opacity = 1;
+            }
+        }
 
         // -------------------------------------------------------------
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT (Không thay đổi)
         // -------------------------------------------------------------
-        
         function logoutAdmin() {
             localStorage.removeItem('admin_is_logged_in');
             localStorage.removeItem('admin_email');
@@ -290,7 +349,6 @@
         }
 
         async function deleteAlbum(albumId, albumName) {
-            // Xác nhận từ người dùng
             if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
                 return;
             }
@@ -298,10 +356,7 @@
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5; 
 
-            const deletePayload = {
-                folderId: albumId,
-                adminEmail: adminEmail 
-            };
+            const deletePayload = { folderId: albumId, adminEmail: adminEmail };
 
             try {
                 const response = await fetch(URL_DELETE_ALBUM, {
@@ -328,52 +383,46 @@
         }
 
         // -------------------------------------------------------------
-        // HÀM TẠO CARD HTML (Sửa lại nút Export)
+        // HÀM TẠO CARD HTML
         // -------------------------------------------------------------
-        
         function createAlbumCard(album) {
             const card = document.createElement('div');
             const albumUniqueId = album.folder_id || album.folderId;
             card.id = `card-${albumUniqueId}`; 
             card.className = 'album-card';
             
-            // ✅ ÁNH XẠ DỮ LIỆU TỪ JSON
-            const id = albumUniqueId || 'UNKNOWN_ID'; 
-            const name = (album.folderName || album.name || 'Album Mới').replace(/'/g, "\\'"); 
+            const id = albumUniqueId || 'UNKNOWN_ID';
+            const rawName = album.folderName || album.name || 'Album Mới';
+            const escapedName = rawName.replace(/'/g, "\\'"); 
+            
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
+            // Lấy preview từ API (thumbnail). Nếu rỗng -> dùng fallback.
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
             card.innerHTML = `
-                <div class="album-card-header" 
-                    style="background-image: url('${previewImageURL}');">
-                </div>
-                
-                <div class="album-title-card">${name}</div>
-                
+                <div class="album-card-header" style="background-image: url('${previewImageURL}');"></div>
+                <div class="album-title-card">${rawName}</div>
                 <div class="stats-item"><i class="fas fa-check-circle"></i> Đã chọn: <span class="status-badge status-selected">${selectedPhotos}</span> ảnh</div>
                 <div class="stats-item"><i class="fas fa-images"></i> Tổng số: <strong>${totalPhotos}</strong> ảnh</div>
                 <div class="stats-item"><i class="fas fa-comment-dots"></i> Bình luận: <strong>${comments}</strong></div>
                 
                 <div class="action-btns">
                     <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem Album</button>
-                    
-                    <button class="btn-export" onclick="handleExportClick('${id}', '${name}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
-                    
-                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${name}')"><i class="fas fa-trash-alt"></i> Xóa</button>
+                    <button class="btn-export" onclick="handleExportClick('${id}', '${escapedName}')"><i class="fas fa-file-export"></i> Xuất File Chọn</button> 
+                    <button class="btn-delete" onclick="deleteAlbum('${id}', '${escapedName}')"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </div>
             `;
             return card;
         }
 
         // -------------------------------------------------------------
-        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU (Không thay đổi)
+        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
         // -------------------------------------------------------------
-
         function updateHeaderUI() {
             const userControl = document.getElementById('userControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
