@@ -14,7 +14,6 @@
             --text-color: #f0f0f0;
             --card-bg-opacity: rgba(10, 10, 10, 0.8);
             --highlight-yellow: #ffc107;
-            /* Màu xanh lá cho hiệu ứng sáng */
             --glowing-color: #38e874; 
         }
         body {
@@ -23,15 +22,16 @@
             background-size: 60px 60px;
             color: var(--text-color);
             font-family: 'Segoe UI', sans-serif;
+            /* ⭐ ĐIỂM SỬA LỖI: Cần padding-top lớn hơn do header bị thu nhỏ ⭐ */
             padding-top: 75px; 
             min-height: 100vh;
         }
         
-        /* ⭐ HEADER CHUẨN ⭐ */
+        /* ⭐ HEADER CHUẨN (Đã tối ưu hóa) ⭐ */
         .header {
             background: var(--primary-green);
             color: white;
-            padding: 10px 20px; 
+            padding: 10px 20px; /* Giảm padding tổng thể */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -42,7 +42,7 @@
             z-index: 1000;
         }
         .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; align-items: center; gap: 10px; } /* Giảm khoảng cách giữa các link */
         .nav-links a, #authControl span { 
             color: white; text-decoration: none; font-size: 13px; transition: 0.3s; padding: 5px 8px; border-radius: 5px; display: flex; align-items: center; gap: 4px; 
         }
@@ -52,10 +52,9 @@
         .contact-container {
             max-width: 650px;
             margin: auto;
-            margin-top: 30px; 
+            margin-top: 30px; /* Cần margin-top để đẩy nội dung xuống */
             padding: 40px;
             
-            /* NỀN DONATE/TỐI */
             background-image: url('https://images.unsplash.com/photo-1541416766465-9854737d2f9d?auto=format&fit=crop&w=800&q=80'); 
             background-size: cover;
             background-position: center;
@@ -69,10 +68,7 @@
             color: var(--primary-green); 
             margin-bottom: 30px; 
             font-weight: bold;
-            /* ⭐ ĐIỂM SỬA LỖI: KHÔI PHỤC HIỆU ỨNG CHỮ SÁNG LÊN ⭐ */
-            text-shadow: 
-                0 0 10px var(--glowing-color), 
-                0 0 5px var(--primary-green); 
+            text-shadow: 0 0 10px var(--primary-green), 0 0 5px var(--primary-green);
         }
         .contact-item {
             margin-bottom: 20px; padding: 15px; border: 1px solid #444; border-radius: 8px; transition: background-color 0.3s; text-align: left; display: flex; align-items: center;
@@ -85,7 +81,7 @@
         .contact-details a { color: #4da6ff; text-decoration: none; }
         .contact-details a:hover { text-decoration: underline; }
         .support-time {
-            color: var(--highlight-yellow); /* ⭐ ĐÃ KHÔI PHỤC MÀU VÀNG ⭐ */
+            color: var(--highlight-yellow);
             font-weight: bold;
             font-size: 15px;
             margin-top: 15px;
