@@ -9,7 +9,7 @@
     <style>
         :root {
             --primary-green: #147a30;
-            --dark-green: #0e5a22; /* Thêm biến dark-green cho header */
+            --dark-green: #0e5a22;
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
         }
@@ -37,20 +37,18 @@
             width: 100%;
             z-index: 1000;
         }
+        /* ⭐ ĐIỂM SỬA CHỮA: Đổi tên Dashboard thành Tiện Ích Chọn Ảnh ⭐ */
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #userControl a.nav-link { 
-            color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; 
-        }
-        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
-        
+        .nav-links a, #authControl span { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
+        .nav-links a:hover { background-color: var(--dark-green); }
+
         /* ⭐ PHẦN NỀN CHÍNH (DONATE) ⭐ */
         .donate-container {
             max-width: 900px;
             margin: auto;
             margin-top: 30px; 
             padding: 30px;
-            /* Thêm ảnh nền hấp dẫn */
             background-image: url('https://images.unsplash.com/photo-1541416766465-9854737d2f9d?auto=format&fit=crop&w=1200&q=80'); 
             background-size: cover;
             background-position: center;
@@ -59,12 +57,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
             color: #ffffff; 
         }
-        h1 { 
-            color: #51ff7d; 
-            margin-bottom: 25px; 
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
-            text-align: center;
-        }
+        h1 { color: #51ff7d; margin-bottom: 25px; text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); text-align: center; }
         
         /* ⭐ Cấu hình QR và Flexbox ⭐ */
         .payment-method {
@@ -103,24 +96,19 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo"><i class="fas fa-chart-line"></i> Dashboard Quản Lý</div>
+        <div class="logo"><i class="fas fa-camera-retro"></i> Tiện Ích Chọn Ảnh</div>
         
         <div class="nav-links">
             <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album Mới</a>
             <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
             <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> 
-            <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a> 
+            <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
             
-            <div id="authControl">
-                <div id="userControl" class="dropdown" style="display: none;">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
-                        <li><a class="dropdown-item" href="managa.html"><i class="fas fa-folder-open"></i> Quản Lý Album</a></li> 
-                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
-                    </ul>
-                </div>
+            <div id="authControl" style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
+                <span id="userEmailDisplay" class="user-email nav-link" style="color: #fff;">Admin</span>
+                <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link" style="background-color: #dc3545; padding: 5px 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                </a>
             </div>
         </div>
     </div>
@@ -175,20 +163,20 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⭐ LOGIC JAVASCRIPT TỐI THIỂU CHO NAVIGATION ⭐
+        // ⭐ LOGIC JAVASCRIPT TỐI THIỂU CHO NAVIGATION VÀ ĐĂNG XUẤT ⭐
         const adminEmail = localStorage.getItem('admin_email');
         const adminName = localStorage.getItem('admin_name') || 'Admin';
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         function updateHeaderUI() {
-            const userControl = document.getElementById('userControl');
+            const authControl = document.getElementById('authControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             
             if (isLoggedIn) {
                 userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                userControl.style.display = 'flex'; 
+                authControl.style.display = 'flex'; // Đảm bảo thanh điều hướng hiển thị
             } else {
-                userControl.style.display = 'none'; // Ẩn nếu chưa đăng nhập
+                authControl.style.display = 'none';
             }
         }
         
