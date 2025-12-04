@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý - Dashboard</title>
+    <title>- Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -29,40 +29,18 @@
             padding-top: 70px;
         }
         
-        .header {
-            background: var(--primary-green);
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px var(--shadow-color);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
-
-        /* ALBUM GRID */
-        .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
-        h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
+        .header { /* ... */ }
+        .logo { /* ... */ }
+        .nav-links { /* ... */ }
+        .dashboard-container { /* ... */ }
+        h2 { /* ... */ }
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
-        .album-card { background: var(--card-bg); color: #333; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, opacity 0.2s; }
-        .album-card:hover { transform: translateY(-3px); }
-        .album-title-card { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--primary-green); border-bottom: 1px solid #ddd; padding-bottom: 8px; }
-        .album-card-header { height: 150px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; margin: -20px -20px 10px -20px; position: relative; box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4); }
-        .stats-item { margin-bottom: 5px; font-size: 14px; }
-        .stats-item i { width: 20px; text-align: center; color: #888; }
-        .stats-item strong { color: #000; }
-        .status-badge { background-color: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .album-card { /* ... */ }
+        .album-title-card { /* ... */ }
+        .album-card-header { /* ... */ }
+        .stats-item { /* ... */ }
         .status-selected { color: white; background-color: #28a745; }
         .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .btn-view { background: #007bff; color: white; }
         .btn-export { background: #ffc107; color: #333; }
         .btn-delete { background: #dc3545; color: white; }
@@ -113,7 +91,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-secondary">Vui lòng sao chép toàn bộ chuỗi bên dưới qua mục Sao Chép Ảnh để sử dụng dịch vụ ! </p>
+                    <p class="text-secondary">Vui lòng sao chép toàn bộ chuỗi bên dưới để sử dụng.</p>
                     
                     <div class="alert alert-info py-2" role="alert">
                         Album: <strong id="modalAlbumName"></strong> | Ảnh được chọn: <strong id="modalSelectedCount"></strong>
@@ -169,61 +147,57 @@
         // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
         // -------------------------------------------------------------
 
-       async function handleExportClick(albumId, albumName) {
+        async function handleExportClick(albumId, albumName) {
             if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
                 return;
             }
             
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
-        
+
             const payload = {
                 folderId: albumId,
                 adminEmail: adminEmail, 
                 action: 'export_filenames_request'
             };
-        
+
             try {
                 const response = await fetch(URL_EXPORT_FILENAMES, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-        
+
                 if (!response.ok) {
-                    // Xử lý lỗi HTTP server
                     throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
                 }
-        
+                
                 const result = await response.json();
                 
-                // Lấy Item JSON chính xác từ phản hồi Node 4
-                // Dù Node 4 trả về mảng 1 Item hay 1 Item duy nhất, code này xử lý được
+                // Lấy Item chính xác từ Output Node 4
                 const finalResult = Array.isArray(result) ? result[0] : result; 
-        
-                // ⭐ KIỂM TRA TÊN TRƯỜNG CHÍNH XÁC: file_names_for_copy VÀ selected_photos
+
+                // ⭐ ĐIỂM SỬA LỖI QUAN TRỌNG: GÁN GIÁ TRỊ VÀO MODAL ⭐
                 if (finalResult && finalResult.file_names_for_copy) {
                     
                     const namesList = finalResult.file_names_for_copy;
-                    // ⭐ Lấy giá trị đếm từ trường chính xác
-                    const selectedCount = finalResult.selected_photos || 'Không rõ'; 
+                    const selectedCount = finalResult.selected_photos || 'Không rõ';
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
+                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh'; 
                     
-                    // ⭐ ĐIỂM SỬA LỖI: Gán số đếm vào Modal ⭐
-                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh'; // Hiển thị số lượng
-                    
+                    // GÁN CHUỖI TÊN FILE THỰC TẾ
                     document.getElementById('fileNamesOutput').value = namesList; 
-        
-                    // Mở Modal (Yêu cầu biến bootstrap.Modal đã được định nghĩa)
+
+                    // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
-        
+
                 } else {
                     throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
-        
+
             } catch (error) {
                 alert(`❌ Lỗi Xuất File: ${error.message}`);
                 console.error("Lỗi Export File:", error);
