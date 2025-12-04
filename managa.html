@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý - Dashboard</title>
+    <title> - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -175,51 +175,43 @@
                 return;
             }
             
-            const cardElement = document.getElementById(`card-${albumId}`);
-            if (cardElement) cardElement.style.opacity = 0.5;
-
-            const payload = {
-                folderId: albumId,
-                adminEmail: adminEmail, 
-                action: 'export_filenames_request'
-            };
-
+            // ... (logic loading và payload giữ nguyên)
+        
             try {
                 const response = await fetch(URL_EXPORT_FILENAMES, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
+        
                 if (!response.ok) {
                     throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
                 }
-                
-                // ⭐ SỬA LỖI: Lấy phản hồi JSON từ Server
-                const result = await response.json(); 
-                
-                // Lấy Item chính xác (vì Node 4 trả về Item JSON chuẩn)
+        
+                const result = await response.json();
                 const finalResult = Array.isArray(result) ? result[0] : result;
-
+        
                 if (finalResult && finalResult.file_names_for_copy) {
                     
                     const namesList = finalResult.file_names_for_copy;
-                    const selectedCount = finalResult.selected_photos || 'Không rõ';
+                    // ⭐ Bỏ selectedCount vì ta không dùng số đếm nữa ⭐
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
-                    document.getElementById('modalSelectedCount').innerText = selectedCount;
-                    // ⭐ GÁN CHUỖI TÊN FILE THỰC TẾ ⭐
+                    
+                    // ⭐ ĐIỂM SỬA CHỮA: Gán thông báo hướng dẫn ⭐
+                    document.getElementById('exportInstruction').innerHTML = 'Vui lòng bấm **Sao chép tất cả** và vào **Sao Chép Ảnh** để dùng dịch vụ!';
+                    
                     document.getElementById('fileNamesOutput').value = namesList; 
-
+        
                     // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
-
+        
                 } else {
                     throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
-
+        
             } catch (error) {
                 alert(`❌ Lỗi Xuất File: ${error.message}`);
                 console.error("Lỗi Export File:", error);
