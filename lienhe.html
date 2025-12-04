@@ -13,9 +13,8 @@
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
             --card-bg-opacity: rgba(10, 10, 10, 0.8);
-            --highlight-yellow: #ffc107; /* ⭐ MÀU VÀNG NỔI BẬT ⭐ */
-            --highlight-color: #51ff7d;
-            --glowing-color: #38e874; 
+            --highlight-color: #51ff7d; 
+            --highlight-yellow: #ffc107; /* ⭐ THÊM MÀU VÀNG NỔI BẬT ⭐ */
         }
         body {
             background-color: var(--bg-color);
@@ -52,13 +51,10 @@
             text-align: center;
         }
         h1 { 
-            color: var(--primary-green); 
+            color: var(--highlight-color); 
             margin-bottom: 30px; 
             font-weight: bold;
-            /* ⭐ CHỮ NỔI BẬT ⭐ */
-            text-shadow: 
-                0 0 10px var(--glowing-color), 
-                0 0 5px var(--glowing-color); 
+            text-shadow: 0 0 10px rgba(81, 255, 125, 0.8); /* Hiệu ứng chữ nổi */
         }
         .contact-item {
             margin-bottom: 20px; 
@@ -78,9 +74,9 @@
         .contact-details a { color: #4da6ff; text-decoration: none; }
         .contact-details a:hover { text-decoration: underline; }
         
-        /* ⭐ SỬA: THỜI GIAN PHẢN HỒI NỔI BẬT ⭐ */
+        /* ⭐ SỬA LỖI: THỜI GIAN PHẢN HỒI MÀU VÀNG ⭐ */
         .support-time {
-            color: var(--highlight-yellow); /* Màu vàng */
+            color: var(--highlight-yellow); /* ⭐ Màu vàng nổi bật ⭐ */
             font-weight: bold;
             font-size: 15px;
             margin-top: 15px;
