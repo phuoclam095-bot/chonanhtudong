@@ -45,8 +45,8 @@
 
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
+        .nav-links a, #userControl div { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
+        .nav-links a:hover, #userControl div:hover { background-color: var(--dark-green); }
 
         /* ALBUM GRID */
         .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
@@ -84,15 +84,11 @@
             <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> 
             <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
             
-            <div id="authControl">
-                <div id="userControl" class="dropdown" style="display: none;">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
-                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
-                    </ul>
-                </div>
+            <div id="authControl" style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
+                <span id="userEmailDisplay" class="user-email nav-link" style="color: #fff;">Admin</span>
+                <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link" style="background-color: #dc3545; padding: 5px 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                </a>
             </div>
         </div>
     </div>
@@ -219,7 +215,6 @@
                 }
 
             } catch (error) {
-                // Ẩn lỗi hệ thống, chỉ hiển thị thông báo thân thiện
                 alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
                 console.error("Lỗi Export File (Ẩn):", error);
             } finally {
@@ -320,15 +315,11 @@
         // -------------------------------------------------------------
 
         function updateHeaderUI() {
-            const userControl = document.getElementById('userControl');
+            const authControl = document.getElementById('authControl');
+            authControl.style.display = 'flex'; // Hiển thị khung Auth Control
+
             const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (isLoggedIn) {
-                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                userControl.style.display = 'flex'; 
-            } else {
-                userControl.style.display = 'none'; // Ẩn dropdown nếu không đăng nhập
-            }
+            userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
         }
 
         async function loadAlbums() {
@@ -356,9 +347,7 @@
                 const albums = Array.isArray(rawData) ? rawData : []; 
 
                 if (albums.length === 0) {
-                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
-                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
-                                          '</div>';
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">Bạn chưa có album để hiển thị, vui lòng tạo album mới.</div>';
                     albumCount.innerText = 0;
                     return;
                 }
@@ -374,7 +363,7 @@
                 // BẮT TẤT CẢ LỖI VÀ CHỈ HIỂN THỊ THÔNG BÁO CHUNG
                 console.error("Lỗi tải Album (Ẩn):", error.message);
                 
-                albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
+                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
                     LỖI TẢI ALBUM: Không thể hiển thị album vào lúc này.
                 </div>`;
                 albumCount.innerText = 0;
