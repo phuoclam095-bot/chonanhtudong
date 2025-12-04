@@ -147,58 +147,65 @@
         // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
         // -------------------------------------------------------------
 
-        async function handleExportClick(albumId, albumName) {
-            if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
-                return;
-            }
-            
-            const cardElement = document.getElementById(`card-${albumId}`);
-            if (cardElement) cardElement.style.opacity = 0.5;
+       async function handleExportClick(albumId, albumName) {
+    if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
+        return;
+    }
+    
+    const cardElement = document.getElementById(`card-${albumId}`);
+    if (cardElement) cardElement.style.opacity = 0.5;
 
-            const payload = {
-                folderId: albumId,
-                adminEmail: adminEmail, 
-                action: 'export_filenames_request'
-            };
+    const payload = {
+        folderId: albumId,
+        adminEmail: adminEmail, 
+        action: 'export_filenames_request'
+    };
 
-            try {
-                const response = await fetch(URL_EXPORT_FILENAMES, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+    try {
+        const response = await fetch(URL_EXPORT_FILENAMES, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-                // ⭐ ĐIỂM SỬA LỖI QUAN TRỌNG: Server phải trả về JSON đúng
-                const result = await response.json(); 
-
-                if (response.ok && result.file_names_for_copy) {
-                    
-                    const namesList = result.file_names_for_copy;
-                    const selectedCount = result.selected_photos || 'Không rõ';
-                    
-                    // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
-                    document.getElementById('modalAlbumName').innerText = albumName;
-                    document.getElementById('modalSelectedCount').innerText = selectedCount;
-                    // ⭐ GÁN CHUỖI TÊN FILE ĐÃ ĐƯỢC XỬ LÝ (Không phải cú pháp n8n) ⭐
-                    document.getElementById('fileNamesOutput').value = namesList; 
-
-                    // Mở Modal
-                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
-                    exportModal.show();
-
-                } else {
-                    // Nếu n8n trả về lỗi nhưng response.ok = true
-                    throw new Error(result.message || `Lỗi xuất file: Server không phản hồi thành công.`);
-                }
-
-            } catch (error) {
-                alert(`❌ Lỗi Xuất File: ${error.message}`);
-                console.error("Lỗi Export File:", error);
-            } finally {
-                if (cardElement) cardElement.style.opacity = 1;
-            }
+        if (!response.ok) {
+            // Xử lý lỗi HTTP (400, 500) trước khi cố gắng đọc JSON
+            throw new Error(`Lỗi HTTP: ${response.status}. Server n8n phản hồi không thành công.`);
         }
 
+        // ⭐ ĐIỂM SỬA LỖI: Đảm bảo Client đọc đúng JSON từ Response
+        const result = await response.json(); 
+
+        // Output của Node 4 là một MẢNG chứa 1 Item. Client chỉ cần xử lý Item đầu tiên.
+        // Giả sử Node 4 đang trả về mảng, ta lấy phần tử đầu tiên:
+        const finalResult = Array.isArray(result) ? result[0] : result;
+
+
+        if (finalResult && finalResult.file_names_for_copy) {
+            
+            const namesList = finalResult.file_names_for_copy;
+            const selectedCount = finalResult.selected_photos || 'Không rõ';
+            
+            // ⭐ GÁN GIÁ TRỊ VÀO MODAL ⭐
+            document.getElementById('modalAlbumName').innerText = albumName;
+            document.getElementById('modalSelectedCount').innerText = selectedCount;
+            document.getElementById('fileNamesOutput').value = namesList; // Gán chuỗi tên file
+
+            // Mở Modal
+            const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+            exportModal.show();
+
+        } else {
+            throw new Error(result.message || `Lỗi dữ liệu: Không tìm thấy trường 'file_names_for_copy' trong phản hồi.`);
+        }
+
+    } catch (error) {
+        alert(`❌ Lỗi Xuất File: ${error.message}`);
+        console.error("Lỗi Export File:", error);
+    } finally {
+        if (cardElement) cardElement.style.opacity = 1;
+    }
+}
         // -------------------------------------------------------------
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
