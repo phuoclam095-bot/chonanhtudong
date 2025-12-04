@@ -7,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* CSS styles (Giữ nguyên) */
         :root {
             --primary-green: #147a30;
             --bg-color: #1a1a1a;
@@ -21,7 +20,7 @@
             padding: 50px 0;
         }
         .donate-container {
-            max-width: 800px;
+            max-width: 900px; /* Tăng chiều rộng để chứa 2 cột */
             margin: auto;
             padding: 30px;
             background-color: var(--card-bg);
@@ -29,21 +28,33 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
         h1 { color: var(--primary-green); margin-bottom: 25px; }
-        .payment-method { margin-bottom: 25px; padding: 15px; border: 1px solid #444; border-radius: 8px; }
+        
+        /* ⭐ FLEXBOX CHO BỐ CỤC NGANG HÀNG ⭐ */
+        .payment-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .payment-method {
+            flex: 1 1 45%; /* Chia đều 2 cột */
+            min-width: 350px;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            text-align: center;
+        }
         .qr-placeholder {
-            width: 250px; /* Tăng kích thước để Mã QR rõ hơn */
-            height: 350px;
+            width: 200px; /* Kích thước Mã QR */
+            height: 200px;
             background-color: #fff;
-            margin: 15px auto;
-            border: 2px solid var(--primary-green);
+            margin: 15px auto 10px auto;
+            border: 2px solid #555;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            color: #333;
-            text-align: center;
         }
-        /* Đảm bảo hình ảnh QR lấp đầy placeholder */
         .qr-placeholder img {
             width: 100%;
             height: 100%;
@@ -55,37 +66,47 @@
     <div class="donate-container">
         <h1><i class="fas fa-hand-holding-heart me-2"></i> Ủng Hộ & Phát Triển Dịch Vụ</h1>
         
-        <p>Xin chào! Dịch vụ này được xây dựng và duy trì bởi Lâm Nam Phước để mang lại sự tiện lợi và tối ưu. Sự ủng hộ của bạn sẽ giúp chúng tôi duy trì server, cập nhật tính năng và đảm bảo dịch vụ hoạt động ổn định.</p>
+        <p>Sự ủng hộ của bạn, dù nhỏ bé, là nguồn động viên lớn để chúng tôi tiếp tục duy trì server và cập nhật dịch vụ.</p>
         
         <hr style="border-color: #444;">
 
         <h2>Chọn Phương Thức Ủng Hộ</h2>
 
-        <div class="payment-method">
-            <h3 style="color: #007bff;"><i class="fas fa-qrcode me-2"></i> Ngân Hàng / Quét Mã QR</h3>
+        <div class="payment-grid">
             
-            <p>Vui lòng sử dụng ứng dụng ngân hàng của bạn để quét Mã QR VietQR dưới đây. **Tên và Số tài khoản sẽ tự động hiển thị** trên ứng dụng ngân hàng khi bạn quét.</p>
-            
-            <div class="qr-placeholder">
-                <img src="https://i.ibb.co/Wvd77Ksc/image.png" alt="Mã QR Chuyển khoản VietQR">
+            <div class="payment-method">
+                <h3 style="color: #007bff;"><i class="fas fa-university me-2"></i> VIETCOMBANK</h3>
+                
+                <div class="qr-placeholder" style="border-color: #147a30;">
+                    <img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="Mã QR Vietcombank">
+                </div>
+
+                <p style="margin-bottom: 5px;">
+                    **Tên TK:** Lâm Nam Phước
+                </p>
+                <p>
+                    <small class="text-muted">Quét mã để chuyển khoản nhanh VCB.</small>
+                </p>
             </div>
 
-            <p style="text-align: center;">
-                **Ngân Hàng:** VIETCOMBANK (HOẶC TÊN NGÂN HÀNG CỦA BẠN) <br>
-                *(Chi tiết tài khoản sẽ xuất hiện sau khi quét)*
-            </p>
+            <div class="payment-method">
+                <h3 style="color: #a70050;"><i class="fas fa-wallet me-2"></i> MOMO (Ví Điện Tử)</h3>
+                
+                <div class="qr-placeholder" style="border-color: #a70050;">
+                    <img src="https://i.ibb.co/KcpC9SDZ/z7293550011447-068147b90f57249b505714f4a15ded27.jpg" alt="Mã QR Momo">
+                </div>
+                
+                <p style="margin-bottom: 5px;">
+                    **SĐT Nhận:** 0836484821
+                </p>
+                <p>
+                    <small class="text-muted">Quét mã để ủng hộ qua Momo.</small>
+                </p>
+            </div>
+            
         </div>
-
-        <div class="payment-method">
-            <h3 style="color: #e83e8c;"><i class="fas fa-mug-hot me-2"></i> Mua Cà Phê (Ví Điện Tử Khác)</h3>
-            <p>Nếu bạn muốn ủng hộ qua ví điện tử:</p>
-            <p>
-                **Momo Số:** 0836484821 <br>
-                *(Bạn có thể chèn thêm Mã QR Momo/ZaloPay tại đây nếu có)*
-            </p>
-        </div>
-
-        <p class="text-center mt-4">
+        
+        <p class="text-center mt-5">
             <i class="fas fa-heart" style="color: #dc3545;"></i> Chúng tôi xin chân thành cảm ơn mọi sự đóng góp.
         </p>
 
