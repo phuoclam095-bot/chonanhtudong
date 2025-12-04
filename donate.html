@@ -9,42 +9,64 @@
     <style>
         :root {
             --primary-green: #147a30;
+            --dark-green: #0e5a22; /* Thêm biến dark-green cho header */
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
-            --card-bg: #2a2a2a;
         }
         body {
             background-color: var(--bg-color);
-            /* THAY ĐỔI: Thêm hoa văn chấm bi */
             background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
             background-size: 60px 60px;
             color: var(--text-color);
             font-family: 'Segoe UI', sans-serif;
-            padding: 50px 0;
+            padding-top: 70px; /* Offset cho header fixed */
+            min-height: 100vh;
         }
+        
+        /* ⭐ HEADER CHUẨN TỪ MANAGA.HTML ⭐ */
+        .header {
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a, #userControl a.nav-link { 
+            color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; 
+        }
+        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
+        
+        /* ⭐ PHẦN NỀN CHÍNH (DONATE) ⭐ */
         .donate-container {
             max-width: 900px;
             margin: auto;
+            margin-top: 30px; 
             padding: 30px;
-            /* THAY ĐỔI: Thêm ảnh nền hấp dẫn */
+            /* Thêm ảnh nền hấp dẫn */
             background-image: url('https://images.unsplash.com/photo-1541416766465-9854737d2f9d?auto=format&fit=crop&w=1200&q=80'); 
             background-size: cover;
             background-position: center;
-            background-color: #0d1a21; /* Fallback color */
-            
+            background-color: #0d1a21; 
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-            
             color: #ffffff; 
         }
         h1 { 
             color: #51ff7d; 
             margin-bottom: 25px; 
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
-            /* ⭐ THAY ĐỔI: Căn giữa tiêu đề H1 ⭐ */
             text-align: center;
         }
         
+        /* ⭐ Cấu hình QR và Flexbox ⭐ */
         .payment-method {
             flex: 1 1 45%;
             min-width: 350px;
@@ -55,15 +77,13 @@
             background-color: rgba(10, 10, 10, 0.7); 
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        
         .payment-grid {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
             margin-top: 20px;
-            justify-content: center; /* Đảm bảo cả hai cột được căn giữa nếu tổng chiều rộng nhỏ hơn 900px */
+            justify-content: center;
         }
-        
         .qr-placeholder {
             width: 200px;
             height: 200px;
@@ -82,6 +102,29 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="logo"><i class="fas fa-chart-line"></i> Dashboard Quản Lý</div>
+        
+        <div class="nav-links">
+            <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album Mới</a>
+            <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
+            <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> 
+            <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a> 
+            
+            <div id="authControl">
+                <div id="userControl" class="dropdown" style="display: none;">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
+                        <li><a class="dropdown-item" href="managa.html"><i class="fas fa-folder-open"></i> Quản Lý Album</a></li> 
+                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="donate-container">
         <h1><i class="fas fa-hand-holding-heart me-2"></i> Ủng Hộ & Phát Triển Dịch Vụ</h1>
         
@@ -101,7 +144,7 @@
                 </div>
 
                 <p style="margin-bottom: 5px;">
-                    Tên TK: Lâm Nam Phước
+                    **Tên TK:** Lâm Nam Phước
                 </p>
                 <p>
                     <small class="text-white-50">Quét mã để chuyển khoản nhanh VCB.</small>
@@ -116,7 +159,7 @@
                 </div>
                 
                 <p style="margin-bottom: 5px;">
-                    SĐT Nhận: 0836484821
+                    **SĐT Nhận:** 0836484821
                 </p>
                 <p>
                     <small class="text-white-50">Quét mã để ủng hộ qua Momo.</small>
@@ -130,5 +173,34 @@
         </p>
 
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ⭐ LOGIC JAVASCRIPT TỐI THIỂU CHO NAVIGATION ⭐
+        const adminEmail = localStorage.getItem('admin_email');
+        const adminName = localStorage.getItem('admin_name') || 'Admin';
+        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
+        function updateHeaderUI() {
+            const userControl = document.getElementById('userControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (isLoggedIn) {
+                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
+                userControl.style.display = 'flex'; 
+            } else {
+                userControl.style.display = 'none'; // Ẩn nếu chưa đăng nhập
+            }
+        }
+        
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); 
+            window.location.href = 'admin.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', updateHeaderUI);
+    </script>
 </body>
 </html>
