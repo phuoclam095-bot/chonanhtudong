@@ -12,7 +12,8 @@
             --dark-green: #0e5a22;
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
-            --card-bg: #2a2a2a;
+            --card-bg-opacity: rgba(10, 10, 10, 0.8);
+            --highlight-yellow: #ffc107; /* Màu vàng nổi bật */
         }
         body {
             background-color: var(--bg-color);
@@ -20,7 +21,7 @@
             background-size: 60px 60px;
             color: var(--text-color);
             font-family: 'Segoe UI', sans-serif;
-            padding-top: 70px; /* Offset cho header fixed */
+            padding-top: 70px; 
             min-height: 100vh;
         }
         
@@ -38,12 +39,9 @@
             width: 100%;
             z-index: 1000;
         }
-        /* ⭐ ĐỔI TÊN DASHBOARD ⭐ */
         .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #authControl span { 
-            color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; 
-        }
+        .nav-links a, #authControl span { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
         .nav-links a:hover { background-color: var(--dark-green); }
         
         /* ⭐ PHẦN NỘI DUNG CHÍNH (CONTACT) ⭐ */
@@ -52,20 +50,19 @@
             margin: auto;
             margin-top: 30px; 
             padding: 40px;
-            /* ⭐ NỀN ĐẸP NỔI BẬT ⭐ */
-            background-image: url('https://images.unsplash.com/photo-1541416766465-9854737d2f9d?auto=format&fit=crop&w=800&q=80'); 
-            background-size: cover;
-            background-position: center;
-            background-color: #0d1a21; 
+            
+            /* ⭐ NỀN GRADIENT MỚI ⭐ */
+            background: linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 100%);
+            
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
             text-align: center;
         }
         h1 { 
             color: var(--primary-green); 
             margin-bottom: 30px; 
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(81, 255, 125, 0.8); 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
         .contact-item {
             margin-bottom: 20px; 
@@ -77,10 +74,10 @@
             display: flex; 
             align-items: center;
             /* Nền mờ cho item */
-            background-color: rgba(10, 10, 10, 0.8); 
+            background-color: rgba(30, 30, 30, 0.9); 
         }
         .contact-item:hover {
-            background-color: rgba(10, 10, 10, 0.95);
+            background-color: rgba(40, 40, 40, 0.95);
         }
         .contact-icon {
             font-size: 24px;
@@ -102,6 +99,14 @@
         }
         .contact-details a:hover {
             text-decoration: underline;
+        }
+        
+        /* ⭐ CHỮ THỜI GIAN NỔI BẬT ⭐ */
+        .support-time {
+            color: var(--highlight-yellow);
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -136,12 +141,11 @@
             <div class="contact-details">
                 <strong>Facebook Messenger</strong>
                 <a href="https://m.me/lamnamphuoc95" target="_blank">Nhắn tin ngay với Lâm Nam Phước</a>
-                <small class="text-muted d-block">ID: 100003243936400</small>
             </div>
         </div>
         
         <div class="contact-item">
-            <div class="contact-icon" style="color: #007bff;"><i class="fas fa-comment-dots"></i></div> 
+            <div class="contact-icon" style="color: #007bff;"><i class="fab fa-telegram-plane"></i></div> 
             <div class="contact-details">
                 <strong>Hỗ Trợ Nhanh (Zalo)</strong>
                 <a href="https://zalo.me/0879029170" target="_blank">Nhắn Zalo: 0879 029 170</a>
@@ -164,7 +168,7 @@
             </div>
         </div>
         
-        <p class="text-muted mt-4">
+        <p class="support-time">
             Thời gian phản hồi thông thường: 8:00 AM - 10:00 PM hàng ngày.
         </p>
 
@@ -185,7 +189,7 @@
                 userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
                 authControl.style.display = 'flex'; 
             } else {
-                authControl.innerHTML = '<a href="admin.html" class="nav-link">Đăng Nhập</a>'; // Thay thế bằng link đăng nhập nếu không có tài khoản
+                authControl.style.display = 'none';
             }
         }
         
