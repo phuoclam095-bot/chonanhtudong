@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý - Dashboard</title>
+    <title>Quản Lý - Album</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -167,61 +167,71 @@
         // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
         // -------------------------------------------------------------
 
-        async function handleExportClick(albumId, albumName) {
+       async function handleExportClick(albumId, albumName) {
             if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
                 return;
             }
             
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
-
+        
             const payload = {
                 folderId: albumId,
                 adminEmail: adminEmail, 
                 action: 'export_filenames_request'
             };
-
+        
             try {
                 const response = await fetch(URL_EXPORT_FILENAMES, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
+        
                 if (!response.ok) {
                     throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
                 }
                 
-                const result = await response.json();
-                
-                const finalResult = Array.isArray(result) ? result[0] : result;
-
-                if (finalResult && finalResult.file_names_for_copy) {
+                // ⭐ ĐIỂM SỬA LỖI: Đọc phản hồi dưới dạng TEXT để tránh lỗi parse JSON/Binary ⭐
+                const responseText = await response.text(); 
+                let finalResult = {};
+        
+                try {
+                    // 1. Thử parse phản hồi JSON
+                    finalResult = JSON.parse(responseText);
+                } catch (e) {
+                    // 2. Nếu không phải JSON hợp lệ (ví dụ: là file TXT), ném lỗi để hiển thị thông báo chung
+                    throw new Error(`[Lỗi Dữ liệu] Phản hồi không phải JSON hợp lệ: ${responseText.substring(0, 50)}...`);
+                }
+        
+                // Lấy Item chính xác
+                const resultData = Array.isArray(finalResult) ? finalResult[0] : finalResult;
+        
+                if (resultData && resultData.file_names_for_copy) {
                     
-                    const namesList = finalResult.file_names_for_copy;
-                    const selectedCount = finalResult.selected_photos || 'Không rõ';
+                    const namesList = resultData.file_names_for_copy;
+                    const selectedCount = resultData.selected_photos || 'Không rõ';
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
                     document.getElementById('fileNamesOutput').value = namesList; 
-
+        
                     // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
-
+        
                 } else {
-                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
+                    throw new Error(`Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
-
+        
             } catch (error) {
-                alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
-                console.error("Lỗi Export File (Ẩn):", error);
+                // Lỗi bị bắt và hiển thị
+                alert(`❌ LỖI XUẤT FILE! Chi tiết: ${error.message}`);
+                console.error("Lỗi Export File:", error);
             } finally {
                 if (cardElement) cardElement.style.opacity = 1;
             }
-        }
-
         // -------------------------------------------------------------
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
