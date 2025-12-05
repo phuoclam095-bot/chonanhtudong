@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Album - Dashboard</title>
+    <title>a- Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -47,6 +47,8 @@
         .nav-links { display: flex; align-items: center; gap: 15px; }
         .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
         .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
+        /* Thêm style cho User/Logout khi không còn là dropdown */
+        #userInfoDisplay { display: flex; align-items: center; gap: 10px; }
 
         /* ALBUM GRID */
         .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
@@ -85,13 +87,12 @@
             <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
             
             <div id="authControl">
-                <div id="userControl" class="dropdown" style="display: none;">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
+                <div id="userInfoDisplay" style="display: none;">
+                    <span id="userEmailDisplay" class="nav-link" style="color: white; padding: 5px 0;">Admin</span> 
+                    
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link" title="Đăng Xuất">
+                        <i class="fas fa-sign-out-alt"></i> 
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
-                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -149,34 +150,6 @@
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         // -------------------------------------------------------------
-        // HÀM XỬ LÝ ĐĂNG XUẤT VÀ HIỂN THỊ TÊN NGƯỜI DÙNG
-        // -------------------------------------------------------------
-        
-        function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
-            // Sau khi xóa token, chuyển hướng về trang đăng nhập
-            window.location.href = 'admin.html'; 
-        }
-
-        function updateHeaderUI() {
-            const userControl = document.getElementById('userControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (isLoggedIn) {
-                // Hiển thị TÊN hoặc EMAIL đã lưu trong localStorage
-                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                userControl.style.display = 'flex'; // Hiển thị Dropdown
-            } else {
-                // Chuyển hướng nếu chưa đăng nhập (hoặc ẩn dropdown)
-                userControl.style.display = 'none'; 
-                window.location.href = 'admin.html'; // Tùy chọn: Chuyển hướng ngay nếu chưa đăng nhập
-            }
-        }
-        
-        // -------------------------------------------------------------
         // HÀM XỬ LÝ SAO CHÉP TRONG MODAL
         // -------------------------------------------------------------
         function copyFileNames() {
@@ -221,42 +194,36 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`[Technical Error: HTTP ${response.status}]`);
+                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
                 }
                 
                 const result = await response.json();
                 
-                // Lấy Item JSON chính xác (đã có status từ Node Set)
                 const finalResult = Array.isArray(result) ? result[0] : result;
 
-                // CẬP NHẬT TÊN TRƯỜNG CHO DỮ LIỆU TỪ N8N (Dựa trên cấu trúc mới của bạn)
+                // Dùng tên trường cũ (fileNamesForCopy/selectedPhotos) hoặc tên trường mới (file_names_for_copy/selected_photos)
                 const fileNamesKey = finalResult.file_names_for_copy || finalResult.fileNamesForCopy;
                 const selectedPhotosKey = finalResult.selected_photos || finalResult.selectedPhotos;
-
-
+                
                 if (fileNamesKey) { 
                     
                     const namesList = fileNamesKey; 
                     const selectedCount = selectedPhotosKey || 'Không rõ'; 
                     
-                    // Kiểm tra trường status nếu có (từ Node Set)
-                    if (finalResult.status && finalResult.status !== 'success') {
-                         throw new Error(`Lỗi từ Server n8n: ${finalResult.message || 'Không thành công'}`);
-                    }
-                    
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
-                    document.getElementById('fileNamesOutput').value = namesList.trim().replace(/ ,/g, ','); 
+                    document.getElementById('fileNamesOutput').value = namesList; 
 
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
 
                 } else {
-                    throw new Error(finalResult.message || `Lỗi dữ liệu: Server không trả về danh sách file hợp lệ.`);
+                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
 
             } catch (error) {
+                // Ẩn lỗi hệ thống, chỉ hiển thị thông báo thân thiện
                 alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
                 console.error("Lỗi Export File (Ẩn):", error);
             } finally {
@@ -265,7 +232,7 @@
         }
 
         // -------------------------------------------------------------
-        // HÀM XỬ LÝ XÓA ALBUM
+        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
         
         async function deleteAlbum(albumId, albumName) {
@@ -303,7 +270,7 @@
         }
 
         // -------------------------------------------------------------
-        // HÀM TẠO CARD HTML
+        // HÀM TẠO CARD HTML (Đảm bảo gọi hàm Export an toàn)
         // -------------------------------------------------------------
         
         function createAlbumCard(album) {
