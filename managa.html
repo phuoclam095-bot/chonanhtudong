@@ -63,12 +63,20 @@
         .bg-new { background: #0d6efd; color: white; } 
         .bg-expired { background: #dc3545; color: white; } 
 
-        /* USER INFO */
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
+        
+        /* LICENSE ALERT */
         .license-alert { 
             background-color: #f8d7da; color: #842029; border-color: #f5c6cb;
             border-radius: 15px; padding: 15px 25px; margin-bottom: 25px;
             font-size: 1.05rem; display: flex; align-items: center; gap: 15px;
+        }
+        .license-alert a { color: #842029; font-weight: 800; text-decoration: underline; }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 20px 15px; }
+            #albumGrid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -91,7 +99,7 @@
                     <li class="nav-item"><a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
                 </ul>
 
-                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3">
+                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
                     <div id="userEmailDisplay" class="d-flex align-items-center text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
                         <i class="fas fa-user-circle me-2"></i> Admin
                     </div>
@@ -195,10 +203,12 @@
                 // Xác định trạng thái hiển thị
                 let badgeClass = 'bg-expired';
                 let badgeText = 'EXPIRED';
+                let expiryDateText = '';
 
                 if (isPremiumUser) {
                     badgeClass = 'bg-active';
                     badgeText = 'ACTIVE';
+                    expiryDateText = `(Hạn: ${new Date(parseInt(expiry)).toLocaleDateString('vi-VN')})`;
                 } else if (status === 'new') {
                     badgeClass = 'bg-new';
                     badgeText = 'NEW';
@@ -207,12 +217,6 @@
                 let badge = `<span class="status-pill ${badgeClass}">${badgeText}</span>`;
                 let imgTag = avatar ? `<img src="${avatar}" class="user-avatar me-2">` : `<i class="fas fa-user-circle me-2"></i>`;
                 
-                // Hiển thị ngày hết hạn nếu còn hạn (cho phép debug)
-                let expiryDateText = '';
-                if (isPremiumUser) {
-                    expiryDateText = `(Hạn: ${new Date(parseInt(expiry)).toLocaleDateString('vi-VN')})`;
-                }
-
                 userEmailDisplay.innerHTML = `${imgTag} ${name} ${badge} <span style="font-size: 0.7em; margin-left: 5px;">${expiryDateText}</span>`;
                 authControl.style.display = 'flex'; 
             } else {
@@ -222,7 +226,45 @@
         }
 
         async function loadAlbums() {
-            // Logic tải albums giữ nguyên
+            const albumGrid = document.getElementById('albumGrid');
+            const albumCount = document.getElementById('albumCount');
+            
+            // ✅ Đảm bảo chỉ chạy khi có email (đã login)
+            if (!isLoggedIn || !adminEmail) {
+                albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Vui lòng Đăng nhập lại để tải album.</div>';
+                return;
+            }
+
+            try {
+                // Hiển thị loading message
+                albumGrid.innerHTML = `<div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
+                </div>`;
+                
+                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
+                    method: 'GET', headers: { 'Accept': 'application/json' } 
+                });
+
+                if (!response.ok) throw new Error(`Lỗi tải dữ liệu`);
+                const rawData = await response.json();
+                const albums = Array.isArray(rawData) ? rawData : []; 
+
+                albumGrid.innerHTML = ''; 
+                if (albums.length === 0) {
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Bạn chưa có album nào.</div>';
+                    albumCount.innerText = 0;
+                    return;
+                }
+
+                albums.forEach(album => {
+                    const card = createAlbumCard(album);
+                    albumGrid.appendChild(card);
+                });
+                albumCount.innerText = albums.length;
+
+            } catch (error) {
+                albumGrid.innerHTML = `<div class="alert alert-danger text-center w-100">Lỗi tải dữ liệu: ${error.message}</div>`;
+            }
         }
 
         function createAlbumCard(album) {
