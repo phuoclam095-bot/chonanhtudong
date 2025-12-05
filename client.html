@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chọn Ảnh - V18.3</title>
+    <title>Chọn Ảnh - V18.4</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
             --bg-dark: #121212;
             --text-light: #f0f0f0;
             --selected-border: #0d6efd;
-            --header-height: 60px; /* Chiều cao Header cố định */
+            --header-height: 60px;
             --footer-height: 70px;
         }
 
@@ -24,7 +24,7 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             font-family: 'Nunito', sans-serif;
-            height: 100vh;
+            height: 100dvh; /* Sử dụng dvh để chuẩn trên mobile browser */
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -32,13 +32,13 @@
             margin: 0;
         }
 
-        /* --- 1. HEADER (LUÔN HIỂN THỊ TRÊN CÙNG) --- */
+        /* --- 1. HEADER --- */
         .navbar {
             height: var(--header-height);
             background: var(--primary-green);
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             flex-shrink: 0;
-            z-index: 3000; /* ⭐ Z-INDEX CAO NHẤT ĐỂ KHÔNG BỊ CHE ⭐ */
+            z-index: 3000;
             padding: 0 10px;
             display: flex;
             justify-content: space-between;
@@ -56,7 +56,6 @@
             color: white;
         }
 
-        /* Nút chuyển chế độ xem */
         .view-switcher {
             background: rgba(0,0,0,0.2);
             border-radius: 50px;
@@ -64,25 +63,19 @@
             display: flex;
         }
         .view-btn {
-            border: none;
-            background: transparent;
-            color: rgba(255,255,255,0.7);
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 700;
+            border: none; background: transparent; color: rgba(255,255,255,0.7);
+            padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
             transition: all 0.2s;
         }
         .view-btn.active {
-            background: var(--accent-gold);
-            color: #000;
+            background: var(--accent-gold); color: #000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* --- 2. MAIN CONTAINER (CHỨA NỘI DUNG) --- */
+        /* --- 2. MAIN CONTAINER --- */
         .main-container {
             flex: 1;
-            position: relative; /* Quan trọng để con tuyệt đối bám theo */
+            position: relative;
             overflow: hidden;
             background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
             background-size: 40px 40px;
@@ -99,89 +92,67 @@
             grid-template-columns: repeat(2, 1fr); 
             gap: 10px; 
             align-content: start;
-            padding-bottom: 80px; /* Tránh bị che bởi footer */
+            padding-bottom: 85px; /* Tăng khoảng trống để không bị Bottom Bar che */
         }
-        
         @media (min-width: 576px) { #photoGrid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
         @media (min-width: 992px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 15px; } }
 
-        /* Khung ảnh vuông tuyệt đối */
         .grid-item {
-            position: relative;
-            width: 100%;
-            padding-bottom: 100%; 
-            height: 0;
-            background: #2a2a2a;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: transform 0.1s;
+            position: relative; width: 100%; padding-bottom: 100%; height: 0;
+            background: #2a2a2a; border-radius: 8px; overflow: hidden; cursor: pointer;
+            border: 3px solid transparent; transition: transform 0.1s;
         }
-
         .grid-item img {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; object-fit: cover; display: block;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; display: block;
         }
-
         .grid-item.focused { border-color: var(--accent-gold); transform: scale(0.96); z-index: 2; }
         .grid-item.selected { border-color: var(--selected-border); }
         .grid-item.selected img { opacity: 0.7; }
         
         .grid-dot {
-            position: absolute; top: 5px; right: 5px;
-            width: 24px; height: 24px;
-            background: var(--accent-gold); color: #000;
-            border-radius: 50%; font-size: 12px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            z-index: 5;
+            position: absolute; top: 5px; right: 5px; width: 24px; height: 24px;
+            background: var(--accent-gold); color: #000; border-radius: 50%;
+            font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;
         }
 
-        /* === VIEWER MODE (ĐÃ SỬA ĐỂ KHÔNG CHE HEADER) === */
+        /* === VIEWER MODE === */
         #photoViewer {
-            /* Thay đổi quan trọng: Nằm trong main-container, không full body */
-            position: absolute; 
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: none;
-            flex-direction: column;
-            background: #000;
-            z-index: 100; /* Thấp hơn Header */
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: none; flex-direction: column; background: #000; z-index: 100;
+        }
+
+        /* Nút Đóng */
+        .btn-close-viewer {
+            position: absolute; top: 20px; right: 20px; z-index: 3000;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3); color: white;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.2rem;
         }
 
         .stage {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            flex: 1; position: relative; display: flex;
+            align-items: center; justify-content: center; overflow: hidden;
         }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         #drawCanvas {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             touch-action: none; z-index: 10; pointer-events: none;
         }
         #drawCanvas.drawing { pointer-events: auto; cursor: crosshair; }
 
-        .nav-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(255,255,255,0.1); border: none; color: white;
-            padding: 20px 15px; font-size: 1.5rem; z-index: 20; cursor: pointer;
-        }
-        .nav-prev { left: 0; } .nav-next { right: 0; }
-
+        /* Strip Thumbnails */
         .strip {
-            height: 80px;
-            background: rgba(20, 20, 20, 0.95);
+            height: 80px; background: rgba(20, 20, 20, 0.95);
             display: flex; align-items: center; padding: 0 10px; gap: 8px;
             overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333;
         }
         .th {
-            height: 60px; width: 60px; border-radius: 6px;
-            opacity: 0.4; border: 2px solid transparent;
-            flex-shrink: 0; overflow: hidden; cursor: pointer; 
+            height: 60px; width: 60px; border-radius: 6px; opacity: 0.4;
+            border: 2px solid transparent; flex-shrink: 0; overflow: hidden; cursor: pointer; 
         }
         .th img { width: 100%; height: 100%; object-fit: cover; }
         .th.act { opacity: 1; border-color: var(--accent-gold); transform: scale(1.1); }
@@ -210,18 +181,19 @@
             cursor: pointer;
         }
 
-        /* --- 3. BOTTOM BAR (CỐ ĐỊNH) --- */
+        /* --- 3. BOTTOM BAR (CỐ ĐỊNH, Z-INDEX CAO) --- */
         .bottom-bar {
             height: var(--footer-height);
-            background: rgba(30, 30, 30, 0.95);
+            background: rgba(30, 30, 30, 0.98);
             backdrop-filter: blur(10px);
             border-top: 1px solid #444;
             padding: 0 15px;
-            display: flex;
+            display: flex; /* Mặc định là flex */
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            z-index: 2000; /* Cao nhì sau header */
+            z-index: 2000;
+            position: relative; /* Đảm bảo nó nằm trong flow flex của body */
         }
 
         .info-area { display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem; max-width: 45%; }
@@ -268,6 +240,10 @@
                 <i class="fas fa-arrow-left"></i>
             </div>
 
+            <div class="btn-close-viewer" onclick="setView('grid')">
+                <i class="fas fa-times"></i>
+            </div>
+
             <div class="tools" id="tools">
                 <button class="t-btn act" onclick="setPen()"><i class="fas fa-pencil-alt"></i></button>
                 <button class="t-btn" onclick="cls()"><i class="fas fa-eraser"></i></button>
@@ -276,19 +252,17 @@
             </div>
 
             <div class="stage">
-                <button class="nav-btn nav-prev" onclick="mov(-1)"><i class="fas fa-chevron-left"></i></button>
                 <div style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
                     <img id="mainImg" src="">
                     <canvas id="drawCanvas"></canvas>
                 </div>
-                <button class="nav-btn nav-next" onclick="mov(1)"><i class="fas fa-chevron-right"></i></button>
             </div>
 
             <div class="strip" id="strip"></div>
         </div>
     </div>
 
-    <div class="bottom-bar">
+    <div class="bottom-bar" id="commonCtrlBar">
         <div class="info-area">
             <div class="info-name" id="pName">Chọn ảnh...</div>
             <div class="info-count" id="pCount">0 / 0</div>
@@ -309,9 +283,8 @@
     </div>
 
     <script>
-        // Check cache
-        if (localStorage.getItem('layout_version') !== 'V18.3') {
-            console.log('Update to V18.3');
+        if (localStorage.getItem('layout_version') !== 'V18.4') {
+            console.log('Update to V18.4');
         }
 
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
@@ -330,7 +303,6 @@
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
 
-        // --- CORE VIEW SWITCH ---
         function setView(view) {
             currentView = view;
             const gridEl = document.getElementById('photoGrid');
@@ -338,6 +310,7 @@
             const btnGrid = document.getElementById('btnGrid');
             const btnViewer = document.getElementById('btnViewer');
             const btnDraw = document.getElementById('btnDraw');
+            const bottomBar = document.querySelector('.bottom-bar');
 
             if (view === 'grid') {
                 gridEl.style.display = 'grid';
@@ -345,7 +318,11 @@
                 
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
+                
                 btnDraw.style.display = 'none';
+                
+                // ⭐ QUAN TRỌNG: BẮT BUỘC HIỂN THỊ LẠI BOTTOM BAR ⭐
+                bottomBar.style.display = 'flex'; 
                 
                 capNhatSoThuTuVaTổngSố(); 
                 
@@ -381,7 +358,6 @@
                     let thumb = getLink(p.id, 's500'); 
                     d.innerHTML = `<img src="${thumb}" loading="lazy">`;
                     
-                    // Click: Focus
                     d.onclick = () => { 
                         document.querySelectorAll('.grid-item').forEach(x => x.classList.remove('focused'));
                         d.classList.add('focused');
@@ -389,14 +365,12 @@
                         updateBottomInfo(); 
                     };
                     
-                    // Double Click: Open Viewer
                     d.ondblclick = () => { cur = i; setView('viewer'); };
                     
                     grid.appendChild(d);
                 });
             }
             
-            // Update class Grid
             Array.from(grid.children).forEach((d, i) => {
                 let p = photos[i];
                 let isSel = selectedPhotoIds.includes(p.id);
@@ -435,7 +409,6 @@
             updateBottomInfo();
         }
 
-        // ⭐ HÀM UPDATE INFO (SỬA LỖI UNDEFINED) ⭐
         function updateBottomInfo() {
             const pName = document.getElementById('pName');
             const pCount = document.getElementById('pCount');
@@ -446,7 +419,6 @@
                 let p = photos[cur];
                 let isSel = selectedPhotoIds.includes(p.id);
                 
-                // FALLBACK NAME: Tìm trường name hợp lệ
                 let safeName = p.name || p.fileName || p.originalFilename || `Ảnh #${cur + 1}`;
                 
                 pName.innerText = safeName;
@@ -466,7 +438,7 @@
 
         async function init() {
             try {
-                localStorage.setItem('layout_version', 'V18.3');
+                localStorage.setItem('layout_version', 'V18.4');
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
@@ -542,6 +514,11 @@
             document.getElementById('tools').classList.toggle('active', en);
             cvs.style.pointerEvents = en ? 'auto' : 'none';
             document.getElementById('drawCanvas').classList.toggle('drawing', en);
+            const bottomBar = document.querySelector('.bottom-bar');
+            
+            // Ẩn/Hiện thanh dưới khi vẽ
+            bottomBar.style.display = en ? 'none' : 'flex'; 
+
             if(en) {
                 if(!ctx) ctx=cvs.getContext('2d');
                 ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round';
@@ -571,7 +548,7 @@
             if(!confirm("Lưu ghi chú?")) return;
             cvs.toBlob(async function(blob) {
                 let fd=new FormData();
-                let fileName = photos[cur].name || photos[cur].fileName || `Photo_${photos[cur].id}`; // Sửa lỗi tên file
+                let fileName = photos[cur].name || photos[cur].fileName || `Photo_${photos[cur].id}`; 
                 fd.append('file', blob, `Ve_${fid}_${fileName}.png`);
                 fd.append('photoId', photos[cur].id);
                 try {
