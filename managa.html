@@ -10,30 +10,20 @@
     
     <style>
         :root {
-            --primary-green: #147a30; 
-            --dark-green: #0e5a22;
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --card-bg: rgba(255, 255, 255, 0.98);
-            --accent-color: #51ff7d;
+            --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a;
+            --text-color: #f0f0f0; --card-bg: rgba(255, 255, 255, 0.98); --accent-color: #51ff7d;
         }
 
         body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
-            color: var(--text-color);
-            font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
-            padding-top: 80px;
+            background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
+            background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color);
+            font-family: 'Nunito', sans-serif; min-height: 100vh; padding-top: 80px;
         }
         
         /* NAVBAR */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
-        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: all 0.3s; border-radius: 8px; }
-        .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2); color: #fff !important; transform: translateY(-2px); }
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; transition: all 0.3s; border-radius: 8px; }
         
         /* DASHBOARD CONTENT */
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
@@ -41,10 +31,7 @@
 
         /* ALBUM GRID */
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 35px; padding-bottom: 50px; }
-        .album-card { 
-            background: var(--card-bg); color: #333; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); transition: all 0.3s; display: flex; flex-direction: column; 
-        }
+        .album-card { background: var(--card-bg); color: #333; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); transition: all 0.3s; display: flex; flex-direction: column; }
         .album-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); }
 
         .album-card-header { height: 220px; background-size: cover; background-position: center; position: relative; }
@@ -76,27 +63,16 @@
 
         /* STATUS BADGE */
         .status-pill { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; }
-        .bg-pro { background: #ffd700; color: #000; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
-        .bg-expired { background: #dc3545; color: white; }
-        .bg-new { background: #0d6efd; color: white; } /* Màu xanh dương cho người mới */
+        .bg-active { background: #198754; color: white; box-shadow: 0 0 10px rgba(25, 135, 84, 0.5); }
+        .bg-new { background: #0d6efd; color: white; } 
+        .bg-expired { background: #dc3545; color: white; } 
 
-        /* USER INFO */
+        /* USER INFO & ALERT */
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
-        .user-info-mobile { display: flex; align-items: center; gap: 10px; }
-        
-        /* LICENSE ALERT */
         .license-alert { 
             background-color: #f8d7da; color: #842029; border-color: #f5c6cb;
             border-radius: 15px; padding: 15px 25px; margin-bottom: 25px;
             font-size: 1.05rem; display: flex; align-items: center; gap: 15px;
-        }
-        .license-alert a { color: #842029; font-weight: 800; text-decoration: underline; }
-        
-        /* Mobile */
-        @media (max-width: 768px) {
-            .dashboard-container { padding: 20px 15px; }
-            #albumGrid { grid-template-columns: 1fr; }
-            .user-info-mobile { margin-top: 15px; justify-content: flex-end; }
         }
     </style>
 </head>
@@ -180,33 +156,28 @@
         const adminEmail = localStorage.getItem('admin_email');
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
-        // ✅ LOGIC KIỂM TRA BẢN QUYỀN VÀ TRẠNG THÁI (Lấy từ LocalStorage)
         let isPremiumUser = false;
 
         function checkLicense() {
-            const status = localStorage.getItem('admin_status') || 'new'; // 'new', 'active', 'expired'
-            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0; // Timestamp (milliseconds)
+            const status = localStorage.getItem('admin_status') || 'new'; 
+            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0; 
             const now = Date.now();
 
             const licenseAlert = document.getElementById('licenseAlert');
             const alertMessage = document.getElementById('alertMessage');
             
-            // Mặc định là không có quyền
             isPremiumUser = false;
             licenseAlert.style.display = 'none';
 
             if (isLoggedIn) {
-                if (status === 'new') {
-                    // Người mới chưa kích hoạt (status='new' và expiry=0)
+                if (status === 'active' && expiry > now) {
+                    isPremiumUser = true;
+                } 
+                else if (status === 'new') {
                     alertMessage.innerHTML = `<strong>Tài khoản MỚI.</strong> Vui lòng <a href="lienhe.html">Liên Hệ Admin</a> để kích hoạt dùng thử.`;
                     licenseAlert.style.display = 'flex';
                 } 
-                else if (status === 'active' && expiry > now) {
-                    // Đã kích hoạt và còn hạn
-                    isPremiumUser = true;
-                } 
                 else {
-                    // Hết hạn (expiry <= now)
                     alertMessage.innerHTML = `<strong>Tài khoản đã HẾT HẠN.</strong> Vui lòng <a href="donate.html">Gia Hạn</a> để tiếp tục sử dụng tính năng quản lý.`;
                     licenseAlert.style.display = 'flex';
                 }
@@ -217,44 +188,54 @@
             const authControl = document.getElementById('authControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             
+            checkLicense();
+
             if (isLoggedIn) {
                 const name = localStorage.getItem('admin_name') || 'Admin';
                 const avatar = localStorage.getItem('admin_avatar');
                 const status = localStorage.getItem('admin_status') || 'new';
+                const expiry = localStorage.getItem('admin_expiry') || '0';
 
-                // Badge trạng thái
-                let badgeClass = 'bg-free';
-                let badgeText = 'FREE';
+                // Xác định trạng thái hiển thị
+                let badgeClass = 'bg-expired';
+                let badgeText = 'EXPIRED';
+                let expiryDateText = '';
 
                 if (isPremiumUser) {
-                    badgeClass = 'bg-pro';
-                    badgeText = 'PRO';
+                    badgeClass = 'bg-active';
+                    badgeText = 'ACTIVE';
+                    expiryDateText = `(Hạn: ${new Date(parseInt(expiry)).toLocaleDateString('vi-VN')})`;
                 } else if (status === 'new') {
                     badgeClass = 'bg-new';
-                    badgeText = 'MỚI';
-                } else if (status === 'active') { // Active but expired
-                    badgeClass = 'bg-expired';
-                    badgeText = 'HẾT HẠN';
+                    badgeText = 'NEW';
                 }
-
+                
                 let badge = `<span class="status-pill ${badgeClass}">${badgeText}</span>`;
                 let imgTag = avatar ? `<img src="${avatar}" class="user-avatar me-2">` : `<i class="fas fa-user-circle me-2"></i>`;
                 
-                userEmailDisplay.innerHTML = `${imgTag} ${name} ${badge}`;
+                userEmailDisplay.innerHTML = `${imgTag} ${name} ${badge} <span style="font-size: 0.7em; margin-left: 5px;">${expiryDateText}</span>`;
                 authControl.style.display = 'flex'; 
             } else {
                 authControl.style.display = 'none';
-                window.location.href = 'admin.html'; 
+                window.location.href = 'admin.html';
             }
         }
-
-        // --- CÁC HÀM TẢI VÀ XỬ LÝ ALBUM ---
 
         async function loadAlbums() {
             const albumGrid = document.getElementById('albumGrid');
             const albumCount = document.getElementById('albumCount');
             
+            if (!isLoggedIn || !adminEmail) {
+                albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Vui lòng Đăng nhập lại để tải album.</div>';
+                return;
+            }
+
             try {
+                // Hiển thị loading message
+                albumGrid.innerHTML = `<div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
+                </div>`;
+                
                 const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
                     method: 'GET', headers: { 'Accept': 'application/json' } 
                 });
@@ -292,7 +273,6 @@
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
-            // ✅ LOGIC KHÓA NÚT DỰA TRÊN isPremiumUser
             const lockAttr = isPremiumUser ? '' : 'disabled title="Vui lòng nâng cấp tài khoản"';
             const lockIcon = isPremiumUser ? '' : '<i class="fas fa-lock me-1"></i>';
 
@@ -322,27 +302,22 @@
             return card;
         }
 
-        // --- CÁC HÀM XỬ LÝ CHỨC NĂNG ---
         async function handleExportClick(albumId, albumName) {
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`Xuất danh sách file của "${albumName}"?`)) return;
-            
-            // Logic Export API Call goes here (using URL_EXPORT_FILENAMES)
             alert("Đang xử lý xuất file (Demo)... Kết nối API Export của bạn ở đây.");
         }
 
         async function deleteAlbum(albumId, albumName) {
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`XÓA VĨNH VIỄN album "${albumName}"?`)) return;
-            
-            // Logic Delete API Call goes here (using URL_DELETE_ALBUM)
             alert("Đang xử lý xóa album (Demo)... Kết nối API Delete của bạn ở đây.");
         }
 
         function copyFileNames() {
             const textarea = document.getElementById('fileNamesOutput');
             const namesList = textarea.value.split(',').map(name => name.trim()).filter(name => name.length > 0).join('\n');
-            textarea.value = namesList; // Format before copy
+            textarea.value = namesList; 
             navigator.clipboard.writeText(namesList).then(() => alert('✅ Đã sao chép!'));
         }
 
@@ -351,9 +326,8 @@
             window.location.href = 'admin.html';
         }
 
-        // INIT
         document.addEventListener('DOMContentLoaded', () => {
-            checkLicense();
+            checkLicense(); 
             updateHeaderUI();
             loadAlbums();
         });
