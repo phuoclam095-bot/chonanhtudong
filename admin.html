@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo - ADMIN</title>
+    <title>Tạo Album Ảnh - ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN CSS GIAO DIỆN ĐẸP */
+        /* CSS GIỮ NGUYÊN */
         :root { 
             --primary-green: #147a30; --dark-green: #0e5a22; 
-            --bg-color: #1a1a1a; --text-color: #f0f0f0; 
+            --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d;
         }
         body { 
             margin: 0; padding: 0; font-family: 'Nunito', sans-serif; 
@@ -24,31 +24,24 @@
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: all 0.3s; border-radius: 8px; }
-        .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2); color: #fff !important; }
+        .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2); color: #fff !important; transform: translateY(-2px); }
+        .navbar-toggler { border: none; color: white; padding: 0.5rem; }
+        .navbar-toggler:focus { box-shadow: none; outline: 2px solid var(--accent-color); }
         
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
         h2 { text-align: center; margin-bottom: 30px; font-weight: 800; color: var(--primary-green); }
         
-        /* Elements */
         .form-group { margin-bottom: 25px; }
         label { display: block; margin-bottom: 10px; font-weight: 700; color: #444; }
         input[type="text"] { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; transition: 0.3s; }
         input:focus { border-color: var(--primary-green); outline: none; }
         
-        /* Preview & Link Box */
         .preview-box { border: 2px dashed #c3e6cb; background-color: #f0fff4; padding: 20px; border-radius: 12px; margin-bottom: 25px; display: none; }
         #finalLinkBox { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; padding: 15px; border-radius: 10px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         #finalLinkBox a { color: white; text-decoration: underline; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
         .btn-copy-link { background: #fff; color: var(--primary-green); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 700; }
 
-        /* Nút Tạo */
-        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; display: flex; justify-content: center; gap: 10px; }
-        .btn-create:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(20, 122, 48, 0.4); }
-        /* Style cho nút bị khóa */
-        .btn-create:disabled { background: #6c757d; cursor: not-allowed; opacity: 0.8; box-shadow: none; transform: none; }
-        
-        /* Switches */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
         .switch-label { display: flex; gap: 10px; font-weight: 600; cursor: pointer; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
@@ -57,25 +50,29 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
+        
+        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; box-shadow: 0 10px 20px rgba(20, 122, 48, 0.3); }
+        .btn-create:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-create:disabled { background: #6c757d; cursor: not-allowed; opacity: 0.8; box-shadow: none; transform: none; }
 
-        /* Alert Status */
+        /* ALERT & BADGE */
         .alert-custom { border-radius: 12px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-size: 0.95rem; }
         .alert-locked { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-locked a { color: #856404; font-weight: 800; text-decoration: underline; }
         
-        /* User Info */
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; }
-        .status-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: 5px; text-transform: uppercase; font-weight: bold; }
+        .status-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 10px; margin-left: 5px; text-transform: uppercase; font-weight: bold; }
         .badge-active { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-        .badge-new { background: #cff4fc; color: #055160; border: 1px solid #b6effb; }
         .badge-expired { background: #f8d7da; color: #842029; border: 1px solid #f5c6cb; }
 
         .btn-google { background: white; color: #333; border: none; padding: 8px 15px; border-radius: 50px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .info-box { background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 10px; margin-top: 25px; font-size: 14px; display: flex; align-items: center; gap: 12px; border-left: 5px solid #2196f3; }
+        .footer { background: transparent; color: #666; text-align: center; padding: 20px; font-size: 13px; margin-top: auto; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
         
         #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background-color: #28a745; color: white; padding: 12px 25px; border-radius: 50px; z-index: 1050; opacity: 0; transition: 0.3s; }
         #copyNotification.active { opacity: 1; transform: translateX(-50%) translateY(0); }
         
-        @media (max-width: 768px) { .create-card { padding: 30px 20px; } h2 { font-size: 1.5rem; } .btn-create { font-size: 16px; } .user-info-mobile { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; justify-content: flex-end; } }
+        @media (max-width: 768px) { .create-card { padding: 30px 20px; } .btn-create { font-size: 16px; } .user-info-mobile { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; justify-content: flex-end; } }
     </style>
 </head>
 <body>
@@ -86,7 +83,6 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="adminNavLinks" style="display: none;">
                     <li class="nav-item"><a href="admin.html" class="nav-link active">Tạo Album</a></li>
@@ -95,12 +91,10 @@
                     <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
                 </ul>
-                
                 <div class="d-flex align-items-center gap-3 ms-auto user-info-mobile">
                     <button id="loginBtn" class="btn-google" onclick="startGoogleLogin()">
                         <i class="fab fa-google text-danger"></i> <span>Đăng Nhập</span>
                     </button>
-                    
                     <div id="userControl" style="display: none;" class="align-items-center gap-3">
                         <div id="userEmailDisplay" class="d-flex align-items-center gap-2 text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
                             Admin
@@ -115,7 +109,7 @@
     </nav>
 
     <div class="main-container">
-        <div class="create-card">
+        <div class="create-card" id="createCard">
             <h2>Bắt Đầu Tạo Album Ảnh</h2>
             
             <div id="statusAlert" class="alert-custom alert-locked" style="display: none;">
@@ -148,9 +142,7 @@
                 <i class="fas fa-magic"></i> Tạo Album Ngay
             </button>
 
-            <div class="mt-4 text-center text-muted" style="font-size: 0.85rem;">
-                <i class="fas fa-info-circle"></i> Lưu ý: Không hỗ trợ hiển thị thumbnail file .CR3
-            </div>
+            <div class="info-box"><i class="fas fa-info-circle fa-lg"></i><span>Lưu ý: Không hỗ trợ hiển thị thumbnail file .CR3</span></div>
         </div>
     </div>
     
@@ -159,23 +151,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- CẤU HÌNH ---
         const GOOGLE_CONFIG = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
-            // Link này phải trỏ về Webhook n8n của bạn
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
         const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
-        // 1. ĐĂNG NHẬP (Chuyển hướng sang Google -> n8n -> Quay về đây)
         function startGoogleLogin() {
             localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
             window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(GOOGLE_CONFIG.SCOPE)}&access_type=offline&prompt=consent`;
         }
 
-        // 2. XỬ LÝ DỮ LIỆU TỪ n8n TRẢ VỀ
+        // ✅ QUAN TRỌNG: Hàm này nhận dữ liệu từ n8n (Respond to Webhook)
         function checkAuthCallback() {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -183,15 +172,14 @@
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', urlParams.get('user_email'));
                 
-                // Giải mã tên & avatar
                 try {
                     localStorage.setItem('admin_name', decodeURIComponent(urlParams.get('user_name')));
                     localStorage.setItem('admin_avatar', decodeURIComponent(urlParams.get('user_avatar')));
                 } catch(e) {}
 
-                // ✅ LƯU TRẠNG THÁI (Status) & HẠN DÙNG (Expiry)
+                // 👉 Lưu trạng thái ACTIVE và HẠN DÙNG vào bộ nhớ trình duyệt
                 localStorage.setItem('admin_expiry', urlParams.get('user_expiry') || '0');
-                localStorage.setItem('admin_status', urlParams.get('user_status') || 'new'); // Mặc định là 'new'
+                localStorage.setItem('admin_status', urlParams.get('user_status') || 'new');
 
                 history.replaceState(null, null, window.location.pathname);
                 updateUI();
@@ -200,7 +188,6 @@
 
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
 
-        // 3. LOGIC HIỂN THỊ & KHÓA NÚT DỰA VÀO STATUS
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             
@@ -212,62 +199,56 @@
             const btnCreate = document.getElementById('btnCreate');
 
             if (isLoggedIn) {
-                // Hiển thị giao diện đã đăng nhập
                 adminNavLinks.style.display = 'flex';
                 loginBtn.style.display = 'none';
                 userControl.style.display = 'flex';
 
                 const name = localStorage.getItem('admin_name') || 'Admin';
                 const avatar = localStorage.getItem('admin_avatar');
-                const status = localStorage.getItem('admin_status'); // 'new', 'active', 'expired'
+                const status = localStorage.getItem('admin_status'); // 'active' hoặc 'new'
                 const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
                 
                 let isAllowed = false;
                 let badgeHtml = '';
 
-                // --- LOGIC KIỂM TRA QUYỀN ---
+                // --- KIỂM TRA QUYỀN TRUY CẬP ---
                 if (status === 'new') {
-                    // 🔴 Người mới -> Chưa kích hoạt -> Khóa
+                    // Chưa kích hoạt
                     statusAlert.style.display = 'flex';
-                    statusAlert.innerHTML = `<i class="fas fa-user-clock text-warning fa-lg"></i> <span>Tài khoản mới chưa kích hoạt. Vui lòng <a href="lienhe.html">Liên Hệ Admin</a> để dùng thử.</span>`;
-                    badgeHtml = `<span class="status-badge badge-new">Người mới</span>`;
+                    statusAlert.innerHTML = `<i class="fas fa-user-clock text-warning fa-lg"></i> <span>Tài khoản mới. Vui lòng <a href="lienhe.html">Liên Hệ Admin</a> kích hoạt.</span>`;
+                    badgeHtml = `<span class="status-badge badge-expired">MỚI</span>`;
                     isAllowed = false;
-
                 } else {
-                    // Người cũ (Đã từng kích hoạt) -> Kiểm tra Hạn dùng
+                    // Đã kích hoạt (active), giờ kiểm tra Hạn
                     if (expiry > Date.now()) {
-                        // 🟢 Còn hạn -> Cho phép
+                        // Còn hạn -> Mở khóa
                         statusAlert.style.display = 'none';
                         badgeHtml = `<span class="status-badge badge-active">Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
                         isAllowed = true;
                     } else {
-                        // 🔴 Hết hạn -> Bắt nạp tiền
+                        // Hết hạn
                         statusAlert.style.display = 'flex';
-                        statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Tài khoản đã hết hạn. Vui lòng <a href="donate.html">Gia Hạn Ngay</a> để tiếp tục.</span>`;
-                        badgeHtml = `<span class="status-badge badge-expired">Hết hạn</span>`;
+                        statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Tài khoản hết hạn. Vui lòng <a href="donate.html">Gia Hạn</a>.</span>`;
+                        badgeHtml = `<span class="status-badge badge-expired">HẾT HẠN</span>`;
                         isAllowed = false;
                     }
                 }
 
-                // Cập nhật User Info trên Header
                 let imgTag = avatar ? `<img src="${avatar}" class="user-avatar me-1">` : `<i class="fas fa-user-circle me-1"></i>`;
                 userEmailDisplay.innerHTML = `${imgTag} ${name} ${badgeHtml}`;
 
-                // Cập nhật Nút Tạo (Khóa/Mở)
+                // Khóa/Mở nút Tạo
                 if (isAllowed) {
                     btnCreate.disabled = false;
                     btnCreate.innerHTML = '<i class="fas fa-magic"></i> Tạo Album Ngay';
-                    btnCreate.style.background = 'linear-gradient(135deg, #147a30, #0e5a22)';
                     btnCreate.style.cursor = 'pointer';
                 } else {
                     btnCreate.disabled = true;
                     btnCreate.innerHTML = '<i class="fas fa-lock"></i> Tính năng bị khóa';
-                    btnCreate.style.background = '#6c757d';
                     btnCreate.style.cursor = 'not-allowed';
                 }
 
             } else {
-                // Chưa đăng nhập -> Ẩn hết
                 adminNavLinks.style.display = 'none';
                 loginBtn.style.display = 'flex';
                 userControl.style.display = 'none';
@@ -276,7 +257,7 @@
             }
         }
 
-        // --- CÁC HÀM XỬ LÝ KHÁC ---
+        // ... (Giữ nguyên các hàm copyLink, createAlbum...)
         function extractFolderId(link) {
             if (!link) return null;
             let cleaned = link.split('?')[0].replace(/\/$/, ""); 
@@ -307,7 +288,6 @@
             document.getElementById('previewBox').style.display = 'none';
 
             try {
-                // Gửi cấu hình
                 await fetch(URL_CREATE_ALBUM_SAVE, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
@@ -321,7 +301,6 @@
                     })
                 });
 
-                // Lấy thông tin
                 const res = await fetch(`${URL_GET_FOLDER_INFO}?folderId=${folderId}&adminEmail=${localStorage.getItem('admin_email')}`);
                 if (!res.ok) throw new Error('Lỗi server');
                 const data = await res.json();
