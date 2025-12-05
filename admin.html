@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* GIỮ NGUYÊN CSS ĐẸP CỦA BẠN */
         :root { 
             --primary-green: #147a30; --dark-green: #0e5a22; 
             --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d;
@@ -57,6 +58,10 @@
         .footer { background: transparent; color: #666; text-align: center; padding: 20px; font-size: 13px; margin-top: auto; }
         #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background-color: #28a745; color: white; padding: 12px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 1050; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); font-weight: bold; }
         #copyNotification.active { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        
+        /* User Avatar */
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+        
         @media (max-width: 768px) { .create-card { padding: 30px 20px; } h2 { font-size: 1.5rem; } .btn-create { font-size: 16px; } .user-info-mobile { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; justify-content: flex-end; } }
     </style>
 </head>
@@ -81,9 +86,11 @@
                         <i class="fab fa-google text-danger"></i> <span>Đăng Nhập</span>
                     </button>
                     <div id="userControl" style="display: none;" class="align-items-center gap-3">
-                        <span id="userEmailDisplay" class="text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">Admin</span>
+                        <div id="userEmailDisplay" class="d-flex align-items-center gap-2 text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
+                            <i class="fas fa-user-circle me-1"></i> Admin
+                        </div>
                         <button class="btn btn-danger fw-bold d-flex align-items-center gap-2 rounded-pill px-3" onclick="logoutAdmin()">
-                            <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -133,32 +140,81 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // *************************************************************
+        // ✅ CẤU HÌNH OAUTH TRỰC TIẾP (KHÔNG QUA WEBHOOK)
+        // *************************************************************
         const GOOGLE_CONFIG = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
-            N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
-            SCOPE: 'openid profile email' // ✅ ĐÃ BẬT LẠI PROFILE ĐỂ LẤY TÊN
+            // Redirect về chính trang hiện tại để lấy Token từ URL Hash
+            // Bạn hãy đổi thành URL thật của file admin.html trên host của bạn
+            REDIRECT_URI: window.location.href.split('#')[0].split('?')[0], 
+            SCOPE: 'openid profile email' 
         };
+
         const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
 
+        // 1. HÀM BẮT ĐẦU ĐĂNG NHẬP
         function startGoogleLogin() {
-            localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
             const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + 
                 'client_id=' + GOOGLE_CONFIG.CLIENT_ID + 
-                '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI) + 
-                '&response_type=code' + 
+                '&redirect_uri=' + encodeURIComponent(GOOGLE_CONFIG.REDIRECT_URI) + 
+                '&response_type=token' + // Lấy Token trực tiếp
                 '&scope=' + encodeURIComponent(GOOGLE_CONFIG.SCOPE) + 
-                '&access_type=offline' +
-                '&prompt=consent'; 
+                '&include_granted_scopes=true' +
+                '&state=pass-through-value';
+
             window.location.href = authUrl;
         }
 
+        // 2. HÀM XỬ LÝ KHI GOOGLE QUAY LẠI (PARSE TOKEN)
+        async function handleAuthCallback() {
+            // Lấy token từ URL hash (#access_token=...)
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+
+            if (accessToken) {
+                // Xóa hash trên URL cho đẹp
+                history.replaceState(null, null, window.location.pathname);
+                
+                // Lưu token
+                localStorage.setItem('google_access_token', accessToken);
+                localStorage.setItem('admin_is_logged_in', 'true');
+
+                // Dùng Token để lấy thông tin User (Tên, Avatar) từ Google API
+                await fetchUserInfo(accessToken);
+            } else {
+                updateUI(); // Kiểm tra trạng thái đăng nhập cũ
+            }
+        }
+
+        // 3. HÀM LẤY INFO TỪ GOOGLE API (CLIENT-SIDE)
+        async function fetchUserInfo(token) {
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    // Lưu thông tin chuẩn từ Google (Có dấu thoải mái)
+                    localStorage.setItem('admin_email', data.email);
+                    localStorage.setItem('admin_name', data.name); // Tên đầy đủ
+                    localStorage.setItem('admin_avatar', data.picture); // Ảnh đại diện
+                    updateUI();
+                } else {
+                    console.error("Token hết hạn hoặc lỗi");
+                    logoutAdmin();
+                }
+            } catch (error) {
+                console.error("Lỗi lấy thông tin:", error);
+            }
+        }
+
         function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
-            updateUI(); 
+            localStorage.clear(); // Xóa sạch token
+            window.location.href = 'admin.html';
         }
 
         function updateUI() {
@@ -168,14 +224,17 @@
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const storedName = localStorage.getItem('admin_name'); // Tên lấy từ LocalStorage
-            
+            const storedName = localStorage.getItem('admin_name');
+            const storedAvatar = localStorage.getItem('admin_avatar');
+
             if (isLoggedIn) {
                 if (adminNavLinks) adminNavLinks.style.display = 'flex';
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (userControl) userControl.style.display = 'flex';
-                // HIỂN THỊ TÊN ĐÃ GIẢI MÃ
-                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${storedName || 'Admin'}`;
+                
+                // Hiển thị Avatar + Tên (Không bị lỗi font)
+                let avatarHtml = storedAvatar ? `<img src="${storedAvatar}" class="user-avatar me-2">` : '<i class="fas fa-user-circle me-2"></i>';
+                userEmailDisplay.innerHTML = `${avatarHtml} ${storedName || 'Admin'}`;
             } else {
                 if (adminNavLinks) adminNavLinks.style.display = 'none';
                 if (loginBtn) loginBtn.style.display = 'flex';
@@ -183,36 +242,7 @@
             }
         }
 
-        function checkAuthCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const authStatus = urlParams.get('auth_status'); 
-            const userEmail = urlParams.get('user_email');
-            const accessToken = urlParams.get('access_token'); 
-            
-            // ✅ QUAN TRỌNG: Lấy tên từ URL và giải mã
-            let userName = urlParams.get('user_name'); 
-
-            if (authStatus === 'success' && userEmail) {
-                history.replaceState(null, null, window.location.pathname); 
-
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', userEmail);
-                if (accessToken) localStorage.setItem('google_access_token', accessToken); 
-
-                // Xử lý tên có dấu
-                if (userName) {
-                    try {
-                        // Giải mã tên (Nếu n8n gửi về dạng %20...)
-                        userName = decodeURIComponent(userName); 
-                    } catch (e) { console.log('Tên không cần decode'); }
-                    localStorage.setItem('admin_name', userName);
-                } else {
-                    localStorage.setItem('admin_name', userEmail.split('@')[0]);
-                }
-                updateUI();
-            }
-        }
-
+        // --- CÁC HÀM XỬ LÝ ALBUM (GIỮ NGUYÊN) ---
         function extractFolderId(link) {
             if (!link) return null;
             let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
@@ -306,9 +336,9 @@
             }
         }
         
+        // Khởi tạo
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuthCallback();
-            updateUI();
+            handleAuthCallback(); // Kiểm tra URL xem có Token trả về không
         });
     </script>
 </body>
