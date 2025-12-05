@@ -61,14 +61,14 @@
         .btn-export { background: linear-gradient(135deg, #ffc107, #ff9800); color: #212529 !important; }
         .btn-delete { background: linear-gradient(135deg, #dc3545, #c82333); }
 
-        /* STATUS BADGE */
+        /* STATUS BADGE & USER INFO */
         .status-pill { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; }
         .bg-active { background: #198754; color: white; box-shadow: 0 0 10px rgba(25, 135, 84, 0.5); }
         .bg-new { background: #0d6efd; color: white; } 
         .bg-expired { background: #dc3545; color: white; } 
-
-        /* USER INFO & ALERT */
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
+
+        /* LICENSE ALERT */
         .license-alert { 
             background-color: #f8d7da; color: #842029; border-color: #f5c6cb;
             border-radius: 15px; padding: 15px 25px; margin-bottom: 25px;
@@ -273,6 +273,7 @@
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
+            // ✅ LOGIC KHÓA NÚT DỰA TRÊN isPremiumUser
             const lockAttr = isPremiumUser ? '' : 'disabled title="Vui lòng nâng cấp tài khoản"';
             const lockIcon = isPremiumUser ? '' : '<i class="fas fa-lock me-1"></i>';
 
@@ -305,21 +306,90 @@
         async function handleExportClick(albumId, albumName) {
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`Xuất danh sách file của "${albumName}"?`)) return;
-            alert("Đang xử lý xuất file (Demo)... Kết nối API Export của bạn ở đây.");
+            
+            const cardElement = document.getElementById(`card-${albumId}`);
+            if (cardElement) cardElement.style.opacity = 0.5;
+
+            const payload = {
+                folderId: albumId,
+                adminEmail: adminEmail, 
+                action: 'export_filenames_request'
+            };
+
+            try {
+                const response = await fetch(URL_EXPORT_FILENAMES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
+                const result = await response.json();
+                const finalResult = Array.isArray(result) ? result[0] : result;
+
+               if (finalResult && finalResult.fileNamesForCopy) {
+                    const namesList = finalResult.fileNamesForCopy.split(',').map(name => name.trim()).filter(name => name.length > 0).join('\n');
+                    const selectedCount = finalResult.selectedPhotos || 'Không rõ';
+
+                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+                    document.getElementById('modalAlbumName').innerText = albumName;
+                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
+                    document.getElementById('fileNamesOutput').value = namesList; 
+                    exportModal.show();
+                } else {
+                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về danh sách file.`);
+                }
+
+            } catch (error) {
+                alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n: ${error.message}`);
+            } finally {
+                if (cardElement) cardElement.style.opacity = 1;
+            }
         }
 
         async function deleteAlbum(albumId, albumName) {
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`XÓA VĨNH VIỄN album "${albumName}"?`)) return;
-            alert("Đang xử lý xóa album (Demo)... Kết nối API Delete của bạn ở đây.");
+            
+            const cardElement = document.getElementById(`card-${albumId}`);
+            if (cardElement) cardElement.style.opacity = 0.5; 
+
+            const deletePayload = { folderId: albumId, adminEmail: adminEmail };
+
+            try {
+                const response = await fetch(URL_DELETE_ALBUM, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(deletePayload)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert(`✅ Album "${albumName}" đã được xóa thành công khỏi database!`);
+                    cardElement.remove(); // Xóa thẻ album khỏi DOM
+                    updateCount();
+                } else {
+                    throw new Error(result.message || `Lỗi xóa Album: Server không phản hồi thành công.`);
+                }
+
+            } catch (error) {
+                alert(`❌ Lỗi Xóa: ${error.message}`);
+            } finally {
+                if (cardElement) cardElement.style.opacity = 1;
+            }
         }
 
         function copyFileNames() {
             const textarea = document.getElementById('fileNamesOutput');
-            const namesList = textarea.value.split(',').map(name => name.trim()).filter(name => name.length > 0).join('\n');
-            textarea.value = namesList; 
+            const namesList = textarea.value.split('\n').join(','); // Nối lại để copy dễ dàng hơn
+            textarea.select();
             navigator.clipboard.writeText(namesList).then(() => alert('✅ Đã sao chép!'));
         }
+        
+        function updateCount() {
+            const count = document.querySelectorAll('.album-card').length;
+            document.getElementById('albumCount').innerText = count;
+        }
+
 
         function logoutAdmin() {
             localStorage.clear();
