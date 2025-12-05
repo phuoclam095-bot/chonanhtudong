@@ -288,20 +288,69 @@
         }
 
 
-        function checkAuthCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('auth_status') === 'success') {
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', urlParams.get('user_email'));
-                localStorage.setItem('admin_name', urlParams.get('user_name') || 'Admin');
-                history.replaceState(null, null, window.location.pathname);
-            }
-        }
+       function checkAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Nếu có tham số báo thành công từ Google/n8n
+    if (urlParams.get('auth_status') === 'success') {
+        // ⭐ GHI DỮ LIỆU VÀO LOCAL STORAGE ⭐
+        localStorage.setItem('admin_is_logged_in', 'true');
+        localStorage.setItem('admin_email', urlParams.get('user_email'));
+        localStorage.setItem('admin_name', urlParams.get('user_name') || 'Admin');
+        
+        // Xóa các tham số trên URL để tránh lỗi lặp
+        history.replaceState(null, null, window.location.pathname);
+        
+        // ⭐ QUAN TRỌNG: Gọi lại hàm updateUI ngay sau khi ghi để load giao diện Active ⭐
+        updateUI(); 
+        return true; // Báo hiệu đã xử lý callback
+    }
+    return false;
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthCallback();
-            updateUI();
-        });
+function updateUI() {
+    const adminNavLinks = document.getElementById('adminNavLinks');
+    const loginBtn = document.getElementById('loginBtn');
+    const userControl = document.getElementById('userControl');
+    const userEmailDisplay = document.getElementById('userEmailDisplay');
+    const btnCreate = document.querySelector('.btn-create');
+    
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const storedEmail = localStorage.getItem('admin_email');
+    
+    if (isLoggedIn && storedEmail) {
+        // Hiển thị trạng thái đăng nhập
+        if (adminNavLinks) adminNavLinks.style.display = 'flex';
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userControl) userControl.style.display = 'flex';
+        
+        userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${localStorage.getItem('admin_name') || 'Admin'}`;
+        
+        // ⭐ GOI HAM KIEM TRA LICENSE ⭐
+        verifyLicense(storedEmail);
+        
+    } else {
+        // Trạng thái đăng xuất
+        if (adminNavLinks) adminNavLinks.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'flex';
+        if (userControl) userControl.style.display = 'none';
+        
+        // Đặt nút tạo album về trạng thái chờ đăng nhập
+        btnCreate.disabled = false;
+        btnCreate.style.background = '#6c757d';
+        btnCreate.innerHTML = '<i class="fas fa-lock"></i> Đăng nhập để sử dụng';
+        btnCreate.onclick = startGoogleLogin;
+    }
+}
+
+// Thay đổi hàm khởi động trang để ưu tiên checkAuthCallback
+document.addEventListener('DOMContentLoaded', function() {
+    // Nếu checkAuthCallback trả về FALSE (Không phải trang chuyển hướng), thì mới chạy updateUI.
+    // Nếu checkAuthCallback trả về TRUE, nó đã tự gọi updateUI và dừng lại.
+    if (!checkAuthCallback()) {
+        updateUI();
+    }
+});
     </script>
 </body>
 </html>
