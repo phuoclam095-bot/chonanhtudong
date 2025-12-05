@@ -200,16 +200,15 @@
                 // Lấy Item chính xác (vì Node 4 trả về Item JSON chuẩn)
                 const finalResult = Array.isArray(result) ? result[0] : result;
 
-                if (finalResult && finalResult.file_names_for_copy) {
+               if (finalResult && finalResult.fileNamesForCopy) { // Dùng tên mới
                     
-                    const namesList = finalResult.file_names_for_copy;
-                    const selectedCount = finalResult.selected_photos || 'Không rõ';
+                    const namesList = finalResult.fileNamesForCopy; // Dùng tên mới
+                    const selectedCount = finalResult.selectedPhotos || 'Không rõ'; // Dùng tên mới
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
-                    document.getElementById('modalSelectedCount').innerText = selectedCount;
-                    // ⭐ GÁN CHUỖI TÊN FILE THỰC TẾ ⭐
-                    document.getElementById('fileNamesOutput').value = namesList; 
+                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
+                    document.getElementById('fileNamesOutput').value = namesList;
 
                     // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
