@@ -6,6 +6,8 @@
     <title>Ủng Hộ Dịch Vụ - Tiện Ích Chọn Ảnh</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --primary-green: #147a30;
@@ -13,57 +15,77 @@
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
             --highlight-color: #51ff7d;
+            --accent-color: #51ff7d;
         }
+
         body {
             background-color: var(--bg-color);
-            /* ⭐ Nền chấm bi giống trang Liên Hệ ⭐ */
+            /* Nền chấm bi tối giống Managa */
             background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
             background-size: 60px 60px;
             background-position: 0 0, 30px 30px;
             color: var(--text-color);
-            font-family: 'Segoe UI', sans-serif;
-            padding-top: 70px; /* Offset cho header fixed */
+            font-family: 'Nunito', sans-serif;
+            padding-top: 80px; /* Offset cho header fixed */
             min-height: 100vh;
         }
         
-        /* ⭐ HEADER CHUẨN TỪ MANAGA.HTML ⭐ */
-        .header {
+        /* ⭐ HEADER CHUẨN BOOTSTRAP (COPY TỪ MANAGA) ⭐ */
+        .navbar {
             background: var(--primary-green);
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
-        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; align-items: center; gap: 15px; }
-        .nav-links a, #authControl span { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
-        .nav-links a:hover { background-color: var(--dark-green); }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        /* ⭐ PHẦN NỀN CHÍNH (DONATE) - STYLE MỚI ⭐ */
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: #fff !important;
+            transform: translateY(-2px);
+        }
+        
+        .navbar-toggler {
+            border: none;
+            color: white;
+            padding: 0.5rem;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: 2px solid var(--accent-color);
+        }
+
+        /* ⭐ PHẦN NỀN CHÍNH (DONATE) ⭐ */
         .donate-container {
             max-width: 900px;
-            margin: auto;
-            margin-top: 30px; 
-            padding: 30px;
+            margin: 30px auto; 
+            padding: 40px;
             
-            /* ⭐ NỀN GRADIENT TRONG SUỐT (GIỐNG LIÊN HỆ) ⭐ */
+            /* Nền Gradient trong suốt */
             background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.85) 0%, rgba(14, 90, 34, 0.75) 100%);
             
             /* Hiệu ứng kính mờ */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             
-            background-color: transparent; /* Fallback */
-            
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Viền mờ */
+            background-color: transparent;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #ffffff; 
         }
         
@@ -71,133 +93,163 @@
             color: var(--highlight-color); 
             margin-bottom: 25px; 
             text-align: center;
-            /* ⭐ Hiệu ứng chữ phát sáng ⭐ */
             text-shadow: 0 0 10px rgba(81, 255, 125, 0.8);
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 2rem;
         }
         
         h2 {
             color: var(--highlight-color);
             text-shadow: 0 0 8px rgba(81, 255, 125, 0.6);
             margin-bottom: 30px;
+            font-weight: 700;
         }
         
         /* ⭐ Cấu hình QR và Flexbox ⭐ */
-        .payment-method {
-            flex: 1 1 45%;
-            min-width: 350px;
-            padding: 20px;
-            border: 1px solid #444; 
-            border-radius: 8px;
-            text-align: center;
-            /* Nền mờ cho từng thẻ thanh toán để nổi bật hơn trên nền kính */
-            background-color: rgba(0, 0, 0, 0.3); 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, background-color 0.3s;
-        }
-        
-        .payment-method:hover {
-            transform: translateY(-5px);
-            background-color: rgba(0, 0, 0, 0.5);
-            border-color: var(--highlight-color);
-        }
-
         .payment-grid {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             flex-wrap: wrap;
             margin-top: 20px;
             justify-content: center;
         }
+
+        .payment-method {
+            flex: 1 1 300px; /* Linh hoạt hơn, min-width giảm xuống để ko vỡ layout trên mobile nhỏ */
+            min-width: 300px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            transform: translateY(-8px);
+            background-color: rgba(0, 0, 0, 0.6);
+            border-color: var(--highlight-color);
+        }
+
         .qr-placeholder {
             width: 200px;
             height: 200px;
             background-color: #fff;
-            margin: 15px auto 15px auto;
+            margin: 15px auto 20px auto;
             border: 2px solid #555;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 5px;
-            border-radius: 8px;
+            border-radius: 12px;
         }
         .qr-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .donate-container { padding: 25px 15px; margin: 20px 15px; }
+            h1 { font-size: 1.6rem; }
+            .payment-method { min-width: 100%; } /* Mobile sẽ full width */
+            
+            .user-info-mobile {
+                border-top: 1px solid rgba(255,255,255,0.1);
+                margin-top: 15px;
+                padding-top: 15px;
+                justify-content: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo"><i class="fas fa-camera-retro"></i> Tiện Ích Chọn Ảnh</div>
-        
-        <div class="nav-links">
-            <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album Mới</a>
-            <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
-            <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> 
-            <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
-            
-            <div id="authControl" style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
-                <span id="userEmailDisplay" class="user-email nav-link" style="color: #fff;">Admin</span>
-                <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link" style="background-color: #dc3545; padding: 5px 10px;">
-                    <i class="fas fa-sign-out-alt"></i> Đăng Xuất
-                </a>
-            </div>
-        </div>
-    </div>
     
-    <div class="donate-container">
-        <h1><i class="fas fa-hand-holding-heart me-2"></i> Ủng Hộ & Phát Triển Dịch Vụ</h1>
-        
-        <p class="text-center" style="font-size: 1.1rem;">Sự ủng hộ của bạn, dù nhỏ bé, là nguồn động viên lớn để chúng tôi tiếp tục duy trì server và cập nhật dịch vụ.</p>
-        
-        <hr style="border-color: #00c46f; opacity: 0.5; margin: 30px 0;">
-
-        <h2 class="text-center">Chọn Phương Thức Ủng Hộ</h2>
-
-        <div class="payment-grid">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#"><i class="fas fa-hand-holding-heart me-2"></i>Donate</a>
             
-            <div class="payment-method">
-                <h3 style="color: #007bff; font-weight: bold;"><i class="fas fa-university me-2"></i> VIETCOMBANK</h3>
-                
-                <div class="qr-placeholder" style="border-color: #007bff;">
-                    <img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="Mã QR Vietcombank">
-                </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <p style="margin-bottom: 5px;">
-                    <strong>Tên TK:</strong> Lâm Nam Phước
-                </p>
-                <p>
-                    <small class="text-white">Quét mã để chuyển khoản nhanh VCB.</small>
-                </p>
-            </div>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
+                    <li class="nav-item"><a href="donate.html" class="nav-link active"><i class="fas fa-hand-holding-usd"></i> Donate</a></li>
+                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
+                </ul>
 
-            <div class="payment-method">
-                <h3 style="color: #ff337e; font-weight: bold;"><i class="fas fa-wallet me-2"></i> MOMO (Ví Điện Tử)</h3>
-                
-                <div class="qr-placeholder" style="border-color: #ff337e;">
-                    <img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Mã QR Momo Mới">
+                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
+                    <span id="userEmailDisplay" class="text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
+                        <i class="fas fa-user-circle me-2"></i>Admin
+                    </span>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold d-flex align-items-center gap-2 rounded-pill px-3">
+                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                    </a>
                 </div>
-                
-                <p style="margin-bottom: 5px;">
-                    <strong>SĐT Nhận:</strong> 0836484821
-                </p>
-                <p>
-                    <small class="text-white">Quét mã để ủng hộ qua Momo.</small>
-                </p>
             </div>
-            
         </div>
-        
-        <p class="text-center mt-5" style="color: #ffeb3b;">
-            <i class="fas fa-heart" style="color: #dc3545;"></i> Chúng tôi xin chân thành cảm ơn mọi sự đóng góp.
-        </p>
+    </nav>
+    
+    <div class="container">
+        <div class="donate-container">
+            <h1><i class="fas fa-hand-holding-heart me-2"></i> Ủng Hộ & Phát Triển Dịch Vụ</h1>
+            
+            <p class="text-center" style="font-size: 1.1rem; opacity: 0.9;">Sự ủng hộ của bạn, dù nhỏ bé, là nguồn động viên lớn để chúng tôi tiếp tục duy trì server và cập nhật dịch vụ.</p>
+            
+            <hr style="border-color: #00c46f; opacity: 0.5; margin: 30px 0;">
 
+            <h2 class="text-center">Chọn Phương Thức Ủng Hộ</h2>
+
+            <div class="payment-grid">
+                
+                <div class="payment-method">
+                    <h3 style="color: #007bff; font-weight: 800;"><i class="fas fa-university me-2"></i> VIETCOMBANK</h3>
+                    
+                    <div class="qr-placeholder" style="border-color: #007bff;">
+                        <img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="Mã QR Vietcombank">
+                    </div>
+
+                    <p class="mb-1" style="font-size: 1.1rem;">
+                        <strong>Tên TK:</strong> Lâm Nam Phước
+                    </p>
+                    <p>
+                        <small class="text-white opacity-75">Quét mã để chuyển khoản nhanh VCB.</small>
+                    </p>
+                </div>
+
+                <div class="payment-method">
+                    <h3 style="color: #ff337e; font-weight: 800;"><i class="fas fa-wallet me-2"></i> MOMO (Ví Điện Tử)</h3>
+                    
+                    <div class="qr-placeholder" style="border-color: #ff337e;">
+                        <img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Mã QR Momo Mới">
+                    </div>
+                    
+                    <p class="mb-1" style="font-size: 1.1rem;">
+                        <strong>SĐT Nhận:</strong> 0836484821
+                    </p>
+                    <p>
+                        <small class="text-white opacity-75">Quét mã để ủng hộ qua Momo.</small>
+                    </p>
+                </div>
+                
+            </div>
+            
+            <p class="text-center mt-5 fw-bold" style="color: #ffeb3b; font-size: 1.1rem;">
+                <i class="fas fa-heart" style="color: #dc3545;"></i> Chúng tôi xin chân thành cảm ơn mọi sự đóng góp.
+            </p>
+
+        </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⭐ LOGIC JAVASCRIPT TỐI THIỂU CHO NAVIGATION VÀ ĐĂNG XUẤT ⭐
+        // ⭐ LOGIC JAVASCRIPT CHO NAVIGATION VÀ ĐĂNG XUẤT (GIỐNG MANAGA) ⭐
         const adminEmail = localStorage.getItem('admin_email');
         const adminName = localStorage.getItem('admin_name') || 'Admin';
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
@@ -207,10 +259,14 @@
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             
             if (isLoggedIn) {
-                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                authControl.style.display = 'flex'; // Đảm bảo thanh điều hướng hiển thị
+                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${adminName || adminEmail || 'Admin'}`;
+                authControl.style.display = 'flex'; 
+                authControl.classList.remove('d-none');
+                authControl.classList.add('d-flex');
             } else {
                 authControl.style.display = 'none';
+                authControl.classList.remove('d-flex');
+                authControl.classList.add('d-none');
             }
         }
         
