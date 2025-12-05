@@ -29,18 +29,40 @@
             padding-top: 70px;
         }
         
-        .header { /* ... */ }
-        .logo { /* ... */ }
-        .nav-links { /* ... */ }
-        .dashboard-container { /* ... */ }
-        h2 { /* ... */ }
+        .header {
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; align-items: center; gap: 15px; }
+        .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
+        .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
+
+        /* ALBUM GRID */
+        .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
+        h2 { color: #4CAF50; text-align: center; margin-bottom: 30px; }
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
-        .album-card { /* ... */ }
-        .album-title-card { /* ... */ }
-        .album-card-header { /* ... */ }
-        .stats-item { /* ... */ }
+        .album-card { background: var(--card-bg); color: #333; border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, opacity 0.2s; }
+        .album-card:hover { transform: translateY(-3px); }
+        .album-title-card { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: var(--primary-green); border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+        .album-card-header { height: 150px; background-size: cover; background-position: center; border-radius: 8px 8px 0 0; margin: -20px -20px 10px -20px; position: relative; box-shadow: inset 0 -30px 15px rgba(0,0,0,0.4); }
+        .stats-item { margin-bottom: 5px; font-size: 14px; }
+        .stats-item i { width: 20px; text-align: center; color: #888; }
+        .stats-item strong { color: #000; }
+        .status-badge { background-color: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
         .status-selected { color: white; background-color: #28a745; }
         .action-btns { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btns button { flex: 1; padding: 8px 10px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .btn-view { background: #007bff; color: white; }
         .btn-export { background: #ffc107; color: #333; }
         .btn-delete { background: #dc3545; color: white; }
@@ -58,14 +80,16 @@
         <div class="nav-links">
             <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album Mới</a>
             <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
-            <a href="#" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a>
-            <a href="#" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> <div id="authControl">
+            <a href="donate.html" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a>
+            <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a> 
+            <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
+            
+            <div id="authControl">
                 <div id="userControl" class="dropdown" style="display: none;">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
-                        <li><a class="dropdown-item active" href="managa.html"><i class="fas fa-folder-open"></i> Quản Lý Album</a></li> 
                         <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
                     </ul>
                 </div>
@@ -174,10 +198,8 @@
                 
                 const result = await response.json();
                 
-                // Lấy Item chính xác từ Output Node 4
-                const finalResult = Array.isArray(result) ? result[0] : result; 
+                const finalResult = Array.isArray(result) ? result[0] : result;
 
-                // ⭐ ĐIỂM SỬA LỖI QUAN TRỌNG: GÁN GIÁ TRỊ VÀO MODAL ⭐
                 if (finalResult && finalResult.file_names_for_copy) {
                     
                     const namesList = finalResult.file_names_for_copy;
@@ -185,9 +207,7 @@
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
-                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh'; 
-                    
-                    // GÁN CHUỖI TÊN FILE THỰC TẾ
+                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
                     document.getElementById('fileNamesOutput').value = namesList; 
 
                     // Mở Modal
@@ -199,8 +219,9 @@
                 }
 
             } catch (error) {
-                alert(`❌ Lỗi Xuất File: ${error.message}`);
-                console.error("Lỗi Export File:", error);
+                // Ẩn lỗi hệ thống, chỉ hiển thị thông báo thân thiện
+                alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
+                console.error("Lỗi Export File (Ẩn):", error);
             } finally {
                 if (cardElement) cardElement.style.opacity = 1;
             }
@@ -306,7 +327,7 @@
                 userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
                 userControl.style.display = 'flex'; 
             } else {
-                window.location.href = 'admin.html'; 
+                userControl.style.display = 'none'; // Ẩn dropdown nếu không đăng nhập
             }
         }
 
@@ -325,7 +346,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Lỗi HTTP ${response.status}. Kiểm tra Workflow n8n.`);
+                    throw new Error(`[Technical Error: Failed to fetch album data]`);
                 }
                 
                 const rawData = await response.json();
@@ -335,7 +356,9 @@
                 const albums = Array.isArray(rawData) ? rawData : []; 
 
                 if (albums.length === 0) {
-                    albumGrid.innerHTML = '<div style="color: white; text-align: center;">Bạn chưa có album nào đã tạo . <br>Vui lòng bấm Tạo Album Mới</div>';
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
+                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
+                                          '</div>';
                     albumCount.innerText = 0;
                     return;
                 }
@@ -348,12 +371,13 @@
                 albumCount.innerText = albums.length;
 
             } catch (error) {
-                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-                    LỖI TẢI ALBUM: Không thể kết nối hoặc nhận dữ liệu JSON hợp lệ.<br>
-                    Chi tiết: ${error.message}
+                // BẮT TẤT CẢ LỖI VÀ CHỈ HIỂN THỊ THÔNG BÁO CHUNG
+                console.error("Lỗi tải Album (Ẩn):", error.message);
+                
+                albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
+                    LỖI TẢI ALBUM: Không thể hiển thị album vào lúc này.
                 </div>`;
                 albumCount.innerText = 0;
-                console.error("Lỗi tải Album:", error);
             }
         }
 
