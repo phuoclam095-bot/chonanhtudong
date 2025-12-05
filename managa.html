@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> - Dashboard</title>
+    <title>- Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -170,77 +170,63 @@
         // -------------------------------------------------------------
 
         async function handleExportClick(albumId, albumName) {
-            // 1. Xác nhận và bắt đầu loading
             if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
                 return;
             }
             
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
-        
+
             const payload = {
                 folderId: albumId,
                 adminEmail: adminEmail, 
                 action: 'export_filenames_request'
             };
-        
+
             try {
                 const response = await fetch(URL_EXPORT_FILENAMES, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-        
+
                 if (!response.ok) {
-                    // Nếu lỗi HTTP (4xx, 5xx) xảy ra
-                    throw new Error(`LỖI KẾT NỐI SERVER: Mã lỗi ${response.status}.`);
+                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
                 }
-        
-                const result = await response.json();
-                const finalResult = Array.isArray(result) ? result[0] : result; 
-        
-                // 2. KIỂM TRA DỮ LIỆU CẦN THIẾT
+                
+                // ⭐ SỬA LỖI: Lấy phản hồi JSON từ Server
+                const result = await response.json(); 
+                
+                // Lấy Item chính xác (vì Node 4 trả về Item JSON chuẩn)
+                const finalResult = Array.isArray(result) ? result[0] : result;
+
                 if (finalResult && finalResult.file_names_for_copy) {
                     
                     const namesList = finalResult.file_names_for_copy;
                     const selectedCount = finalResult.selected_photos || 'Không rõ';
                     
-                    // ⭐ LOGIC HIỂN THỊ THÀNH CÔNG ⭐
+                    // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
-                    document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
+                    document.getElementById('modalSelectedCount').innerText = selectedCount;
+                    // ⭐ GÁN CHUỖI TÊN FILE THỰC TẾ ⭐
                     document.getElementById('fileNamesOutput').value = namesList; 
-        
+
                     // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
-        
+
                 } else {
-                    // Nếu Server trả về JSON hợp lệ nhưng thiếu trường dữ liệu
-                    throw new Error(`LỖI XỬ LÝ DỮ LIỆU: Server không trả về trường 'file_names_for_copy'.`);
+                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
-        
+
             } catch (error) {
-                // ⭐ ĐIỂM SỬA LỖI: HIỂN THỊ THÔNG BÁO HƯỚNG DẪN THAY VÌ LỖI HỆ THỐNG ⭐
-                
-                // Tạo thông báo bạn muốn hiển thị
-                const userInstruction = 'Vui lòng bấm **Sao chép tất cả** và vào **Sao Chép Ảnh** để dùng dịch vụ!';
-        
-                // Mở Modal và gán thông báo hướng dẫn vào
-                document.getElementById('modalAlbumName').innerText = albumName;
-                document.getElementById('modalSelectedCount').innerText = 'Lỗi dữ liệu (Xem hướng dẫn)';
-                document.getElementById('fileNamesOutput').value = userInstruction; 
-        
-                const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
-                exportModal.show();
-                
-                // In lỗi ra Console để Admin (bạn) debug
-                console.error("Lỗi kỹ thuật bị ẩn:", error.message);
-        
+                alert(`❌ Lỗi Xuất File: ${error.message}`);
+                console.error("Lỗi Export File:", error);
             } finally {
-                // Phục hồi opacity
                 if (cardElement) cardElement.style.opacity = 1;
             }
         }
+
         // -------------------------------------------------------------
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
@@ -398,13 +384,14 @@
                 
                 // Hiển thị thông báo chung cho người dùng (Ẩn chi tiết lỗi n8n)
                 albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
-                    LỖI TẢI ALBUM: Không thể hiển thị album vào lúc này.
+                    Bạn chưa có album nào để hiển thị.
                     <br>
-                    Vui lòng thử lại hoặc kiểm tra cài đặt.
+                    Vui lòng tạo album mới !.
                 </div>`;
                 albumCount.innerText = 0;
             }
         }
+        // ...
 
         // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
         document.addEventListener('DOMContentLoaded', function() {
