@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chọn Ảnh - V18.4</title>
+    <title>Chọn Ảnh - V18.6</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,14 +17,14 @@
             --text-light: #f0f0f0;
             --selected-border: #0d6efd;
             --header-height: 60px;
-            --footer-height: 70px;
+            --footer-height: 75px;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
             font-family: 'Nunito', sans-serif;
-            height: 100dvh; /* Sử dụng dvh để chuẩn trên mobile browser */
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -32,7 +32,7 @@
             margin: 0;
         }
 
-        /* --- 1. HEADER --- */
+        /* --- HEADER --- */
         .navbar {
             height: var(--header-height);
             background: var(--primary-green);
@@ -43,7 +43,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
         }
         
         .album-title {
@@ -59,12 +58,12 @@
         .view-switcher {
             background: rgba(0,0,0,0.2);
             border-radius: 50px;
-            padding: 2px;
+            padding: 3px;
             display: flex;
         }
         .view-btn {
             border: none; background: transparent; color: rgba(255,255,255,0.7);
-            padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+            padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
             transition: all 0.2s;
         }
         .view-btn.active {
@@ -72,7 +71,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* --- 2. MAIN CONTAINER --- */
+        /* --- MAIN CONTAINER --- */
         .main-container {
             flex: 1;
             position: relative;
@@ -89,10 +88,10 @@
             -webkit-overflow-scrolling: touch;
             padding: 10px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr); 
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px; 
             align-content: start;
-            padding-bottom: 85px; /* Tăng khoảng trống để không bị Bottom Bar che */
+            padding-bottom: 90px;
         }
         @media (min-width: 576px) { #photoGrid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
         @media (min-width: 992px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 15px; } }
@@ -110,10 +109,11 @@
         .grid-item.selected { border-color: var(--selected-border); }
         .grid-item.selected img { opacity: 0.7; }
         
+        /* CHẤM TRÒN SỐ THỨ TỰ (Dùng chung cho Grid và Strip) */
         .grid-dot {
-            position: absolute; top: 5px; right: 5px; width: 24px; height: 24px;
+            position: absolute; top: 5px; right: 5px; width: 26px; height: 26px;
             background: var(--accent-gold); color: #000; border-radius: 50%;
-            font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;
         }
 
@@ -123,14 +123,13 @@
             display: none; flex-direction: column; background: #000; z-index: 100;
         }
 
-        /* Nút Đóng */
         .btn-close-viewer {
-            position: absolute; top: 20px; right: 20px; z-index: 3000;
-            width: 40px; height: 40px; border-radius: 50%;
+            position: absolute; top: 15px; right: 15px; z-index: 3000;
+            width: 45px; height: 45px; border-radius: 50%;
             background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
             border: 1px solid rgba(255,255,255,0.3); color: white;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.2rem;
+            cursor: pointer; font-size: 1.4rem;
         }
 
         .stage {
@@ -144,72 +143,85 @@
         }
         #drawCanvas.drawing { pointer-events: auto; cursor: crosshair; }
 
-        /* Strip Thumbnails */
+        /* Badge số thứ tự TRÊN ẢNH LỚN */
+        #viewerBadge {
+            position: absolute;
+            top: 20px; left: 20px; /* Góc trái trên của ảnh */
+            background: var(--selected-border);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1rem;
+            z-index: 20;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            display: none; /* Mặc định ẩn */
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
         .strip {
-            height: 80px; background: rgba(20, 20, 20, 0.95);
+            height: 90px; background: rgba(20, 20, 20, 0.95);
             display: flex; align-items: center; padding: 0 10px; gap: 8px;
             overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333;
+            padding-bottom: 10px; 
         }
         .th {
-            height: 60px; width: 60px; border-radius: 6px; opacity: 0.4;
+            height: 70px; width: 70px; border-radius: 8px; opacity: 0.4;
             border: 2px solid transparent; flex-shrink: 0; overflow: hidden; cursor: pointer; 
+            position: relative; /* Để chứa grid-dot */
         }
         .th img { width: 100%; height: 100%; object-fit: cover; }
         .th.act { opacity: 1; border-color: var(--accent-gold); transform: scale(1.1); }
         .th.sel { opacity: 1; border-color: var(--selected-border); }
         
+        /* Chỉnh lại dot cho thumbnail strip (nhỏ hơn chút) */
+        .th .grid-dot {
+            width: 20px; height: 20px; font-size: 10px; top: 3px; right: 3px;
+        }
+
         .tools {
-            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
             background: rgba(40, 40, 40, 0.9); padding: 5px 15px;
             border-radius: 30px; display: none; gap: 15px; z-index: 100;
             border: 1px solid #555;
         }
         .tools.active { display: flex; }
         .t-btn {
-            width: 35px; height: 35px; border-radius: 50%; border: 1px solid #666;
-            background: #333; color: #fff; display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid #666;
+            background: #333; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
         .t-btn.act { background: var(--accent-gold); color: #000; }
 
-        /* Nút quay lại nổi (Dự phòng) */
-        .btn-float-back {
-            position: absolute; top: 10px; left: 10px; z-index: 200;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.2); color: white;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3);
-            cursor: pointer;
-        }
-
-        /* --- 3. BOTTOM BAR (CỐ ĐỊNH, Z-INDEX CAO) --- */
+        /* --- BOTTOM BAR --- */
         .bottom-bar {
             height: var(--footer-height);
             background: rgba(30, 30, 30, 0.98);
             backdrop-filter: blur(10px);
             border-top: 1px solid #444;
             padding: 0 15px;
-            display: flex; /* Mặc định là flex */
+            display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            z-index: 2000;
-            position: relative; /* Đảm bảo nó nằm trong flow flex của body */
+            z-index: 4000; 
+            position: relative;
         }
 
-        .info-area { display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem; max-width: 45%; }
+        .info-area { display: flex; flex-direction: column; justify-content: center; font-size: 0.9rem; max-width: 45%; }
         .info-name { font-weight: bold; color: var(--accent-gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .info-count { color: #aaa; font-size: 0.75rem; }
+        .info-count { color: #aaa; font-size: 0.8rem; }
 
         .action-area { display: flex; gap: 10px; align-items: center; }
-        .btn-action { border-radius: 12px; font-weight: 700; padding: 8px 16px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; border: none; }
+        .btn-action { border-radius: 12px; font-weight: 700; padding: 10px 20px; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; border: none; }
         
         .btn-select { background: #333; border: 1px solid #555; color: #ccc; }
-        .btn-select.active { background: var(--selected-border); border-color: var(--selected-border); color: white; box-shadow: 0 0 10px rgba(13, 110, 253, 0.4); }
+        .btn-select.active { background: var(--selected-border); border-color: var(--selected-border); color: white; box-shadow: 0 0 15px rgba(13, 110, 253, 0.4); }
         
-        .btn-save { background: linear-gradient(135deg, #198754, #147a30); color: white; }
-        .btn-draw { width: 40px; height: 40px; border-radius: 50%; padding: 0; justify-content: center; background: #444; color: white; }
+        .btn-save { background: linear-gradient(135deg, #198754, #147a30); color: white; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4); }
+        .btn-draw { width: 45px; height: 45px; border-radius: 50%; padding: 0; justify-content: center; background: #444; color: white; }
 
-        #loadOverlay { position: fixed; inset: 0; background: #121212; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent-gold); }
+        #loadOverlay { position: fixed; inset: 0; background: #121212; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent-gold); }
     </style>
 </head>
 <body>
@@ -236,10 +248,6 @@
         <div id="photoGrid"></div>
 
         <div id="photoViewer">
-            <div class="btn-float-back" onclick="setView('grid')">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-
             <div class="btn-close-viewer" onclick="setView('grid')">
                 <i class="fas fa-times"></i>
             </div>
@@ -255,6 +263,7 @@
                 <div style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
                     <img id="mainImg" src="">
                     <canvas id="drawCanvas"></canvas>
+                    <div id="viewerBadge"><i class="fas fa-check-circle me-1"></i><span id="badgeNum"></span></div>
                 </div>
             </div>
 
@@ -262,9 +271,9 @@
         </div>
     </div>
 
-    <div class="bottom-bar" id="commonCtrlBar">
+    <div class="bottom-bar">
         <div class="info-area">
-            <div class="info-name" id="pName">Chọn ảnh...</div>
+            <div class="info-name" id="pName">...</div>
             <div class="info-count" id="pCount">0 / 0</div>
         </div>
         <div class="action-area">
@@ -283,8 +292,8 @@
     </div>
 
     <script>
-        if (localStorage.getItem('layout_version') !== 'V18.4') {
-            console.log('Update to V18.4');
+        if (localStorage.getItem('layout_version') !== 'V18.6') {
+            console.log('Update to V18.6');
         }
 
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
@@ -299,6 +308,17 @@
         const fid = urlParams.get('id');
         let selectedPhotoIds = []; 
         
+        async function fetchData(url, options = {}) {
+            try {
+                const res = await fetch(url, options);
+                if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+                const text = await res.text();
+                if (!text || text.trim() === "") return null; 
+                try { return JSON.parse(text); } 
+                catch (e) { console.error("Raw:", text); throw new Error("Dữ liệu lỗi."); }
+            } catch (err) { throw err; }
+        }
+
         function getLink(id, size) {
             return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
         }
@@ -315,30 +335,21 @@
             if (view === 'grid') {
                 gridEl.style.display = 'grid';
                 viewerEl.style.display = 'none';
-                
                 btnGrid.classList.add('active');
                 btnViewer.classList.remove('active');
-                
                 btnDraw.style.display = 'none';
-                
-                // ⭐ QUAN TRỌNG: BẮT BUỘC HIỂN THỊ LẠI BOTTOM BAR ⭐
                 bottomBar.style.display = 'flex'; 
-                
                 capNhatSoThuTuVaTổngSố(); 
-                
                 setTimeout(() => {
                     const el = document.querySelector(`.grid-item[data-index="${cur}"]`);
                     if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
                 }, 100);
-
             } else {
                 gridEl.style.display = 'none';
                 viewerEl.style.display = 'flex';
-                
                 btnGrid.classList.remove('active');
                 btnViewer.classList.add('active');
                 btnDraw.style.display = 'flex';
-                
                 show(cur); 
             }
         }
@@ -364,9 +375,7 @@
                         cur = i; 
                         updateBottomInfo(); 
                     };
-                    
                     d.ondblclick = () => { cur = i; setView('viewer'); };
-                    
                     grid.appendChild(d);
                 });
             }
@@ -375,29 +384,31 @@
                 let p = photos[i];
                 let isSel = selectedPhotoIds.includes(p.id);
                 d.classList.toggle('selected', isSel);
-                
                 let dot = d.querySelector('.grid-dot');
                 if (isSel) {
                     if (!dot) d.insertAdjacentHTML('beforeend', `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>`);
                     else dot.innerText = selectedPhotoIds.indexOf(p.id) + 1;
-                } else {
-                    if (dot) dot.remove();
-                }
+                } else { if (dot) dot.remove(); }
                 
-                if (i === cur) d.classList.add('focused');
-                else d.classList.remove('focused');
+                if (i === cur) d.classList.add('focused'); else d.classList.remove('focused');
             });
 
-            // 2. STRIP RENDER
+            // 2. STRIP RENDER (ĐÃ CẬP NHẬT: HIỆN SỐ TRÊN THUMBNAIL)
             if (currentView === 'viewer') {
                 const strip = document.getElementById('strip');
                 strip.innerHTML = '';
                 photos.forEach((p, i) => {
                     let d = document.createElement('div');
                     d.className = 'th';
+                    
+                    let dotContent = '';
+                    if (selectedPhotoIds.includes(p.id)) {
+                        d.classList.add('sel');
+                        dotContent = `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>`;
+                    }
                     if (i === cur) d.classList.add('act');
-                    if (selectedPhotoIds.includes(p.id)) d.classList.add('sel');
-                    d.innerHTML = `<img src="${getLink(p.id, 's100')}">`;
+                    
+                    d.innerHTML = `<img src="${getLink(p.id, 's100')}">${dotContent}`;
                     d.onclick = () => show(i);
                     strip.appendChild(d);
                 });
@@ -409,18 +420,20 @@
             updateBottomInfo();
         }
 
+        // ⭐ HÀM CẬP NHẬT INFO VÀ BADGE ẢNH LỚN ⭐
         function updateBottomInfo() {
             const pName = document.getElementById('pName');
             const pCount = document.getElementById('pCount');
             const btnSel = document.getElementById('btnSel');
             const btnSave = document.querySelector('.btn-save');
+            const viewerBadge = document.getElementById('viewerBadge');
+            const badgeNum = document.getElementById('badgeNum');
 
             if (cur >= 0 && cur < photos.length) {
                 let p = photos[cur];
                 let isSel = selectedPhotoIds.includes(p.id);
                 
-                let safeName = p.name || p.fileName || p.originalFilename || `Ảnh #${cur + 1}`;
-                
+                let safeName = p.name || p.fileName || `Ảnh #${cur + 1}`;
                 pName.innerText = safeName;
                 pName.style.color = "var(--accent-gold)";
                 pCount.innerText = `${cur + 1} / ${photos.length}`;
@@ -428,9 +441,18 @@
                 if (isSel) {
                     btnSel.classList.add('active');
                     btnSel.innerHTML = `<i class="fas fa-check-circle"></i> Đã Chọn`;
+                    
+                    // HIỆN SỐ TRÊN ẢNH LỚN
+                    if(currentView === 'viewer') {
+                        viewerBadge.style.display = 'block';
+                        badgeNum.innerText = `Ảnh số ${selectedPhotoIds.indexOf(p.id) + 1}`;
+                    } else {
+                        viewerBadge.style.display = 'none';
+                    }
                 } else {
                     btnSel.classList.remove('active');
                     btnSel.innerHTML = `<i class="far fa-circle"></i> Chọn`;
+                    viewerBadge.style.display = 'none';
                 }
             }
             btnSave.innerHTML = `<i class="fas fa-paper-plane"></i> Gửi (${selectedPhotoIds.length})`;
@@ -438,21 +460,19 @@
 
         async function init() {
             try {
-                localStorage.setItem('layout_version', 'V18.4');
+                localStorage.setItem('layout_version', 'V18.6');
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
 
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
-                
                 const key = 'anh_da_chon_cua_khach_' + fid;
                 const localData = localStorage.getItem(key);
                 if (localData) { try { selectedPhotoIds = JSON.parse(localData) || []; } catch(e){} }
                 
-                let res = await fetch(`${URL_GET}?id=${fid}`);
-                if(!res.ok) throw new Error("Lỗi kết nối Server");
-                let data = await res.json();
+                let data = await fetchData(`${URL_GET}?id=${fid}`);
+                if (!data) throw new Error("Server không trả về dữ liệu.");
                 photos = data.photos || data;
-                if (!photos || !photos.length) throw Error("Album trống");
+                if (!Array.isArray(photos) || photos.length === 0) throw new Error("Album này chưa có ảnh.");
 
                 document.getElementById('loadOverlay').style.display='none';
                 capNhatSoThuTuVaTổngSố();
@@ -470,9 +490,8 @@
                         if(e.key=='Escape') setView('grid');
                     }
                 };
-
             } catch(e) {
-                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center"><i class="fas fa-exclamation-triangle fa-2x"></i><br>${e.message}</div>`;
+                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
             }
         }
 
@@ -502,9 +521,11 @@
             else selectedPhotoIds = selectedPhotoIds.filter(id => id !== p.id);
             
             capNhatSoThuTuVaTổngSố();
-            
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedPhotoIds));
-            fetch(URL_SAVE, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected:!isSel})});
+            fetchData(URL_SAVE, {
+                method:'POST', headers:{'Content-Type':'application/json'}, 
+                body:JSON.stringify({id:p.id, selected:!isSel})
+            }).catch(e => console.warn(e));
         }
 
         function mov(d) { show(cur + d); }
@@ -515,17 +536,13 @@
             cvs.style.pointerEvents = en ? 'auto' : 'none';
             document.getElementById('drawCanvas').classList.toggle('drawing', en);
             const bottomBar = document.querySelector('.bottom-bar');
-            
-            // Ẩn/Hiện thanh dưới khi vẽ
             bottomBar.style.display = en ? 'none' : 'flex'; 
 
             if(en) {
                 if(!ctx) ctx=cvs.getContext('2d');
                 ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round';
                 ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            } else {
-                if(ctx) { ctx.clearRect(0,0,cvs.width,cvs.height); }
-            }
+            } else { if(ctx) { ctx.clearRect(0,0,cvs.width,cvs.height); } }
         }
         
         let paint=false;
@@ -548,26 +565,25 @@
             if(!confirm("Lưu ghi chú?")) return;
             cvs.toBlob(async function(blob) {
                 let fd=new FormData();
-                let fileName = photos[cur].name || photos[cur].fileName || `Photo_${photos[cur].id}`; 
+                let fileName = photos[cur].name || `Photo_${photos[cur].id}`; 
                 fd.append('file', blob, `Ve_${fid}_${fileName}.png`);
                 fd.append('photoId', photos[cur].id);
                 try {
-                    let r = await fetch(URL_DRAW, {method:'POST', body:fd});
-                    if(r.ok) { alert("✅ Đã lưu!"); togDraw(false); } else alert("Lỗi!");
-                } catch(e) { alert("Lỗi: "+e.message); }
+                    await fetchData(URL_DRAW, {method:'POST', body:fd});
+                    alert("✅ Đã lưu!"); togDraw(false);
+                } catch(e) { alert("Lỗi tải lên: "+e.message); }
             }, 'image/png');
         }
 
         async function finalCommit(){
             if(confirm(`Gửi ${selectedPhotoIds.length} ảnh đã chọn?`)) {
                 try {
-                    const res = await fetch(URL_DONE, {
+                    await fetchData(URL_DONE, {
                         method:'POST', headers:{'Content-Type':'application/json'}, 
                         body:JSON.stringify({ id: fid, selected_ids: selectedPhotoIds, count: selectedPhotoIds.length })
                     });
-                    if(res.ok) alert("✅ Đã gửi thành công!");
-                    else alert("Lỗi gửi dữ liệu.");
-                } catch(e) { alert("Lỗi: "+e.message); }
+                    alert("✅ Đã gửi thành công!");
+                } catch(e) { alert("Lỗi gửi dữ liệu: "+e.message); }
             }
         }
 
