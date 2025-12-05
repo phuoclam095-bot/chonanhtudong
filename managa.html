@@ -345,7 +345,7 @@
             }
         }
 
-        async function loadAlbums() {
+       async function loadAlbums() {
             const albumGrid = document.getElementById('albumGrid');
             const albumCount = document.getElementById('albumCount');
             
@@ -361,23 +361,20 @@
                     headers: { 'Accept': 'application/json' } 
                 });
         
+                // Nếu HTTP status không phải 200 (ví dụ: 404, 500)
                 if (!response.ok) {
-                    // Lỗi HTTP (Ví dụ: 404, 500) -> Lỗi kết nối n8n/Supabase
-                    throw new Error(`Lỗi HTTP ${response.status}. Không thể kết nối đến máy chủ dữ liệu.`);
+                    // ⭐ BẮT LỖI MẠNG/SERVER VÀ NÉM LỖI THÂN THIỆN ⭐
+                    throw new Error(`[Technical Error: Failed to fetch album data]`);
                 }
                 
                 const rawData = await response.json();
                 
-                albumGrid.innerHTML = ''; 
+                albumGrid.innerHTML = ''; // Xóa thông báo loading
         
                 const albums = Array.isArray(rawData) ? rawData : []; 
         
-                // ⭐ 2. ĐIỂM KIỂM TRA LỌC (Filtering Check) ⭐
                 if (albums.length === 0) {
-                    // Trường hợp này xảy ra khi:
-                    // a) Supabase không chứa bất kỳ Album nào.
-                    // b) Hoặc Supabase có Album nhưng không có Album nào khớp với 'adminEmail'.
-                    
+                    // ⭐ HIỂN THỊ THÔNG BÁO THÂN THIỆN KHI KHÔNG CÓ DỮ LIỆU KHỚP EMAIL ⭐
                     albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
                                           'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
                                           '</div>';
@@ -394,14 +391,18 @@
                 albumCount.innerText = albums.length;
         
             } catch (error) {
-                // XỬ LÝ LỖI MẠNG HOẶC LỖI PHÂN TÍCH JSON
-                albumGrid.innerHTML = `<div style="color: red; text-align: center; padding: 20px; border: 1px solid red;">
-                    LỖI KỸ THUẬT: Không thể tải dữ liệu Album.<br>
-                    Vui lòng kiểm tra kết nối mạng và Workflow n8n.
-                    Chi tiết: ${error.message}
+                // ⭐ ĐIỂM SỬA LỖI QUAN TRỌNG: BẮT TẤT CẢ LỖI VÀ CHỈ HIỂN THỊ THÔNG BÁO CHUNG ⭐
+                
+                // Ghi log lỗi kỹ thuật vào Console (chỉ bạn thấy)
+                console.error("Lỗi kỹ thuật khi tải Album:", error);
+                
+                // Hiển thị thông báo chung cho người dùng (Ẩn chi tiết lỗi n8n)
+                albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
+                    LỖI TẢI ALBUM: Không thể hiển thị album vào lúc này.
+                    <br>
+                    Vui lòng thử lại hoặc kiểm tra cài đặt.
                 </div>`;
                 albumCount.innerText = 0;
-                console.error("Lỗi tải Album:", error);
             }
         }
 
