@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>a- Dashboard</title>
+    <title>Quản Lý Album - Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -149,6 +149,34 @@
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         // -------------------------------------------------------------
+        // HÀM XỬ LÝ ĐĂNG XUẤT VÀ HIỂN THỊ TÊN NGƯỜI DÙNG
+        // -------------------------------------------------------------
+        
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); 
+            // Sau khi xóa token, chuyển hướng về trang đăng nhập
+            window.location.href = 'admin.html'; 
+        }
+
+        function updateHeaderUI() {
+            const userControl = document.getElementById('userControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (isLoggedIn) {
+                // Hiển thị TÊN hoặc EMAIL đã lưu trong localStorage
+                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
+                userControl.style.display = 'flex'; // Hiển thị Dropdown
+            } else {
+                // Chuyển hướng nếu chưa đăng nhập (hoặc ẩn dropdown)
+                userControl.style.display = 'none'; 
+                window.location.href = 'admin.html'; // Tùy chọn: Chuyển hướng ngay nếu chưa đăng nhập
+            }
+        }
+        
+        // -------------------------------------------------------------
         // HÀM XỬ LÝ SAO CHÉP TRONG MODAL
         // -------------------------------------------------------------
         function copyFileNames() {
@@ -193,33 +221,42 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
+                    throw new Error(`[Technical Error: HTTP ${response.status}]`);
                 }
                 
                 const result = await response.json();
                 
+                // Lấy Item JSON chính xác (đã có status từ Node Set)
                 const finalResult = Array.isArray(result) ? result[0] : result;
 
-               if (finalResult && finalResult.fileNamesForCopy) { // Dùng tên mới
+                // CẬP NHẬT TÊN TRƯỜNG CHO DỮ LIỆU TỪ N8N (Dựa trên cấu trúc mới của bạn)
+                const fileNamesKey = finalResult.file_names_for_copy || finalResult.fileNamesForCopy;
+                const selectedPhotosKey = finalResult.selected_photos || finalResult.selectedPhotos;
+
+
+                if (fileNamesKey) { 
                     
-                    const namesList = finalResult.fileNamesForCopy; // Dùng tên mới
-                    const selectedCount = finalResult.selectedPhotos || 'Không rõ'; // Dùng tên mới
+                    const namesList = fileNamesKey; 
+                    const selectedCount = selectedPhotosKey || 'Không rõ'; 
+                    
+                    // Kiểm tra trường status nếu có (từ Node Set)
+                    if (finalResult.status && finalResult.status !== 'success') {
+                         throw new Error(`Lỗi từ Server n8n: ${finalResult.message || 'Không thành công'}`);
+                    }
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
-                    document.getElementById('fileNamesOutput').value = namesList; 
+                    document.getElementById('fileNamesOutput').value = namesList.trim().replace(/ ,/g, ','); 
 
-                    // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
 
                 } else {
-                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
+                    throw new Error(finalResult.message || `Lỗi dữ liệu: Server không trả về danh sách file hợp lệ.`);
                 }
 
             } catch (error) {
-                // Ẩn lỗi hệ thống, chỉ hiển thị thông báo thân thiện
                 alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
                 console.error("Lỗi Export File (Ẩn):", error);
             } finally {
@@ -228,17 +265,9 @@
         }
 
         // -------------------------------------------------------------
-        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
+        // HÀM XỬ LÝ XÓA ALBUM
         // -------------------------------------------------------------
         
-        function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
-            window.location.href = 'admin.html';
-        }
-
         async function deleteAlbum(albumId, albumName) {
             if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
                 return;
@@ -274,7 +303,7 @@
         }
 
         // -------------------------------------------------------------
-        // HÀM TẠO CARD HTML (Đảm bảo gọi hàm Export an toàn)
+        // HÀM TẠO CARD HTML
         // -------------------------------------------------------------
         
         function createAlbumCard(album) {
@@ -285,14 +314,12 @@
             
             const id = albumUniqueId || 'UNKNOWN_ID';
             const rawName = album.folderName || album.name || 'Album Mới';
-            // Dùng replace để thoát dấu nháy đơn
             const escapedName = rawName.replace(/'/g, "\\'"); 
             
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
-            // Đảm bảo ảnh mặc định hiển thị khi link trống
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
@@ -318,18 +345,6 @@
         // -------------------------------------------------------------
         // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
         // -------------------------------------------------------------
-
-        function updateHeaderUI() {
-            const userControl = document.getElementById('userControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (isLoggedIn) {
-                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                userControl.style.display = 'flex'; 
-            } else {
-                userControl.style.display = 'none'; // Ẩn dropdown nếu không đăng nhập
-            }
-        }
 
         async function loadAlbums() {
             const albumGrid = document.getElementById('albumGrid');
@@ -357,8 +372,8 @@
 
                 if (albums.length === 0) {
                     albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
-                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
-                                          '</div>';
+                                         'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
+                                         '</div>';
                     albumCount.innerText = 0;
                     return;
                 }
@@ -371,7 +386,6 @@
                 albumCount.innerText = albums.length;
 
             } catch (error) {
-                // BẮT TẤT CẢ LỖI VÀ CHỈ HIỂN THỊ THÔNG BÁO CHUNG
                 console.error("Lỗi tải Album (Ẩn):", error.message);
                 
                 albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
