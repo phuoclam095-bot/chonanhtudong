@@ -20,7 +20,7 @@
             background-size: 60px 60px; background-position: 0 0, 30px 30px; 
             color: #333; min-height: 100vh; display: flex; flex-direction: column; padding-top: 80px; 
         }
-        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); z-index: 1000; }
+        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: 0.3s; border-radius: 8px; }
         .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2); color: #fff !important; }
@@ -112,7 +112,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // CẤU HÌNH CẦN THIẾT
+        // CẤU HÌNH
         const GOOGLE_CONFIG = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
@@ -120,11 +120,11 @@
         };
         const URL_CREATE_ALBUM_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto'; 
         const URL_GET_FOLDER_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
-        const CONTACT_LINK = "https://zalo.me/0879029170";
-
-        // 🔥 URL MỚI TỪ GOOGLE APPS SCRIPT (GAS)
-        const URL_CHECK_LICENSE = 'https://script.google.com/macros/s/AKfycbzb9ko42UpoIMAWr4JGm9lh9uy_f7MgEQouoliGNvOjVDzxClyO5wjo0vIXWtJ5jAHg/exec'; 
         
+        // 🔥 URL WEBHOOK KIỂM TRA BẢN QUYỀN (Thay bằng URL của bạn từ Bước 2)
+        const URL_CHECK_LICENSE = 'https://dichvufb.tino.page/webhook/check-license'; 
+        const CONTACT_LINK = "https://zalo.me/0879029170"; // Link liên hệ khi hết hạn
+
         // --- AUTH & LICENSE LOGIC ---
         function startGoogleLogin() {
             localStorage.setItem('current_admin_path', window.location.href.split('?')[0]);
@@ -145,6 +145,93 @@
             location.reload(); 
         }
 
+        // ⭐ HÀM QUAN TRỌNG: KIỂM TRA LICENSE TỪ N8N
+        async function verifyLicense(email) {
+            const btnCreate = document.querySelector('.btn-create');
+            const statusSpan = document.getElementById('licenseStatus');
+            
+            // 1. Khóa nút trong khi kiểm tra
+            btnCreate.disabled = true;
+            btnCreate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            btnCreate.style.background = '#6c757d';
+
+            try {
+                const response = await fetch(`${URL_CHECK_LICENSE}?email=${email}`);
+                const data = await response.json();
+
+                if (data.status === 'active') {
+                    // ✅ ACTIVE
+                    statusSpan.innerHTML = `<span class="badge bg-success"><i class="fas fa-clock"></i> Hạn: ${data.end_date}</span>`;
+                    
+                    // Mở khóa nút
+                    btnCreate.disabled = false;
+                    btnCreate.style.background = 'linear-gradient(135deg, #147a30, #0e5a22)';
+                    btnCreate.innerHTML = '<i class="fas fa-magic"></i> Tạo Album Ngay';
+                    
+                    // Gán hàm tạo album
+                    btnCreate.onclick = createAlbum;
+
+                } else {
+                    // ❌ EXPIRED / NEW / BLOCKED
+                    let msg = data.status === 'new' ? 'Chưa đăng ký' : 'Đã hết hạn';
+                    statusSpan.innerHTML = `<span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle"></i> ${msg}</span>`;
+                    
+                    // Chuyển nút thành Liên hệ
+                    btnCreate.disabled = false;
+                    btnCreate.style.background = 'linear-gradient(135deg, #ff9800, #e65100)';
+                    btnCreate.innerHTML = '<i class="fas fa-comment-dots"></i> Liên hệ Admin để kích hoạt';
+                    
+                    btnCreate.onclick = function() {
+                        if(confirm("Tài khoản của bạn chưa kích hoạt.\nBạn có muốn liên hệ Admin để đăng ký không?")) {
+                            window.open(CONTACT_LINK, '_blank');
+                        }
+                    };
+                }
+            } catch (e) {
+                console.error("Lỗi check license:", e);
+                btnCreate.innerHTML = '❌ Lỗi kết nối';
+            }
+        }
+
+        function updateUI() {
+            const adminNavLinks = document.getElementById('adminNavLinks');
+            const loginBtn = document.getElementById('loginBtn');
+            const userControl = document.getElementById('userControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const storedName = localStorage.getItem('admin_name');
+            const storedEmail = localStorage.getItem('admin_email');
+
+            if (isLoggedIn) {
+                if (adminNavLinks) adminNavLinks.style.display = 'flex';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userControl) userControl.style.display = 'flex';
+                
+                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${storedName || 'Admin'}`;
+                
+                // ⭐ GỌI HÀM CHECK LICENSE NGAY KHI UI LOAD ⭐
+                if (storedEmail) verifyLicense(storedEmail);
+                
+            } else {
+                if (adminNavLinks) adminNavLinks.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (userControl) userControl.style.display = 'none';
+                
+                // Khóa nút tạo nếu chưa đăng nhập
+                const btnCreate = document.querySelector('.btn-create');
+                btnCreate.disabled = true;
+                btnCreate.style.background = '#6c757d';
+                btnCreate.innerHTML = '<i class="fas fa-lock"></i> Đăng nhập để sử dụng';
+                btnCreate.onclick = startGoogleLogin;
+                btnCreate.disabled = false; // Để bấm vào thì login
+            }
+        }
+
+        // ... (Giữ nguyên các hàm extractFolderId, createAlbum, copyFinalLink từ code cũ) ...
+        // Bạn copy lại hàm createAlbum từ code cũ vào đây nhé, chỉ cần thay đổi phần UI ở trên thôi.
+        
+        // Tôi sẽ viết lại hàm createAlbum chuẩn ở đây cho bạn luôn:
         function extractFolderId(link) {
             if (!link) return null;
             let cleanedLink = link.split('?')[0].replace(/\/$/, ""); 
@@ -165,72 +252,8 @@
             } else alert('❌ Link chưa sẵn sàng.');
         }
 
-        // ⭐ HÀM QUAN TRỌNG: KIỂM TRA LICENSE TỪ GOOGLE APPS SCRIPT ⭐
-        async function verifyLicense(email) {
-            const btnCreate = document.querySelector('.btn-create');
-            const statusSpan = document.getElementById('licenseStatus');
-            
-            btnCreate.disabled = true;
-            btnCreate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
-            btnCreate.style.background = '#6c757d';
-
-            try {
-                // Thêm parameter email vào URL
-                const checkUrl = `${URL_CHECK_LICENSE}?email=${encodeURIComponent(email)}`;
-                const response = await fetch(checkUrl);
-
-                // DEBUG LOGGING
-                console.log("--- BÁO CÁO KẾT NỐI LICENSE CHECK (GAS) ---");
-                console.log("Status Code:", response.status); 
-
-                if (!response.ok) {
-                    console.error("FETCH FAILED - HTTP Status:", response.status, response.statusText);
-                    throw new Error(`HTTP Error ${response.status}. Kiểm tra triển khai Apps Script.`);
-                }
-                
-                // Lấy data dạng text trước để xử lý lỗi JSON an toàn
-                const text = await response.text();
-                if (!text || text.trim() === "") {
-                    // Nếu phản hồi rỗng (lỗi triển khai hoặc lỗi server ngầm)
-                    throw new Error("Phản hồi rỗng. Kiểm tra lại chế độ triển khai (Execute as Me, Anyone access).");
-                }
-                
-                const data = JSON.parse(text); // Parse JSON
-
-                if (data.status === 'active') {
-                    // ✅ ACTIVE
-                    statusSpan.innerHTML = `<span class="badge bg-success"><i class="fas fa-clock"></i> Hạn: ${data.end_date}</span>`;
-                    btnCreate.disabled = false;
-                    btnCreate.style.background = 'linear-gradient(135deg, #147a30, #0e5a22)';
-                    btnCreate.innerHTML = '<i class="fas fa-magic"></i> Tạo Album Ngay';
-                    btnCreate.onclick = createAlbum;
-
-                } else {
-                    // ❌ EXPIRED / NEW / BLOCKED
-                    let msg = data.status === 'new' ? 'Chưa đăng ký' : data.status === 'expired' ? `Đã hết hạn (${data.end_date})` : 'Tài khoản bị khóa';
-                    statusSpan.innerHTML = `<span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle"></i> ${msg}</span>`;
-                    
-                    btnCreate.disabled = false; 
-                    btnCreate.style.background = 'linear-gradient(135deg, #ff9800, #e65100)';
-                    btnCreate.innerHTML = '<i class="fas fa-comment-dots"></i> Liên hệ Admin để kích hoạt';
-                    
-                    btnCreate.onclick = function() {
-                        if(confirm("Tài khoản của bạn chưa kích hoạt.\nBạn có muốn liên hệ Admin để đăng ký không?")) {
-                            window.open(CONTACT_LINK, '_blank');
-                        }
-                    };
-                }
-            } catch (e) {
-                console.error("LICENSE CHECK FAIL (CATCH):", e);
-                document.getElementById('licenseStatus').innerHTML = `<span class="badge bg-danger">❌ LỖI KẾT NỐI</span>`;
-                btnCreate.innerHTML = '❌ Lỗi kết nối';
-            }
-        }
-        
-        // --- CÁC HÀM KHÁC ---
-        
         async function createAlbum() {
-            // (Hàm tạo album giữ nguyên logic cũ)
+            // Logic tạo album giữ nguyên
             const btn = document.querySelector('.btn-create');
             const driveLinkInput = document.getElementById('driveLink');
             const previewBox = document.getElementById('previewBox');
@@ -241,6 +264,7 @@
 
             if (!folderId) { alert("Link Google Drive không hợp lệ!"); return; }
 
+            const oldText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang khởi tạo...'; 
             btn.disabled = true;
 
@@ -282,75 +306,26 @@
                 previewBox.style.backgroundColor = '#f8d7da';
                 document.getElementById('previewFolderName').innerText = "❌ Lỗi: " + error.message;
             } finally {
-                // Gọi lại verifyLicense để đặt lại trạng thái nút (Active/Inactive)
-                verifyLicense(localStorage.getItem('admin_email')); 
+                btn.innerHTML = '<i class="fas fa-magic"></i> Tạo Album Ngay';
+                btn.disabled = false;
             }
         }
 
+        // Xử lý Login Callback
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('auth_status') === 'success') {
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', urlParams.get('user_email'));
+                localStorage.setItem('admin_name', urlParams.get('user_name') || 'Admin');
+                history.replaceState(null, null, window.location.pathname);
+            }
+        }
 
-       function checkAuthCallback() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Nếu có tham số báo thành công từ Google/n8n
-    if (urlParams.get('auth_status') === 'success') {
-        // ⭐ GHI DỮ LIỆU VÀO LOCAL STORAGE ⭐
-        localStorage.setItem('admin_is_logged_in', 'true');
-        localStorage.setItem('admin_email', urlParams.get('user_email'));
-        localStorage.setItem('admin_name', urlParams.get('user_name') || 'Admin');
-        
-        // Xóa các tham số trên URL để tránh lỗi lặp
-        history.replaceState(null, null, window.location.pathname);
-        
-        // ⭐ QUAN TRỌNG: Gọi lại hàm updateUI ngay sau khi ghi để load giao diện Active ⭐
-        updateUI(); 
-        return true; // Báo hiệu đã xử lý callback
-    }
-    return false;
-}
-
-function updateUI() {
-    const adminNavLinks = document.getElementById('adminNavLinks');
-    const loginBtn = document.getElementById('loginBtn');
-    const userControl = document.getElementById('userControl');
-    const userEmailDisplay = document.getElementById('userEmailDisplay');
-    const btnCreate = document.querySelector('.btn-create');
-    
-    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-    const storedEmail = localStorage.getItem('admin_email');
-    
-    if (isLoggedIn && storedEmail) {
-        // Hiển thị trạng thái đăng nhập
-        if (adminNavLinks) adminNavLinks.style.display = 'flex';
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (userControl) userControl.style.display = 'flex';
-        
-        userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${localStorage.getItem('admin_name') || 'Admin'}`;
-        
-        // ⭐ GOI HAM KIEM TRA LICENSE ⭐
-        verifyLicense(storedEmail);
-        
-    } else {
-        // Trạng thái đăng xuất
-        if (adminNavLinks) adminNavLinks.style.display = 'none';
-        if (loginBtn) loginBtn.style.display = 'flex';
-        if (userControl) userControl.style.display = 'none';
-        
-        // Đặt nút tạo album về trạng thái chờ đăng nhập
-        btnCreate.disabled = false;
-        btnCreate.style.background = '#6c757d';
-        btnCreate.innerHTML = '<i class="fas fa-lock"></i> Đăng nhập để sử dụng';
-        btnCreate.onclick = startGoogleLogin;
-    }
-}
-
-// Thay đổi hàm khởi động trang để ưu tiên checkAuthCallback
-document.addEventListener('DOMContentLoaded', function() {
-    // Nếu checkAuthCallback trả về FALSE (Không phải trang chuyển hướng), thì mới chạy updateUI.
-    // Nếu checkAuthCallback trả về TRUE, nó đã tự gọi updateUI và dừng lại.
-    if (!checkAuthCallback()) {
-        updateUI();
-    }
-});
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthCallback();
+            updateUI();
+        });
     </script>
 </body>
 </html>
