@@ -47,6 +47,8 @@
         .nav-links { display: flex; align-items: center; gap: 15px; }
         .nav-links a, #userControl a.nav-link { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; padding: 5px 10px; border-radius: 5px; display: flex; align-items: center; gap: 5px; }
         .nav-links a:hover, #userControl a.nav-link:hover { background-color: var(--dark-green); }
+        /* Thêm style cho User/Logout khi không còn là dropdown */
+        #userInfoDisplay { display: flex; align-items: center; gap: 10px; }
 
         /* ALBUM GRID */
         .dashboard-container { width: 90%; max-width: 1200px; margin: 20px auto; padding: 20px; }
@@ -85,13 +87,12 @@
             <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý Album</a>
             
             <div id="authControl">
-                <div id="userControl" class="dropdown" style="display: none;">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="userEmailDisplay" class="user-email">Admin</span> <i class="fas fa-chevron-down"></i>
+                <div id="userInfoDisplay" style="display: none;">
+                    <span id="userEmailDisplay" class="nav-link" style="color: white; padding: 5px 0;">Admin</span> 
+                    
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="nav-link" title="Đăng Xuất">
+                        <i class="fas fa-sign-out-alt"></i> 
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="background-color: var(--dark-green);">
-                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -200,17 +201,20 @@
                 
                 const finalResult = Array.isArray(result) ? result[0] : result;
 
-               if (finalResult && finalResult.fileNamesForCopy) { // Dùng tên mới
+                // Dùng tên trường cũ (fileNamesForCopy/selectedPhotos) hoặc tên trường mới (file_names_for_copy/selected_photos)
+                const fileNamesKey = finalResult.file_names_for_copy || finalResult.fileNamesForCopy;
+                const selectedPhotosKey = finalResult.selected_photos || finalResult.selectedPhotos;
+                
+                if (fileNamesKey) { 
                     
-                    const namesList = finalResult.fileNamesForCopy; // Dùng tên mới
-                    const selectedCount = finalResult.selectedPhotos || 'Không rõ'; // Dùng tên mới
+                    const namesList = fileNamesKey; 
+                    const selectedCount = selectedPhotosKey || 'Không rõ'; 
                     
                     // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
                     document.getElementById('fileNamesOutput').value = namesList; 
 
-                    // Mở Modal
                     const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
 
@@ -231,14 +235,6 @@
         // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
         // -------------------------------------------------------------
         
-        function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
-            window.location.href = 'admin.html';
-        }
-
         async function deleteAlbum(albumId, albumName) {
             if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
                 return;
@@ -285,14 +281,12 @@
             
             const id = albumUniqueId || 'UNKNOWN_ID';
             const rawName = album.folderName || album.name || 'Album Mới';
-            // Dùng replace để thoát dấu nháy đơn
             const escapedName = rawName.replace(/'/g, "\\'"); 
             
             const totalPhotos = album.total_photos || 0;
             const selectedPhotos = album.selected_photos || 0;
             const comments = album.comments || 0; 
             
-            // Đảm bảo ảnh mặc định hiển thị khi link trống
             const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
@@ -318,18 +312,6 @@
         // -------------------------------------------------------------
         // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
         // -------------------------------------------------------------
-
-        function updateHeaderUI() {
-            const userControl = document.getElementById('userControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (isLoggedIn) {
-                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
-                userControl.style.display = 'flex'; 
-            } else {
-                userControl.style.display = 'none'; // Ẩn dropdown nếu không đăng nhập
-            }
-        }
 
         async function loadAlbums() {
             const albumGrid = document.getElementById('albumGrid');
@@ -357,8 +339,8 @@
 
                 if (albums.length === 0) {
                     albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
-                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
-                                          '</div>';
+                                         'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
+                                         '</div>';
                     albumCount.innerText = 0;
                     return;
                 }
@@ -371,7 +353,6 @@
                 albumCount.innerText = albums.length;
 
             } catch (error) {
-                // BẮT TẤT CẢ LỖI VÀ CHỈ HIỂN THỊ THÔNG BÁO CHUNG
                 console.error("Lỗi tải Album (Ẩn):", error.message);
                 
                 albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
