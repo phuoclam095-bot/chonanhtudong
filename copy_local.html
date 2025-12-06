@@ -95,17 +95,20 @@
             text-shadow: 0 0 10px rgba(81, 255, 125, 0.5);
         }
 
-        /* ALERT CUSTOM */
+        /* ALERT CUSTOM (ĐÃ ĐIỀU CHỈNH GỌN HƠN) */
         .alert-custom {
             background-color: #fff3cd;
             color: #856404;
             border: 1px solid #ffeeba;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 10px 15px; /* Giảm padding */
             margin-bottom: 25px;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-align: left; /* Căn trái cho dễ đọc */
         }
+        /* Loại bỏ icon to, chỉ giữ text */
+        .alert-custom div { width: 100%; }
 
         /* DIRECTORY SELECTION */
         .dir-grid { 
@@ -167,20 +170,14 @@
         }
         #btnCopy.active:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.6); }
 
-        /* ⭐ LOGGING AREA (SỬA CSS ĐỂ LUÔN HIỆN) ⭐ */
+        /* LOGGING AREA */
         #statusLog {
-            margin-top: 25px; 
-            background: #0f0f0f; 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            font-family: 'Consolas', monospace; 
-            font-size: 0.85rem; 
-            color: #ccc;
-            height: 250px; 
-            overflow-y: auto;
+            margin-top: 25px; background: #0f0f0f; padding: 15px; 
+            border-radius: 8px; border: 1px solid #333; 
+            font-family: 'Consolas', monospace; font-size: 0.85rem; color: #ccc;
+            height: 250px; overflow-y: auto;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            display: block; /* LUÔN HIỂN THỊ */
+            display: block; 
         }
         .log-success { color: #51ff7d; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
         .log-error { color: #ff6b6b; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
@@ -234,7 +231,6 @@
             <h2><i class="fas fa-exchange-alt me-2"></i>Công Cụ Sao Chép Nội Bộ</h2>
             
             <div class="alert-custom">
-                <i class="fas fa-info-circle fa-2x me-3"></i>
                 <div>
                     <div class="mb-1"><i class="fas fa-check-circle me-2"></i>Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.</div>
                     <div><i class="fab fa-chrome me-2"></i>Tính năng này chỉ hoạt động trên trình duyệt <strong>Google Chrome</strong> hoặc <strong>Edge</strong> trên máy tính.</div>
@@ -273,32 +269,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- AUTH LOGIC (XỬ LÝ NGÀY HẾT HẠN) ---
+        // --- AUTH LOGIC ---
         const adminEmail = localStorage.getItem('admin_email');
         const adminName = localStorage.getItem('admin_name') || 'Admin';
-        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
         
-        // Hàm format ngày từ Timestamp (Ví dụ: 1767200000000 -> 31/12/2025)
+        // Hàm format ngày từ Timestamp
         function formatExpiry(timestamp) {
             if (!timestamp || isNaN(timestamp)) return 'Vĩnh viễn';
             try {
                 const date = new Date(parseInt(timestamp));
-                return date.toLocaleDateString('vi-VN'); // DD/MM/YYYY
+                return date.toLocaleDateString('vi-VN'); 
             } catch (e) {
                 return 'Không xác định';
             }
         }
 
-        // Lấy hạn dùng và format
         const rawExpiry = localStorage.getItem('admin_expiry'); 
         const displayExpiry = formatExpiry(rawExpiry);
+        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         function updateHeaderUI() {
             const authControl = document.getElementById('authControl');
             if (isLoggedIn) {
                 document.getElementById('userNameDisplay').innerText = adminName;
                 document.getElementById('userAvatarLetter').innerText = adminName.charAt(0).toUpperCase();
-                // ⭐ Cập nhật ngày hạn dùng đã format ⭐
                 document.getElementById('userExpiry').innerText = `(Hạn: ${displayExpiry})`;
                 
                 authControl.style.display = 'flex'; 
@@ -324,7 +318,7 @@
                 document.getElementById('lblSource').innerHTML = `<span class="text-ok"><i class="fas fa-check-circle"></i> ${handle.name}</span>`;
                 document.getElementById('boxSource').classList.add('success');
                 
-                // ⭐ GHI LOG NGAY KHI CHỌN XONG ⭐
+                // GHI LOG KHI CHỌN
                 log(`✅ Đã chọn nguồn: ${handle.name}`, 'success');
                 
                 checkReady();
@@ -345,7 +339,7 @@
                 document.getElementById('lblDest').innerHTML = `<span class="text-ok"><i class="fas fa-check-circle"></i> ${handle.name}</span>`;
                 document.getElementById('boxDest').classList.add('success');
                 
-                // ⭐ GHI LOG NGAY KHI CHỌN XONG ⭐
+                // GHI LOG KHI CHỌN
                 log(`✅ Đã chọn đích: ${handle.name}`, 'success');
                 
                 checkReady();
@@ -364,7 +358,6 @@
         async function runCopyProcess() {
             const txtFiles = document.getElementById('txtFiles').value;
             const btn = document.getElementById('btnCopy');
-            const logBox = document.getElementById('statusLog');
             
             if (!txtFiles.trim()) { alert("Vui lòng nhập danh sách tên file!"); return; }
 
@@ -375,7 +368,6 @@
             btn.classList.remove('active');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
             
-            // ⭐ GHI LOG BẮT ĐẦU ⭐
             log(`🚀 Bắt đầu xử lý ${fileList.length} file...`, 'info');
 
             let success = 0;
@@ -393,14 +385,12 @@
                     await writable.close();
 
                     success++;
-                    // ⭐ GHI LOG TỪNG FILE ⭐
-                    log(`[${i+1}/${fileList.length}] ✅ Đã chép: ${fileName}`, 'success');
+                    log(`[${i+1}/${fileList.length}] ✅ OK: ${fileName}`, 'success');
 
                 } catch (error) {
                     fail++;
                     let msg = "Lỗi";
                     if (error.name === 'NotFoundError') msg = "Không tìm thấy";
-                    // ⭐ GHI LOG LỖI ⭐
                     log(`[${i+1}/${fileList.length}] ❌ LỖI: ${fileName} - ${msg}`, 'error');
                 }
             }
