@@ -15,15 +15,13 @@
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
             --highlight-color: #51ff7d;
-            --accent-gold: #f0c300;
-            --card-bg-opacity: rgba(10, 10, 10, 0.85); /* Nền đen mờ hơn chút để rõ chữ */
+            --card-bg-opacity: rgba(10, 10, 10, 0.85);
         }
 
         body { 
             margin: 0; padding: 0; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
-            /* Nền chấm bi giống Donate */
             background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
             background-size: 60px 60px; 
             background-position: 0 0, 30px 30px; 
@@ -33,7 +31,7 @@
             padding-top: 80px; 
         }
 
-        /* HEADER */
+        /* --- HEADER --- */
         .navbar {
             background: var(--primary-green);
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
@@ -44,13 +42,41 @@
         .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); border-radius: 8px; }
         .navbar-toggler { border: none; color: white; }
 
-        /* MAIN CONTAINER */
+        /* USER INFO BOX (Style đồng bộ) */
+        .user-status-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .user-avatar-circle {
+            width: 32px; height: 32px;
+            background: #333; color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; border: 2px solid var(--highlight-color);
+            text-transform: uppercase;
+        }
+        .status-badge {
+            background-color: #198754;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* --- MAIN CONTAINER --- */
         .copy-container {
-            max-width: 900px; /* Rộng hơn để chứa 2 ô song song đẹp hơn */
+            max-width: 900px;
             margin: 0 auto 40px auto; 
-            padding: 40px;
+            padding: 30px;
             
-            /* Style giống Donate */
             background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.9) 0%, rgba(14, 90, 34, 0.8) 100%);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -65,123 +91,100 @@
         h2 { 
             color: var(--highlight-color); 
             text-align: center; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
             font-weight: 800; 
             text-shadow: 0 0 10px rgba(81, 255, 125, 0.5);
         }
 
-        /* WARNING BOX (Vị trí cũ, Text mới) */
+        /* ALERT CUSTOM (Updated) */
         .alert-custom {
             background-color: #fff3cd;
             color: #856404;
             border: 1px solid #ffeeba;
             border-radius: 10px;
             padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        .alert-custom ul { margin: 0; padding-left: 20px; }
+        .alert-custom li { margin-bottom: 5px; }
 
-        /* DIRECTORY SELECTION (BỐ CỤC SONG SONG) */
+        /* DIRECTORY SELECTION */
         .dir-grid { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; /* Chia đôi màn hình */
-            gap: 30px; 
-            margin-bottom: 30px; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 20px; 
         }
 
         .dir-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px dashed #666; /* Viền nét đứt như ảnh cũ */
-            border-radius: 12px;
-            padding: 25px 15px;
-            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed #777;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
             position: relative;
+            min-height: 100px;
         }
-        
-        .dir-box:hover {
-            border-color: var(--highlight-color);
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.1); }
+        .dir-box:hover { border-color: var(--highlight-color); background: rgba(0, 0, 0, 0.6); }
+        .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.15); border-style: solid; }
 
         .btn-select-dir {
-            background: #333;
-            color: white; 
-            border: 1px solid #555;
-            padding: 10px 20px; 
-            border-radius: 50px;
-            font-weight: 700; 
-            margin-bottom: 10px;
-            transition: 0.3s;
-            display: inline-flex; align-items: center; gap: 8px;
+            background: #333; color: white; border: 1px solid #555;
+            padding: 6px 15px; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; margin-bottom: 8px;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
         }
         .btn-select-dir:hover { background: #555; transform: translateY(-2px); border-color: #aaa; }
 
-        .dir-status { font-size: 0.9rem; margin-top: 10px; word-break: break-all; min-height: 24px; }
-        .text-empty { color: #ff6b6b; font-style: italic; }
+        .dir-status { font-size: 0.85rem; word-break: break-all; min-height: 20px; text-align: center; }
+        .text-empty { color: #ff6b6b; font-style: italic; opacity: 0.8; }
         .text-ok { color: #51ff7d; font-weight: bold; }
 
-        /* INPUT TEXTAREA */
-        label { font-weight: 700; color: var(--highlight-color); margin-bottom: 10px; display: block; }
+        /* INPUT AREA */
+        label { font-weight: 700; color: var(--highlight-color); margin-bottom: 8px; display: block; font-size: 0.95rem; }
         
         textarea { 
-            background: rgba(0,0,0,0.3); 
-            color: #fff; 
+            background: rgba(0,0,0,0.4); color: #fff; 
             border: 1px solid rgba(255,255,255,0.2); 
-            width: 100%; padding: 15px; border-radius: 12px; 
+            width: 100%; padding: 12px; border-radius: 10px; 
             resize: vertical; font-family: 'Consolas', monospace;
-            transition: border 0.3s;
+            transition: border 0.3s; min-height: 120px; 
         }
-        textarea:focus { outline: none; border-color: var(--highlight-color); background: rgba(0,0,0,0.5); }
+        textarea:focus { outline: none; border-color: var(--highlight-color); background: rgba(0,0,0,0.6); }
 
         /* MAIN BUTTON */
         #btnCopy { 
-            background: #555; /* Mặc định xám khi chưa active */
-            color: #aaa; 
-            border: none; padding: 15px; 
-            width: 100%; border-radius: 12px; font-size: 1.2rem; font-weight: 800; 
-            margin-top: 30px; transition: 0.3s; 
-            cursor: not-allowed;
+            background: #555; color: #aaa; border: none; padding: 12px; 
+            width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: 800; 
+            margin-top: 20px; transition: 0.3s; cursor: not-allowed;
         }
         #btnCopy.active {
-            background: linear-gradient(135deg, #0d6efd, #0043a8); 
-            color: white; 
-            cursor: pointer;
+            background: linear-gradient(135deg, #0d6efd, #0043a8); color: white; cursor: pointer;
             box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
         }
         #btnCopy.active:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.6); }
 
-        /* LOGGING AREA (GIỮ NGUYÊN VỊ TRÍ DƯỚI CÙNG) */
+        /* LOGGING AREA */
         #statusLog {
-            margin-top: 25px; 
-            background: #111; 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            font-family: monospace; font-size: 0.85rem; color: #ccc;
-            max-height: 200px; overflow-y: auto;
+            margin-top: 25px; background: #0f0f0f; padding: 15px; 
+            border-radius: 8px; border: 1px solid #333; 
+            font-family: 'Consolas', monospace; font-size: 0.85rem; color: #ccc;
+            height: 250px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .log-success { color: #51ff7d; }
-        .log-error { color: #ff6b6b; }
-        .log-info { color: #4dabf7; }
+        .log-success { color: #51ff7d; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
+        .log-error { color: #ff6b6b; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
+        .log-info { color: #4dabf7; margin-bottom: 10px; display: block; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 5px; }
 
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .copy-container { margin: 20px 15px; padding: 25px; }
-            .dir-grid { grid-template-columns: 1fr; gap: 20px; } /* Mobile thì xếp chồng */
-            
-            .user-info-mobile {
-                border-top: 1px solid rgba(255,255,255,0.1);
-                margin-top: 15px;
-                padding-top: 15px;
-                justify-content: flex-end;
-            }
+            .copy-container { margin: 15px; padding: 20px; }
+            .dir-grid { grid-template-columns: 1fr; gap: 15px; }
+            .user-info-mobile { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); justify-content: center; width: 100%; }
         }
     </style>
 </head>
@@ -202,12 +205,19 @@
                     <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
                 </ul>
                 
-                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
-                    <span id="userEmailDisplay" class="text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
-                        Admin
-                    </span>
-                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold d-flex align-items-center gap-2 rounded-pill px-3">
-                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                <div id="authControl" style="display: none;" class="align-items-center gap-3 user-info-mobile">
+                    <div class="user-status-box">
+                        <div class="user-avatar-circle" id="userAvatarLetter">A</div>
+                        <div>
+                            <div class="fw-bold" id="userNameDisplay">Admin</div>
+                            <div style="font-size: 0.7rem; color: #ddd; margin-top: -2px;">
+                                <span class="status-badge">ACTIVE</span>
+                                <span class="ms-1" id="userExpiry">(Hạn: Vĩnh viễn)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold rounded-pill px-3" title="Đăng Xuất">
+                        <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
             </div>
@@ -219,8 +229,11 @@
             <h2><i class="fas fa-exchange-alt me-2"></i>Công Cụ Sao Chép Nội Bộ</h2>
             
             <div class="alert-custom">
-                <i class="fas fa-tachometer-alt fa-2x text-warning"></i>
-                <span>Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.</span>
+                <i class="fas fa-info-circle fa-2x text-warning"></i>
+                <div>
+                    <div><i class="fas fa-check me-2"></i>Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.</div>
+                    <div class="mt-1"><i class="fab fa-chrome me-2"></i>Tính năng này chỉ hoạt động trên trình duyệt <strong>Google Chrome</strong> hoặc <strong>Edge</strong> trên máy tính.</div>
+                </div>
             </div>
 
             <div class="dir-grid">
@@ -228,14 +241,14 @@
                     <button class="btn-select-dir" onclick="handleSelectSource()">
                         <i class="fas fa-folder-open"></i> Chọn Nguồn
                     </button>
-                    <div id="lblSource" class="dir-status text-empty">Chưa chọn thư mục nguồn</div>
+                    <div id="lblSource" class="dir-status text-empty">Chưa chọn thư mục</div>
                 </div>
                 
                 <div class="dir-box" id="boxDest">
                     <button class="btn-select-dir" onclick="handleSelectDest()">
                         <i class="fas fa-folder-plus"></i> Chọn Đích
                     </button>
-                    <div id="lblDest" class="dir-status text-empty">Chưa chọn thư mục đích</div>
+                    <div id="lblDest" class="dir-status text-empty">Chưa chọn thư mục</div>
                 </div>
             </div>
 
@@ -255,16 +268,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- AUTH LOGIC ---
+        // --- AUTH LOGIC (LẤY DỮ LIỆU THỰC TẾ) ---
+        // Giả sử logic đăng nhập của bạn lưu key 'admin_name' và 'admin_expiry'
         const adminEmail = localStorage.getItem('admin_email');
         const adminName = localStorage.getItem('admin_name') || 'Admin';
+        const expiryDate = localStorage.getItem('admin_expiry') || 'Vĩnh viễn'; // Lấy hạn dùng thực tế
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
         function updateHeaderUI() {
             const authControl = document.getElementById('authControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
             if (isLoggedIn) {
-                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${adminName || adminEmail || 'Admin'}`;
+                // Update Name & Avatar & Expiry
+                document.getElementById('userNameDisplay').innerText = adminName;
+                document.getElementById('userAvatarLetter').innerText = adminName.charAt(0).toUpperCase();
+                document.getElementById('userExpiry').innerText = `(Hạn: ${expiryDate})`;
+                
                 authControl.style.display = 'flex'; 
                 authControl.classList.remove('d-none');
             }
@@ -280,22 +298,19 @@
         const isSupported = ('showDirectoryPicker' in window);
 
         async function handleSelectSource() {
-            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome hoặc Edge trên máy tính."); return; }
+            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome trên PC."); return; }
             try {
                 const handle = await window.showDirectoryPicker({ id: 'src_folder', startIn: 'pictures' });
                 dirHandleSource = handle;
                 
-                // Update UI
-                const lbl = document.getElementById('lblSource');
-                const box = document.getElementById('boxSource');
-                lbl.innerHTML = `<span class="text-ok"><i class="fas fa-check"></i> ${handle.name}</span>`;
-                box.className = 'dir-box success';
+                document.getElementById('lblSource').innerHTML = `<span class="text-ok"><i class="fas fa-check-circle"></i> ${handle.name}</span>`;
+                document.getElementById('boxSource').classList.add('success');
                 checkReady();
             } catch (err) { /* User cancelled */ }
         }
 
         async function handleSelectDest() {
-            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome hoặc Edge trên máy tính."); return; }
+            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome trên PC."); return; }
             try {
                 const handle = await window.showDirectoryPicker({ id: 'dest_folder', mode: 'readwrite' });
                 if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
@@ -305,11 +320,8 @@
                 }
                 dirHandleDest = handle;
                 
-                // Update UI
-                const lbl = document.getElementById('lblDest');
-                const box = document.getElementById('boxDest');
-                lbl.innerHTML = `<span class="text-ok"><i class="fas fa-check"></i> ${handle.name}</span>`;
-                box.className = 'dir-box success';
+                document.getElementById('lblDest').innerHTML = `<span class="text-ok"><i class="fas fa-check-circle"></i> ${handle.name}</span>`;
+                document.getElementById('boxDest').classList.add('success');
                 checkReady();
             } catch (err) { /* User cancelled */ }
         }
@@ -318,7 +330,7 @@
             const btn = document.getElementById('btnCopy');
             if (dirHandleSource && dirHandleDest) {
                 btn.disabled = false;
-                btn.classList.add('active'); // Đổi màu xanh
+                btn.classList.add('active'); 
                 btn.innerHTML = '<i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP';
             }
         }
@@ -344,22 +356,25 @@
             for (let i = 0; i < fileList.length; i++) {
                 const fileName = fileList[i];
                 try {
+                    // Tìm & Đọc
                     const fileHandle = await dirHandleSource.getFileHandle(fileName);
                     const fileData = await fileHandle.getFile();
                     
+                    // Tạo & Ghi
                     const newFileHandle = await dirHandleDest.getFileHandle(fileName, { create: true });
                     const writable = await newFileHandle.createWritable();
                     await writable.write(fileData);
                     await writable.close();
 
                     success++;
-                    log(`[${i+1}/${fileList.length}] OK: ${fileName}`, 'success');
+                    // ⭐ GHI LOG TẤT CẢ (KHÔNG BỎ QUA) ⭐
+                    log(`[${i+1}/${fileList.length}] ✅ OK: ${fileName}`, 'success');
 
                 } catch (error) {
                     fail++;
-                    let msg = "Lỗi không xác định";
+                    let msg = "Lỗi";
                     if (error.name === 'NotFoundError') msg = "Không tìm thấy file";
-                    log(`[${i+1}] LỖI: ${fileName} - ${msg}`, 'error');
+                    log(`[${i+1}/${fileList.length}] ❌ LỖI: ${fileName} - ${msg}`, 'error');
                 }
             }
 
