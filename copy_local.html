@@ -15,14 +15,15 @@
             --bg-color: #1a1a1a;
             --text-color: #f0f0f0;
             --highlight-color: #51ff7d;
-            --card-bg-opacity: rgba(10, 10, 10, 0.6);
+            --accent-gold: #f0c300;
+            --card-bg-opacity: rgba(10, 10, 10, 0.85); /* Nền đen mờ hơn chút để rõ chữ */
         }
 
         body { 
             margin: 0; padding: 0; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
-            /* ⭐ Nền chấm bi đồng bộ với Donate ⭐ */
+            /* Nền chấm bi giống Donate */
             background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
             background-size: 60px 60px; 
             background-position: 0 0, 30px 30px; 
@@ -32,7 +33,7 @@
             padding-top: 80px; 
         }
 
-        /* HEADER CHUẨN */
+        /* HEADER */
         .navbar {
             background: var(--primary-green);
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
@@ -43,14 +44,14 @@
         .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); border-radius: 8px; }
         .navbar-toggler { border: none; color: white; }
 
-        /* MAIN CONTAINER (STYLE GIỐNG DONATE) */
+        /* MAIN CONTAINER */
         .copy-container {
-            max-width: 800px;
+            max-width: 900px; /* Rộng hơn để chứa 2 ô song song đẹp hơn */
             margin: 0 auto 40px auto; 
             padding: 40px;
             
-            /* Nền Gradient trong suốt */
-            background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.85) 0%, rgba(14, 90, 34, 0.75) 100%);
+            /* Style giống Donate */
+            background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.9) 0%, rgba(14, 90, 34, 0.8) 100%);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             
@@ -64,47 +65,69 @@
         h2 { 
             color: var(--highlight-color); 
             text-align: center; 
-            margin-bottom: 30px; 
+            margin-bottom: 25px; 
             font-weight: 800; 
             text-shadow: 0 0 10px rgba(81, 255, 125, 0.5);
         }
 
-        /* DIRECTORY ITEM STYLE */
-        .dir-item {
-            background-color: var(--card-bg-opacity);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+        /* WARNING BOX (Vị trí cũ, Text mới) */
+        .alert-custom {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 10px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* DIRECTORY SELECTION (BỐ CỤC SONG SONG) */
+        .dir-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* Chia đôi màn hình */
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+
+        .dir-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed #666; /* Viền nét đứt như ảnh cũ */
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
         }
         
-        .dir-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .dir-box:hover {
             border-color: var(--highlight-color);
-            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.5);
         }
+        .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.1); }
 
-        .dir-info { flex: 1; margin-right: 15px; }
-        .dir-label { font-size: 0.9rem; color: #aaa; margin-bottom: 5px; display: block; font-weight: 700; text-transform: uppercase; }
-        .dir-path { font-size: 1.1rem; color: white; font-weight: 600; word-break: break-all; }
-        .dir-path.placeholder { color: #666; font-style: italic; }
-        
-        .dir-icon {
-            width: 50px; height: 50px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            color: var(--highlight-color);
-            flex-shrink: 0;
+        .btn-select-dir {
+            background: #333;
+            color: white; 
+            border: 1px solid #555;
+            padding: 10px 20px; 
+            border-radius: 50px;
+            font-weight: 700; 
+            margin-bottom: 10px;
+            transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px;
         }
+        .btn-select-dir:hover { background: #555; transform: translateY(-2px); border-color: #aaa; }
 
-        /* INPUT AREA */
+        .dir-status { font-size: 0.9rem; margin-top: 10px; word-break: break-all; min-height: 24px; }
+        .text-empty { color: #ff6b6b; font-style: italic; }
+        .text-ok { color: #51ff7d; font-weight: bold; }
+
+        /* INPUT TEXTAREA */
         label { font-weight: 700; color: var(--highlight-color); margin-bottom: 10px; display: block; }
         
         textarea { 
@@ -117,47 +140,41 @@
         }
         textarea:focus { outline: none; border-color: var(--highlight-color); background: rgba(0,0,0,0.5); }
 
-        /* ACTION BUTTON */
+        /* MAIN BUTTON */
         #btnCopy { 
-            background: linear-gradient(135deg, #0d6efd, #0043a8); 
-            color: white; border: none; padding: 15px; 
+            background: #555; /* Mặc định xám khi chưa active */
+            color: #aaa; 
+            border: none; padding: 15px; 
             width: 100%; border-radius: 12px; font-size: 1.2rem; font-weight: 800; 
             margin-top: 30px; transition: 0.3s; 
-            box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: not-allowed;
         }
-        #btnCopy:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.6); }
-        #btnCopy:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; transform: none; }
+        #btnCopy.active {
+            background: linear-gradient(135deg, #0d6efd, #0043a8); 
+            color: white; 
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
+        }
+        #btnCopy.active:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.6); }
 
-        /* LOGGING AREA */
+        /* LOGGING AREA (GIỮ NGUYÊN VỊ TRÍ DƯỚI CÙNG) */
         #statusLog {
             margin-top: 25px; 
-            background: rgba(0,0,0,0.4); 
+            background: #111; 
             padding: 15px; 
-            border-radius: 10px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            font-family: monospace; font-size: 0.9rem; color: #ccc;
-            max-height: 150px; overflow-y: auto;
-            display: none; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            font-family: monospace; font-size: 0.85rem; color: #ccc;
+            max-height: 200px; overflow-y: auto;
         }
         .log-success { color: #51ff7d; }
         .log-error { color: #ff6b6b; }
         .log-info { color: #4dabf7; }
 
-        .system-note {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #aaa;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px;
-        }
-
-        /* Mobile */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .copy-container { margin: 20px 15px; padding: 25px; }
-            h2 { font-size: 1.5rem; }
-            .dir-item { padding: 15px; }
+            .dir-grid { grid-template-columns: 1fr; gap: 20px; } /* Mobile thì xếp chồng */
             
             .user-info-mobile {
                 border-top: 1px solid rgba(255,255,255,0.1);
@@ -199,44 +216,46 @@
 
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
         <div class="copy-container w-100">
-            <h2><i class="fas fa-exchange-alt me-2"></i>Sao Chép Ảnh Nội Bộ</h2>
+            <h2><i class="fas fa-exchange-alt me-2"></i>Công Cụ Sao Chép Nội Bộ</h2>
             
-            <div class="dir-item" onclick="handleSelectSource()">
-                <div class="dir-info">
-                    <span class="dir-label text-danger"><i class="fas fa-folder-open me-1"></i>Thư mục Nguồn (Chứa ảnh gốc)</span>
-                    <div id="lblSource" class="dir-path placeholder">Chạm để chọn thư mục...</div>
-                </div>
-                <div class="dir-icon"><i class="fas fa-chevron-right"></i></div>
+            <div class="alert-custom">
+                <i class="fas fa-tachometer-alt fa-2x text-warning"></i>
+                <span>Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.</span>
             </div>
 
-            <div class="dir-item" onclick="handleSelectDest()">
-                <div class="dir-info">
-                    <span class="dir-label text-success"><i class="fas fa-folder-plus me-1"></i>Thư mục Đích (Nơi lưu ảnh)</span>
-                    <div id="lblDest" class="dir-path placeholder">Chạm để chọn thư mục...</div>
+            <div class="dir-grid">
+                <div class="dir-box" id="boxSource">
+                    <button class="btn-select-dir" onclick="handleSelectSource()">
+                        <i class="fas fa-folder-open"></i> Chọn Nguồn
+                    </button>
+                    <div id="lblSource" class="dir-status text-empty">Chưa chọn thư mục nguồn</div>
                 </div>
-                <div class="dir-icon"><i class="fas fa-chevron-right"></i></div>
+                
+                <div class="dir-box" id="boxDest">
+                    <button class="btn-select-dir" onclick="handleSelectDest()">
+                        <i class="fas fa-folder-plus"></i> Chọn Đích
+                    </button>
+                    <div id="lblDest" class="dir-status text-empty">Chưa chọn thư mục đích</div>
+                </div>
             </div>
 
-            <div class="mt-4">
-                <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file cần chép:</label>
-                <textarea id="txtFiles" rows="5" placeholder="Dán danh sách tên file vào đây (Ví dụ: IMG_001.JPG, DSC_0555.CR3...)"></textarea>
-            </div>
+            <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file cần chép:</label>
+            <textarea id="txtFiles" rows="5" placeholder="Dán danh sách tên file vào đây (Ví dụ: IMG_001.JPG, DSC_0555.CR3...)"></textarea>
 
             <button id="btnCopy" onclick="runCopyProcess()" disabled>
-                <i class="fas fa-bolt"></i> BẮT ĐẦU SAO CHÉP
+                <i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP
             </button>
 
-            <div id="statusLog"></div>
-            
-            <div class="system-note">
-                <i class="fas fa-tachometer-alt me-1"></i> Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.
+            <div id="statusLog">
+                <div class="log-info">>> Sẵn sàng. Vui lòng chọn thư mục và nhập tên file...</div>
             </div>
+            
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- AUTH LOGIC (Đồng bộ với Admin/Managa) ---
+        // --- AUTH LOGIC ---
         const adminEmail = localStorage.getItem('admin_email');
         const adminName = localStorage.getItem('admin_name') || 'Admin';
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
@@ -245,28 +264,19 @@
             const authControl = document.getElementById('authControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
             if (isLoggedIn) {
-                // Hiển thị tên người dùng và icon user giống trang quản lý
                 userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${adminName || adminEmail || 'Admin'}`;
                 authControl.style.display = 'flex'; 
                 authControl.classList.remove('d-none');
-            } else {
-                // Nếu chưa đăng nhập thì ẩn hoặc chuyển về trang login
-                // window.location.href = 'admin.html'; // Tùy chọn: Chuyển hướng nếu chưa đăng nhập
             }
         }
         function logoutAdmin() {
             localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token');
             window.location.href = 'admin.html';
         }
 
         // --- CORE COPY LOGIC ---
         let dirHandleSource = null;
         let dirHandleDest = null;
-
-        // Check browser support quietly
         const isSupported = ('showDirectoryPicker' in window);
 
         async function handleSelectSource() {
@@ -275,8 +285,11 @@
                 const handle = await window.showDirectoryPicker({ id: 'src_folder', startIn: 'pictures' });
                 dirHandleSource = handle;
                 
-                document.getElementById('lblSource').innerHTML = `<span class="text-white">${handle.name}</span>`;
-                document.getElementById('lblSource').classList.remove('placeholder');
+                // Update UI
+                const lbl = document.getElementById('lblSource');
+                const box = document.getElementById('boxSource');
+                lbl.innerHTML = `<span class="text-ok"><i class="fas fa-check"></i> ${handle.name}</span>`;
+                box.className = 'dir-box success';
                 checkReady();
             } catch (err) { /* User cancelled */ }
         }
@@ -285,7 +298,6 @@
             if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome hoặc Edge trên máy tính."); return; }
             try {
                 const handle = await window.showDirectoryPicker({ id: 'dest_folder', mode: 'readwrite' });
-                // Check write permission
                 if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
                     if ((await handle.requestPermission({ mode: 'readwrite' })) !== 'granted') {
                         alert("Vui lòng cấp quyền GHI để lưu ảnh."); return;
@@ -293,8 +305,11 @@
                 }
                 dirHandleDest = handle;
                 
-                document.getElementById('lblDest').innerHTML = `<span class="text-white">${handle.name}</span>`;
-                document.getElementById('lblDest').classList.remove('placeholder');
+                // Update UI
+                const lbl = document.getElementById('lblDest');
+                const box = document.getElementById('boxDest');
+                lbl.innerHTML = `<span class="text-ok"><i class="fas fa-check"></i> ${handle.name}</span>`;
+                box.className = 'dir-box success';
                 checkReady();
             } catch (err) { /* User cancelled */ }
         }
@@ -303,8 +318,8 @@
             const btn = document.getElementById('btnCopy');
             if (dirHandleSource && dirHandleDest) {
                 btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.innerHTML = '<i class="fas fa-bolt"></i> BẮT ĐẦU SAO CHÉP';
+                btn.classList.add('active'); // Đổi màu xanh
+                btn.innerHTML = '<i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP';
             }
         }
 
@@ -313,14 +328,14 @@
             const btn = document.getElementById('btnCopy');
             const logBox = document.getElementById('statusLog');
             
-            if (!txtFiles.trim()) { alert("Vui lòng nhập danh sách file!"); return; }
+            if (!txtFiles.trim()) { alert("Vui lòng nhập danh sách tên file!"); return; }
 
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
             if (fileList.length === 0) return;
 
             btn.disabled = true;
+            btn.classList.remove('active');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
-            logBox.style.display = 'block';
             logBox.innerHTML = '<div class="log-info">>> Đang khởi tạo...</div>';
 
             let success = 0;
@@ -338,12 +353,12 @@
                     await writable.close();
 
                     success++;
-                    if(i % 5 === 0) log(`[${i+1}/${fileList.length}] Đã chép: ${fileName}`, 'success');
+                    log(`[${i+1}/${fileList.length}] OK: ${fileName}`, 'success');
 
                 } catch (error) {
                     fail++;
                     let msg = "Lỗi không xác định";
-                    if (error.name === 'NotFoundError') msg = "Không tìm thấy file (Sai tên?)";
+                    if (error.name === 'NotFoundError') msg = "Không tìm thấy file";
                     log(`[${i+1}] LỖI: ${fileName} - ${msg}`, 'error');
                 }
             }
@@ -352,10 +367,11 @@
             log(`🏁 HOÀN TẤT: ${success} thành công, ${fail} lỗi.`, success > 0 ? 'success' : 'error');
             
             btn.disabled = false;
+            btn.classList.add('active');
             btn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ XONG (Chép Lại)';
             
             if(fail === 0) alert("Tuyệt vời! Đã sao chép toàn bộ ảnh thành công.");
-            else alert(`Hoàn tất. Có ${fail} file không tìm thấy hoặc lỗi.`);
+            else alert(`Hoàn tất. Có ${fail} file lỗi (Xem log bên dưới).`);
         }
 
         function log(msg, type) {
