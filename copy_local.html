@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sao Chép Ảnh - Local Copy</title>
+    <title>Sao Chép Ảnh - Tiện Ích</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -12,116 +11,168 @@
     <style>
         :root {
             --primary-green: #147a30; 
-            --accent-gold: #f0c300;
-            --bg-dark: #121212;
-            --text-light: #f0f0f0;
-            --card-bg: rgba(30, 30, 30, 0.95);
+            --dark-green: #0e5a22;
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --highlight-color: #51ff7d;
+            --card-bg-opacity: rgba(10, 10, 10, 0.6);
         }
 
         body { 
             margin: 0; padding: 0; 
             font-family: 'Nunito', sans-serif; 
-            background-color: var(--bg-dark); 
-            background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%); 
-            background-size: 40px 40px; 
-            background-position: 0 0, 20px 20px; 
-            color: var(--text-light); 
+            background-color: var(--bg-color); 
+            /* ⭐ Nền chấm bi đồng bộ với Donate ⭐ */
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px; 
+            color: var(--text-color); 
             min-height: 100vh; 
             display: flex; flex-direction: column; 
             padding-top: 80px; 
         }
 
-        /* HEADER */
+        /* HEADER CHUẨN */
         .navbar {
             background: var(--primary-green);
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            position: fixed; top: 0; width: 100%; z-index: 1000;
+            backdrop-filter: blur(10px);
         }
-        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
-        .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 600; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: #fff !important; transform: translateY(-2px); }
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px;}
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); border-radius: 8px; }
+        .navbar-toggler { border: none; color: white; }
 
-        /* MAIN CARD */
-        .main-container { 
-            flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 20px; 
+        /* MAIN CONTAINER (STYLE GIỐNG DONATE) */
+        .copy-container {
+            max-width: 800px;
+            margin: 0 auto 40px auto; 
+            padding: 40px;
+            
+            /* Nền Gradient trong suốt */
+            background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.85) 0%, rgba(14, 90, 34, 0.75) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            
+            background-color: transparent;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff; 
+        }
+
+        h2 { 
+            color: var(--highlight-color); 
+            text-align: center; 
+            margin-bottom: 30px; 
+            font-weight: 800; 
+            text-shadow: 0 0 10px rgba(81, 255, 125, 0.5);
+        }
+
+        /* DIRECTORY ITEM STYLE */
+        .dir-item {
+            background-color: var(--card-bg-opacity);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
         }
         
-        .copy-card { 
-            background: var(--card-bg); 
-            width: 100%; max-width: 800px; 
-            border-radius: 20px; padding: 40px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            border: 1px solid #444;
+        .dir-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--highlight-color);
+            transform: translateY(-2px);
         }
 
-        h2 { text-align: center; margin-bottom: 30px; font-weight: 800; color: var(--accent-gold); }
-
-        /* DIRECTORY SELECTION BOXES */
-        .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .dir-info { flex: 1; margin-right: 15px; }
+        .dir-label { font-size: 0.9rem; color: #aaa; margin-bottom: 5px; display: block; font-weight: 700; text-transform: uppercase; }
+        .dir-path { font-size: 1.1rem; color: white; font-weight: 600; word-break: break-all; }
+        .dir-path.placeholder { color: #666; font-style: italic; }
         
-        .dir-box { 
-            background: rgba(255,255,255,0.05); 
-            padding: 20px; border-radius: 15px; 
-            border: 2px dashed #555; text-align: center;
-            transition: all 0.3s; position: relative;
+        .dir-icon {
+            width: 50px; height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            color: var(--highlight-color);
+            flex-shrink: 0;
         }
-        .dir-box.active { border-color: var(--accent-gold); background: rgba(240, 195, 0, 0.1); }
-        .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.1); }
 
-        .btn-select-dir {
-            background: linear-gradient(135deg, #444, #222);
-            color: white; border: 1px solid #666;
-            padding: 10px 20px; border-radius: 50px;
-            font-weight: 700; margin-bottom: 10px; width: 100%;
-            transition: 0.3s;
-        }
-        .btn-select-dir:hover { background: #555; transform: translateY(-2px); }
-        
-        .dir-status { font-size: 0.9rem; min-height: 25px; word-break: break-all; }
-        .dir-status.empty { color: #dc3545; }
-        .dir-status.ok { color: #28a745; font-weight: bold; }
-
-        /* INPUTS & BUTTONS */
-        label { font-weight: 700; color: #ccc; margin-bottom: 10px; display: block; }
+        /* INPUT AREA */
+        label { font-weight: 700; color: var(--highlight-color); margin-bottom: 10px; display: block; }
         
         textarea { 
-            background: #222; color: #fff; border: 1px solid #555; 
+            background: rgba(0,0,0,0.3); 
+            color: #fff; 
+            border: 1px solid rgba(255,255,255,0.2); 
             width: 100%; padding: 15px; border-radius: 12px; 
-            resize: vertical; font-family: monospace;
+            resize: vertical; font-family: 'Consolas', monospace;
+            transition: border 0.3s;
         }
-        textarea:focus { outline: none; border-color: var(--accent-gold); }
+        textarea:focus { outline: none; border-color: var(--highlight-color); background: rgba(0,0,0,0.5); }
 
+        /* ACTION BUTTON */
         #btnCopy { 
             background: linear-gradient(135deg, #0d6efd, #0043a8); 
             color: white; border: none; padding: 15px; 
             width: 100%; border-radius: 12px; font-size: 1.2rem; font-weight: 800; 
-            margin-top: 20px; transition: 0.3s; 
-            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+            margin-top: 30px; transition: 0.3s; 
+            box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        #btnCopy:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(13, 110, 253, 0.5); }
-        #btnCopy:disabled { background: #555; cursor: not-allowed; box-shadow: none; transform: none; }
+        #btnCopy:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13, 110, 253, 0.6); }
+        #btnCopy:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* STATUS LOG */
+        /* LOGGING AREA */
         #statusLog {
-            margin-top: 25px; background: #111; padding: 15px; 
-            border-radius: 10px; border: 1px solid #333; 
+            margin-top: 25px; 
+            background: rgba(0,0,0,0.4); 
+            padding: 15px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.1); 
             font-family: monospace; font-size: 0.9rem; color: #ccc;
-            max-height: 200px; overflow-y: auto;
+            max-height: 150px; overflow-y: auto;
+            display: none; 
         }
-        .log-success { color: #28a745; }
-        .log-error { color: #dc3545; }
-        .log-info { color: #0dcaf0; }
+        .log-success { color: #51ff7d; }
+        .log-error { color: #ff6b6b; }
+        .log-info { color: #4dabf7; }
 
+        .system-note {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
-            .dir-grid { grid-template-columns: 1fr; }
+            .copy-container { margin: 20px 15px; padding: 25px; }
+            h2 { font-size: 1.5rem; }
+            .dir-item { padding: 15px; }
+            
+            .user-info-mobile {
+                border-top: 1px solid rgba(255,255,255,0.1);
+                margin-top: 15px;
+                padding-top: 15px;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#"><i class="fas fa-copy me-2"></i>Local Copy</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-copy me-2"></i>Sao Chép Ảnh</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -130,164 +181,147 @@
                     <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link active"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
                     <li class="nav-item"><a href="donate.html" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a></li>
+                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
                 </ul>
+                
+                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
+                    <span id="userEmailDisplay" class="text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
+                        Admin
+                    </span>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold d-flex align-items-center gap-2 rounded-pill px-3">
+                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="main-container">
-        <div class="copy-card">
-            <h2><i class="fas fa-exchange-alt me-2"></i>Công Cụ Sao Chép Nội Bộ</h2>
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+        <div class="copy-container w-100">
+            <h2><i class="fas fa-exchange-alt me-2"></i>Sao Chép Ảnh Nội Bộ</h2>
             
-            <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
-                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
-                <div>
-                    <strong>Yêu cầu bắt buộc:</strong><br>
-                    1. Sử dụng trình duyệt <strong>Google Chrome</strong> hoặc <strong>Microsoft Edge</strong> trên máy tính.<br>
-                    2. Chạy web qua link <code>localhost</code> hoặc <code>https://</code> (Không mở trực tiếp file html).
+            <div class="dir-item" onclick="handleSelectSource()">
+                <div class="dir-info">
+                    <span class="dir-label text-danger"><i class="fas fa-folder-open me-1"></i>Thư mục Nguồn (Chứa ảnh gốc)</span>
+                    <div id="lblSource" class="dir-path placeholder">Chạm để chọn thư mục...</div>
                 </div>
+                <div class="dir-icon"><i class="fas fa-chevron-right"></i></div>
             </div>
 
-            <div class="dir-grid">
-                <div class="dir-box" id="boxSource">
-                    <button class="btn-select-dir" onclick="handleSelectSource()">
-                        <i class="fas fa-folder-open me-2"></i>Chọn Nguồn
-                    </button>
-                    <div id="lblSource" class="dir-status empty">❌ Chưa chọn thư mục nguồn</div>
+            <div class="dir-item" onclick="handleSelectDest()">
+                <div class="dir-info">
+                    <span class="dir-label text-success"><i class="fas fa-folder-plus me-1"></i>Thư mục Đích (Nơi lưu ảnh)</span>
+                    <div id="lblDest" class="dir-path placeholder">Chạm để chọn thư mục...</div>
                 </div>
-                
-                <div class="dir-box" id="boxDest">
-                    <button class="btn-select-dir" onclick="handleSelectDest()">
-                        <i class="fas fa-folder-plus me-2"></i>Chọn Đích
-                    </button>
-                    <div id="lblDest" class="dir-status empty">❌ Chưa chọn thư mục đích</div>
-                </div>
+                <div class="dir-icon"><i class="fas fa-chevron-right"></i></div>
             </div>
 
-            <label for="txtFiles"><i class="fas fa-list me-2 text-warning"></i>Danh sách tên file (Copy từ Dashboard):</label>
-            <textarea id="txtFiles" rows="6" placeholder="Ví dụ: IMG_001.JPG, DSC_0522.CR2, ..."></textarea>
+            <div class="mt-4">
+                <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file cần chép:</label>
+                <textarea id="txtFiles" rows="5" placeholder="Dán danh sách tên file vào đây (Ví dụ: IMG_001.JPG, DSC_0555.CR3...)"></textarea>
+            </div>
 
             <button id="btnCopy" onclick="runCopyProcess()" disabled>
-                <i class="fas fa-clone me-2"></i> BẮT ĐẦU SAO CHÉP
+                <i class="fas fa-bolt"></i> BẮT ĐẦU SAO CHÉP
             </button>
 
-            <div id="statusLog">
-                <div class="log-info">>> Sẵn sàng. Vui lòng chọn thư mục...</div>
+            <div id="statusLog"></div>
+            
+            <div class="system-note">
+                <i class="fas fa-tachometer-alt me-1"></i> Tốc độ sao chép nhanh hay chậm phụ thuộc vào cấu hình máy tính của bạn.
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- GLOBAL VARIABLES ---
+        // --- AUTH LOGIC (Đồng bộ với Admin/Managa) ---
+        const adminEmail = localStorage.getItem('admin_email');
+        const adminName = localStorage.getItem('admin_name') || 'Admin';
+        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
+        function updateHeaderUI() {
+            const authControl = document.getElementById('authControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            if (isLoggedIn) {
+                // Hiển thị tên người dùng và icon user giống trang quản lý
+                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${adminName || adminEmail || 'Admin'}`;
+                authControl.style.display = 'flex'; 
+                authControl.classList.remove('d-none');
+            } else {
+                // Nếu chưa đăng nhập thì ẩn hoặc chuyển về trang login
+                // window.location.href = 'admin.html'; // Tùy chọn: Chuyển hướng nếu chưa đăng nhập
+            }
+        }
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token');
+            window.location.href = 'admin.html';
+        }
+
+        // --- CORE COPY LOGIC ---
         let dirHandleSource = null;
         let dirHandleDest = null;
 
-        // --- 1. CHỌN THƯ MỤC NGUỒN ---
+        // Check browser support quietly
+        const isSupported = ('showDirectoryPicker' in window);
+
         async function handleSelectSource() {
-            if (!checkBrowserSupport()) return;
-            
+            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome hoặc Edge trên máy tính."); return; }
             try {
-                // Mở hộp thoại chọn folder
-                const handle = await window.showDirectoryPicker({
-                    id: 'source_folder', // Gợi ý trình duyệt nhớ vị trí
-                    startIn: 'pictures'
-                });
-                
-                // Gán biến toàn cục
+                const handle = await window.showDirectoryPicker({ id: 'src_folder', startIn: 'pictures' });
                 dirHandleSource = handle;
                 
-                // Cập nhật giao diện
-                const lbl = document.getElementById('lblSource');
-                const box = document.getElementById('boxSource');
-                
-                lbl.innerHTML = `<i class="fas fa-check-circle"></i> ${handle.name}`;
-                lbl.className = 'dir-status ok';
-                box.className = 'dir-box success';
-                
-                log(`✅ Đã chọn nguồn: ${handle.name}`, 'success');
+                document.getElementById('lblSource').innerHTML = `<span class="text-white">${handle.name}</span>`;
+                document.getElementById('lblSource').classList.remove('placeholder');
                 checkReady();
-
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    log(`❌ Lỗi chọn nguồn: ${err.message}`, 'error');
-                    console.error(err);
-                }
-            }
+            } catch (err) { /* User cancelled */ }
         }
 
-        // --- 2. CHỌN THƯ MỤC ĐÍCH ---
         async function handleSelectDest() {
-            if (!checkBrowserSupport()) return;
-
+            if (!isSupported) { alert("Trình duyệt không hỗ trợ. Vui lòng dùng Chrome hoặc Edge trên máy tính."); return; }
             try {
-                // Mở hộp thoại chọn folder (Cần quyền ghi - readwrite)
-                const handle = await window.showDirectoryPicker({
-                    id: 'dest_folder',
-                    mode: 'readwrite' 
-                });
-
-                // Kiểm tra quyền ghi (Quan trọng)
+                const handle = await window.showDirectoryPicker({ id: 'dest_folder', mode: 'readwrite' });
+                // Check write permission
                 if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
                     if ((await handle.requestPermission({ mode: 'readwrite' })) !== 'granted') {
-                        throw new Error('Bạn cần cấp quyền GHI (Write) cho thư mục đích.');
+                        alert("Vui lòng cấp quyền GHI để lưu ảnh."); return;
                     }
                 }
-
-                // Gán biến toàn cục
                 dirHandleDest = handle;
-
-                // Cập nhật giao diện
-                const lbl = document.getElementById('lblDest');
-                const box = document.getElementById('boxDest');
                 
-                lbl.innerHTML = `<i class="fas fa-check-circle"></i> ${handle.name}`;
-                lbl.className = 'dir-status ok';
-                box.className = 'dir-box success';
-
-                log(`✅ Đã chọn đích: ${handle.name}`, 'success');
+                document.getElementById('lblDest').innerHTML = `<span class="text-white">${handle.name}</span>`;
+                document.getElementById('lblDest').classList.remove('placeholder');
                 checkReady();
-
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    log(`❌ Lỗi chọn đích: ${err.message}`, 'error');
-                    console.error(err);
-                }
-            }
+            } catch (err) { /* User cancelled */ }
         }
 
-        // --- 3. KIỂM TRA SẴN SÀNG ---
         function checkReady() {
             const btn = document.getElementById('btnCopy');
             if (dirHandleSource && dirHandleDest) {
                 btn.disabled = false;
                 btn.style.opacity = '1';
-                btn.innerHTML = '<i class="fas fa-clone me-2"></i> BẮT ĐẦU SAO CHÉP';
-            } else {
-                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-bolt"></i> BẮT ĐẦU SAO CHÉP';
             }
         }
 
-        // --- 4. CHẠY QUY TRÌNH COPY ---
         async function runCopyProcess() {
             const txtFiles = document.getElementById('txtFiles').value;
             const btn = document.getElementById('btnCopy');
+            const logBox = document.getElementById('statusLog');
             
-            if (!txtFiles.trim()) {
-                alert("Vui lòng nhập danh sách tên file!");
-                return;
-            }
+            if (!txtFiles.trim()) { alert("Vui lòng nhập danh sách file!"); return; }
 
-            // Tách tên file và lọc rỗng
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
-            
             if (fileList.length === 0) return;
 
-            // Khóa nút
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
-            log('🚀 Bắt đầu tiến trình...', 'info');
+            logBox.style.display = 'block';
+            logBox.innerHTML = '<div class="log-info">>> Đang khởi tạo...</div>';
 
             let success = 0;
             let fail = 0;
@@ -295,64 +329,45 @@
             for (let i = 0; i < fileList.length; i++) {
                 const fileName = fileList[i];
                 try {
-                    // 4a. Tìm file trong nguồn
                     const fileHandle = await dirHandleSource.getFileHandle(fileName);
                     const fileData = await fileHandle.getFile();
-
-                    // 4b. Tạo file ở đích
+                    
                     const newFileHandle = await dirHandleDest.getFileHandle(fileName, { create: true });
                     const writable = await newFileHandle.createWritable();
-
-                    // 4c. Ghi dữ liệu
                     await writable.write(fileData);
                     await writable.close();
 
                     success++;
-                    log(`[${i+1}/${fileList.length}] OK: ${fileName}`, 'success');
+                    if(i % 5 === 0) log(`[${i+1}/${fileList.length}] Đã chép: ${fileName}`, 'success');
 
                 } catch (error) {
                     fail++;
-                    // Phân loại lỗi để dễ hiểu hơn
-                    let msg = error.message;
-                    if (error.name === 'NotFoundError') msg = 'Không tìm thấy file này trong thư mục nguồn';
-                    if (error.name === 'NotAllowedError') msg = 'Mất quyền truy cập (Hãy chọn lại thư mục)';
-                    
-                    log(`[${i+1}/${fileList.length}] LỖI: ${fileName} -> ${msg}`, 'error');
+                    let msg = "Lỗi không xác định";
+                    if (error.name === 'NotFoundError') msg = "Không tìm thấy file (Sai tên?)";
+                    log(`[${i+1}] LỖI: ${fileName} - ${msg}`, 'error');
                 }
             }
 
-            // Kết thúc
-            log(`🏁 HOÀN TẤT! Thành công: ${success}, Thất bại: ${fail}`, success > 0 ? 'success' : 'error');
-            alert(`Đã xong!\nThành công: ${success}\nLỗi: ${fail}`);
+            log(`-----------------------------------`, 'info');
+            log(`🏁 HOÀN TẤT: ${success} thành công, ${fail} lỗi.`, success > 0 ? 'success' : 'error');
             
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-clone me-2"></i> BẮT ĐẦU SAO CHÉP';
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ XONG (Chép Lại)';
+            
+            if(fail === 0) alert("Tuyệt vời! Đã sao chép toàn bộ ảnh thành công.");
+            else alert(`Hoàn tất. Có ${fail} file không tìm thấy hoặc lỗi.`);
         }
 
-        // --- UTILS ---
-        function checkBrowserSupport() {
-            if (!('showDirectoryPicker' in window)) {
-                alert("Trình duyệt này không hỗ trợ! Vui lòng dùng Google Chrome hoặc Edge trên máy tính.");
-                return false;
-            }
-            return true;
-        }
-
-        function log(msg, type = 'info') {
+        function log(msg, type) {
             const logBox = document.getElementById('statusLog');
             const div = document.createElement('div');
             div.className = `log-${type}`;
-            div.innerText = `>> ${msg}`;
+            div.innerText = msg;
             logBox.appendChild(div);
-            logBox.scrollTop = logBox.scrollHeight; // Auto scroll
+            logBox.scrollTop = logBox.scrollHeight;
         }
-        
-        // Auth Logic (Giữ nguyên từ code cũ để đảm bảo Header hoạt động)
-        const adminEmail = localStorage.getItem('admin_email');
-        if(!adminEmail) {
-            // Nếu chưa đăng nhập thì ẩn hoặc chuyển hướng tuỳ logic của bạn
-            // window.location.href = 'admin.html';
-        }
+
+        document.addEventListener('DOMContentLoaded', updateHeaderUI);
     </script>
 </body>
 </html>
