@@ -6,101 +6,253 @@
     <title>Dashboard Quản Lý</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a;
-            --text-color: #f0f0f0; --card-bg: rgba(255, 255, 255, 0.98); --accent-color: #51ff7d;
+            --primary-green: #147a30; 
+            --dark-green: #0e5a22;
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --card-bg: rgba(255, 255, 255, 0.95); /* Màu nền thẻ hơi trong suốt */
+            --accent-color: #51ff7d; /* Màu highlight */
         }
 
         body {
-            background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
-            background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color);
-            font-family: 'Nunito', sans-serif; min-height: 100vh; padding-top: 80px;
+            background-color: var(--bg-color);
+            /* Nền chấm bi tối */
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            color: var(--text-color);
+            font-family: 'Nunito', sans-serif; /* Font chữ tròn trịa hiện đại */
+            min-height: 100vh;
+            padding-top: 80px; /* Tránh header che mất nội dung */
         }
         
-        /* NAVBAR */
-        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
-        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
-        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; transition: all 0.3s; border-radius: 8px; }
+        /* ⭐ HEADER CHUẨN BOOTSTRAP (RESPONSIVE) ⭐ */
+        .navbar {
+            background: var(--primary-green);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px); /* Hiệu ứng kính mờ nếu trình duyệt hỗ trợ */
+        }
         
-        /* DASHBOARD CONTENT */
-        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
-        h2 { color: var(--accent-color); text-align: center; margin-bottom: 50px; font-weight: 800; text-shadow: 0 0 20px rgba(81, 255, 125, 0.5); font-size: 2.2rem; }
-
-        /* ALBUM GRID */
-        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 35px; padding-bottom: 50px; }
-        .album-card { background: var(--card-bg); color: #333; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); transition: all 0.3s; display: flex; flex-direction: column; }
-        .album-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); }
-
-        .album-card-header { height: 220px; background-size: cover; background-position: center; position: relative; }
-        .album-title-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white; font-weight: 800; font-size: 1.2rem;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .card-body-custom { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
 
-        /* STATS */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; font-size: 0.95rem; }
-        .stats-item { display: flex; align-items: center; gap: 8px; color: #555; font-weight: 600; }
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: #fff !important;
+            transform: translateY(-2px);
+        }
         
-        /* ACTION BUTTONS */
-        .action-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        /* Nút menu mobile (3 gạch) */
+        .navbar-toggler {
+            border: none;
+            color: white;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: 2px solid var(--accent-color);
+        }
+
+        /* ⭐ ALBUM CARD STYLE MỚI ⭐ */
+        .dashboard-container { 
+            max-width: 1400px; /* Rộng hơn chút để thoáng */
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+
+        h2 { 
+            color: var(--accent-color); 
+            text-align: center; 
+            margin-bottom: 40px; 
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(81, 255, 125, 0.4);
+        }
+
+        #albumGrid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Card to hơn 1 chút */
+            gap: 30px; 
+            padding-bottom: 50px; 
+        }
+
+        .album-card { 
+            background: var(--card-bg); 
+            color: #333; 
+            border-radius: 16px; 
+            overflow: hidden; /* Bo tròn ảnh */
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Bóng đổ sâu */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .album-card:hover { 
+            transform: translateY(-10px); /* Bay lên khi hover */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .album-card-header { 
+            height: 180px; /* Ảnh cao hơn */
+            background-size: cover; 
+            background-position: center; 
+            position: relative;
+        }
+        
+        /* Lớp phủ gradient lên ảnh để chữ dễ đọc nếu cần */
+        .album-card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+
+        .card-body-custom {
+            padding: 20px;
+            flex-grow: 1; /* Để nút luôn ở đáy */
+        }
+
+        .album-title-card { 
+            font-size: 18px; 
+            font-weight: 800; 
+            margin-bottom: 15px; 
+            color: var(--dark-green); 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+        
+        .stats-item i { color: var(--primary-green); }
+
+        .status-badge { 
+            background-color: var(--primary-green); 
+            color: white; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+        }
+
+        /* Nút bấm mới */
+        .action-btns { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; /* 3 cột đều nhau */
+            gap: 8px; 
+            margin-top: auto; /* Đẩy xuống đáy */
+        }
+
         .action-btns button { 
-            padding: 10px; border: none; border-radius: 12px; font-weight: 700; font-size: 13px; color: white;
-            display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.2s;
+            padding: 10px 5px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: filter 0.2s; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
-        .action-btns button:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-2px); }
-        .action-btns button:disabled { background: #999 !important; cursor: not-allowed; transform: none; filter: grayscale(1); }
+        
+        .action-btns button:hover { filter: brightness(1.1); }
+        
+        .btn-view { background: linear-gradient(45deg, #007bff, #0056b3); }
+        .btn-export { background: linear-gradient(45deg, #ffc107, #ff9800); color: #212529 !important; }
+        .btn-delete { background: linear-gradient(45deg, #dc3545, #c82333); }
 
-        .btn-view { background: linear-gradient(135deg, #007bff, #0056b3); }
-        .btn-export { background: linear-gradient(135deg, #ffc107, #ff9800); color: #212529 !important; }
-        .btn-delete { background: linear-gradient(135deg, #dc3545, #c82333); }
-
-        /* STATUS BADGE & USER INFO */
-        .status-pill { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; }
-        .bg-active { background: #198754; color: white; box-shadow: 0 0 10px rgba(25, 135, 84, 0.5); }
-        .bg-new { background: #0d6efd; color: white; } 
-        .bg-expired { background: #dc3545; color: white; } 
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
-
-        /* LICENSE ALERT */
-        .license-alert { 
-            background-color: #f8d7da; color: #842029; border-color: #f5c6cb;
-            border-radius: 15px; padding: 15px 25px; margin-bottom: 25px;
-            font-size: 1.05rem; display: flex; align-items: center; gap: 15px;
+        /* Modal Style */
+        .modal-content { border-radius: 15px; overflow: hidden; border: none; }
+        .modal-header { background: var(--primary-green); color: white; }
+        
+        /* Mobile adjustment */
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 15px; }
+            #albumGrid { grid-template-columns: 1fr; /* 1 cột trên mobile */ }
+            .action-btns button { font-size: 12px; }
+            
+            /* User info trên mobile */
+            .user-info-mobile {
+                border-top: 1px solid rgba(255,255,255,0.1);
+                margin-top: 10px;
+                padding-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Dashboard</a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
-                    <li class="nav-item"><a href="donate.html" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
+                    <li class="nav-item">
+                        <a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="donate.html" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý</a>
+                    </li>
                 </ul>
 
-                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
-                    <div id="userEmailDisplay" class="d-flex align-items-center text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
-                        <i class="fas fa-user-circle me-2"></i> Admin
-                    </div>
-                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold rounded-pill px-3">
-                        <i class="fas fa-sign-out-alt"></i>
+                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-2 user-info-mobile">
+                    <span id="userEmailDisplay" class="text-white fw-bold px-2 py-1 border border-light rounded-3 bg-opacity-25 bg-secondary">
+                        Admin
+                    </span>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger btn-sm fw-bold d-flex align-items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
                     </a>
                 </div>
             </div>
@@ -108,36 +260,39 @@
     </nav>
 
     <div class="dashboard-container">
-        
-        <div id="licenseAlert" class="license-alert shadow" style="display: none;">
-            <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
-            <div id="alertMessage"></div>
-        </div>
-
-        <h2><i class="fas fa-layer-group me-3"></i>Danh Sách Album (<span id="albumCount">0</span>)</h2>
+        <h2>Danh Sách Album (<span id="albumCount">0</span>)</h2>
         
         <div id="albumGrid">
-            <div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
+            <div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem;">
                 <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header text-white bg-success">
-                    <h5 class="modal-title"><i class="fas fa-file-export me-2"></i> KẾT QUẢ XUẤT FILE</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">
+                        <i class="fas fa-file-export me-2"></i> DANH SÁCH FILE ĐÃ CHỌN
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body bg-light">
-                    <p class="text-secondary fw-bold">Sao chép danh sách bên dưới để lọc ảnh:</p>
-                    <div class="alert alert-info py-2">Album: <strong id="modalAlbumName"></strong> | <strong id="modalSelectedCount"></strong> ảnh</div>
-                    <textarea id="fileNamesOutput" class="form-control shadow-sm" rows="10" readonly style="font-family: monospace;"></textarea>
+                    <p class="text-primary fw-bold"><i class="fas fa-info-circle"></i> Vui lòng chọn sao chép bên dưới qua mục Sao Chép Ảnh để lọc ảnh trên máy tính !</p>
+                    
+                    <div class="alert alert-success d-flex justify-content-between align-items-center" role="alert">
+                        <span>Album: <strong id="modalAlbumName">...</strong></span>
+                        <span class="badge bg-success rounded-pill fs-6" id="modalSelectedCount">0 ảnh</span>
+                    </div>
+
+                    <textarea id="fileNamesOutput" class="form-control shadow-sm" rows="10" readonly style="font-family: monospace; font-size: 0.9rem; border: 2px solid #ddd;"></textarea>
                 </div>
-                <div class="modal-footer bg-white">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary fw-bold" onclick="copyFileNames()"><i class="fas fa-copy"></i> Sao Chép</button>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary fw-bold" id="copyBtn" onclick="copyFileNames()">
+                        <i class="fas fa-copy me-2"></i> SAO CHÉP TẤT CẢ
+                    </button>
                 </div>
             </div>
         </div>
@@ -145,7 +300,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // CẤU HÌNH WEBHOOK (GIỮ NGUYÊN)
+        // --- 1. CẤU HÌNH WEBHOOK URL VÀ HẰNG SỐ ---
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
@@ -153,159 +308,38 @@
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
         const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
 
+        // Lấy thông tin Admin đã đăng nhập từ localStorage
         const adminEmail = localStorage.getItem('admin_email');
+        const adminName = localStorage.getItem('admin_name') || 'Admin';
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
-        let isPremiumUser = false;
-
-        function checkLicense() {
-            const status = localStorage.getItem('admin_status') || 'new'; 
-            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0; 
-            const now = Date.now();
-
-            const licenseAlert = document.getElementById('licenseAlert');
-            const alertMessage = document.getElementById('alertMessage');
-            
-            isPremiumUser = false;
-            licenseAlert.style.display = 'none';
-
-            if (isLoggedIn) {
-                if (status === 'active' && expiry > now) {
-                    isPremiumUser = true;
-                } 
-                else if (status === 'new') {
-                    alertMessage.innerHTML = `<strong>Tài khoản MỚI.</strong> Vui lòng <a href="lienhe.html">Liên Hệ Admin</a> để kích hoạt dùng thử.`;
-                    licenseAlert.style.display = 'flex';
-                } 
-                else {
-                    alertMessage.innerHTML = `<strong>Tài khoản đã HẾT HẠN.</strong> Vui lòng <a href="donate.html">Gia Hạn</a> để tiếp tục sử dụng tính năng quản lý.`;
-                    licenseAlert.style.display = 'flex';
-                }
-            }
-        }
-
-        function updateHeaderUI() {
-            const authControl = document.getElementById('authControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            checkLicense();
-
-            if (isLoggedIn) {
-                const name = localStorage.getItem('admin_name') || 'Admin';
-                const avatar = localStorage.getItem('admin_avatar');
-                const status = localStorage.getItem('admin_status') || 'new';
-                const expiry = localStorage.getItem('admin_expiry') || '0';
-
-                // Xác định trạng thái hiển thị
-                let badgeClass = 'bg-expired';
-                let badgeText = 'EXPIRED';
-                let expiryDateText = '';
-
-                if (isPremiumUser) {
-                    badgeClass = 'bg-active';
-                    badgeText = 'ACTIVE';
-                    expiryDateText = `(Hạn: ${new Date(parseInt(expiry)).toLocaleDateString('vi-VN')})`;
-                } else if (status === 'new') {
-                    badgeClass = 'bg-new';
-                    badgeText = 'NEW';
-                }
-                
-                let badge = `<span class="status-pill ${badgeClass}">${badgeText}</span>`;
-                let imgTag = avatar ? `<img src="${avatar}" class="user-avatar me-2">` : `<i class="fas fa-user-circle me-2"></i>`;
-                
-                userEmailDisplay.innerHTML = `${imgTag} ${name} ${badge} <span style="font-size: 0.7em; margin-left: 5px;">${expiryDateText}</span>`;
-                authControl.style.display = 'flex'; 
+        // -------------------------------------------------------------
+        // HÀM XỬ LÝ SAO CHÉP TRONG MODAL
+        // -------------------------------------------------------------
+        function copyFileNames() {
+            const textarea = document.getElementById('fileNamesOutput');
+            textarea.select();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
+                }).catch(() => {
+                    alert('Lỗi sao chép tự động: Vui lòng sao chép thủ công.');
+                });
             } else {
-                authControl.style.display = 'none';
-                window.location.href = 'admin.html';
+                document.execCommand('copy');
+                alert('✅ Đã sao chép toàn bộ tên file vào clipboard!');
             }
         }
 
-        async function loadAlbums() {
-            const albumGrid = document.getElementById('albumGrid');
-            const albumCount = document.getElementById('albumCount');
-            
-            if (!isLoggedIn || !adminEmail) {
-                albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Vui lòng Đăng nhập lại để tải album.</div>';
-                return;
-            }
 
-            try {
-                // Hiển thị loading message
-                albumGrid.innerHTML = `<div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
-                    <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
-                </div>`;
-                
-                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
-                    method: 'GET', headers: { 'Accept': 'application/json' } 
-                });
-
-                if (!response.ok) throw new Error(`Lỗi tải dữ liệu`);
-                const rawData = await response.json();
-                const albums = Array.isArray(rawData) ? rawData : []; 
-
-                albumGrid.innerHTML = ''; 
-                if (albums.length === 0) {
-                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Bạn chưa có album nào.</div>';
-                    albumCount.innerText = 0;
-                    return;
-                }
-
-                albums.forEach(album => {
-                    const card = createAlbumCard(album);
-                    albumGrid.appendChild(card);
-                });
-                albumCount.innerText = albums.length;
-
-            } catch (error) {
-                albumGrid.innerHTML = `<div class="alert alert-danger text-center w-100">Lỗi tải dữ liệu: ${error.message}</div>`;
-            }
-        }
-
-        function createAlbumCard(album) {
-            const card = document.createElement('div');
-            const id = album.folder_id || album.folderId;
-            card.id = `card-${id}`; 
-            card.className = 'album-card';
-            
-            const rawName = album.folderName || album.name || 'Album Mới';
-            const escapedName = rawName.replace(/'/g, "\\'"); 
-            const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
-            const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
-
-            // ✅ LOGIC KHÓA NÚT DỰA TRÊN isPremiumUser
-            const lockAttr = isPremiumUser ? '' : 'disabled title="Vui lòng nâng cấp tài khoản"';
-            const lockIcon = isPremiumUser ? '' : '<i class="fas fa-lock me-1"></i>';
-
-            card.innerHTML = `
-                <div class="album-card-header" style="background-image: url('${previewImageURL}');">
-                    <div class="album-title-overlay" title="${rawName}">${rawName}</div>
-                </div>
-                <div class="card-body-custom">
-                    <div class="stats-grid">
-                        <div class="stats-item"><i class="fas fa-check-circle text-success"></i> Chọn: ${album.selected_photos || 0}</div>
-                        <div class="stats-item"><i class="fas fa-images text-primary"></i> Tổng: ${album.total_photos || 0}</div>
-                        <div class="stats-item" style="grid-column: span 2;"><i class="fas fa-comment-dots text-info"></i> Bình luận: ${album.comments || 0}</div>
-                    </div>
-                    <div class="action-btns">
-                        <button class="btn-view" onclick="window.open('${clientLink}', '_blank')"><i class="fas fa-eye"></i> Xem</button>
-                        
-                        <button class="btn-export" ${lockAttr} onclick="handleExportClick('${id}', '${escapedName}')">
-                            ${lockIcon}<i class="fas fa-file-export"></i> Xuất
-                        </button> 
-                        
-                        <button class="btn-delete" ${lockAttr} onclick="deleteAlbum('${id}', '${escapedName}')">
-                            ${lockIcon}<i class="fas fa-trash-alt"></i> Xóa
-                        </button>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
+        // -------------------------------------------------------------
+        // HÀM XỬ LÝ CHỨC NĂNG XUẤT FILE ĐÃ CHỌN (EXPORT)
+        // -------------------------------------------------------------
 
         async function handleExportClick(albumId, albumName) {
-            if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
-            if (!confirm(`Xuất danh sách file của "${albumName}"?`)) return;
+            if (!confirm(`Bạn muốn xuất danh sách tên file đã chọn trong Album "${albumName}"?`)) {
+                return;
+            }
             
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
@@ -323,34 +357,58 @@
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra Workflow n8n.`);
+                }
+                
                 const result = await response.json();
+                
                 const finalResult = Array.isArray(result) ? result[0] : result;
 
-               if (finalResult && finalResult.fileNamesForCopy) {
-                    const namesList = finalResult.fileNamesForCopy.split(',').map(name => name.trim()).filter(name => name.length > 0).join('\n');
-                    const selectedCount = finalResult.selectedPhotos || 'Không rõ';
-
-                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+               if (finalResult && finalResult.fileNamesForCopy) { 
+                    
+                    const namesList = finalResult.fileNamesForCopy; 
+                    const selectedCount = finalResult.selectedPhotos || 'Không rõ'; 
+                    
+                    // GÁN DỮ LIỆU VÀ HIỂN THỊ MODAL
                     document.getElementById('modalAlbumName').innerText = albumName;
                     document.getElementById('modalSelectedCount').innerText = selectedCount + ' ảnh';
                     document.getElementById('fileNamesOutput').value = namesList; 
+
+                    // Mở Modal
+                    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
                     exportModal.show();
+
                 } else {
-                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về danh sách file.`);
+                    throw new Error(result.message || `Lỗi dữ liệu: Server không trả về trường 'file_names_for_copy'.`);
                 }
 
             } catch (error) {
-                alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n: ${error.message}`);
+                // Ẩn lỗi hệ thống, chỉ hiển thị thông báo thân thiện
+                alert(`❌ LỖI XUẤT FILE! Vui lòng kiểm tra lại Workflow n8n.`);
+                console.error("Lỗi Export File (Ẩn):", error);
             } finally {
                 if (cardElement) cardElement.style.opacity = 1;
             }
         }
 
+        // -------------------------------------------------------------
+        // HÀM XỬ LÝ XÓA ALBUM VÀ ĐĂNG XUẤT
+        // -------------------------------------------------------------
+        
+        function logoutAdmin() {
+            localStorage.removeItem('admin_is_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_name');
+            localStorage.removeItem('google_access_token'); 
+            window.location.href = 'admin.html';
+        }
+
         async function deleteAlbum(albumId, albumName) {
-            if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
-            if (!confirm(`XÓA VĨNH VIỄN album "${albumName}"?`)) return;
-            
+            if (!confirm(`Bạn có chắc chắn muốn xóa Album "${albumName}" và tất cả dữ liệu liên quan không? Thao tác này KHÔNG THỂ HOÀN TÁC!`)) {
+                return;
+            }
+
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5; 
 
@@ -358,46 +416,161 @@
 
             try {
                 const response = await fetch(URL_DELETE_ALBUM, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(deletePayload)
                 });
+
                 const result = await response.json();
 
                 if (response.ok && result.success) {
                     alert(`✅ Album "${albumName}" đã được xóa thành công khỏi database!`);
-                    cardElement.remove(); // Xóa thẻ album khỏi DOM
-                    updateCount();
+                    loadAlbums(); 
                 } else {
                     throw new Error(result.message || `Lỗi xóa Album: Server không phản hồi thành công.`);
                 }
 
             } catch (error) {
                 alert(`❌ Lỗi Xóa: ${error.message}`);
+                console.error("Lỗi xóa Album:", error);
             } finally {
-                if (cardElement) cardElement.style.opacity = 1;
+                document.querySelectorAll('.album-card button').forEach(btn => btn.disabled = false);
             }
         }
 
-        function copyFileNames() {
-            const textarea = document.getElementById('fileNamesOutput');
-            const namesList = textarea.value.split('\n').join(','); // Nối lại để copy dễ dàng hơn
-            textarea.select();
-            navigator.clipboard.writeText(namesList).then(() => alert('✅ Đã sao chép!'));
-        }
+        // -------------------------------------------------------------
+        // HÀM TẠO CARD HTML (UPDATE LAYOUT MỚI)
+        // -------------------------------------------------------------
         
-        function updateCount() {
-            const count = document.querySelectorAll('.album-card').length;
-            document.getElementById('albumCount').innerText = count;
+        function createAlbumCard(album) {
+            const card = document.createElement('div');
+            const albumUniqueId = album.folder_id || album.folderId;
+            card.id = `card-${albumUniqueId}`; 
+            card.className = 'album-card';
+            
+            const id = albumUniqueId || 'UNKNOWN_ID';
+            const rawName = album.folderName || album.name || 'Album Mới';
+            const escapedName = rawName.replace(/'/g, "\\'"); 
+            
+            const totalPhotos = album.total_photos || 0;
+            const selectedPhotos = album.selected_photos || 0;
+            const comments = album.comments || 0; 
+            
+            const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
+
+            const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
+
+            card.innerHTML = `
+                <div class="album-card-header" style="background-image: url('${previewImageURL}');"></div>
+                
+                <div class="card-body-custom">
+                    <div class="album-title-card" title="${rawName}">${rawName}</div>
+                    
+                    <div class="stats-grid">
+                        <div class="stats-item">
+                            <i class="fas fa-check-circle"></i> 
+                            <span>Đã chọn: <strong class="text-success">${selectedPhotos}</strong></span>
+                        </div>
+                         <div class="stats-item">
+                            <i class="fas fa-images"></i> 
+                            <span>Tổng: <strong>${totalPhotos}</strong></span>
+                        </div>
+                        <div class="stats-item" style="grid-column: span 2;">
+                            <i class="fas fa-comment-dots"></i> 
+                            <span>Bình luận: <strong>${comments}</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="btn-view" onclick="window.open('${clientLink}', '_blank')">
+                            <i class="fas fa-eye fa-lg mb-1"></i> Xem
+                        </button>
+                        
+                        <button class="btn-export" onclick="handleExportClick('${id}', '${escapedName}')">
+                            <i class="fas fa-file-export fa-lg mb-1"></i> Xuất
+                        </button> 
+                        
+                        <button class="btn-delete" onclick="deleteAlbum('${id}', '${escapedName}')">
+                            <i class="fas fa-trash-alt fa-lg mb-1"></i> Xóa
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
         }
 
+        // -------------------------------------------------------------
+        // HÀM CHÍNH: TẢI VÀ HIỂN THỊ DỮ LIỆU
+        // -------------------------------------------------------------
 
-        function logoutAdmin() {
-            localStorage.clear();
-            window.location.href = 'admin.html';
+        function updateHeaderUI() {
+            const authControl = document.getElementById('authControl');
+            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            
+            if (isLoggedIn) {
+                userEmailDisplay.innerText = adminName || adminEmail || 'Admin';
+                // Sử dụng d-flex của bootstrap để hiển thị
+                authControl.style.display = 'flex'; 
+                authControl.classList.remove('d-none');
+                authControl.classList.add('d-flex');
+            } else {
+                authControl.style.display = 'none';
+                authControl.classList.remove('d-flex');
+                authControl.classList.add('d-none');
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            checkLicense(); 
+        async function loadAlbums() {
+            const albumGrid = document.getElementById('albumGrid');
+            const albumCount = document.getElementById('albumCount');
+            
+            if (!isLoggedIn) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' } 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`[Technical Error: Failed to fetch album data]`);
+                }
+                
+                const rawData = await response.json();
+                
+                albumGrid.innerHTML = ''; 
+
+                const albums = Array.isArray(rawData) ? rawData : []; 
+
+                if (albums.length === 0) {
+                    albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">' +
+                                          'Bạn chưa có album để hiển thị, vui lòng tạo album mới.' +
+                                          '</div>';
+                    albumCount.innerText = 0;
+                    return;
+                }
+
+                albums.forEach(album => {
+                    const card = createAlbumCard(album);
+                    albumGrid.appendChild(card);
+                });
+                
+                albumCount.innerText = albums.length;
+
+            } catch (error) {
+                console.error("Lỗi tải Album (Ẩn):", error.message);
+                
+                albumGrid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; border: 1px solid red; background-color: #58151c;">
+                    LỖI TẢI ALBUM: Không thể hiển thị album vào lúc này.
+                </div>`;
+                albumCount.innerText = 0;
+            }
+        }
+
+        // BẮT ĐẦU TẢI DỮ LIỆU KHI TRANG LOAD
+        document.addEventListener('DOMContentLoaded', function() {
             updateHeaderUI();
             loadAlbums();
         });
