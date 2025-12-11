@@ -219,6 +219,7 @@
         ];
 
         // 1. HÀM XỬ LÝ ẢNH (Nén & Hiển thị)
+        // 1. HÀM XỬ LÝ ẢNH (Nén Nét hơn & Kích thước nhỏ hơn)
         function processImage() {
             const fileInput = document.getElementById('postImageFile');
             const previewContainer = document.getElementById('imagePreviewContainer');
@@ -235,12 +236,11 @@
                     img.src = event.target.result;
                     
                     img.onload = function() {
-                        // Tạo Canvas để vẽ lại ảnh (Resize)
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Giới hạn chiều rộng tối đa 800px
-                        const MAX_WIDTH = 800;
+                        // 🔥🔥🔥 QUAN TRỌNG: Giảm chiều rộng tối đa xuống 600px
+                        const MAX_WIDTH = 600; 
                         let width = img.width;
                         let height = img.height;
 
@@ -251,18 +251,18 @@
 
                         canvas.width = width;
                         canvas.height = height;
-                        
-                        // Vẽ ảnh lên canvas
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Xuất ra Base64 (JPEG 70%)
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        // 🔥🔥🔥 QUAN TRỌNG: Tăng chất lượng nén lên 0.8 (Ảnh sẽ nét hơn)
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
                         
                         // Hiển thị và Lưu vào input ẩn
                         imgPreview.src = compressedBase64;
                         previewContainer.style.display = 'block';
                         document.getElementById('postImageBase64').value = compressedBase64;
                         document.getElementById('postImageName').value = file.name;
+                        
+                        console.log(`Kích thước chuỗi Base64 (Chất lượng 0.8): ${compressedBase64.length} ký tự.`);
                     }
                 }
             }
@@ -298,7 +298,7 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(postData)
                 });
-                alert("✅ Gửi bài thành công! Ảnh đã được tối ưu và tải lên.");
+                alert("✅ Gửi bài thành công! Vui lòng đợi duyệt.");
                 document.getElementById('postForm').reset();
                 document.getElementById('imagePreviewContainer').style.display = 'none';
                 bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
