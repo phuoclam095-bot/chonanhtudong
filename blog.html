@@ -51,6 +51,7 @@
         .comment-box { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 10px; background: #f9f9f9; }
         .comment-author { font-weight: 700; color: var(--dark-green); margin-bottom: 2px; }
         .comment-text { font-size: 0.9rem; color: #333; }
+        #detailPhoto { border-radius: 20px 0 0 20px !important; }
     </style>
 </head>
 <body>
@@ -182,12 +183,34 @@
         </div>
     </div>
     
+    <div class="modal fade" id="readPostModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="detailTitle">...</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="detailImage" src="" class="w-100 rounded mb-4" style="max-height: 400px; object-fit: cover;">
+                    <div class="d-flex justify-content-between text-muted mb-3 border-bottom pb-2">
+                        <span id="detailAuthor"><i class="fas fa-user me-1"></i>...</span>
+                        <span id="detailDate"><i class="fas fa-clock me-1"></i>...</span>
+                    </div>
+                    <div id="detailContent" style="white-space: pre-wrap; line-height: 1.8; color: #333;">...</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     
     <script>
-        // ... (Giữ nguyên các hằng số N8N_GET_BLOGS, demoBlogs, demoReviews) ...
+        // ⚠️ THAY URL WEBHOOK CỦA BẠN VÀO ĐÂY
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';     
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog'; 
 
@@ -202,7 +225,7 @@
             { name: "Lê Minh", avatar: "M", stars: 4, content: "Gói chụp hợp lý, thợ chụp vui tính." },
             { name: "Phạm Hương", avatar: "H", stars: 5, content: "Đã chụp ở đây lần thứ 2, rất hài lòng!" }
         ];
-        // 🔥 Dữ liệu ảnh cho Carousel
+        // 🔥 Dữ liệu ảnh cho Carousel (Sử dụng ảnh demo)
         const carouselImages = [
             "https://images.unsplash.com/photo-1533904975545-0d02df986256?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1621303254942-5f65306d8713?auto=format&fit=crop&w=1000&q=80",
@@ -216,7 +239,6 @@
 
         function renderDemoComments() {
             const commentsContainer = document.getElementById('commentsContainer');
-            // Bình luận giả lập
             const demoComments = [
                 { author: "Khách hàng A", text: "Bộ ảnh này tuyệt vời quá ạ! Đã lưu về làm cảm hứng." },
                 { author: "Phạm Hằng", text: "Thích tone màu này, Studio có nhận chụp ngoại cảnh không ạ?" }
@@ -239,7 +261,6 @@
 
             const commentsContainer = document.getElementById('commentsContainer');
             
-            // Thêm bình luận mới (Giả lập)
             const newCommentHtml = `
                 <div class="comment-box">
                     <div class="comment-author text-primary">Bạn (Vừa gửi)</div>
@@ -247,13 +268,11 @@
                 </div>
             `;
             
-            // Thêm vào đầu danh sách
             commentsContainer.insertAdjacentHTML('afterbegin', newCommentHtml);
             input.value = '';
             
-            // Cuộn lên trên để thấy bình luận mới
             commentsContainer.scrollTop = 0;
-            alert("Bình luận đã được gửi (Lưu ý: Đây là tính năng demo, bình luận sẽ không được lưu).");
+            console.log("Bình luận đã được gửi (DEMO)");
         }
 
 
@@ -264,6 +283,7 @@
             const previewContainer = document.getElementById('imagePreviewContainer');
             const imgPreview = document.getElementById('imgPreview');
             const file = fileInput.files[0];
+            
             const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
             const MAX_BASE64_SIZE = 150000; // 150KB an toàn
 
@@ -286,7 +306,6 @@
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Độ phân giải ảnh bìa tối đa 1000px
                         const MAX_WIDTH = 1000; 
                         let width = img.width;
                         let height = img.height;
@@ -296,11 +315,10 @@
                         canvas.width = width; canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Chất lượng nén 0.3
                         const compressedBase64 = canvas.toDataURL('image/jpeg', 0.3);
                         
                         if (compressedBase64.length > MAX_BASE64_SIZE) {
-                            console.warn(`Ảnh sau nén RẤT LỚN. Webhook có thể bị lỗi.`);
+                            alert(`⚠️ Cảnh báo: Ảnh sau nén RẤT LỚN (${(compressedBase64.length / 1024).toFixed(0)}KB). Lỗi tải ảnh có thể xảy ra!`);
                         }
                         
                         imgPreview.src = compressedBase64;
@@ -315,7 +333,7 @@
         async function submitPost(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitPost');
-            const originalButtonText = btn.innerHTML; // Lưu lại chữ "Gửi Duyệt"
+            const originalButtonText = btn.innerHTML;
             const imageBase64 = document.getElementById('postImageBase64').value;
             
             if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
@@ -356,36 +374,40 @@
              const url = imgUrl.split('&t=')[0]; // Bỏ mã chống cache
              document.getElementById('detailPhoto').src = url;
 
-             // Tạo URL có ID ảnh (Giả lập)
+             // Tự tạo đường link xem ảnh (Hiển thị trong Console)
              const dummyId = Math.random().toString(36).substring(2, 8);
              const photoUrl = `${window.location.origin}/photo/${dummyId}`; 
-             
-             // 🔥 TỰ TẠO ĐƯỜNG LINK XEM ẢNH (Hiển thị trong Console)
              console.log(`Đường Link Ảnh Chi Tiết Giả Lập: ${photoUrl}`);
              
              // Hiển thị Modal
-             renderDemoComments(); // Tải bình luận giả lập
+             renderDemoComments(); 
              new bootstrap.Modal(document.getElementById('photoDetailModal')).show();
         }
 
         // 🔥 HÀM KHỞI TẠO CAROUSEL
         function initCarousel() {
             const carouselContainer = $('#photoCarousel');
-            carouselContainer.empty(); // Xóa nội dung cũ
+            
+            // Phải hủy Slick cũ trước khi khởi tạo lại (nếu có)
+            if (carouselContainer.hasClass('slick-initialized')) {
+                carouselContainer.slick('unslick');
+            }
+            carouselContainer.empty(); 
 
             // Chèn ảnh từ mảng demo
             carouselImages.forEach(url => {
-                const item = `<div><img src="${url}" onclick="showPhotoDetail('${url}')" alt="Khoảnh khắc nổi bật"></div>`;
+                const cacheBuster = `?t=${new Date().getTime()}`;
+                const item = `<div><img src="${url + cacheBuster}" onclick="showPhotoDetail('${url}')" alt="Khoảnh khắc nổi bật"></div>`;
                 carouselContainer.append(item);
             });
 
             // Cấu hình Slick
             carouselContainer.slick({
                 infinite: true,
-                slidesToShow: 3, // Hiển thị 3 ảnh
+                slidesToShow: 3, 
                 slidesToScroll: 1,
-                autoplay: true, // Tự động chạy
-                autoplaySpeed: 3000, // Chuyển sau 3 giây
+                autoplay: true, 
+                autoplaySpeed: 3000, 
                 dots: true,
                 arrows: true,
                 responsive: [
@@ -393,8 +415,25 @@
                 ]
             });
         }
-        
-        // ... (Giữ nguyên hàm loadBlogs, viewPost, renderReviews) ...
+
+        // 🔥 HÀM LOAD BLOG ĐÃ SỬA để sử dụng Thumbnail Ổn định và Chống Cache
+        function getStableDriveUrl(fileId) {
+             return `https://drive.google.com/uc?export=view&id=${fileId}`; // Dùng link uc ổn định
+        }
+
+        function extractDriveId(url) {
+            if (url && url.includes("id=")) {
+                const idPart = url.split("id=")[1];
+                return idPart.split('&')[0]; 
+            }
+            // Thêm logic trích xuất ID từ link uc nếu cần (nếu link trong sheet đã là uc?export=view&id=...)
+            if (url && url.includes("uc?export=view&id=")) {
+                const idPart = url.split("uc?export=view&id=")[1];
+                return idPart.split('&')[0];
+            }
+            return null;
+        }
+
         async function loadBlogs() {
             const container = document.getElementById('blogGrid');
             currentBlogs = [...demoBlogs]; 
@@ -404,14 +443,31 @@
                 if(response.ok) {
                     const data = await response.json();
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    if(realBlogs.length > 0) currentBlogs = [...currentBlogs, ...realBlogs];
+                    
+                    const processedBlogs = realBlogs.map(blog => {
+                         const rawUrl = blog.image;
+                         if (rawUrl) {
+                             const fileId = extractDriveId(rawUrl);
+                             // Nếu tìm thấy ID, tạo link hiển thị ổn định
+                             if (fileId) {
+                                 blog.display_image_url = getStableDriveUrl(fileId);
+                             } else {
+                                 blog.display_image_url = rawUrl;
+                             }
+                         }
+                         return blog;
+                    });
+                    
+                    if(processedBlogs.length > 0) currentBlogs = [...currentBlogs, ...processedBlogs];
                 }
-            } catch (e) { console.log("Dùng demo data"); }
+            } catch (e) { console.log("Lỗi tải Blog, dùng demo data:", e); }
 
             let html = '';
             currentBlogs.forEach((blog, i) => {
+                // 🔥 SỬ DỤNG MÃ CHỐNG CACHE TRONG THẺ <img>
                 const cacheBuster = `?t=${new Date().getTime()}`;
-                const imgUrl = (blog.image || 'https://via.placeholder.com/500x300') + cacheBuster;
+                const actualImageUrl = blog.display_image_url || blog.image || 'https://via.placeholder.com/500x300';
+                const imgUrl = actualImageUrl + cacheBuster; 
 
                 html += `
                 <div class="col-md-4">
@@ -433,7 +489,6 @@
         }
 
         function viewPost(index) {
-            // Hàm này đã giữ nguyên logic mở Modal đọc bài viết chi tiết
             const blog = currentBlogs[index];
             document.getElementById('detailTitle').innerText = blog.title;
             document.getElementById('detailAuthor').innerHTML = `<i class="fas fa-user me-1"></i>${blog.author}`;
@@ -451,7 +506,6 @@
         }
 
         function renderReviews() {
-             // ... (Giữ nguyên hàm renderReviews) ...
              const container = document.getElementById('reviewGrid');
              let html = '';
              demoReviews.forEach(review => {
