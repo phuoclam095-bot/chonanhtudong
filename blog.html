@@ -157,9 +157,13 @@
                                 <input type="text" id="postAuthor" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="fw-bold mb-1">Link Ảnh bìa (Nếu có)</label>
-                                <input type="text" id="postImage" class="form-control" placeholder="https://...">
+                                <label class="fw-bold mb-1">Email (Để Admin liên hệ)</label>
+                                <input type="email" id="postEmail" class="form-control" placeholder="name@example.com" required>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold mb-1">Link Ảnh bìa (Nếu có)</label>
+                            <input type="text" id="postImage" class="form-control" placeholder="https://...">
                         </div>
                         <div class="mb-3">
                             <label class="fw-bold mb-1">Tiêu đề bài viết</label>
@@ -185,7 +189,7 @@
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';     
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog'; 
 
-        // --- DỮ LIỆU DEMO (HIỆN NGAY LẬP TỨC) ---
+        // --- DỮ LIỆU DEMO ---
         const demoBlogs = [
             {
                 title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt",
@@ -287,13 +291,14 @@
             container.innerHTML = html;
         }
 
-        // 2. GỬI BÀI VIẾT MỚI
+        // 2. GỬI BÀI VIẾT MỚI (ĐÃ CẬP NHẬT LẤY EMAIL)
         async function submitPost(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitPost');
             
             const postData = {
                 author: document.getElementById('postAuthor').value,
+                email: document.getElementById('postEmail').value, // 🔥 LẤY EMAIL TẠI ĐÂY
                 title: document.getElementById('postTitle').value,
                 image: document.getElementById('postImage').value,
                 content: document.getElementById('postContent').value,
