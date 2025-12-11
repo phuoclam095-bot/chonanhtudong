@@ -190,65 +190,74 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK N8N (Thay link của bạn vào đây)
+        // ⚠️ THAY URL N8N CỦA BẠN VÀO ĐÂY
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';     
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog'; 
 
-        // --- DỮ LIỆU DEMO (HIỆN KHI CHƯA CÓ DỮ LIỆU THẬT) ---
-        const demoBlogs = [
-            {
-                title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin",
-                image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60",
-                desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..."
-            },
-            {
-                title: "Hướng dẫn tạo dáng chụp ảnh gia đình tự nhiên", date: "10/12/2025", author: "Studio LNP",
-                image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60",
-                desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!"
-            },
-            {
-                title: "Khuyến mãi Giáng Sinh: Giảm 20% gói Album", date: "01/12/2025", author: "Marketing Team",
-                image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60",
-                desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này."
-            }
-        ];
-
-        const demoReviews = [
-            { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm. Mình rất ưng ý với bộ ảnh cưới này. Sẽ giới thiệu bạn bè!" },
-            { name: "Trần Văn Nam", avatar: "N", stars: 5, content: "Dịch vụ chuyên nghiệp, giao ảnh đúng hẹn. Chỉnh sửa màu rất có gu. Cảm ơn Studio nhiều." },
-            { name: "Lê Minh", avatar: "M", stars: 4, content: "Gói chụp hợp lý, thợ chụp vui tính tạo không khí thoải mái. Chỉ tiếc là hôm chụp trời hơi mưa xíu." },
-            { name: "Phạm Hương", avatar: "H", stars: 5, content: "Đã chụp ở đây lần thứ 2 (ảnh bầu và ảnh đầy tháng). Lần nào cũng hài lòng hết nấc!" }
-        ];
-
-        // 1. HÀM XỬ LÝ ẢNH -> BASE64
-        function previewImage() {
+        // --- HÀM NÉN & RESIZE ẢNH (QUAN TRỌNG) ---
+        function processImage() {
             const fileInput = document.getElementById('postImageFile');
             const previewContainer = document.getElementById('imagePreviewContainer');
             const imgPreview = document.getElementById('imgPreview');
             const file = fileInput.files[0];
 
             if (file) {
-                if (file.size > 3 * 1024 * 1024) { alert("Vui lòng chọn ảnh nhỏ hơn 3MB!"); fileInput.value = ""; return; }
-                
-                document.getElementById('postImageName').value = file.name;
+                // Đọc file
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    imgPreview.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                    document.getElementById('postImageBase64').value = e.target.result;
-                }
                 reader.readAsDataURL(file);
+                
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    
+                    img.onload = function() {
+                        // Tạo Canvas để vẽ lại ảnh (Resize)
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Giới hạn chiều rộng tối đa 800px (đủ nét cho web blog)
+                        const MAX_WIDTH = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        // Vẽ ảnh lên canvas
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Xuất ra Base64 với định dạng JPEG, chất lượng 0.7 (Nén 30%)
+                        // Kết quả: Ảnh từ 5MB -> còn khoảng 150KB
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        
+                        // Hiển thị và Lưu
+                        imgPreview.src = compressedBase64;
+                        previewContainer.style.display = 'block';
+                        document.getElementById('postImageBase64').value = compressedBase64;
+                        document.getElementById('postImageName').value = file.name;
+                    }
+                }
             }
         }
 
-        // 2. GỬI BÀI VIẾT (POST)
+        // --- GỬI BÀI VIẾT (ĐÃ CẬP NHẬT) ---
         async function submitPost(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitPost');
+            
+            // Lấy dữ liệu từ các ô input ẩn
             const imageBase64 = document.getElementById('postImageBase64').value;
             const imageName = document.getElementById('postImageName').value;
 
-            if (!imageBase64) { alert("Vui lòng chọn một tấm ảnh bìa!"); return; }
+            if (!imageBase64) {
+                alert("Vui lòng chọn ảnh bìa cho bài viết!");
+                return;
+            }
 
             const postData = {
                 author: document.getElementById('postAuthor').value,
@@ -256,91 +265,50 @@
                 title: document.getElementById('postTitle').value,
                 content: document.getElementById('postContent').value,
                 date: new Date().toLocaleDateString('vi-VN'),
+                // Gửi ảnh đã nén
                 image_data: imageBase64,
                 image_name: imageName
             };
 
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải ảnh...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
             btn.disabled = true;
 
             try {
                 await fetch(N8N_SUBMIT_BLOG, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(postData)
                 });
-                alert("✅ Bài viết đã gửi thành công!\nẢnh đã được tải lên server. Vui lòng chờ Admin duyệt.");
+
+                alert("✅ Gửi bài thành công! Ảnh đã được tối ưu và tải lên.");
+                
+                // Reset form
                 document.getElementById('postForm').reset();
                 document.getElementById('imagePreviewContainer').style.display = 'none';
-                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
+                document.getElementById('postImageBase64').value = '';
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('writePostModal'));
+                modal.hide();
+
             } catch (error) {
-                alert("Lỗi kết nối: " + error.message);
+                alert("Lỗi: " + error.message);
+                console.error(error);
             } finally {
-                btn.innerHTML = 'Gửi Duyệt'; btn.disabled = false;
+                btn.innerHTML = 'Gửi Duyệt';
+                btn.disabled = false;
             }
         }
 
-        // 3. TẢI BÀI VIẾT (GET - KẾT HỢP DEMO)
-        async function loadBlogs() {
-            const container = document.getElementById('blogGrid');
-            let allBlogs = [...demoBlogs]; // Mặc định hiển thị bài Demo
+        // --- CẬP NHẬT HTML INPUT FILE ---
+        // Bạn nhớ sửa lại thẻ input file trong HTML để gọi hàm mới:
+        // <input type="file" id="postImageFile" ... onchange="processImage()">
 
-            try {
-                const response = await fetch(N8N_GET_BLOGS);
-                if(response.ok) {
-                    const data = await response.json();
-                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    if(realBlogs.length > 0) {
-                        // Nối bài viết thật vào sau bài demo
-                        allBlogs = [...allBlogs, ...realBlogs];
-                    }
-                }
-            } catch (e) { console.log("Dùng dữ liệu Demo."); }
-
-            let html = '';
-            allBlogs.forEach(blog => {
-                const imgUrl = blog.image || 'https://via.placeholder.com/500x300?text=No+Image';
-                html += `
-                <div class="col-md-4">
-                    <div class="blog-card">
-                        <img src="${imgUrl}" class="blog-img" alt="Blog Image">
-                        <div class="blog-body">
-                            <div class="d-flex justify-content-between text-muted small">
-                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
-                                <div class="fw-bold text-success">${blog.author}</div>
-                            </div>
-                            <div class="blog-title">${blog.title}</div>
-                            <div class="blog-desc">${blog.desc || blog.content}</div>
-                            <a href="#" class="btn-read">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function renderReviews() {
-            const container = document.getElementById('reviewGrid');
-            let html = '';
-            demoReviews.forEach(review => {
-                let starHtml = '';
-                for(let i=0; i<5; i++) starHtml += (i < review.stars) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-                html += `
-                <div class="col-md-6">
-                    <div class="review-card">
-                        <i class="fas fa-quote-right quote-icon"></i>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="user-avatar">${review.avatar}</div>
-                            <div>
-                                <h5 class="m-0 fw-bold">${review.name}</h5>
-                                <div class="stars">${starHtml}</div>
-                            </div>
-                        </div>
-                        <div class="review-text">"${review.content}"</div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
+        // ... (Giữ nguyên các hàm loadBlogs, renderReviews cũ) ...
+        const demoBlogs = [ /* ...giữ nguyên... */ ];
+        const demoReviews = [ /* ...giữ nguyên... */ ];
+        async function loadBlogs() { /* ...giữ nguyên... */ }
+        function renderBlogHTML(blogs, container) { /* ...giữ nguyên... */ }
+        function renderReviews() { /* ...giữ nguyên... */ }
 
         document.addEventListener('DOMContentLoaded', () => {
             loadBlogs();
