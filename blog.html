@@ -310,41 +310,58 @@
         }
 
         // 3. HIỂN THỊ BLOG
-        async function loadBlogs() {
+       async function loadBlogs() {
             const container = document.getElementById('blogGrid');
-            let allBlogs = [...demoBlogs]; // Mặc định hiển thị bài Demo
+            container.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-success"></div><p>Đang tải bài viết...</p></div>';
 
             try {
+                // Gọi Webhook n8n
                 const response = await fetch(N8N_GET_BLOGS);
-                if(response.ok) {
-                    const data = await response.json();
-                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    if(realBlogs.length > 0) {
-                        allBlogs = [...allBlogs, ...realBlogs];
-                    }
+                
+                if (!response.ok) {
+                    throw new Error("Lỗi kết nối Server: " + response.status);
                 }
-            } catch (e) { console.log("Dùng dữ liệu Demo."); }
 
-            let html = '';
-            allBlogs.forEach(blog => {
-                const imgUrl = blog.image || 'https://via.placeholder.com/500x300?text=No+Image';
-                html += `
-                <div class="col-md-4">
-                    <div class="blog-card">
-                        <img src="${imgUrl}" class="blog-img" alt="Blog Image">
-                        <div class="blog-body">
-                            <div class="d-flex justify-content-between text-muted small mb-2">
-                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
-                                <div class="fw-bold text-success">${blog.author}</div>
+                const data = await response.json();
+                
+                // Kiểm tra xem dữ liệu trả về có phải là danh sách bài viết không
+                const realBlogs = Array.isArray(data) ? data : (data.data || []);
+
+                if (realBlogs.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center p-5"><h3>📭 Chưa có bài viết nào được duyệt</h3><p>Hãy gửi bài và vào Google Sheet đổi status thành <b>Approved</b> nhé!</p></div>';
+                    return;
+                }
+
+                // Render bài viết thật
+                let html = '';
+                realBlogs.forEach(blog => {
+                    const imgUrl = blog.image || 'https://via.placeholder.com/500x300?text=No+Image';
+                    html += `
+                    <div class="col-md-4">
+                        <div class="blog-card">
+                            <img src="${imgUrl}" class="blog-img" alt="${blog.title}">
+                            <div class="blog-body">
+                                <div class="d-flex justify-content-between text-muted small mb-2">
+                                    <div><i class="far fa-clock me-1"></i>${blog.date || ''}</div>
+                                    <div class="fw-bold text-success">${blog.author || 'Admin'}</div>
+                                </div>
+                                <div class="blog-title">${blog.title}</div>
+                                <div class="blog-desc">${blog.desc || blog.content || ''}</div>
+                                <a href="#" class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
                             </div>
-                            <div class="blog-title">${blog.title}</div>
-                            <div class="blog-desc">${blog.desc || blog.content}</div>
-                            <a href="#" class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
                         </div>
-                    </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+
+            } catch (e) {
+                console.error("Lỗi tải Blog:", e);
+                container.innerHTML = `<div class="col-12 text-center text-danger p-5">
+                    <h3>❌ Không tải được bài viết</h3>
+                    <p>Lỗi: ${e.message}</p>
+                    <small>Hãy nhấn F12, chọn tab Console để xem chi tiết lỗi màu đỏ.</small>
                 </div>`;
-            });
-            container.innerHTML = html;
+            }
         }
 
         // 4. HIỂN THỊ REVIEW (Đã thêm lại phần này)
