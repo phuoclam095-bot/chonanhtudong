@@ -21,11 +21,14 @@
             background-size: 60px 60px; background-position: 0 0, 30px 30px; 
             color: #333; min-height: 100vh;
         }
+        
+        /* NAVBAR */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 700; transition: 0.3s; }
         .nav-link:hover { color: var(--accent-color) !important; transform: translateY(-2px); }
 
+        /* HERO SECTION */
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1000&q=80');
             background-size: cover; background-position: center;
@@ -33,19 +36,16 @@
             border-bottom: 5px solid var(--primary-green);
         }
         .hero-title { font-size: 2.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); margin-bottom: 15px; }
-        .hero-subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
-
+        
+        /* SECTION HEADER & BUTTON */
         .section-header { 
             text-align: center; margin: 50px 0 30px 0; 
             color: var(--accent-color); font-weight: 800; font-size: 2rem; 
             text-shadow: 0 0 10px rgba(81, 255, 125, 0.3);
-            display: flex; align-items: center; justify-content: center; gap: 15px;
         }
-
-        /* Nút Viết Bài */
         .btn-write-post {
             background: var(--accent-color); color: var(--dark-green);
-            font-weight: 800; padding: 10px 20px; border-radius: 50px;
+            font-weight: 800; padding: 10px 25px; border-radius: 50px;
             border: none; box-shadow: 0 5px 15px rgba(81, 255, 125, 0.3);
             transition: 0.3s; font-size: 1rem;
         }
@@ -58,39 +58,37 @@
             display: flex; flex-direction: column;
         }
         .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
-        .blog-img { height: 200px; object-fit: cover; width: 100%; }
+        .blog-img { height: 200px; object-fit: cover; width: 100%; background: #eee; }
         .blog-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
         .blog-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-        .blog-author { font-size: 0.85rem; color: var(--primary-green); font-weight: 700; margin-bottom: 5px; }
-        .blog-title { font-weight: 700; font-size: 1.2rem; color: var(--dark-green); margin-bottom: 10px; }
+        .blog-author { font-size: 0.85rem; color: var(--primary-green); font-weight: 700; }
+        .blog-title { font-weight: 700; font-size: 1.2rem; color: var(--dark-green); margin: 10px 0; }
         .blog-desc { font-size: 0.95rem; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .btn-read { 
             margin-top: 15px; background: transparent; border: 2px solid var(--primary-green); 
-            color: var(--primary-green); font-weight: 700; padding: 8px 15px; border-radius: 50px; 
-            transition: 0.3s; width: fit-content; text-decoration: none; display: inline-block;
+            color: var(--primary-green); font-weight: 700; padding: 5px 15px; border-radius: 50px; 
+            transition: 0.3s; display: inline-block; width: fit-content; text-decoration: none;
         }
         .btn-read:hover { background: var(--primary-green); color: white; }
 
         /* REVIEW CARDS */
         .review-card {
             background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative;
             border-left: 5px solid var(--primary-green);
         }
-        .user-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .user-avatar { width: 50px; height: 50px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #666; font-weight: bold; }
-        .user-meta h5 { margin: 0; font-weight: 700; font-size: 1.1rem; }
-        .stars { color: #ffc107; font-size: 0.9rem; margin-top: 3px; }
+        .user-avatar { width: 50px; height: 50px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
+        .stars { color: #ffc107; font-size: 0.9rem; }
         .review-text { font-style: italic; color: #444; line-height: 1.6; }
         .quote-icon { position: absolute; top: 15px; right: 20px; font-size: 3rem; color: rgba(0,0,0,0.05); }
 
         .footer { text-align: center; color: rgba(255,255,255,0.5); padding: 30px; font-size: 0.9rem; }
 
-        /* Modal Custom */
+        /* MODAL */
         .modal-content { border-radius: 20px; border: none; }
         .modal-header { background: var(--primary-green); color: white; border-radius: 20px 20px 0 0; }
         .form-control { border-radius: 10px; padding: 12px; }
-        .form-control:focus { border-color: var(--primary-green); box-shadow: 0 0 0 0.2rem rgba(20, 122, 48, 0.25); }
+        #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -121,7 +119,7 @@
     <div class="container py-4">
         
         <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
-            <h2 class="section-header m-0"><i class="fas fa-newspaper"></i> Bài Viết Mới</h2>
+            <h2 class="section-header m-0 text-start"><i class="fas fa-newspaper"></i> Bài Viết Mới</h2>
             <button class="btn-write-post" data-bs-toggle="modal" data-bs-target="#writePostModal">
                 <i class="fas fa-pen-fancy me-2"></i>Đăng Bài
             </button>
@@ -146,7 +144,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Chia sẻ câu chuyện của bạn</h5>
+                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Chia sẻ câu chuyện</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -161,10 +159,17 @@
                                 <input type="email" id="postEmail" class="form-control" placeholder="name@example.com" required>
                             </div>
                         </div>
+
                         <div class="mb-3">
-                            <label class="fw-bold mb-1">Link Ảnh bìa (Nếu có)</label>
-                            <input type="text" id="postImage" class="form-control" placeholder="https://...">
+                            <label class="fw-bold mb-1">Ảnh bìa bài viết</label>
+                            <input type="file" id="postImageFile" class="form-control" accept="image/*" onchange="previewImage()">
+                            <div id="imagePreviewContainer" class="mt-2" style="display:none;">
+                                <img id="imgPreview" src="" style="width: 100%; height: 200px; object-fit: cover;">
+                            </div>
+                            <input type="hidden" id="postImageBase64">
+                            <input type="hidden" id="postImageName">
                         </div>
+
                         <div class="mb-3">
                             <label class="fw-bold mb-1">Tiêu đề bài viết</label>
                             <input type="text" id="postTitle" class="form-control" placeholder="Tiêu đề hấp dẫn..." required>
@@ -185,30 +190,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ THAY URL N8N CỦA BẠN (Nếu chưa có thì cứ để nguyên, nó sẽ hiện bài Demo)
+        // ⚠️ CẤU HÌNH WEBHOOK N8N (Thay link của bạn vào đây)
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';     
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog'; 
 
-        // --- DỮ LIỆU DEMO ---
+        // --- DỮ LIỆU DEMO (HIỆN KHI CHƯA CÓ DỮ LIỆU THẬT) ---
         const demoBlogs = [
             {
-                title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt",
-                date: "12/12/2025",
-                author: "Admin",
+                title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin",
                 image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60",
                 desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..."
             },
             {
-                title: "Hướng dẫn tạo dáng chụp ảnh gia đình tự nhiên",
-                date: "10/12/2025",
-                author: "Studio LNP",
+                title: "Hướng dẫn tạo dáng chụp ảnh gia đình tự nhiên", date: "10/12/2025", author: "Studio LNP",
                 image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60",
                 desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!"
             },
             {
-                title: "Khuyến mãi Giáng Sinh: Giảm 20% gói Album",
-                date: "01/12/2025",
-                author: "Marketing Team",
+                title: "Khuyến mãi Giáng Sinh: Giảm 20% gói Album", date: "01/12/2025", author: "Marketing Team",
                 image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60",
                 desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này."
             }
@@ -221,44 +220,97 @@
             { name: "Phạm Hương", avatar: "H", stars: 5, content: "Đã chụp ở đây lần thứ 2 (ảnh bầu và ảnh đầy tháng). Lần nào cũng hài lòng hết nấc!" }
         ];
 
-        // 1. TẢI DANH SÁCH BÀI VIẾT (KẾT HỢP DEMO + REAL)
+        // 1. HÀM XỬ LÝ ẢNH -> BASE64
+        function previewImage() {
+            const fileInput = document.getElementById('postImageFile');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const imgPreview = document.getElementById('imgPreview');
+            const file = fileInput.files[0];
+
+            if (file) {
+                if (file.size > 3 * 1024 * 1024) { alert("Vui lòng chọn ảnh nhỏ hơn 3MB!"); fileInput.value = ""; return; }
+                
+                document.getElementById('postImageName').value = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imgPreview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    document.getElementById('postImageBase64').value = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 2. GỬI BÀI VIẾT (POST)
+        async function submitPost(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitPost');
+            const imageBase64 = document.getElementById('postImageBase64').value;
+            const imageName = document.getElementById('postImageName').value;
+
+            if (!imageBase64) { alert("Vui lòng chọn một tấm ảnh bìa!"); return; }
+
+            const postData = {
+                author: document.getElementById('postAuthor').value,
+                email: document.getElementById('postEmail').value,
+                title: document.getElementById('postTitle').value,
+                content: document.getElementById('postContent').value,
+                date: new Date().toLocaleDateString('vi-VN'),
+                image_data: imageBase64,
+                image_name: imageName
+            };
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải ảnh...';
+            btn.disabled = true;
+
+            try {
+                await fetch(N8N_SUBMIT_BLOG, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+                alert("✅ Bài viết đã gửi thành công!\nẢnh đã được tải lên server. Vui lòng chờ Admin duyệt.");
+                document.getElementById('postForm').reset();
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
+            } catch (error) {
+                alert("Lỗi kết nối: " + error.message);
+            } finally {
+                btn.innerHTML = 'Gửi Duyệt'; btn.disabled = false;
+            }
+        }
+
+        // 3. TẢI BÀI VIẾT (GET - KẾT HỢP DEMO)
         async function loadBlogs() {
             const container = document.getElementById('blogGrid');
-            let allBlogs = [...demoBlogs]; // Bắt đầu với bài demo
+            let allBlogs = [...demoBlogs]; // Mặc định hiển thị bài Demo
 
             try {
                 const response = await fetch(N8N_GET_BLOGS);
                 if(response.ok) {
                     const data = await response.json();
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    // Nối bài viết thật vào sau bài demo
-                    allBlogs = [...allBlogs, ...realBlogs]; 
+                    if(realBlogs.length > 0) {
+                        // Nối bài viết thật vào sau bài demo
+                        allBlogs = [...allBlogs, ...realBlogs];
+                    }
                 }
-            } catch (error) {
-                console.log("Chưa kết nối n8n hoặc lỗi tải, chỉ hiển thị bài Demo.");
-            }
+            } catch (e) { console.log("Dùng dữ liệu Demo."); }
 
-            renderBlogHTML(allBlogs, container);
-        }
-
-        function renderBlogHTML(blogs, container) {
             let html = '';
-            blogs.forEach(blog => {
+            allBlogs.forEach(blog => {
                 const imgUrl = blog.image || 'https://via.placeholder.com/500x300?text=No+Image';
                 html += `
                 <div class="col-md-4">
                     <div class="blog-card">
-                        <img src="${imgUrl}" class="blog-img" alt="Blog Image" onerror="this.src='https://via.placeholder.com/500x300?text=Error'">
+                        <img src="${imgUrl}" class="blog-img" alt="Blog Image">
                         <div class="blog-body">
-                            <div class="d-flex justify-content-between">
-                                <div class="blog-date"><i class="far fa-clock me-1"></i>${blog.date || 'Mới nhất'}</div>
-                                <div class="blog-author"><i class="far fa-user me-1"></i>${blog.author || 'Admin'}</div>
+                            <div class="d-flex justify-content-between text-muted small">
+                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
+                                <div class="fw-bold text-success">${blog.author}</div>
                             </div>
-                            <div class="blog-title mt-2">${blog.title}</div>
-                            <div class="blog-desc">${blog.desc || blog.content || '...'}</div>
-                            <button class="btn-read mt-3" style="border:none; background:none; color:var(--primary-green); font-weight:bold; padding:0;">
-                                Đọc tiếp <i class="fas fa-arrow-right ms-1"></i>
-                            </button>
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.desc || blog.content}</div>
+                            <a href="#" class="btn-read">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>`;
@@ -272,15 +324,14 @@
             demoReviews.forEach(review => {
                 let starHtml = '';
                 for(let i=0; i<5; i++) starHtml += (i < review.stars) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-                
                 html += `
                 <div class="col-md-6">
                     <div class="review-card">
                         <i class="fas fa-quote-right quote-icon"></i>
-                        <div class="user-info">
+                        <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="user-avatar">${review.avatar}</div>
-                            <div class="user-meta">
-                                <h5>${review.name}</h5>
+                            <div>
+                                <h5 class="m-0 fw-bold">${review.name}</h5>
                                 <div class="stars">${starHtml}</div>
                             </div>
                         </div>
@@ -289,43 +340,6 @@
                 </div>`;
             });
             container.innerHTML = html;
-        }
-
-        // 2. GỬI BÀI VIẾT MỚI (ĐÃ CẬP NHẬT LẤY EMAIL)
-        async function submitPost(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmitPost');
-            
-            const postData = {
-                author: document.getElementById('postAuthor').value,
-                email: document.getElementById('postEmail').value, // 🔥 LẤY EMAIL TẠI ĐÂY
-                title: document.getElementById('postTitle').value,
-                image: document.getElementById('postImage').value,
-                content: document.getElementById('postContent').value,
-                date: new Date().toLocaleDateString('vi-VN')
-            };
-
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-            btn.disabled = true;
-
-            try {
-                await fetch(N8N_SUBMIT_BLOG, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(postData)
-                });
-
-                alert("✅ Bài viết đã gửi thành công!\nVui lòng chờ Admin phê duyệt để hiển thị.");
-                document.getElementById('postForm').reset();
-                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
-
-            } catch (error) {
-                alert("Lỗi: Không thể gửi bài. Vui lòng thử lại sau.");
-                console.error(error);
-            } finally {
-                btn.innerHTML = 'Gửi Duyệt';
-                btn.disabled = false;
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
