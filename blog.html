@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Đánh Giá Khách Hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --primary-green: #147a30; --dark-green: #0e5a22; 
+            --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d;
+            --card-bg: #ffffff;
+        }
+        body { 
+            margin: 0; padding: 0; font-family: 'Nunito', sans-serif; 
+            background-color: var(--bg-color); 
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
+            background-size: 60px 60px; background-position: 0 0, 30px 30px; 
+            color: #333; min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 700; transition: 0.3s; }
+        .nav-link:hover { color: var(--accent-color) !important; transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover; background-position: center;
+            color: white; padding: 80px 20px; text-align: center;
+            border-bottom: 5px solid var(--primary-green);
+        }
+        .hero-title { font-size: 2.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); margin-bottom: 15px; }
+        .hero-subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+
+        /* Section Headers */
+        .section-header { 
+            text-align: center; margin: 50px 0 30px 0; 
+            color: var(--accent-color); font-weight: 800; font-size: 2rem; 
+            text-shadow: 0 0 10px rgba(81, 255, 125, 0.3);
+        }
+
+        /* --- BLOG CARDS --- */
+        .blog-card {
+            background: var(--card-bg); border: none; border-radius: 15px; overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s; height: 100%;
+            display: flex; flex-direction: column;
+        }
+        .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        .blog-img { height: 200px; object-fit: cover; width: 100%; }
+        .blog-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .blog-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        .blog-title { font-weight: 700; font-size: 1.2rem; color: var(--dark-green); margin-bottom: 10px; }
+        .blog-desc { font-size: 0.95rem; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-read { 
+            margin-top: 15px; background: transparent; border: 2px solid var(--primary-green); 
+            color: var(--primary-green); font-weight: 700; padding: 8px 15px; border-radius: 50px; 
+            transition: 0.3s; width: fit-content; text-decoration: none; display: inline-block;
+        }
+        .btn-read:hover { background: var(--primary-green); color: white; }
+
+        /* --- REVIEW CARDS --- */
+        .review-card {
+            background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; margin-bottom: 20px;
+            border-left: 5px solid var(--primary-green);
+        }
+        .user-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .user-avatar { width: 50px; height: 50px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #666; font-weight: bold; }
+        .user-meta h5 { margin: 0; font-weight: 700; font-size: 1.1rem; }
+        .stars { color: #ffc107; font-size: 0.9rem; margin-top: 3px; }
+        .review-text { font-style: italic; color: #444; line-height: 1.6; }
+        .quote-icon { position: absolute; top: 15px; right: 20px; font-size: 3rem; color: rgba(0,0,0,0.05); }
+
+        /* CTA Section */
+        .cta-box {
+            background: linear-gradient(135deg, #147a30, #0e5a22);
+            color: white; padding: 40px; border-radius: 20px; text-align: center;
+            margin: 60px 0; box-shadow: 0 10px 40px rgba(20, 122, 48, 0.4);
+        }
+        .btn-feedback {
+            background: white; color: var(--primary-green); padding: 12px 30px;
+            font-size: 1.1rem; font-weight: 800; border-radius: 50px; border: none;
+            margin-top: 20px; transition: 0.3s; text-decoration: none; display: inline-block;
+        }
+        .btn-feedback:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); color: var(--dark-green); }
+
+        .footer { text-align: center; color: rgba(255,255,255,0.5); padding: 30px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-camera-retro me-2"></i>Studio LNP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews">Đánh Giá</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="admin.html" class="btn btn-outline-light btn-sm fw-bold px-3 py-2 rounded-pill">Admin Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section" style="margin-top: 60px;">
+        <div class="container">
+            <h1 class="hero-title">Góc Chia Sẻ & Cảm Nhận</h1>
+            <p class="hero-subtitle">Cập nhật tin tức mới nhất từ Studio và lắng nghe những câu chuyện từ khách hàng thân yêu.</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        
+        <h2 class="section-header"><i class="fas fa-newspaper me-2"></i>Tin Tức Mới Nhất</h2>
+        <div class="row g-4" id="blogGrid">
+            </div>
+
+        <h2 class="section-header" id="reviews"><i class="fas fa-heart me-2"></i>Khách Hàng Nói Gì?</h2>
+        <div class="row g-4" id="reviewGrid">
+            </div>
+
+        <div class="cta-box">
+            <h3><i class="fas fa-comments me-2"></i>Bạn đã trải nghiệm dịch vụ của chúng tôi?</h3>
+            <p class="mb-0 mt-2">Ý kiến của bạn là động lực để chúng tôi phát triển hơn mỗi ngày!</p>
+            <a href="feedback.html" class="btn-feedback">
+                <i class="fas fa-pen-nib me-2"></i>Gửi Góp Ý Ngay
+            </a>
+        </div>
+
+    </div>
+
+    <div class="footer">© 2025 Studio Lâm Nam Phước. All rights reserved.</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // DỮ LIỆU GIẢ LẬP (SAU NÀY BẠN CÓ THỂ LẤY TỪ GOOGLE SHEET QUA N8N)
+        
+        const blogs = [
+            {
+                title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt",
+                date: "12/12/2025",
+                image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60",
+                desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..."
+            },
+            {
+                title: "Hướng dẫn tạo dáng chụp ảnh gia đình tự nhiên",
+                date: "10/12/2025",
+                image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60",
+                desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!"
+            },
+            {
+                title: "Khuyến mãi Giáng Sinh: Giảm 20% gói Album",
+                date: "01/12/2025",
+                image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60",
+                desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này."
+            }
+        ];
+
+        const reviews = [
+            {
+                name: "Nguyễn Thảo",
+                avatar: "T",
+                stars: 5,
+                content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm. Mình rất ưng ý với bộ ảnh cưới này. Sẽ giới thiệu bạn bè!"
+            },
+            {
+                name: "Trần Văn Nam",
+                avatar: "N",
+                stars: 5,
+                content: "Dịch vụ chuyên nghiệp, giao ảnh đúng hẹn. Chỉnh sửa màu rất có gu. Cảm ơn Studio nhiều."
+            },
+            {
+                name: "Lê Minh",
+                avatar: "M",
+                stars: 4,
+                content: "Gói chụp hợp lý, thợ chụp vui tính tạo không khí thoải mái. Chỉ tiếc là hôm chụp trời hơi mưa xíu."
+            },
+            {
+                name: "Phạm Hương",
+                avatar: "H",
+                stars: 5,
+                content: "Đã chụp ở đây lần thứ 2 (ảnh bầu và ảnh đầy tháng). Lần nào cũng hài lòng hết nấc!"
+            }
+        ];
+
+        // HÀM RENDER BLOG
+        function renderBlogs() {
+            const container = document.getElementById('blogGrid');
+            let html = '';
+            blogs.forEach(blog => {
+                html += `
+                <div class="col-md-4">
+                    <div class="blog-card">
+                        <img src="${blog.image}" class="blog-img" alt="Blog Image">
+                        <div class="blog-body">
+                            <div class="blog-date"><i class="far fa-calendar-alt me-1"></i>${blog.date}</div>
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.desc}</div>
+                            <a href="#" class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // HÀM RENDER REVIEWS
+        function renderReviews() {
+            const container = document.getElementById('reviewGrid');
+            let html = '';
+            reviews.forEach(review => {
+                // Tạo số sao vàng
+                let starHtml = '';
+                for(let i=0; i<5; i++) {
+                    if(i < review.stars) starHtml += '<i class="fas fa-star"></i>';
+                    else starHtml += '<i class="far fa-star"></i>';
+                }
+
+                html += `
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <i class="fas fa-quote-right quote-icon"></i>
+                        <div class="user-info">
+                            <div class="user-avatar">${review.avatar}</div>
+                            <div class="user-meta">
+                                <h5>${review.name}</h5>
+                                <div class="stars">${starHtml}</div>
+                            </div>
+                        </div>
+                        <div class="review-text">"${review.content}"</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // CHẠY KHI TẢI TRANG
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBlogs();
+            renderReviews();
+        });
+    </script>
+</body>
+</html>
