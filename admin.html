@@ -252,7 +252,7 @@
         </div>
     </div>
 
-    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2346/2346-preview.mp3" preload="auto"></audio>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -418,13 +418,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkAuthCallback();
             updateUI();
-            
-            // Kích hoạt bong bóng chào
-            showGreetingBubble();
         });
 
         // =========================================
-        // JAVASCRIPT CHAT WIDGET (ĐÃ FIX LỖI ARRAY JSON)
+        // JAVASCRIPT CHAT WIDGET (CÓ ÂM THANH POP)
         // =========================================
         const CHAT_WEBHOOK_URL = 'https://dichvufb.tino.page/webhook/chat-admin'; 
 
@@ -476,10 +473,10 @@
                 const data = await response.json();
                 document.getElementById(loadingId)?.remove();
                 
-                // 🔥 SỬA LỖI QUAN TRỌNG: Tự động xử lý nếu n8n trả về Mảng [] hay Đối tượng {}
+                // 🔥 Xử lý Mảng/Object
                 let finalData = data;
                 if (Array.isArray(data) && data.length > 0) {
-                    finalData = data[0]; // Lấy phần tử đầu tiên nếu là mảng
+                    finalData = data[0]; 
                 }
 
                 const aiReply = finalData.output || finalData.text || "Xin lỗi, hệ thống chưa phản hồi đúng định dạng.";
@@ -518,6 +515,8 @@
         function playSound() {
             const audio = document.getElementById('notification-sound');
             if (audio) {
+                audio.volume = 0.3; // 🔊 CHỈNH NHỎ (30%)
+                audio.currentTime = 0; // Reset
                 audio.play().catch(e => console.log("Trình duyệt chặn autoplay (người dùng chưa tương tác)."));
             }
         }
@@ -535,7 +534,7 @@
             setTimeout(() => {
                 if (bubble) {
                     bubble.classList.add('show');
-                    playSound();
+                    playSound(); // Kêu 'Pốp'
                 }
             }, 1500);
         }
