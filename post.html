@@ -10,6 +10,7 @@
     
     <style>
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; --card-bg: #ffffff; }
+        
         /* Đã đồng bộ nền chấm bi */
         body { 
             margin: 0; 
@@ -25,36 +26,73 @@
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         
-        /* 🔥 ĐÃ SỬA: Style cho nav-link-custom theo mẫu (Xanh lá, không in hoa toàn bộ) */
+        /* Style cho nav-link-custom (đồng bộ Navbar) */
         .nav-link-custom { 
-            color: var(--accent-color) !important; /* Dùng màu xanh accent để nổi bật */
+            color: var(--accent-color) !important; 
             font-weight: 700; 
             transition: 0.3s; 
             padding: 0.5rem 1rem;
             text-decoration: none;
-            /* BỎ text-transform: uppercase; */
         }
         .nav-link-custom:hover { 
-            color: white !important; /* Hover chuyển sang trắng */
-            text-decoration: none;
+            color: white !important; 
             transform: translateY(-1px); 
         }
         
-        .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
-        .post-title { font-weight: 800; color: var(--dark-green); margin-bottom: 20px; font-size: 2.5rem; }
-        .post-meta { color: #888; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 30px; }
-        .post-image { max-height: 500px; object-fit: cover; border-radius: 10px; margin-bottom: 30px; }
-        .post-content { white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem; color: #444; }
+        /* 🔥 CẢI THIỆN KHỐI NỘI DUNG */
+        .main-content { 
+            background: var(--card-bg); /* Nền trắng */
+            padding: 50px 70px; /* Tăng padding để có không gian thở */
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            margin-bottom: 50px; 
+        }
+        .post-title { 
+            font-weight: 800; 
+            color: var(--dark-green); 
+            margin-bottom: 10px; /* Giảm khoảng cách với meta */
+            font-size: 2.8rem; /* Tiêu đề lớn hơn */
+        }
+        .post-meta { 
+            color: #888; 
+            font-size: 1rem; /* Phóng to meta */
+            border-bottom: 2px solid #f0f0f0; /* Đường phân cách rõ hơn */
+            padding-bottom: 15px; 
+            margin-bottom: 30px; 
+        }
+        .post-image { 
+            max-height: 550px; /* Tăng chiều cao ảnh */
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 40px; /* Khoảng cách sau ảnh */
+        }
+        .post-content { 
+            white-space: pre-wrap; 
+            line-height: 1.9; /* Tăng line-height cho dễ đọc */
+            font-size: 1.1rem; /* Tăng cỡ chữ nội dung */
+            color: #333; 
+        }
 
-        /* Style Bình luận */
-        #commentSection h5 { color: var(--primary-green); font-weight: 800; }
-        .user-avatar-comment { width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-        #commentFormContainer { border: 1px solid #eee; border-radius: 10px; padding: 20px; margin-top: 30px; background: #f9f9f9; }
+        /* Khối Bình luận */
+        #commentSection { border-top: 2px solid #f0f0f0 !important; padding-top: 40px !important; }
+        #commentSection h5 { color: var(--dark-green); font-weight: 800; }
+        #commentFormContainer { 
+            border: 1px solid #ddd; 
+            border-radius: 12px; 
+            padding: 25px; 
+            margin-top: 30px; 
+            background: #fdfdfd; /* Nền form sáng */
+        }
+        .user-avatar-comment { 
+            width: 45px; 
+            height: 45px; 
+            font-size: 1rem; 
+        }
         
         /* Style cho bình luận lồng nhau */
         .comment-item { 
             position: relative;
-            padding-top: 5px;
+            padding-top: 15px;
         }
     </style>
 </head>
