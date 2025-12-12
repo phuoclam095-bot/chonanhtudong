@@ -75,10 +75,8 @@
             const postId = urlParams.get('id');
             const postContainer = document.getElementById('postContainer');
             
-            // 1. Kiểm tra đăng nhập Admin (BẮT BUỘC để bình luận, nhưng không chặn xem)
             const user = getLoggedInUser();
             if (!user.isLoggedIn) {
-                // Chỉ cảnh báo, không chuyển hướng, để cho phép xem công khai
                 console.warn("Người dùng chưa đăng nhập Admin.");
             }
 
@@ -88,18 +86,16 @@
             }
 
             try {
-                // 2. Lấy dữ liệu bài viết
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const rawData = await response.json();
                 
-                // 🔥 ĐÃ SỬA: Xử lý linh hoạt dữ liệu trả về từ n8n
                 let results = [];
                 if (rawData && rawData.data && Array.isArray(rawData.data)) {
                     results = rawData.data;
                 } else if (Array.isArray(rawData)) {
-                    results = rawData;
+                    results = rawData; // Xử lý khi n8n trả về mảng trực tiếp (All Incoming Items)
                 }
                 const blog = results[0] || null;
                 
@@ -111,7 +107,6 @@
                 document.getElementById('pageTitle').innerText = blog.title;
                 renderPost(blog);
                 
-                // 3. Tải bình luận
                 loadComments(blog.id);
 
             } catch (error) {
@@ -119,9 +114,8 @@
             }
         }
 
-        // 🔥 ĐÃ SỬA: Bỏ logic extractDriveId để dùng trực tiếp link ảnh từ Google Sheet
+        // ĐÃ SỬA: Sử dụng URL ảnh từ Sheet (dạng thumbnail)
         function renderPost(blog) {
-            // Sử dụng trực tiếp URL từ Google Sheet (đã được tạo lại bằng export=view&id=...)
             const imageUrl = blog.image || 'https://via.placeholder.com/1000x500';
 
             const contentHtml = `
@@ -136,10 +130,10 @@
                 <div id="commentSectionContainer"></div>
             `;
             document.getElementById('postContainer').innerHTML = contentHtml;
-            renderCommentSection(blog.id); // Chèn khu vực bình luận
+            renderCommentSection(blog.id); 
         }
 
-        // 🔥 TẠO KHU VỰC BÌNH LUẬN VÀ FORM
+        // TẠO KHU VỰC BÌNH LUẬN VÀ FORM
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
             const commentSection = document.getElementById('commentSectionContainer');
@@ -183,7 +177,7 @@
             comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
             Object.values(commentMap).forEach(comment => {
                 const parentId = comment.parent_comment_id;
-                // Kiểm tra nếu parentId tồn tại VÀ nó không phải chuỗi rỗng (chuỗi rỗng là top-level)
+                // Kiểm tra nếu parentId tồn tại VÀ nó không phải chuỗi rỗng
                 if (parentId && parentId !== "" && commentMap[parentId]) { 
                     commentMap[parentId].replies.push(comment); 
                 } else { 
@@ -214,13 +208,12 @@
                 const commentId = comment.id;
                 const marginStyle = isReply ? `margin-left: ${Math.min(depth, 3) * 30}px; border-left: 2px solid #ddd; padding-left: 15px;` : ''; 
                 
-                // Kiểm tra lại trạng thái đăng nhập để bật/tắt nút Trả lời
                 const user = getLoggedInUser();
                 const replyButton = user.isLoggedIn 
                     ? `<button class="btn btn-sm btn-outline-secondary" onclick="handleReply('${commentId}', '${name}')">
                             <i class="fas fa-reply me-1"></i> Trả lời
                         </button>`
-                    : `<button class="btn btn-sm btn-outline-secondary" onclick="alert('Vui lòng đăng nhập Admin để trả lời.')" disabled>
+                    : `<button class="btn btn-sm btn-outline-secondary" disabled>
                             <i class="fas fa-reply me-1"></i> Trả lời
                         </button>`;
 
@@ -247,32 +240,32 @@
             commentsList.innerHTML = html;
         }
 
+        // ĐÃ SỬA: Loại bỏ spinner khi update sau khi gửi (skipSpinner)
         async function loadComments(postId, skipSpinner = false) {
             const commentsList = document.getElementById('commentsList');
             const btn = document.getElementById('btnSubmitComment');
             
-            const initialContent = commentsList.innerHTML; // Giữ nội dung cũ
-        
+            // Giữ lại nội dung cũ trong khi tải dữ liệu mới về
             if (!skipSpinner) {
-                // Chỉ hiển thị spinner nếu không phải là cập nhật sau khi gửi
                 commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
             }
-        
+
             try {
                 const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
                 const data = await response.json();
                 const flatComments = Array.isArray(data) ? data : (data.data || []); 
                 renderComments(flatComments);
                 
-                // 🔥 ĐÃ SỬA: Reset nút sau khi tải xong (thay vì trong submitComment)
+                // Reset nút sau khi tải xong
                 btn.innerHTML = 'Gửi Bình Luận'; 
-                btn.disabled = false;
-        
+                btn.disabled = !getLoggedInUser().isLoggedIn;
+
             } catch (error) {
-                // Nếu lỗi, hiển thị lại nội dung cũ
-                commentsList.innerHTML = skipSpinner ? initialContent : '<div class="alert alert-danger">Không thể tải bình luận.</div>';
+                console.error("Lỗi tải bình luận:", error);
+                // Nếu lỗi, vẫn hiển thị thông báo lỗi
+                commentsList.innerHTML = '<div class="alert alert-danger">Không thể tải bình luận.</div>';
                 btn.innerHTML = 'Gửi Bình Luận';
-                btn.disabled = false;
+                btn.disabled = !getLoggedInUser().isLoggedIn;
             }
         }
 
@@ -280,7 +273,7 @@
             const user = getLoggedInUser();
             const commentContent = document.getElementById('commentContent');
 
-            if (!user.isLoggedIn) { alert("Vui lòng đăng nhập (tại trang Admin) để trả lời!"); return; }
+            if (!user.isLoggedIn) { alert("Vui lòng đăng nhập Admin để trả lời!"); return; }
 
             const formContainer = document.getElementById('commentFormContainer');
             const placeholder = document.getElementById(`reply-form-placeholder-${commentId}`);
@@ -318,7 +311,6 @@
             currentParentIdInput.value = '';
             commentContent.value = '';
             
-            // Cài đặt lại trạng thái Form
             if (user.isLoggedIn) {
                  commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
                  btnSubmitComment.disabled = false;
@@ -330,7 +322,7 @@
             }
         }
         
-      async function submitComment(e) { 
+        async function submitComment(e) { 
             e.preventDefault();
             const btn = document.getElementById('btnSubmitComment');
             const postId = document.getElementById('commentPostId').value;
@@ -338,14 +330,13 @@
             const author = document.getElementById('commentUserName').value;
             const email = document.getElementById('commentUserEmail').value;
             const parentId = document.getElementById('commentParentId').value; 
-        
+
             if (!postId || !content || !email) return;
-        
-            // 🔥 SỬA: Thay thế hiệu ứng xoay vòng bằng văn bản tĩnh
+
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
             btn.disabled = true;
-        
+
             try {
                 const response = await fetch(N8N_SUBMIT_COMMENT, {
                     method: 'POST', 
@@ -359,19 +350,18 @@
                         parent_comment_id: parentId || null
                     })
                 });
-        
+
                 if (response.ok) {
-                    // KHÔNG reset form ngay. Chỉ xóa nội dung bình luận
                     document.getElementById('commentContent').value = ''; 
                     
-                    // 🔥 VẪN TẢI LẠI: Vì cần ID và Date đã được Sheet chấp nhận
-                    loadComments(postId, true); // Thêm tham số 'skipSpinner' (xem bước 2)
+                    // 🔥 Tải lại bình luận nhưng KHÔNG hiển thị spinner toàn bộ danh sách
+                    loadComments(postId, true); 
                     
-                    // Nếu là trả lời (reply), hủy chế độ trả lời ngay sau khi gửi
                     if (parentId) {
+                        // Nếu là trả lời, reset form để form quay về vị trí chung
                         resetCommentFormState();
                     }
-        
+
                 } else {
                     alert("Lỗi khi gửi bình luận. Vui lòng kiểm tra Webhook n8n.");
                     btn.innerHTML = originalText;
@@ -382,7 +372,6 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             } 
-            // KHÔNG cần finally, vì loadComments sẽ tự reset nút.
         }
 
         document.addEventListener('DOMContentLoaded', loadPostDetail);
