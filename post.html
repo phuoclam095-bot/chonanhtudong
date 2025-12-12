@@ -247,18 +247,32 @@
             commentsList.innerHTML = html;
         }
 
-        async function loadComments(postId) {
+        async function loadComments(postId, skipSpinner = false) {
             const commentsList = document.getElementById('commentsList');
-            commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
-            resetCommentFormState(); 
-
+            const btn = document.getElementById('btnSubmitComment');
+            
+            const initialContent = commentsList.innerHTML; // Giữ nội dung cũ
+        
+            if (!skipSpinner) {
+                // Chỉ hiển thị spinner nếu không phải là cập nhật sau khi gửi
+                commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
+            }
+        
             try {
                 const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
                 const data = await response.json();
                 const flatComments = Array.isArray(data) ? data : (data.data || []); 
                 renderComments(flatComments);
+                
+                // 🔥 ĐÃ SỬA: Reset nút sau khi tải xong (thay vì trong submitComment)
+                btn.innerHTML = 'Gửi Bình Luận'; 
+                btn.disabled = false;
+        
             } catch (error) {
-                commentsList.innerHTML = '<div class="alert alert-danger">Không thể tải bình luận. Vui lòng kiểm tra kết nối Webhook.</div>';
+                // Nếu lỗi, hiển thị lại nội dung cũ
+                commentsList.innerHTML = skipSpinner ? initialContent : '<div class="alert alert-danger">Không thể tải bình luận.</div>';
+                btn.innerHTML = 'Gửi Bình Luận';
+                btn.disabled = false;
             }
         }
 
@@ -316,7 +330,7 @@
             }
         }
         
-        async function submitComment(e) { 
+      async function submitComment(e) { 
             e.preventDefault();
             const btn = document.getElementById('btnSubmitComment');
             const postId = document.getElementById('commentPostId').value;
@@ -324,12 +338,14 @@
             const author = document.getElementById('commentUserName').value;
             const email = document.getElementById('commentUserEmail').value;
             const parentId = document.getElementById('commentParentId').value; 
-
+        
             if (!postId || !content || !email) return;
-
+        
+            // 🔥 SỬA: Thay thế hiệu ứng xoay vòng bằng văn bản tĩnh
+            const originalText = btn.innerHTML;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
             btn.disabled = true;
-
+        
             try {
                 const response = await fetch(N8N_SUBMIT_COMMENT, {
                     method: 'POST', 
@@ -339,25 +355,34 @@
                         author: author,
                         email: email,
                         content: content,
-                        // Sử dụng định dạng ISO để dễ dàng lưu trữ và sắp xếp
                         date: new Date().toISOString().replace('T', ' ').substring(0, 19), 
                         parent_comment_id: parentId || null
                     })
                 });
-
+        
                 if (response.ok) {
-                    document.getElementById('commentContent').value = '';
-                    resetCommentFormState(); 
-                    loadComments(postId); 
+                    // KHÔNG reset form ngay. Chỉ xóa nội dung bình luận
+                    document.getElementById('commentContent').value = ''; 
+                    
+                    // 🔥 VẪN TẢI LẠI: Vì cần ID và Date đã được Sheet chấp nhận
+                    loadComments(postId, true); // Thêm tham số 'skipSpinner' (xem bước 2)
+                    
+                    // Nếu là trả lời (reply), hủy chế độ trả lời ngay sau khi gửi
+                    if (parentId) {
+                        resetCommentFormState();
+                    }
+        
                 } else {
                     alert("Lỗi khi gửi bình luận. Vui lòng kiểm tra Webhook n8n.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             } catch (error) {
                 alert("Lỗi kết nối: " + error.message);
-            } finally {
-                btn.innerHTML = 'Gửi Bình Luận'; 
+                btn.innerHTML = originalText;
                 btn.disabled = false;
-            }
+            } 
+            // KHÔNG cần finally, vì loadComments sẽ tự reset nút.
         }
 
         document.addEventListener('DOMContentLoaded', loadPostDetail);
