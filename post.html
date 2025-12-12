@@ -25,17 +25,19 @@
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         
-        /* 🔥 BỔ SUNG: Style cho nav-link để giống blog.html */
+        /* 🔥 BỔ SUNG: Style cho nav-link-custom để đồng bộ với blog.html */
         .nav-link-custom { 
             color: rgba(255,255,255,0.9) !important; 
             font-weight: 700; 
             transition: 0.3s; 
             padding: 0.5rem 1rem;
             text-decoration: none;
+            text-transform: uppercase; /* In hoa chữ */
         }
         .nav-link-custom:hover { 
             color: var(--accent-color) !important; 
             text-decoration: none;
+            transform: translateY(-1px); /* Thêm hiệu ứng hover nhẹ */
         }
         
         .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
@@ -64,10 +66,10 @@
             
             <div class="d-flex align-items-center">
                 <a class="nav-link-custom" href="admin.html">
-                    <i class="fas fa-home me-1"></i> TRANG CHỦ
+                    <i class="fas fa-home me-1"></i> Trang chủ
                 </a>
-                <a class="nav-link-custom" href="blog.html" style="margin-left: 10px;">
-                    <i class="fas fa-arrow-left me-1"></i> QUAY LẠI
+                <a class="nav-link-custom" href="blog.html">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại
                 </a>
             </div>
         </div>
@@ -113,7 +115,7 @@
             return urlOrId; 
         }
 
-        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache) ---
+        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache + Spinner Hợp lệ) ---
 
         async function loadPostDetail(forceReload = false) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -126,7 +128,7 @@
                 return;
             }
 
-            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY (Vẫn ưu tiên Cache) ---
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
@@ -135,10 +137,14 @@
                 renderPost(cachedData.blog);
                 loadComments(postId); 
                 console.log("Đã tải bài viết từ Cache.");
-            } else if (!cachedData || forceReload) {
-                // Nếu không có cache, hiển thị loading spinner
+            } 
+            
+            // --- BƯỚC 1.5: HIỂN THỊ SPINNER NẾU KHÔNG CÓ CACHE HOẶC ĐANG BUỘC TẢI LẠI ---
+            if (!cachedData || forceReload) {
+                // Nếu không có cache, hiển thị loading spinner (lần đầu)
                 postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div></div>`;
             }
+
 
             // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm/Chính) ---
             try {
@@ -167,6 +173,7 @@
                     loadComments(postId);
                 }
 
+
             } catch (error) {
                 console.error("Lỗi tải bài viết từ Server:", error);
                 if (!cachedData) {
@@ -175,11 +182,10 @@
             }
         }
         
-        // HÀM RENDER (ĐÃ CHÈN CÔNG THỨC LINK DRIVER)
+        // HÀM RENDER (Giữ nguyên logic link ảnh)
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             
-            // GÁN TRỰC TIẾP CÔNG THỨC LINK THUMBNAIL TẠI ĐÂY
             const imageUrl = driveFileId 
                 ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                 : 'https://via.placeholder.com/1000x500';
@@ -398,7 +404,10 @@
             const email = document.getElementById('commentUserEmail').value;
             const parentId = document.getElementById('commentParentId').value; 
 
-            if (!postId || !content || !email) return;
+            if (!postId || !content || !email) {
+                console.error("Thiếu thông tin bình luận cần thiết.");
+                return;
+            }
 
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
@@ -428,12 +437,14 @@
                     }
 
                 } else {
-                    alert("Lỗi khi gửi bình luận. Vui lòng kiểm tra Webhook n8n.");
+                    console.error("Lỗi khi gửi bình luận. Webhook trả về lỗi.");
+                    alert("Gửi bình luận thất bại.");
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }
             } catch (error) {
-                alert("Lỗi kết nối: " + error.message);
+                console.error("Lỗi kết nối Webhook:", error);
+                alert("Lỗi kết nối.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             } 
