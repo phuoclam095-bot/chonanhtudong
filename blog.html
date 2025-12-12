@@ -266,17 +266,10 @@
         function viewPost(index) {
             const blog = currentBlogs[index];
             
-            // ⚠️ BẮT BUỘC ĐĂNG NHẬP ADMIN TRƯỚC KHI XEM
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-
-            if (!isLoggedIn) {
-                alert("Bạn cần đăng nhập Admin để xem chi tiết bài viết và bình luận.");
-                window.location.href = 'admin.html';
-                return;
-            }
+            // ⚠️ Đã xóa logic kiểm tra localStorage.getItem('admin_is_logged_in')
             
             if (blog.id) {
-                // CHUYỂN HƯỚNG SANG TRANG POST.HTML
+                // CHUYỂN HƯỚNG CÔNG KHAI SANG TRANG POST.HTML
                 window.location.href = `post.html?id=${blog.id}`;
             } else {
                 alert("Bài viết này không có ID để xem chi tiết.");
