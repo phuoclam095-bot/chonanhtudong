@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog & Cộng Đồng</title>
+    <title>Studio LNP Blog & Cộng Đồng</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* CSS giữ nguyên */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; --card-bg: #ffffff; }
         body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; }
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
@@ -46,14 +47,13 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-camera-retro me-2"></i>Studio LNP</a>
+            <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="admin.html">Về Admin</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin.html">Trang chủ</a></li> 
                     <li class="nav-item"><a class="nav-link" href="#reviews">Đánh Giá</a></li>
                 </ul>
             </div>
@@ -75,7 +75,11 @@
             </button>
         </div>
 
-        <div class="row g-4" id="blogGrid"></div>
+        <div class="row g-4" id="blogGrid">
+            <div class="text-center w-100 text-muted" id="initialLoading">
+                <i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...
+            </div>
+        </div>
 
         <h2 class="section-header" id="reviews"><i class="fas fa-heart me-2"></i>Khách Hàng Nói Gì?</h2>
         <div class="row g-4" id="reviewGrid"></div>
@@ -136,38 +140,19 @@
         </div>
     </div>
 
-    <div class="modal fade" id="readPostModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="detailTitle">...</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <img id="detailImage" src="" class="w-100 rounded mb-4" style="max-height: 400px; object-fit: cover;">
-                    <div class="d-flex justify-content-between text-muted mb-3 border-bottom pb-2">
-                        <span id="detailAuthor"><i class="fas fa-user me-1"></i>...</span>
-                        <span id="detailDate"><i class="fas fa-clock me-1"></i>...</span>
-                    </div>
-                    <div id="detailContent" style="white-space: pre-wrap; line-height: 1.8; color: #333;">...</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ THAY URL WEBHOOK CỦA BẠN VÀO ĐÂY
+        // ⚠️ CẤU HÌNH WEBHOOK
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
 
+        // Cấu hình Cache
+        const BLOG_CACHE_KEY = 'blog_list_cache';
+        const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
+
         const demoBlogs = [
-            { title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
-            { title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60", desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
-            { title: "Khuyến mãi Giáng Sinh: Giảm 20%", date: "01/12/2025", author: "Marketing", image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60", desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này." }
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "FAKE_ID_FAMILY", content: "Làm sao để cả nhà cùng cười tươi..." },
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -177,36 +162,118 @@
         ];
         let currentBlogs = [];
 
-        // 🔥 HÀM TIỆN ÍCH: Trích xuất ID từ URL Drive
-        function extractDriveId(url) {
-            if (url && url.includes("id=")) {
-                const idPart = url.split("id=")[1];
-                return idPart.split('&')[0]; 
+        // --- HÀM TIỆN ÍCH ---
+        function getFormattedDateTime() {
+            const now = new Date();
+            const isoString = now.toISOString(); 
+            return isoString.replace('T', ' ').substring(0, 19); 
+        }
+
+        function extractDriveFileId(urlOrId) {
+            if (urlOrId && urlOrId.includes('id=')) {
+                const parts = urlOrId.split('id=');
+                return parts[1].split('&')[0];
             }
-            return null;
+            return urlOrId; 
         }
 
-        // 🔥 HÀM TIỆN ÍCH: Tạo URL Thumbnail Ổn định (Dùng trong Managa.html)
-        function getStableDriveUrl(fileId) {
-            return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
+        // --- HÀM RENDER BLOG ---
+        function renderBlogs(blogs) {
+            const container = document.getElementById('blogGrid');
+            const initialLoading = document.getElementById('initialLoading');
+            
+            // 🔥 KHẮC PHỤC LỖI: Loại bỏ phần tử loading ban đầu
+            if(initialLoading) initialLoading.remove();
+            
+            if (!blogs || blogs.length === 0) {
+                container.innerHTML = '<div class="alert alert-info w-100">Chưa có bài viết nào được đăng.</div>';
+                return;
+            }
+
+            let html = '';
+            blogs.forEach((blog, i) => {
+                const driveFileId = extractDriveFileId(blog.image); 
+                const imageUrl = driveFileId && driveFileId !== '' && driveFileId !== 'FAKE_ID_DALAT' && driveFileId !== 'FAKE_ID_FAMILY'
+                    ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
+                    : 'https://via.placeholder.com/500x300';
+                
+                html += `
+                <div class="col-md-4">
+                    <div class="blog-card" onclick="viewPost(${i})">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="d-flex justify-content-between text-muted small mb-2">
+                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
+                                <div class="fw-bold text-success">${blog.author}</div>
+                            </div>
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.content || blog.desc}</div>
+                            <button class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+        
+        // --- HÀM LOAD BLOG (ĐÃ FIX LOADING) ---
+        async function loadBlogs(forceReload = false) {
+            const container = document.getElementById('blogGrid');
+            const cachedData = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY));
+            
+            if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
+                currentBlogs = cachedData.blogs;
+                renderBlogs(currentBlogs);
+                console.log("Đã tải từ Cache. Tải nền để cập nhật...");
+            } else if (!forceReload) {
+                 // Nếu không có cache, hiển thị LOADING SPINNER ĐÚNG VỊ TRÍ
+                 container.innerHTML = '<div class="text-center w-100 text-muted" id="initialLoading"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...</div>';
+            }
+            
+            try {
+                const response = await fetch(N8N_GET_BLOGS);
+                if(response.ok) {
+                    const data = await response.json();
+                    
+                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
+                    
+                    let allBlogs = [...demoBlogs];
+                    if(realBlogs.length > 0) allBlogs = [...realBlogs, ...demoBlogs];
+                    
+                    currentBlogs = allBlogs;
+
+                    localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({
+                        blogs: currentBlogs,
+                        timestamp: Date.now()
+                    }));
+                    
+                    if (forceReload || !cachedData) {
+                        renderBlogs(currentBlogs);
+                    }
+                }
+            } catch (e) { 
+                console.error("Lỗi load blog từ server:", e);
+                if (!cachedData) {
+                     // Nếu lỗi và không có cache, thay thế loading spinner bằng thông báo lỗi
+                     container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server. Vui lòng kiểm tra Webhook.</div>';
+                }
+            }
         }
 
-        // --- CÁC HÀM XỬ LÝ CHÍNH ---
-
-function processImage() {
+        // --- CÁC HÀM KHÁC (giữ nguyên) ---
+        function processImage() {
             const fileInput = document.getElementById('postImageFile');
             const previewContainer = document.getElementById('imagePreviewContainer');
             const imgPreview = document.getElementById('imgPreview');
             const file = fileInput.files[0];
             
-            const MAX_FILE_SIZE = 5 * 1024 * 1024; // Giới hạn file gốc 5MB
-            const MAX_BASE64_SIZE = 150000; // Giới hạn Payload an toàn (150KB)
+            const MAX_FILE_SIZE = 5 * 1024 * 1024;
+            const MAX_BASE64_SIZE = 500000;
 
             if (file) {
-                // 1. Kiểm tra kích thước file gốc 
                 if (file.size > MAX_FILE_SIZE) {
-                    alert(`❌ Lỗi: Ảnh gốc quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB! (Ảnh bạn chọn: ${(file.size / (1024 * 1024)).toFixed(2)} MB)`);
-                    fileInput.value = ''; // Reset input
+                    alert(`❌ Lỗi: Ảnh gốc quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB!`);
+                    fileInput.value = ''; 
                     previewContainer.style.display = 'none';
                     return;
                 }
@@ -222,8 +289,7 @@ function processImage() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // 🔥 Tăng Chiều rộng tối đa lên 1000px
-                        const MAX_WIDTH = 1000; 
+                        const MAX_WIDTH = 1200; 
                         let width = img.width;
                         let height = img.height;
 
@@ -236,15 +302,13 @@ function processImage() {
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // 🔥 Tăng Chất lượng nén lên 0.3
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.3);
+                        const COMPRESSION_QUALITY = 0.8;
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', COMPRESSION_QUALITY);
                         
-                        // 2. Kiểm tra kích thước chuỗi Base64
                         if (compressedBase64.length > MAX_BASE64_SIZE) {
-                            alert(`⚠️ Cảnh báo: Ảnh sau nén RẤT LỚN (${(compressedBase64.length / 1024).toFixed(0)}KB). Lỗi tải ảnh có thể xảy ra!`);
+                            console.warn(`Ảnh sau nén vẫn còn lớn.`);
                         }
                         
-                        // Hiển thị và Lưu vào input ẩn
                         imgPreview.src = compressedBase64;
                         previewContainer.style.display = 'block';
                         document.getElementById('postImageBase64').value = compressedBase64;
@@ -261,108 +325,49 @@ function processImage() {
             
             if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
             
-            btn.innerHTML = 'Đang gửi...'; btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
+            btn.disabled = true;
+
             try {
-                await fetch(N8N_SUBMIT_BLOG, {
+                const response = await fetch(N8N_SUBMIT_BLOG, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         author: document.getElementById('postAuthor').value,
                         email: document.getElementById('postEmail').value,
                         title: document.getElementById('postTitle').value,
                         content: document.getElementById('postContent').value,
-                        date: new Date().toLocaleDateString('vi-VN'),
+                        date: getFormattedDateTime(),
                         image_data: imageBase64,
                         image_name: document.getElementById('postImageName').value
                     })
                 });
-                alert("✅ Đã gửi bài thành công! Chờ duyệt nhé.");
-                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
-                document.getElementById('postForm').reset();
-                loadBlogs();
-            } catch (e) { alert("Lỗi: " + e.message); } 
-            finally { btn.innerHTML = 'Gửi Duyệt'; btn.disabled = false; }
-        }
 
-        // 🔥 HÀM LOAD BLOG ĐÃ SỬA ĐỂ SỬ DỤNG THUMBNAIL (GIỐNG MANAGA.HTML)
-        async function loadBlogs() {
-            const container = document.getElementById('blogGrid');
-            currentBlogs = [...demoBlogs]; 
-
-            try {
-                const response = await fetch(N8N_GET_BLOGS);
-                if(response.ok) {
-                    const data = await response.json();
-                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    
-                    // --- XỬ LÝ VÀ CHUYỂN ĐỔI URL DRIVE ---
-                    const processedBlogs = realBlogs.map(blog => {
-                        const rawUrl = blog.image; // Trường ảnh từ Google Sheet là 'image'
-                        
-                        if (rawUrl) {
-                            const fileId = extractDriveId(rawUrl);
-                            
-                            if (fileId) {
-                                // TẠO URL THUMBNAIL ỔN ĐỊNH
-                                blog.display_image_url = getStableDriveUrl(fileId); 
-                            } else {
-                                // Sử dụng URL thô nếu không trích xuất được ID
-                                blog.display_image_url = rawUrl;
-                            }
-                        }
-                        return blog;
-                    });
-                    // --- KẾT THÚC XỬ LÝ URL DRIVE ---
-
-                    if(processedBlogs.length > 0) currentBlogs = [...currentBlogs, ...processedBlogs];
+                if (response.ok) {
+                    alert("✅ Đã gửi bài thành công! Chờ duyệt nhé.");
+                    bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
+                    document.getElementById('postForm').reset();
+                    loadBlogs(true); 
+                } else {
+                    throw new Error("Gửi bài thất bại, kiểm tra Webhook.");
                 }
-            } catch (e) { console.log("Dùng demo data hoặc lỗi load blog:", e); }
 
-            let html = '';
-            currentBlogs.forEach((blog, i) => {
-                const cacheBuster = `&t=${new Date().getTime()}`;
-                
-                // Lấy URL từ trường display_image_url đã được xử lý (hoặc trường image gốc)
-                const actualImageUrl = blog.display_image_url || blog.image || 'https://via.placeholder.com/500x300';
-                const imgUrl = actualImageUrl + cacheBuster; 
-
-                html += `
-                <div class="col-md-4">
-                    <div class="blog-card" onclick="viewPost(${i})">
-                        <img src="${imgUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
-                        <div class="blog-body">
-                            <div class="d-flex justify-content-between text-muted small mb-2">
-                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
-                                <div class="fw-bold text-success">${blog.author}</div>
-                            </div>
-                            <div class="blog-title">${blog.title}</div>
-                            <div class="blog-desc">${blog.content || blog.desc}</div>
-                            <button class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
+            } catch (e) { alert("Lỗi: " + e.message); } 
+            finally { 
+                btn.innerHTML = 'Gửi Duyệt'; 
+                btn.disabled = false; 
+            }
         }
 
-        // 🔥 HÀM VIEW POST ĐÃ SỬA
         function viewPost(index) {
             const blog = currentBlogs[index];
-            document.getElementById('detailTitle').innerText = blog.title;
-            document.getElementById('detailAuthor').innerHTML = `<i class="fas fa-user me-1"></i>${blog.author}`;
-            document.getElementById('detailDate').innerHTML = `<i class="fas fa-clock me-1"></i>${blog.date}`;
-            document.getElementById('detailContent').innerHTML = (blog.content || blog.desc).replace(/\n/g, '<br>');
             
-            const img = document.getElementById('detailImage');
-            
-            // Lấy URL từ trường display_image_url đã được xử lý
-            const imageUrl = blog.display_image_url || blog.image || 'https://via.placeholder.com/500x300';
-            
-            img.src = imageUrl;
-            img.onerror = function() { this.src = 'https://via.placeholder.com/500x300'; };
-
-            new bootstrap.Modal(document.getElementById('readPostModal')).show();
+            if (blog.id) {
+                window.location.href = `post.html?id=${blog.id}`;
+            } else {
+                alert("Bài viết này không có ID để xem chi tiết.");
+            }
         }
-
+        
         function renderReviews() {
             const container = document.getElementById('reviewGrid');
             let html = '';
