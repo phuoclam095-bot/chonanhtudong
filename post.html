@@ -73,51 +73,44 @@
         
         // --- XỬ LÝ CHÍNH ---
 
+       // 🔥 HÀM LOADPOSTDETAIL ĐÃ SỬA: Cho phép tải bài viết công khai
         async function loadPostDetail() {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             const postContainer = document.getElementById('postContainer');
             
-            // 1. Kiểm tra đăng nhập Admin (BẮT BUỘC)
-            const user = getLoggedInUser();
-            if (!user.isLoggedIn) {
-                alert("Bạn cần đăng nhập Admin để xem chi tiết bài viết và bình luận.");
-                window.location.href = 'admin.html';
-                return;
-            }
-
+            // ⚠️ ĐÃ XÓA LOGIC CHUYỂN HƯỚNG RA ADMIN.HTML
+            // Người dùng CÔNG KHAI được phép tiếp tục tải bài viết
+            
             if (!postId) {
                 postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
                 return;
             }
-
+        
             try {
-                // 2. Lấy dữ liệu bài viết
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const rawData = await response.json();
                 
-                // 🔥 SỬA LỖI: Xử lý linh hoạt dữ liệu trả về từ n8n (mảng trực tiếp hoặc Object.data)
                 let results = [];
                 if (rawData && rawData.data && Array.isArray(rawData.data)) {
                     results = rawData.data;
                 } else if (Array.isArray(rawData)) {
                     results = rawData;
                 }
-                const blog = results[0] || null; // Lấy phần tử đầu tiên
+                const blog = results[0] || null;
                 
                 if (!blog) {
                     postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
                     return;
                 }
-
+        
                 document.getElementById('pageTitle').innerText = blog.title;
                 renderPost(blog);
                 
-                // 3. Tải bình luận
                 loadComments(blog.id);
-
+        
             } catch (error) {
                 postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
             }
