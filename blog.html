@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ABC &Cộng Đồng</title>
+    <title>Studio LNP Blog & Cộng Đồng</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -40,6 +40,19 @@
         .modal-header { background: var(--primary-green); color: white; border-radius: 20px 20px 0 0; }
         .form-control { border-radius: 10px; padding: 12px; }
         #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; margin-top: 10px; }
+        /* Style cho Bình luận */
+        .user-avatar-comment { 
+            width: 40px; 
+            height: 40px; 
+            background: var(--primary-green); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -151,7 +164,28 @@
                     </div>
                     <div id="detailContent" style="white-space: pre-wrap; line-height: 1.8; color: #333;">...</div>
                     
-                    <div id="commentLinkContainer" class="mt-4"></div>
+                    <div id="commentSection" class="mt-5 pt-3 border-top">
+                        <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-comments me-2"></i>Bình Luận</h5>
+                        
+                        <div id="commentsList" class="mb-4">
+                            </div>
+
+                        <div id="commentFormContainer">
+                            <h6 class="fw-bold text-success" id="commentAsUser">Đang kiểm tra đăng nhập...</h6>
+                            <form id="commentForm" onsubmit="submitComment(event)">
+                                <input type="hidden" id="commentPostId">
+                                <input type="hidden" id="commentUserName">
+                                <input type="hidden" id="commentUserEmail">
+
+                                <div class="mb-3">
+                                    <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required></textarea>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" id="btnSubmitComment" class="btn btn-success fw-bold px-4" disabled>Gửi Bình Luận</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -165,11 +199,15 @@
         // ⚠️ THAY URL WEBHOOK CỦA BẠN VÀO ĐÂY
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
+        
+        // 🔥 WEBHOOK MỚI CHO BÌNH LUẬN
+        const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
+        const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment';
 
         const demoBlogs = [
-            { title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
-            { title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60", desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
-            { title: "Khuyến mãi Giáng Sinh: Giảm 20%", date: "01/12/2025", author: "Marketing", image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60", desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này." }
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60", desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
+            { id: "DEMO3", title: "Khuyến mãi Giáng Sinh: Giảm 20%", date: "01/12/2025", author: "Marketing", image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60", desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này." }
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -188,10 +226,19 @@
             return null;
         }
 
-        // 🔥 HÀM TIỆN ÍCH: Tạo URL Thumbnail Ổn định (Sử dụng chất lượng tốt nhất)
+        // 🔥 HÀM TIỆN ÍCH: Tạo URL Thumbnail Ổn định
         function getStableDriveUrl(fileId) {
-            // SỬA: Dùng 's0' để yêu cầu chất lượng cao nhất/ gần kích thước gốc.
+            // Đã xác nhận link này hoạt động ổn định và rõ ràng
             return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
+        }
+        
+        // 🔥 HÀM TIỆN ÍCH: Lấy thông tin người dùng từ localStorage
+        function getLoggedInUser() {
+            return {
+                name: localStorage.getItem('loggedInUserName'),
+                email: localStorage.getItem('loggedInUserEmail'),
+                isLoggedIn: !!localStorage.getItem('loggedInUserEmail')
+            };
         }
 
         // --- CÁC HÀM XỬ LÝ CHÍNH ---
@@ -262,7 +309,7 @@
             
             if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
             
-            // ⚠️ Hiệu ứng Loading
+            // Hiệu ứng Loading
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
             btn.disabled = true;
 
@@ -285,12 +332,100 @@
                 loadBlogs();
             } catch (e) { alert("Lỗi: " + e.message); } 
             finally { 
-                // ⚠️ Hoàn tác Loading
+                // Hoàn tác Loading
                 btn.innerHTML = 'Gửi Duyệt'; 
                 btn.disabled = false; 
             }
         }
+        
+        // 🔥 HÀM MỚI: Tải và hiển thị bình luận
+        async function loadComments(postId) {
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
 
+            try {
+                const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
+                const data = await response.json();
+                
+                const comments = Array.isArray(data) ? data : (data.data || []); 
+                
+                renderComments(comments);
+            } catch (error) {
+                commentsList.innerHTML = '<div class="text-center text-danger">Không thể tải bình luận.</div>';
+            }
+        }
+
+        // 🔥 HÀM MỚI: Hiển thị danh sách bình luận
+        function renderComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="text-center text-muted">Chưa có bình luận nào. Hãy là người đầu tiên!</div>';
+                return;
+            }
+
+            let html = '';
+            comments.sort((a, b) => new Date(a.date) - new Date(b.date)); 
+
+            comments.forEach(c => {
+                const name = c.author || 'Người ẩn danh'; 
+                const avatarLetter = name.charAt(0).toUpperCase(); 
+                
+                html += `
+                <div class="d-flex align-items-start mb-3 border-bottom pb-3">
+                    <div class="user-avatar-comment me-3">${avatarLetter}</div>
+                    <div>
+                        <h6 class="m-0 fw-bold text-primary">${name}</h6>
+                        <p class="text-muted small">${c.date || 'Vừa xong'}</p>
+                        <p class="mb-0">${c.content}</p>
+                    </div>
+                </div>`;
+            });
+            
+            commentsList.innerHTML = html;
+        }
+
+        // 🔥 HÀM MỚI: Gửi bình luận
+        async function submitComment(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitComment');
+            const postId = document.getElementById('commentPostId').value;
+            const content = document.getElementById('commentContent').value;
+            const author = document.getElementById('commentUserName').value;
+            const email = document.getElementById('commentUserEmail').value;
+            
+            if (!postId || !content || !email) return;
+
+            // Hiệu ứng Loading
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(N8N_SUBMIT_COMMENT, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        post_id: postId,
+                        author: author,
+                        email: email,
+                        content: content,
+                        date: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN'),
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('commentContent').value = '';
+                    loadComments(postId); // Load lại bình luận
+                } else {
+                    alert("Lỗi khi gửi bình luận. Vui lòng kiểm tra Webhook n8n.");
+                }
+            } catch (error) {
+                alert("Lỗi kết nối: " + error.message);
+            } finally {
+                btn.innerHTML = 'Gửi Bình Luận'; 
+                btn.disabled = false;
+            }
+        }
+        
         // 🔥 HÀM LOAD BLOG ĐÃ SỬA ĐỂ SỬ DỤNG THUMBNAIL
         async function loadBlogs() {
             const container = document.getElementById('blogGrid');
@@ -309,7 +444,6 @@
                             const fileId = extractDriveId(rawUrl);
                             
                             if (fileId) {
-                                // TẠO URL THUMBNAIL ỔN ĐỊNH
                                 blog.display_image_url = getStableDriveUrl(fileId); 
                             } else {
                                 blog.display_image_url = rawUrl;
@@ -348,7 +482,7 @@
             container.innerHTML = html;
         }
 
-        // 🔥 HÀM VIEW POST ĐÃ SỬA (Thêm link bình luận)
+        // 🔥 HÀM VIEW POST ĐÃ SỬA (Thêm logic Bình luận)
         function viewPost(index) {
             const blog = currentBlogs[index];
             document.getElementById('detailTitle').innerText = blog.title;
@@ -361,24 +495,37 @@
             img.src = imageUrl;
             img.onerror = function() { this.src = 'https://via.placeholder.com/500x300'; };
 
-            // 🔥 LOGIC TẠO LINK BÌNH LUẬN
-            const commentContainer = document.getElementById('commentLinkContainer');
-            
-            if (blog.id) {
-                const commentUrl = `lienhe.html?post_id=${blog.id}&title=${encodeURIComponent(blog.title)}`;
-                commentContainer.innerHTML = `
-                    <hr>
-                    <p class="fw-bold text-success mb-2">Bình luận về bài viết này:</p>
-                    <a href="${commentUrl}" target="_blank" class="btn btn-primary fw-bold">
-                        <i class="fas fa-comment-dots me-2"></i>Gửi Bình Luận
-                    </a>
-                    <p class="mt-2 text-muted small">ID bài viết: ${blog.id}</p>
-                `;
-            } else {
-                commentContainer.innerHTML = '';
-            }
-            // HẾT LOGIC BÌNH LUẬN
+            // 🔥 BÌNH LUẬN: Khởi tạo và Hiển thị Form
+            const user = getLoggedInUser();
+            const commentAsUser = document.getElementById('commentAsUser');
+            const btnSubmitComment = document.getElementById('btnSubmitComment');
+            const commentPostId = document.getElementById('commentPostId');
+            const commentUserName = document.getElementById('commentUserName');
+            const commentUserEmail = document.getElementById('commentUserEmail');
+            const commentFormContainer = document.getElementById('commentFormContainer');
 
+            // Set Post ID vào form ẩn
+            commentPostId.value = blog.id;
+            
+            if (user.isLoggedIn) {
+                commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
+                commentUserName.value = user.name;
+                commentUserEmail.value = user.email;
+                btnSubmitComment.disabled = false; // Bật nút gửi
+                commentFormContainer.style.display = 'block';
+            } else {
+                commentAsUser.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i>Vui lòng đăng nhập (tại trang Admin) để bình luận.`;
+                btnSubmitComment.disabled = true; // Tắt nút gửi
+                commentFormContainer.style.display = 'block'; // Vẫn hiển thị container thông báo
+            }
+
+            // Tải bình luận (chỉ khi có ID bài viết)
+            if (blog.id) {
+                loadComments(blog.id);
+            } else {
+                document.getElementById('commentsList').innerHTML = '<div class="text-center text-muted">Không thể tải bình luận (thiếu ID bài viết).</div>';
+            }
+            
             new bootstrap.Modal(document.getElementById('readPostModal')).show();
         }
 
