@@ -35,7 +35,15 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
         }
         .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
-        .blog-img { height: 200px; object-fit: cover; width: 100%; background: #eee; }
+        
+        /* 🔥 SỬA: Tối ưu hiển thị ảnh bìa */
+        .blog-img { 
+            height: 200px; 
+            object-fit: cover; /* Giữ cover để ảnh lấp đầy khung 200px */
+            width: 100%; 
+            background: #eee; 
+        }
+        
         .blog-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
         .blog-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
         .blog-author { font-size: 0.85rem; color: var(--primary-green); font-weight: 700; }
@@ -206,7 +214,7 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; 
 
-        // 🔥 ĐÃ SỬA: CẬP NHẬT 5 BÀI MẪU DÙNG URL ẢNH BÌA CHẤT LƯỢNG CAO TƯƠNG TỰ
+        // 🔥 CẬP NHẬT 5 BÀI MẪU DÙNG URL ẢNH BÌA CHẤT LƯỢNG CAO TƯƠNG TỰ
         const baseDemoBlogs = [
             { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng." },
             { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?auto=format&fit=crop&w=500&q=60", content: "Làm sao để cả nhà cùng cười tươi..." },
@@ -245,7 +253,7 @@
 
             let slides = [];
             
-            // 🔥 KHẮC PHỤC LỖI: Xóa Loading Spinner khỏi Carousel khi render xong
+            // Khắc phục lỗi: Xóa Loading Spinner khỏi Carousel khi render xong
             const initialLoading = document.getElementById('initialLoading');
             if(initialLoading) initialLoading.remove();
 
@@ -259,7 +267,7 @@
                     const driveFileId = extractDriveFileId(blog.image); 
                     
                     const imageUrl = isDemo ? 
-                        blog.image : // Dùng Placeholder URL trực tiếp cho Demo
+                        blog.image : // Dùng URL chất lượng cao cho Demo/Placeholder
                         (driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600` : 'https://via.placeholder.com/500x300'); // Dùng Drive URL cho bài thật
                     
                     return `
@@ -276,7 +284,7 @@
                 }).join('');
                 
                 // Nếu slide cuối không đủ 3 bài, thêm cột rỗng để giữ layout
-                while (group.length < 3) {
+                while (group.length < 3 && blogs.length > 3) { // Chỉ thêm cột rỗng nếu cần 
                     groupHtml += '<div class="col-md-4"></div>';
                     group.push({}); 
                 }
@@ -293,7 +301,7 @@
 
             carouselInner.innerHTML = slides.join('');
             
-            // 🔥 KHẮC PHỤC LỖI KHỞI TẠO CAROUSEL: Bắt buộc chạy lại JS khởi tạo sau khi nội dung được chèn
+            // KHẮC PHỤC LỖI KHỞI TẠO CAROUSEL: Bắt buộc chạy lại JS khởi tạo sau khi nội dung được chèn
             const mainCarouselElement = document.getElementById('mainCarousel');
             if (mainCarouselElement) {
                 const carouselInstance = bootstrap.Carousel.getInstance(mainCarouselElement);
