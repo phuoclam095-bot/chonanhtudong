@@ -40,6 +40,31 @@
         .modal-header { background: var(--primary-green); color: white; border-radius: 20px 20px 0 0; }
         .form-control { border-radius: 10px; padding: 12px; }
         #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; margin-top: 10px; }
+        
+        /* STYLE MARQUEE ĐÃ SỬA */
+        .promo-marquee { 
+            background: linear-gradient(90deg, #ffc0cb, #ffa500); 
+            color: white; 
+            padding: 5px 0; 
+            font-weight: 800; 
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+            white-space: nowrap; /* Bắt buộc để Marquee hoạt động */
+        }
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            /* Dùng thẻ <marquee> HTML cổ điển để tương thích rộng hơn, hoặc CSS animation: */
+            /* Dùng CSS animation đã được thêm vào <style> */
+            animation: marquee-anim 15s linear infinite;
+            font-size: 1.1rem;
+            padding-left: 100%; /* Đảm bảo chạy từ ngoài vào */
+        }
+        @keyframes marquee-anim {
+            0%   { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
 </head>
 <body>
@@ -74,7 +99,28 @@
             </button>
         </div>
 
-        <div class="row g-4" id="blogGrid">
+        <div class="promo-marquee">
+            <div class="marquee-content">
+                Hãy chia sẻ bài viết của bạn lên đây &nbsp;&nbsp;<i class="fas fa-heart text-danger"></i>&nbsp;&nbsp; Chúng tôi sẽ duyệt và đăng ngay! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hãy chia sẻ bài viết của bạn lên đây &nbsp;&nbsp;<i class="fas fa-heart text-danger"></i>&nbsp;&nbsp; Chúng tôi sẽ duyệt và đăng ngay!
+            </div>
+        </div>
+
+        <div id="demoCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-inner" id="carouselInner">
+                </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#demoCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#demoCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        
+        <h2 class="section-header m-0 text-start pt-4"><i class="fas fa-list"></i> Bài Viết Mới Nhất</h2>
+        
+        <div class="row g-4 mt-3" id="blogGrid">
             <div class="text-center w-100 text-muted" id="initialLoading">
                 <i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...
             </div>
@@ -150,8 +196,10 @@
         const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
 
         const demoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "FAKE_ID_FAMILY", content: "Làm sao để cả nhà cùng cười tươi..." },
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "FAKE_ID_FAMILY2", content: "Làm sao để cả nhà cùng cười tươi..." },
+            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "FAKE_ID_MINIMAL3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
+            { id: "DEMO4", title: "Lưu ý khi chọn trang phục chụp ảnh", date: "05/12/2025", author: "Nguyễn B", image: "FAKE_ID_OUTFIT4", content: "Trang phục quyết định 50% sự thành công của bộ ảnh..." },
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -176,29 +224,73 @@
             return urlOrId; 
         }
 
-        // --- HÀM RENDER BLOG ---
+        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA LỖI KHỞI TẠO) ---
+        function renderDemoBlogs() {
+            const carouselInner = document.getElementById('carouselInner');
+            if (!carouselInner) return;
+
+            let html = '';
+            
+            // Chia demoBlogs thành các nhóm 3 (Bootstrap Carousel Item)
+            for (let i = 0; i < demoBlogs.length; i += 3) {
+                const group = demoBlogs.slice(i, i + 3);
+                
+                let groupHtml = group.map((blog) => {
+                    const driveFileId = extractDriveFileId(blog.image); 
+                    // Dùng URL placeholder tạm thời cho ảnh demo
+                    const imageUrl = `https://via.placeholder.com/500x300?text=${blog.title}`; 
+                    
+                    return `
+                    <div class="col-md-4">
+                        <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
+                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                            <div class="blog-body">
+                                <div class="blog-title">${blog.title}</div>
+                                <div class="blog-desc">${blog.content}</div>
+                                <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                // Gói nhóm 3 bài viết vào một Carousel Item
+                // 🔥 SỬA LỖI: Cần dùng class 'row' bên trong 'carousel-item'
+                html += `
+                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                    <div class="row g-4">
+                        ${groupHtml}
+                    </div>
+                </div>`;
+            }
+
+            carouselInner.innerHTML = html;
+        }
+
+        // --- HÀM RENDER BLOG (Cho bài viết từ Server) ---
         function renderBlogs(blogs) {
             const container = document.getElementById('blogGrid');
             const initialLoading = document.getElementById('initialLoading');
             
-            // KHẮC PHỤC LỖI: Loại bỏ phần tử loading ban đầu
             if(initialLoading) initialLoading.remove();
             
-            if (!blogs || blogs.length === 0) {
-                container.innerHTML = '<div class="alert alert-info w-100">Chưa có bài viết nào được đăng.</div>';
+            // Lọc ra các bài viết thực tế (không phải demo) để hiển thị trong grid chính
+            const realBlogs = blogs.filter(b => !b.id.startsWith('DEMO'));
+            
+            if (!realBlogs || realBlogs.length === 0) {
+                container.innerHTML = '<div class="alert alert-info w-100">Chưa có bài viết mới nào.</div>';
                 return;
             }
 
             let html = '';
-            blogs.forEach((blog, i) => {
+            realBlogs.forEach((blog, i) => {
                 const driveFileId = extractDriveFileId(blog.image); 
-                const imageUrl = driveFileId && driveFileId !== '' && driveFileId !== 'FAKE_ID_DALAT' && driveFileId !== 'FAKE_ID_FAMILY'
+                const imageUrl = driveFileId 
                     ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                     : 'https://via.placeholder.com/500x300';
                 
                 html += `
                 <div class="col-md-4">
-                    <div class="blog-card" onclick="viewPost(${i})">
+                    <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
                         <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
                         <div class="blog-body">
                             <div class="d-flex justify-content-between text-muted small mb-2">
@@ -236,8 +328,8 @@
                     
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
                     
-                    let allBlogs = [...demoBlogs];
-                    if(realBlogs.length > 0) allBlogs = [...realBlogs, ...demoBlogs];
+                    // Tổng hợp dữ liệu: Demo + Real
+                    let allBlogs = [...realBlogs, ...demoBlogs];
                     
                     currentBlogs = allBlogs;
 
@@ -253,9 +345,10 @@
             } catch (e) { 
                 console.error("Lỗi load blog từ server:", e);
                 const initialLoading = document.getElementById('initialLoading');
+                // Nếu lỗi và không có cache, thay thế loading spinner bằng thông báo lỗi
                 if (!cachedData) {
-                     if(initialLoading) initialLoading.remove(); // Xóa spinner nếu thất bại
-                     container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server. Vui lòng kiểm tra Webhook.</div>';
+                     if(initialLoading) initialLoading.remove(); 
+                     container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server.</div>';
                 }
             }
         }
@@ -390,6 +483,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            renderDemoBlogs(); // Tải Carousel ngay khi load
             loadBlogs();
             renderReviews();
         });
