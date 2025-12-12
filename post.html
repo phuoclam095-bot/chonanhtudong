@@ -25,19 +25,19 @@
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         
-        /* 🔥 BỔ SUNG: Style cho nav-link-custom để đồng bộ với blog.html */
+        /* 🔥 ĐÃ SỬA: Style cho nav-link-custom theo mẫu (Xanh lá, không in hoa toàn bộ) */
         .nav-link-custom { 
-            color: rgba(255,255,255,0.9) !important; 
+            color: var(--accent-color) !important; /* Dùng màu xanh accent để nổi bật */
             font-weight: 700; 
             transition: 0.3s; 
             padding: 0.5rem 1rem;
             text-decoration: none;
-            text-transform: uppercase; /* In hoa chữ */
+            /* BỎ text-transform: uppercase; */
         }
         .nav-link-custom:hover { 
-            color: var(--accent-color) !important; 
+            color: white !important; /* Hover chuyển sang trắng */
             text-decoration: none;
-            transform: translateY(-1px); /* Thêm hiệu ứng hover nhẹ */
+            transform: translateY(-1px); 
         }
         
         .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
