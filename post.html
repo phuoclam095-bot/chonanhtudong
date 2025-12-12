@@ -10,13 +10,12 @@
     
     <style>
         :root { 
-            --primary-green: #10B981; /* Green tươi sáng, hiện đại */
-            --dark-green: #047857; 
-            --bg-color: #1a1a1a; /* Nền tối gốc */
+            --primary-green: #147a30; /* Màu xanh lá cây gốc */
+            --dark-green: #0e5a22; 
+            --bg-color: #1a1a1a; 
             --text-color: #1F2937; 
-            --light-text: #E5E7EB; /* Màu chữ phụ/meta trên nền tối */
-            --accent-color: #3B82F6; 
-            --card-bg: #FFFFFF; /* Màu nền cho main content */
+            --accent-color: #51ff7d; /* Màu nhấn sáng gốc */
+            --card-bg: #FFFFFF; 
             --border-color: #E5E7EB;
         }
 
@@ -25,7 +24,6 @@
             padding-top: 80px; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
-            /* 🔥 KHẮC PHỤC 2: GIỮ LẠI NỀN CHẤM BI GỐC */
             background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
             background-size: 60px 60px; 
             background-position: 0 0, 30px 30px;
@@ -33,52 +31,52 @@
             min-height: 100vh; 
         }
 
-        /* Navbar & Nav links */
+        /* 🔥 KHẮC PHỤC 1: GIỮ LẠI KHUNG XANH TRÊN */
         .navbar { 
-            background: var(--card-bg); 
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+            background: var(--primary-green); /* Nền xanh lá cây gốc */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: none;
         }
         .navbar-brand { 
-            font-weight: 900; 
-            font-size: 1.6rem; 
-            color: var(--dark-green) !important; 
+            font-weight: 800; 
+            font-size: 1.5rem; 
+            color: white !important; 
         }
         .nav-link-custom { 
-            color: var(--dark-green) !important; /* Đặt màu chữ tối hơn để dễ đọc trên nền sáng của Navbar */
-            font-weight: 600; 
+            color: var(--accent-color) !important; /* Màu nhấn sáng trên nền xanh */
+            font-weight: 700; 
             transition: color 0.3s, transform 0.3s; 
             padding: 0.5rem 1rem;
             text-decoration: none;
-            border-radius: 6px;
         }
         .nav-link-custom:hover { 
-            color: var(--primary-green) !important; 
-            background-color: #F3F4F6;
+            color: white !important; 
+            transform: translateY(-1px);
+            background-color: transparent; /* Loại bỏ background hover */
         }
         
-        /* Main Content */
+        /* Main Content - Card Design */
         .main-content { 
             background: var(--card-bg); 
-            padding: 40px; 
-            border-radius: 12px; 
+            padding: 50px 70px; /* Giữ padding lớn để đẹp */
+            border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             border: 1px solid var(--border-color);
         }
         .post-title { 
-            font-weight: 900; 
+            font-weight: 800; 
             color: var(--dark-green); 
             margin-bottom: 10px; 
-            font-size: 2.8rem; 
+            font-size: 2.2rem; 
         }
         .post-meta { 
-            color: #888; /* Màu xám nhạt hơn */
-            font-size: 0.95rem; 
+            color: #888; 
+            font-size: 1rem; 
             padding-bottom: 15px; 
             margin-bottom: 30px; 
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 2px solid #f0f0f0;
         }
         .post-image { 
             max-height: 400px;
@@ -91,90 +89,109 @@
         
         /* Author UI */
         #postAuthorContainer {
-            background: #F3F4F6;
+            background: #f8f8f8;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
             border-left: 5px solid var(--primary-green);
-            align-items: center;
         }
-        /* 🔥 KHẮC PHỤC 1: Lỗi Avatar Người đăng bài */
         #postAuthorAvatar {
-            width: 45px;
-            height: 45px;
-            line-height: 45px; 
+            width: 35px;
+            height: 35px;
+            line-height: 35px; 
             text-align: center;
-            background: var(--dark-green); /* Dùng màu đậm hơn cho avatar author */
+            background: var(--primary-green); /* Dùng màu chính */
             color: white;
             border-radius: 50%;
-            font-weight: 800;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
             flex-shrink: 0;
-            margin-right: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        #postAuthorContainer .small {
-            color: #666;
+            margin-right: 10px;
         }
         
         /* Content Wrapper & Read More */
         #postContentWrapper {
+            border: 1px solid #ddd; 
+            border-radius: 8px;
+            padding: 20px; 
+            background: #fdfdfd; 
+            margin-bottom: 20px;
+            
             transition: max-height 0.5s ease-in-out;
             overflow: hidden; 
             position: relative;
-            margin-top: 20px;
-        }
-        /* Loại bỏ gradient vì nó có thể gây lỗi hiển thị trên nền trắng nếu max-height không chuẩn */
-        .collapsed::after {
-            content: none; 
         }
         
+        /* 🔥 KHẮC PHỤC 3: Đảm bảo nội dung canh trái và không bị canh giữa */
         .post-content { 
-            line-height: 1.7; 
-            font-size: 1.1rem; 
+            line-height: 1.8; 
+            font-size: 1.15rem; 
             color: #222; 
-            margin: 0; 
+            margin: 0; /* Đảm bảo không có margin tự động gây canh giữa */
             white-space: pre-wrap;
+            text-align: left; /* Đảm bảo canh trái */
         }
         .post-content p {
-            margin-bottom: 1.5em; 
+            margin-bottom: 1.6em; 
+            margin-top: 0;
         }
 
         #readMoreBtn {
             background: none;
             border: none;
-            color: var(--accent-color);
+            color: var(--primary-green);
             font-weight: 700;
             padding: 0;
             cursor: pointer;
             display: block;
             margin: 10px 0 0 0; 
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: color 0.3s;
-        }
-        #readMoreBtn:hover {
-            color: var(--primary-green);
         }
         
         /* Comment UI */
         #commentSection { 
+            border-top: 2px solid #f0f0f0 !important; 
             padding-top: 40px !important; 
         }
+        
+        /* 🔥 KHẮC PHỤC 4: Lỗi Avatar Người bình luận - Đảm bảo khung tròn và kích thước */
+        .user-avatar-comment { 
+            width: 40px; 
+            height: 40px; 
+            line-height: 40px; 
+            text-align: center;
+            background: var(--primary-green); 
+            color: white; 
+            border-radius: 50%; /* Quan trọng để tạo khung tròn */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            flex-shrink: 0; 
+            font-size: 1rem;
+        }
+
+        /* Điều chỉnh cho Reply Avatar (nhỏ hơn) */
+        .comment-item .comment-item .user-avatar-comment {
+            width: 35px; 
+            height: 35px;
+            line-height: 35px;
+            font-size: 0.8rem;
+            background: var(--accent-color); /* Dùng màu nhấn cho reply */
+        }
+
+
         #commentFormContainer { 
-            border: 1px solid var(--border-color); 
+            border: 1px solid #ddd; 
             border-radius: 12px; 
             padding: 25px; 
             margin-top: 30px; 
-            background: #FAFAFA;
+            background: #fdfdfd; 
         }
         #btnSubmitComment {
             background-color: var(--primary-green) !important; 
             border-color: var(--primary-green) !important;
-        }
-
-        .user-avatar-comment { 
-            background: var(--accent-color); 
-            font-weight: 800;
         }
         .comment-item {
             padding: 15px 0;
@@ -183,37 +200,30 @@
         .comment-item:last-child {
             border-bottom: none;
         }
-        .comment-item .comment-item {
-            padding: 10px 0;
-        }
-        .comment-item .comment-item .text-primary {
-            color: var(--accent-color) !important;
-        }
-        .comment-item .comment-item .btn-link {
-            color: var(--primary-green) !important;
-        }
+
 
         /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .main-content { padding: 30px; }
-            .post-title { font-size: 2rem; }
-            .post-content { font-size: 1rem; }
-        }
         @media (max-width: 768px) {
-            .main-content { padding: 20px; }
-            .post-title { font-size: 1.6rem; }
-            .navbar-brand { font-size: 1.3rem; }
+            .main-content {
+                padding: 20px;
+            }
+            .post-title {
+                font-size: 1.8rem;
+            }
+            .post-content {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
             
             <div class="d-flex align-items-center">
-                <a class="nav-link-custom me-2" href="admin.html">
+                <a class="nav-link-custom" href="admin.html">
                     <i class="fas fa-home me-1"></i> Trang chủ
                 </a>
                 <a class="nav-link-custom" href="blog.html">
@@ -225,7 +235,7 @@
 
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-9">
+            <div class="col-lg-10">
                 <div id="postContainer" class="main-content">
                     <div class="text-center text-muted py-5" id="loadingMessage">
                         <i class="fas fa-spinner fa-spin fa-2x text-primary-green"></i> Đang tải bài viết...
@@ -245,9 +255,9 @@
         // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 300; // Chiều cao tối đa trước khi cắt
+        const MAX_CONTENT_HEIGHT = 250; /* Giữ lại chiều cao gốc */
         
-        // --- LOGIC TIỆN ÍCH ---
+        // --- LOGIC TIỆN ÍCH --- 
         function getLoggedInUser() {
             return {
                 name: localStorage.getItem('admin_name'),
@@ -264,20 +274,20 @@
             return urlOrId; 
         }
         
-        // 🔥 KHẮC PHỤC 3: Sửa hàm toggleReadMore để đảm bảo hoạt động
+        // 🔥 KHẮC PHỤC 2: Sửa hàm toggleReadMore để đảm bảo hoạt động
         function toggleReadMore() {
             const contentWrapper = document.getElementById('postContentWrapper');
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
             
             // Lấy chiều cao cuộn thực tế của nội dung.
+            // Phải chờ một chút sau khi render để scrollHeight tính đúng.
             const actualHeight = contentDiv.scrollHeight; 
             
-            // Kiểm tra xem nút đã được click hay chưa (kiểm tra trạng thái thu gọn)
             if (contentWrapper.classList.contains('collapsed')) {
-                // Mở rộng nội dung: thiết lập max-height lớn hơn chiều cao thực tế
+                // Mở rộng nội dung
                 contentWrapper.classList.remove('collapsed');
-                // Cộng thêm 40px để chứa padding 20px trên và 20px dưới của wrapper
+                // Cộng thêm 40px để chứa padding 20px trên và 20px dưới của wrapper (20 * 2 = 40)
                 contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
@@ -370,12 +380,11 @@
             const authorAvatarLetter = authorName.charAt(0).toUpperCase();
 
             const contentHtml = `
-                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x400'">
-                
                 <h1 class="post-title">${blog.title}</h1>
                 <div class="post-meta">
                     <i class="far fa-calendar-alt me-2"></i> ${blog.date} 
                 </div>
+                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x400'">
 
                 <div id="postAuthorContainer" class="d-flex align-items-center">
                     <div id="postAuthorAvatar">${authorAvatarLetter}</div>
@@ -400,7 +409,7 @@
             }
         }
 
-        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN (GIỮ NGUYÊN) ---
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN ---
 
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
@@ -475,7 +484,7 @@
                 
                 const user = getLoggedInUser();
                 const replyButton = user.isLoggedIn 
-                    ? `<button class="btn btn-sm btn-link text-decoration-none" style="color: var(--accent-color);" onclick="handleReply('${commentId}', '${name}')">
+                    ? `<button class="btn btn-sm btn-link text-decoration-none" style="color: var(--dark-green);" onclick="handleReply('${commentId}', '${name}')">
                             <i class="fas fa-reply me-1"></i> Trả lời
                         </button>`
                     : `<button class="btn btn-sm btn-link text-decoration-none text-muted" disabled>
@@ -485,7 +494,7 @@
                 let commentBlock = `
                 <div class="comment-item" style="${marginStyle}">
                     <div class="d-flex align-items-start">
-                        <div class="user-avatar-comment me-3" style="${isReply ? 'width: 35px; height: 35px; line-height: 35px; font-size: 0.8rem;' : ''}">${avatarLetter}</div>
+                        <div class="user-avatar-comment me-3" style="${isReply ? 'width: 35px; height: 35px; line-height: 35px; font-size: 0.8rem; background: var(--accent-color);' : 'background: var(--primary-green);'}">${avatarLetter}</div>
                         <div class="flex-grow-1">
                             <h6 class="m-0 fw-bold ${isReply ? 'text-dark-green' : 'text-primary'}">${name}</h6>
                             <p class="text-muted small mb-1">${comment.date || 'Vừa xong'}</p>
