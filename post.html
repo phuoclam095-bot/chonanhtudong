@@ -37,7 +37,7 @@
             transform: translateY(-1px); 
         }
         
-        /* 🔥 CẢI THIỆN KHỐI NỘI DUNG CHÍNH VÀ THÊM KHUNG */
+        /* CẢI THIỆN KHỐI NỘI DUNG CHUNG */
         .main-content { 
             background: var(--card-bg); 
             padding: 50px 70px; 
@@ -66,25 +66,28 @@
             margin-bottom: 40px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
         }
-        
-        /* 🔥 KHUNG NỘI DUNG VÀ READABILITY */
+
+        /* 🔥 KHUNG NỘI DUNG CHÍNH (VÀ LỖI XEM THÊM) */
         #postContentWrapper {
-            border: 1px solid #ddd; /* Thêm đường viền ngoài */
+            border: 1px solid #ddd; 
             border-radius: 8px;
-            padding: 25px; /* Thêm padding bên trong khung */
-            background: #fdfdfd; /* Nền nhẹ để phân biệt */
+            padding: 15px; /* Giảm padding một chút */
+            background: #fdfdfd; 
             margin-bottom: 20px;
+            
+            /* 🔥 QUAN TRỌNG CHO XEM THÊM */
+            transition: max-height 0.5s ease-in-out;
+            overflow: hidden; 
+            position: relative;
         }
         
         .post-content { 
             line-height: 1.75; 
-            font-size: 1.1rem; /* Tăng cỡ chữ */
+            font-size: 1.05rem; /* Cỡ chữ cân đối */
             color: #222; 
             max-width: 800px; 
             margin: 0 auto; 
-            transition: max-height 0.5s ease-in-out;
-            overflow: hidden; 
-            white-space: pre-wrap; 
+            /* Bỏ overflow: hidden ở đây, để nó ở Wrapper */
         }
         
         .post-content p {
@@ -100,13 +103,33 @@
             padding: 0;
             cursor: pointer;
             display: block;
-            margin-top: 10px;
-            font-size: 1rem;
-            /* Căn chỉnh nút Xem thêm/Thu gọn nằm bên trong khung */
-            margin-left: auto;
-            margin-right: auto;
+            margin: 10px auto 0 auto; /* Căn giữa nút */
+            font-size: 0.95rem;
+        }
+
+        /* 🔥 AVATAR NGƯỜI ĐĂNG BÀI (DƯỚI ẢNH) */
+        #postAuthorContainer {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-green);
+        }
+        #postAuthorAvatar {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            background: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-right: 10px;
         }
         
+
         /* KHỐI BÌNH LUẬN (GIỮ NGUYÊN) */
         #commentSection { border-top: 2px solid #f0f0f0 !important; padding-top: 40px !important; }
         
@@ -222,15 +245,17 @@
         
         // 🔥 HÀM MỚI: Xử lý nút "Xem thêm"/"Thu gọn"
         function toggleReadMore() {
-            const contentWrapper = document.getElementById('postContentArea');
+            const contentWrapper = document.getElementById('postContentWrapper');
             const readMoreBtn = document.getElementById('readMoreBtn');
-            const contentDiv = contentWrapper.querySelector('.post-content');
+            const contentDiv = document.getElementById('postContentActual');
             
+            // Lấy chiều cao thực của nội dung (dùng scrollHeight)
+            const actualHeight = contentDiv.scrollHeight; 
+
             if (contentWrapper.classList.contains('collapsed')) {
                 // Mở rộng nội dung
                 contentWrapper.classList.remove('collapsed');
-                // Thiết lập max-height thành chiều cao cuộn thực tế của nội dung
-                contentWrapper.style.maxHeight = contentDiv.scrollHeight + 'px'; 
+                contentWrapper.style.maxHeight = actualHeight + 30 + 'px'; // +30px cho padding
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 // Thu gọn nội dung
@@ -305,23 +330,29 @@
             }
         }
         
-        // HÀM RENDER (Tích hợp logic cắt nội dung và nút "Xem thêm")
+        // HÀM RENDER (Tích hợp logic cắt nội dung và nút "Xem thêm" + UI Người đăng bài)
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
+            const user = getLoggedInUser();
             
             const imageUrl = driveFileId 
                 ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                 : 'https://via.placeholder.com/1000x500';
 
-            const fullContent = blog.content.replace(/\n/g, '<br>');
+            // Đảm bảo nội dung được xử lý đúng (thay \n bằng <br>)
+            const fullContent = blog.content ? blog.content.replace(/\n/g, '<br>') : '';
             let readMoreButtonHtml = '';
             
-            // 🔥 LOGIC CẮT NỘI DUNG VÀ THÊM NÚT XEM THÊM
-            const requiresCollapse = blog.content.length > 500 || blog.content.split('\n').length > 10; // Cắt nếu dài hoặc nhiều dòng
+            // LOGIC CẮT NỘI DUNG VÀ THÊM NÚT XEM THÊM
+            // Yêu cầu ẩn nếu nội dung dài hơn một chiều cao nhất định (250px)
+            const requiresCollapse = blog.content && blog.content.length > 500;
             
             if (requiresCollapse) {
                 readMoreButtonHtml = `<button id="readMoreBtn" onclick="toggleReadMore()"><i class="fas fa-chevron-down"></i> Xem thêm</button>`;
             }
+
+            const authorName = blog.author || user.name || 'Người ẩn danh';
+            const authorAvatarLetter = authorName.charAt(0).toUpperCase();
 
             const contentHtml = `
                 <h1 class="post-title">${blog.title}</h1>
@@ -329,7 +360,12 @@
                     <span><i class="fas fa-user me-1"></i> ${blog.author}</span> | 
                     <span><i class="fas fa-clock me-1"></i> ${blog.date}</span>
                 </div>
-                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
+                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x450'">
+                
+                <div id="postAuthorContainer" class="d-flex align-items-center">
+                    <div id="postAuthorAvatar">${authorAvatarLetter}</div>
+                    <span class="fw-bold text-dark">${authorName}</span>
+                </div>
                 
                 <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none;'}">
                     <div class="post-content" id="postContentActual">
