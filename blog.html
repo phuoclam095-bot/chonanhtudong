@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Chi tiết Bài viết</title>
+    <title>Studio LNP Blog & Cộng Đồng</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; --card-bg: #ffffff; }
-        body { margin: 0; padding-top: 80px; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: #333; min-height: 100vh; }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; }
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
-        .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
-        .post-title { font-weight: 800; color: var(--dark-green); margin-bottom: 20px; font-size: 2.5rem; }
-        .post-meta { color: #888; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 30px; }
-        .post-image { max-height: 500px; object-fit: cover; border-radius: 10px; margin-bottom: 30px; }
-        .post-content { white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem; color: #444; }
-
-        /* Style Bình luận */
-        #commentSection h5 { color: var(--primary-green); font-weight: 800; }
-        .user-avatar-comment { width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-        #commentFormContainer { border: 1px solid #eee; border-radius: 10px; padding: 20px; margin-top: 30px; background: #f9f9f9; }
-        
-        /* Style cho bình luận lồng nhau */
-        .comment-item { 
-            position: relative;
-            padding-top: 5px;
-        }
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 700; transition: 0.3s; }
+        .nav-link:hover { color: var(--accent-color) !important; transform: translateY(-2px); }
+        .hero-section { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1000&q=80'); background-size: cover; background-position: center; color: white; padding: 80px 20px; text-align: center; border-bottom: 5px solid var(--primary-green); }
+        .hero-title { font-size: 2.5rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); margin-bottom: 15px; }
+        .section-header { text-align: center; margin: 50px 0 30px 0; color: var(--accent-color); font-weight: 800; font-size: 2rem; text-shadow: 0 0 10px rgba(81, 255, 125, 0.3); }
+        .btn-write-post { background: var(--accent-color); color: var(--dark-green); font-weight: 800; padding: 10px 25px; border-radius: 50px; border: none; box-shadow: 0 5px 15px rgba(81, 255, 125, 0.3); transition: 0.3s; font-size: 1rem; }
+        .btn-write-post:hover { transform: scale(1.05); background: white; }
+        .blog-card { background: var(--card-bg); border: none; border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; height: 100%; display: flex; flex-direction: column; cursor: pointer; }
+        .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        .blog-img { height: 200px; object-fit: cover; width: 100%; background: #eee; }
+        .blog-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .blog-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        .blog-author { font-size: 0.85rem; color: var(--primary-green); font-weight: 700; }
+        .blog-title { font-weight: 700; font-size: 1.2rem; color: var(--dark-green); margin: 10px 0; }
+        .blog-desc { font-size: 0.95rem; color: #555; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-read { margin-top: 15px; background: transparent; border: 2px solid var(--primary-green); color: var(--primary-green); font-weight: 700; padding: 5px 15px; border-radius: 50px; transition: 0.3s; display: inline-block; width: fit-content; text-decoration: none; }
+        .btn-read:hover { background: var(--primary-green); color: white; }
+        .review-card { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; border-left: 5px solid var(--primary-green); }
+        .quote-icon { position: absolute; top: 15px; right: 20px; font-size: 3rem; color: rgba(0,0,0,0.05); }
+        .user-avatar { width: 50px; height: 50px; background: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
+        .stars { color: #ffc107; font-size: 0.9rem; }
+        .review-text { font-style: italic; color: #444; line-height: 1.6; }
+        .footer { text-align: center; color: rgba(255,255,255,0.5); padding: 30px; font-size: 0.9rem; }
+        .modal-content { border-radius: 20px; border: none; }
+        .modal-header { background: var(--primary-green); color: white; border-radius: 20px 20px 0 0; }
+        .form-control { border-radius: 10px; padding: 12px; }
+        #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -36,17 +47,90 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
-            <a class="btn btn-sm btn-light fw-bold" href="blog.html"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="admin.html">Đăng nhập Admin</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews">Đánh Giá</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div id="postContainer" class="main-content">
-                    <div class="text-center text-muted py-5" id="loadingMessage">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...
-                    </div>
+    <div class="hero-section" style="margin-top: 60px;">
+        <div class="container">
+            <h1 class="hero-title">Góc Chia Sẻ & Cảm Nhận</h1>
+            <p class="hero-subtitle">Nơi lưu giữ những khoảnh khắc và câu chuyện đẹp nhất.</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+            <h2 class="section-header m-0 text-start"><i class="fas fa-newspaper"></i> Bài Viết Mới</h2>
+            <button class="btn-write-post" data-bs-toggle="modal" data-bs-target="#writePostModal">
+                <i class="fas fa-pen-fancy me-2"></i>Đăng Bài
+            </button>
+        </div>
+
+        <div class="row g-4" id="blogGrid"></div>
+
+        <h2 class="section-header" id="reviews"><i class="fas fa-heart me-2"></i>Khách Hàng Nói Gì?</h2>
+        <div class="row g-4" id="reviewGrid"></div>
+
+        <div class="text-center mt-5 mb-5">
+            <a href="feedback.html" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">Gửi Góp Ý Của Bạn</a>
+        </div>
+    </div>
+
+    <div class="footer">© 2025 Studio Lâm Nam Phước. All rights reserved.</div>
+
+    <div class="modal fade" id="writePostModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Chia sẻ câu chuyện</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="postForm" onsubmit="submitPost(event)">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="fw-bold mb-1">Tên của bạn</label>
+                                <input type="text" id="postAuthor" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="fw-bold mb-1">Email</label>
+                                <input type="email" id="postEmail" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold mb-1">Ảnh bìa bài viết</label>
+                            <input type="file" id="postImageFile" class="form-control" accept="image/*" onchange="processImage()">
+                            
+                            <div id="imagePreviewContainer" class="mt-2" style="display:none;">
+                                <img id="imgPreview" src="" style="width: 100%; height: 200px; object-fit: cover;">
+                            </div>
+                            <input type="hidden" id="postImageBase64">
+                            <input type="hidden" id="postImageName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-bold mb-1">Tiêu đề</label>
+                            <input type="text" id="postTitle" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold mb-1">Nội dung</label>
+                            <textarea id="postContent" class="form-control" rows="6" required></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" id="btnSubmitPost" class="btn btn-success fw-bold px-4">Gửi Duyệt</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -54,288 +138,231 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK - DÙNG CHUNG VỚI BLOG.HTML
-        const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
-        const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
-        const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment';
-        
-        // --- LOGIC TIỆN ÍCH ---
-        function extractDriveId(url) { return url && url.includes("id=") ? url.split("id=")[1].split('&')[0] : null; }
-        function getStableDriveUrl(fileId) { return `https://drive.google.com/thumbnail?id=${fileId}&s0`; } // Chất lượng cao nhất s0
-        
-        function getLoggedInUser() {
-            return {
-                name: localStorage.getItem('admin_name'),
-                email: localStorage.getItem('admin_email'),
-                isLoggedIn: !!localStorage.getItem('admin_email')
-            };
+        // ⚠️ CẤU HÌNH WEBHOOK
+        const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
+        const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
+
+        const demoBlogs = [
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60", desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
+            { id: "DEMO3", title: "Khuyến mãi Giáng Sinh: Giảm 20%", date: "01/12/2025", author: "Marketing", image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60", desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này." }
+        ];
+        const demoReviews = [
+            { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
+            { name: "Trần Văn Nam", avatar: "N", stars: 5, content: "Dịch vụ chuyên nghiệp, giao ảnh đúng hẹn." },
+            { name: "Lê Minh", avatar: "M", stars: 4, content: "Gói chụp hợp lý, thợ chụp vui tính." },
+            { name: "Phạm Hương", avatar: "H", stars: 5, content: "Đã chụp ở đây lần thứ 2, rất hài lòng!" }
+        ];
+        let currentBlogs = [];
+
+        // --- HÀM TIỆN ÍCH ---
+        function extractDriveId(url) {
+            if (url && url.includes("id=")) {
+                const idPart = url.split("id=")[1];
+                return idPart.split('&')[0]; 
+            }
+            return null;
+        }
+
+        function getStableDriveUrl(fileId) {
+            // Đã xác nhận link này hoạt động ổn định nhất
+            return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
         }
         
-        // --- XỬ LÝ CHÍNH ---
+        // --- CÁC HÀM XỬ LÝ CHÍNH ---
 
-        async function loadPostDetail() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
-            const postContainer = document.getElementById('postContainer');
+        function processImage() {
+            const fileInput = document.getElementById('postImageFile');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const imgPreview = document.getElementById('imgPreview');
+            const file = fileInput.files[0];
             
-            // 1. Kiểm tra đăng nhập Admin
-            const user = getLoggedInUser();
-            if (!user.isLoggedIn) {
-                alert("Bạn cần đăng nhập Admin để xem chi tiết bài viết và bình luận.");
-                window.location.href = 'admin.html';
-                return;
-            }
+            const MAX_FILE_SIZE = 5 * 1024 * 1024;
+            const MAX_BASE64_SIZE = 500000;
 
-            if (!postId) {
-                postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
-                return;
-            }
-
-            try {
-                // 2. Lấy dữ liệu bài viết
-                const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
-                if (!response.ok) throw new Error("Lỗi tải dữ liệu");
-                
-                const rawData = await response.json();
-                const blog = (Array.isArray(rawData) ? rawData[0] : rawData.data[0]) || null;
-                
-                if (!blog) {
-                    postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết này.</div>';
+            if (file) {
+                if (file.size > MAX_FILE_SIZE) {
+                    alert(`❌ Lỗi: Ảnh gốc quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB!`);
+                    fileInput.value = ''; 
+                    previewContainer.style.display = 'none';
                     return;
                 }
 
-                document.getElementById('pageTitle').innerText = blog.title;
-                renderPost(blog);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
                 
-                // 3. Tải bình luận
-                loadComments(blog.id);
-
-            } catch (error) {
-                postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
-            }
-        }
-
-        function renderPost(blog) {
-            const fileId = extractDriveId(blog.image);
-            const imageUrl = fileId ? getStableDriveUrl(fileId) : blog.image;
-
-            const contentHtml = `
-                <h1 class="post-title">${blog.title}</h1>
-                <div class="post-meta">
-                    <span><i class="fas fa-user me-1"></i> ${blog.author}</span> | 
-                    <span><i class="fas fa-clock me-1"></i> ${blog.date}</span>
-                </div>
-                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
-                <div class="post-content">${blog.content.replace(/\n/g, '<br>')}</div>
-                
-                <div id="commentSectionContainer"></div>
-            `;
-            document.getElementById('postContainer').innerHTML = contentHtml;
-            renderCommentSection(blog.id); // Chèn khu vực bình luận
-        }
-
-        // 🔥 TẠO KHU VỰC BÌNH LUẬN VÀ FORM
-        function renderCommentSection(postId) {
-            const user = getLoggedInUser();
-            const commentSection = document.getElementById('commentSectionContainer');
-            
-            // Mã HTML cho khu vực bình luận và form (Đã tích hợp ID người dùng)
-            commentSection.innerHTML = `
-                <div id="commentSection" class="mt-5 pt-3 border-top">
-                    <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-comments me-2"></i>Bình Luận</h5>
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
                     
-                    <div id="commentsList" class="mb-4"></div>
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        const MAX_WIDTH = 1200; 
+                        let width = img.width;
+                        let height = img.height;
 
-                    <div id="commentFormContainer">
-                        <h6 class="fw-bold text-success" id="commentAsUser">
-                            <i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>
-                        </h6>
-                        <form id="commentForm" onsubmit="submitComment(event)">
-                            <input type="hidden" id="commentPostId" value="${postId}">
-                            <input type="hidden" id="commentUserName" value="${user.name}">
-                            <input type="hidden" id="commentUserEmail" value="${user.email}">
-                            <input type="hidden" id="commentParentId" value="">
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
 
-                            <div class="mb-3">
-                                <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required></textarea>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" id="btnSubmitComment" class="btn btn-success fw-bold px-4">Gửi Bình Luận</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // --- LOGIC BÌNH LUẬN LỒNG NHAU (REPLY) ---
-
-        function nestComments(comments) { /* Logic lồng nhau giữ nguyên */
-            const commentMap = {};
-            const topLevelComments = [];
-            comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
-            Object.values(commentMap).forEach(comment => {
-                const parentId = comment.parent_comment_id;
-                if (parentId && commentMap[parentId]) { commentMap[parentId].replies.push(comment); } else { topLevelComments.push(comment); }
-            });
-            topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
-            function sortReplies(comment) {
-                if (comment.replies) {
-                    comment.replies.sort((a, b) => new Date(a.date) - new Date(b.date));
-                    comment.replies.forEach(sortReplies);
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const COMPRESSION_QUALITY = 0.8;
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', COMPRESSION_QUALITY);
+                        
+                        if (compressedBase64.length > MAX_BASE64_SIZE) {
+                            console.warn(`Ảnh sau nén vẫn còn lớn.`);
+                        }
+                        
+                        imgPreview.src = compressedBase64;
+                        previewContainer.style.display = 'block';
+                        document.getElementById('postImageBase64').value = compressedBase64;
+                        document.getElementById('postImageName').value = file.name;
+                    }
                 }
             }
-            topLevelComments.forEach(sortReplies);
-            return topLevelComments;
         }
 
-        function renderComments(flatComments) { /* Logic hiển thị đệ quy giữ nguyên */
-            const commentsList = document.getElementById('commentsList');
-            if (flatComments.length === 0) { commentsList.innerHTML = '<div class="text-center text-muted">Chưa có bình luận nào. Hãy là người đầu tiên!</div>'; return; }
-            const nestedComments = nestComments(flatComments);
-            let html = '';
-            
-            function buildCommentHtml(comment, depth = 0) {
-                const name = comment.author || 'Người ẩn danh';
-                const avatarLetter = name.charAt(0).toUpperCase(); 
-                const isReply = depth > 0;
-                const commentId = comment.id;
-                const marginStyle = isReply ? `margin-left: ${Math.min(depth, 3) * 30}px; border-left: 2px solid #ddd; padding-left: 15px;` : ''; 
-                
-                let commentBlock = `
-                <div class="comment-item mb-3" style="${marginStyle}">
-                    <div class="d-flex align-items-start pb-2 ${isReply ? '' : 'border-bottom'}">
-                        <div class="user-avatar-comment me-3" style="${isReply ? 'width: 30px; height: 30px; font-size: 0.8rem;' : ''}">${avatarLetter}</div>
-                        <div class="flex-grow-1">
-                            <h6 class="m-0 fw-bold ${isReply ? 'text-secondary' : 'text-primary'}">${name}</h6>
-                            <p class="text-muted small mb-1">${comment.date || 'Vừa xong'}</p>
-                            <p class="mb-2">${comment.content}</p>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="handleReply('${commentId}', '${name}')">
-                                <i class="fas fa-reply me-1"></i> Trả lời
-                            </button>
-                            <div id="reply-form-placeholder-${commentId}" class="mt-2"></div>
-                        </div>
-                    </div>`;
-                if (comment.replies && comment.replies.length > 0) {
-                     comment.replies.forEach(reply => { commentBlock += buildCommentHtml(reply, depth + 1); });
-                }
-                commentBlock += '</div>';
-                return commentBlock;
-            }
-
-            nestedComments.forEach(comment => { html += buildCommentHtml(comment); });
-            commentsList.innerHTML = html;
-        }
-
-        async function loadComments(postId) {
-            const commentsList = document.getElementById('commentsList');
-            commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
-            resetCommentFormState(); 
-
-            try {
-                const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
-                const data = await response.json();
-                const flatComments = Array.isArray(data) ? data : (data.data || []); 
-                renderComments(flatComments);
-            } catch (error) {
-                commentsList.innerHTML = '<div class="text-center text-danger">Không thể tải bình luận.</div>';
-            }
-        }
-
-        function handleReply(commentId, authorName) { /* Logic Trả lời giữ nguyên */
-            const user = getLoggedInUser();
-            const commentContent = document.getElementById('commentContent');
-
-            if (!user.isLoggedIn) { alert("Vui lòng đăng nhập (tại trang Admin) để trả lời!"); return; }
-
-            const formContainer = document.getElementById('commentFormContainer');
-            const placeholder = document.getElementById(`reply-form-placeholder-${commentId}`);
-            const currentParentIdInput = document.getElementById('commentParentId');
-            const commentAsUser = document.getElementById('commentAsUser');
-            
-            resetCommentFormState();
-            
-            currentParentIdInput.value = commentId; 
-            
-            placeholder.appendChild(formContainer);
-            
-            commentAsUser.innerHTML = `<i class="fas fa-reply me-1"></i> Trả lời <span class="text-danger fw-bold">${authorName}</span> với tư cách: <span class="text-primary">${user.name}</span> <button class="btn btn-sm btn-link text-danger" onclick="resetCommentFormState()">Hủy</button>`;
-            
-            document.getElementById('btnSubmitComment').disabled = false;
-            commentContent.focus(); 
-            commentContent.value = `@${authorName} `;
-        }
-
-        function resetCommentFormState() { /* Logic Reset Form giữ nguyên */
-            const user = getLoggedInUser();
-            const commentSection = document.getElementById('commentSection');
-            const formContainer = document.getElementById('commentFormContainer');
-            const currentParentIdInput = document.getElementById('commentParentId');
-            const commentAsUser = document.getElementById('commentAsUser');
-            const btnSubmitComment = document.getElementById('btnSubmitComment');
-            const commentContent = document.getElementById('commentContent');
-
-
-            if (formContainer.parentNode !== commentSection) {
-                commentSection.appendChild(formContainer);
-            }
-            
-            currentParentIdInput.value = '';
-            commentContent.value = '';
-
-            if (user.isLoggedIn) {
-                 commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
-                 btnSubmitComment.disabled = false;
-            } else {
-                 commentAsUser.innerHTML = `Vui lòng đăng nhập (tại trang Admin) để bình luận.`;
-                 btnSubmitComment.disabled = true;
-            }
-        }
-        
-        async function submitComment(e) { /* Logic Gửi Bình luận giữ nguyên */
+        async function submitPost(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnSubmitComment');
-            const postId = document.getElementById('commentPostId').value;
-            const content = document.getElementById('commentContent').value;
-            const author = document.getElementById('commentUserName').value;
-            const email = document.getElementById('commentUserEmail').value;
-            const parentId = document.getElementById('commentParentId').value; 
-
-            if (!postId || !content || !email) return;
-
+            const btn = document.getElementById('btnSubmitPost');
+            const imageBase64 = document.getElementById('postImageBase64').value;
+            
+            if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
+            
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
             btn.disabled = true;
 
             try {
-                const response = await fetch(N8N_SUBMIT_COMMENT, {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
+                await fetch(N8N_SUBMIT_BLOG, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        post_id: postId,
-                        author: author,
-                        email: email,
-                        content: content,
-                        date: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN'),
-                        parent_comment_id: parentId || null
+                        author: document.getElementById('postAuthor').value,
+                        email: document.getElementById('postEmail').value,
+                        title: document.getElementById('postTitle').value,
+                        content: document.getElementById('postContent').value,
+                        date: new Date().toLocaleDateString('vi-VN'),
+                        image_data: imageBase64,
+                        image_name: document.getElementById('postImageName').value
                     })
                 });
-
-                if (response.ok) {
-                    document.getElementById('commentContent').value = '';
-                    resetCommentFormState(); 
-                    loadComments(postId); 
-                } else {
-                    alert("Lỗi khi gửi bình luận. Vui lòng kiểm tra Webhook n8n.");
-                }
-            } catch (error) {
-                alert("Lỗi kết nối: " + error.message);
-            } finally {
-                btn.innerHTML = 'Gửi Bình Luận'; 
-                btn.disabled = false;
+                alert("✅ Đã gửi bài thành công! Chờ duyệt nhé.");
+                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
+                document.getElementById('postForm').reset();
+                loadBlogs();
+            } catch (e) { alert("Lỗi: " + e.message); } 
+            finally { 
+                btn.innerHTML = 'Gửi Duyệt'; 
+                btn.disabled = false; 
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadPostDetail);
+        // 🔥 HÀM XỬ LÝ CHUYỂN HƯỚNG SANG TRANG CHI TIẾT
+        function viewPost(index) {
+            const blog = currentBlogs[index];
+            
+            // ⚠️ BẮT BUỘC ĐĂNG NHẬP ADMIN TRƯỚC KHI XEM
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+
+            if (!isLoggedIn) {
+                alert("Bạn cần đăng nhập Admin để xem chi tiết bài viết và bình luận.");
+                window.location.href = 'admin.html';
+                return;
+            }
+            
+            if (blog.id) {
+                // CHUYỂN HƯỚNG SANG TRANG POST.HTML
+                window.location.href = `post.html?id=${blog.id}`;
+            } else {
+                alert("Bài viết này không có ID để xem chi tiết.");
+            }
+        }
+        
+        async function loadBlogs() {
+            const container = document.getElementById('blogGrid');
+            currentBlogs = [...demoBlogs]; 
+
+            try {
+                const response = await fetch(N8N_GET_BLOGS);
+                if(response.ok) {
+                    const data = await response.json();
+                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
+                    
+                    const processedBlogs = realBlogs.map(blog => {
+                        const rawUrl = blog.image; 
+                        
+                        if (rawUrl) {
+                            const fileId = extractDriveId(rawUrl);
+                            
+                            if (fileId) {
+                                blog.display_image_url = getStableDriveUrl(fileId); 
+                            } else {
+                                blog.display_image_url = rawUrl;
+                            }
+                        }
+                        return blog;
+                    });
+
+                    if(processedBlogs.length > 0) currentBlogs = [...currentBlogs, ...processedBlogs];
+                }
+            } catch (e) { console.log("Dùng demo data hoặc lỗi load blog:", e); }
+
+            let html = '';
+            currentBlogs.forEach((blog, i) => {
+                const cacheBuster = `&t=${new Date().getTime()}`;
+                
+                const actualImageUrl = blog.display_image_url || blog.image || 'https://via.placeholder.com/500x300';
+                const imgUrl = actualImageUrl + cacheBuster; 
+
+                html += `
+                <div class="col-md-4">
+                    <div class="blog-card" onclick="viewPost(${i})">
+                        <img src="${imgUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="d-flex justify-content-between text-muted small mb-2">
+                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
+                                <div class="fw-bold text-success">${blog.author}</div>
+                            </div>
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.content || blog.desc}</div>
+                            <button class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewGrid');
+            let html = '';
+            demoReviews.forEach(review => {
+                let starHtml = '';
+                for(let i=0; i<5; i++) starHtml += (i < review.stars) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                html += `
+                <div class="col-md-6">
+                    <div class="review-card">
+                        <i class="fas fa-quote-right quote-icon"></i>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="user-avatar">${review.avatar}</div>
+                            <div><h5 class="m-0 fw-bold">${review.name}</h5><div class="stars">${starHtml}</div></div>
+                        </div>
+                        <div class="review-text">"${review.content}"</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBlogs();
+            renderReviews();
+        });
     </script>
 </body>
 </html>
