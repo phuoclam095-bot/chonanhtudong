@@ -10,7 +10,18 @@
     
     <style>
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; --card-bg: #ffffff; }
-        body { margin: 0; padding-top: 80px; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: #333; min-height: 100vh; }
+        /* Đã đồng bộ nền chấm bi */
+        body { 
+            margin: 0; 
+            padding-top: 80px; 
+            font-family: 'Nunito', sans-serif; 
+            background-color: var(--bg-color); 
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px;
+            color: #333; 
+            min-height: 100vh; 
+        }
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
         .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
@@ -37,7 +48,10 @@
         <div class="container">
             <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
             
-            <a class="btn btn-sm btn-light fw-bold" href="blog.html"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+            <div class="d-flex align-items-center">
+                <a class="btn btn-sm btn-light fw-bold me-2" href="admin.html"><i class="fas fa-home me-2"></i>Trang chủ</a>
+                <a class="btn btn-sm btn-light fw-bold" href="blog.html"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+            </div>
         </div>
     </nav>
 
@@ -46,7 +60,7 @@
             <div class="col-lg-10">
                 <div id="postContainer" class="main-content">
                     <div class="text-center text-muted py-5" id="loadingMessage">
-                        Đang tải bài viết...
+                        <i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...
                     </div>
                 </div>
             </div>
@@ -73,7 +87,6 @@
             };
         }
         
-        // HÀM: Trích xuất ID tệp Drive (Quan trọng để tạo link thumbnail)
         function extractDriveFileId(urlOrId) {
             if (urlOrId && urlOrId.includes('id=')) {
                 const parts = urlOrId.split('id=');
@@ -82,7 +95,7 @@
             return urlOrId; 
         }
 
-        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache) ---
+        // --- HÀM XỬ LÝ CHÍNH (ĐÃ SỬA: CACHE + SPINNER BAN ĐẦU) ---
 
         async function loadPostDetail(forceReload = false) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -95,21 +108,26 @@
                 return;
             }
 
-            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY (Không có spinner nếu Cache còn mới) ---
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
-                // HIỂN THỊ TỨC THỜI
+                // Hiển thị bài viết ngay lập tức từ Cache
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
                 renderPost(cachedData.blog);
                 loadComments(postId); // Tải bình luận vẫn cần chạy
                 console.log("Đã tải bài viết từ Cache.");
-            } else if (!cachedData || forceReload) {
-                // Nếu không có cache, hiển thị loading tĩnh
-                postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage">Đang tải bài viết...</div></div>`;
+                // CHẠY TIẾP BƯỚC 2 ĐỂ CẬP NHẬT NỀN nếu cần
+            } 
+            
+            // --- BƯỚC 1.5: HIỂN THỊ SPINNER NẾU KHÔNG CÓ CACHE HOẶC ĐANG BUỘC TẢI LẠI ---
+            if (!cachedData || forceReload) {
+                // Nếu không có cache, hiển thị SPINNER
+                postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div></div>`;
             }
 
-            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm) ---
+
+            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm/Chính) ---
             try {
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
@@ -140,16 +158,16 @@
             } catch (error) {
                 console.error("Lỗi tải bài viết từ Server:", error);
                 if (!cachedData) {
+                    // Chỉ hiển thị lỗi nếu KHÔNG có Cache dự phòng
                     postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
                 }
             }
         }
         
-        // HÀM RENDER (ĐÃ CHÈN CÔNG THỨC LINK DRIVER)
+        // HÀM RENDER (Giữ nguyên logic link ảnh)
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             
-            // GÁN TRỰC TIẾP CÔNG THỨC LINK THUMBNAIL TẠI ĐÂY
             const imageUrl = driveFileId 
                 ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                 : 'https://via.placeholder.com/1000x500';
@@ -160,7 +178,7 @@
                     <span><i class="fas fa-user me-1"></i> ${blog.author}</span> | 
                     <span><i class="fas fa-clock me-1"></i> ${blog.date}</span>
                 </div>
-                <img src="${imageUrl}" alt="${blog.title}" class="w-w100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
+                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
                 <div class="post-content">${blog.content.replace(/\n/g, '<br>')}</div>
                 
                 <div id="commentSectionContainer"></div>
