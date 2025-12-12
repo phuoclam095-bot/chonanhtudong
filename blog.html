@@ -76,7 +76,9 @@
         </div>
 
         <div class="row g-4" id="blogGrid">
-            <div class="text-center w-100 text-muted" id="initialLoading">Đang tải danh sách bài viết...</div>
+            <div class="text-center w-100 text-muted" id="initialLoading">
+                <i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...
+            </div>
         </div>
 
         <h2 class="section-header" id="reviews"><i class="fas fa-heart me-2"></i>Khách Hàng Nói Gì?</h2>
@@ -179,6 +181,8 @@
         function renderBlogs(blogs) {
             const container = document.getElementById('blogGrid');
             const initialLoading = document.getElementById('initialLoading');
+            
+            // 🔥 KHẮC PHỤC LỖI: Loại bỏ phần tử loading ban đầu
             if(initialLoading) initialLoading.remove();
             
             if (!blogs || blogs.length === 0) {
@@ -222,7 +226,8 @@
                 renderBlogs(currentBlogs);
                 console.log("Đã tải từ Cache. Tải nền để cập nhật...");
             } else if (!forceReload) {
-                 container.innerHTML = '<div class="text-center w-100 text-muted">Đang tải danh sách bài viết...</div>';
+                 // Nếu không có cache, hiển thị LOADING SPINNER ĐÚNG VỊ TRÍ
+                 container.innerHTML = '<div class="text-center w-100 text-muted" id="initialLoading"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...</div>';
             }
             
             try {
@@ -249,6 +254,7 @@
             } catch (e) { 
                 console.error("Lỗi load blog từ server:", e);
                 if (!cachedData) {
+                     // Nếu lỗi và không có cache, thay thế loading spinner bằng thông báo lỗi
                      container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server. Vui lòng kiểm tra Webhook.</div>';
                 }
             }
