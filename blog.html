@@ -292,6 +292,19 @@
             }
 
             carouselInner.innerHTML = slides.join('');
+            
+            // 🔥 KHẮC PHỤC LỖI KHỞI TẠO CAROUSEL: Bắt buộc chạy lại JS khởi tạo sau khi nội dung được chèn
+            const mainCarouselElement = document.getElementById('mainCarousel');
+            if (mainCarouselElement) {
+                const carouselInstance = bootstrap.Carousel.getInstance(mainCarouselElement);
+                if (carouselInstance) {
+                     carouselInstance.dispose();
+                }
+                new bootstrap.Carousel(mainCarouselElement, {
+                    interval: 5000, 
+                    ride: 'carousel'
+                });
+            }
         }
 
         // --- HÀM LOAD BLOG (Chính) ---
