@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio LNP Blog & Cộng Đồng</title>
+    <title>Blog & Cộng Đồng</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -80,6 +80,13 @@
         /* Đảm bảo các items trong carousel không bị dính vào nhau */
         #carouselInner .carousel-item {
              padding: 10px;
+        }
+        /* Tùy chỉnh chiều rộng cho Carousel Item */
+        #demoCarousel .carousel-item {
+            /* Giúp Bootstrap hiển thị 3 cột/slide */
+            float: left;
+            margin-right: -100%;
+            width: 100%;
         }
     </style>
 </head>
@@ -211,11 +218,13 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; 
 
-        // 🔥 ĐÃ SỬA: CHỈ CẦN 3 BÀI MẪU (Sẽ được dùng để tạo 3 slide, 1 bài/slide)
+        // 🔥 ĐÃ SỬA: CẬP NHẬT 5 BÀI MẪU VÀ GÁN URL ẢNH PLACEHOLDER TRỰC TIẾP
         const baseDemoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://via.placeholder.com/1000x500/a35d97/ffffff?text=Silde+1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://via.placeholder.com/1000x500/6fa8dc/ffffff?text=Silde+2", content: "Làm sao để cả nhà cùng cười tươi..." },
-            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://via.placeholder.com/1000x500/e06666/ffffff?text=Silde+3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/a35d97/ffffff?text=DEMO+1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://via.placeholder.com/500x300/6fa8dc/ffffff?text=DEMO+2", content: "Làm sao để cả nhà cùng cười tươi..." },
+            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://via.placeholder.com/500x300/e06666/ffffff?text=DEMO+3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
+            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://via.placeholder.com/500x300/6aa84f/ffffff?text=DEMO+4", content: "Màu sắc và chất liệu đóng vai trò quan trọng..." },
+            { id: "DEMO5", title: "Review trọn bộ dịch vụ trọn gói", date: "01/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/f6b26b/ffffff?text=DEMO+5", content: "Chúng tôi mang đến trải nghiệm tuyệt vời..." },
         ];
         
         const demoReviews = [
@@ -241,35 +250,52 @@
             return urlOrId; 
         }
 
-        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA: 1 BÀI/SLIDE VÀ CÓ NỀN) ---
+        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA: CHIA 5 BÀI thành 2 slide: 3 bài + 2 bài) ---
         function renderDemoBlogs() {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
 
-            let html = '';
+            const slides = [];
             
-            baseDemoBlogs.forEach((blog, index) => {
-                const imageUrl = blog.image; 
-                
-                // Mỗi bài là một slide CarouselItem riêng
-                html += `
-                <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
-                                <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/1000x500?text=Blog+Placeholder'" style="height: 300px;">
-                                <div class="blog-body">
-                                    <div class="blog-title">${blog.title}</div>
-                                    <div class="blog-desc">${blog.content}</div>
-                                    <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
-                                </div>
+            // Chia 5 bài thành 2 slides: Slide 1 (0, 1, 2); Slide 2 (3, 4)
+            const slideData = [
+                baseDemoBlogs.slice(0, 3), 
+                baseDemoBlogs.slice(3, 5), 
+            ];
+
+            slideData.forEach((group, index) => {
+                let groupHtml = group.map((blog) => {
+                    const imageUrl = blog.image; 
+                    
+                    return `
+                    <div class="col-md-4">
+                        <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
+                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300?text=LNP+Blog'">
+                            <div class="blog-body">
+                                <div class="blog-title">${blog.title}</div>
+                                <div class="blog-desc">${blog.content}</div>
+                                <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
+                    </div>`;
+                }).join('');
+                
+                // 🔥 ĐẢM BẢO SLIDE 2 CŨNG CÓ 3 CỘT (THÊM CỘT RỖNG)
+                if (index === 1 && group.length === 2) {
+                    groupHtml += '<div class="col-md-4"></div>';
+                }
+
+                // Gói nhóm 3 bài viết vào một Carousel Item
+                slides.push(`
+                    <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                        <div class="row g-4">
+                            ${groupHtml}
+                        </div>
                     </div>
-                </div>`;
+                `);
             });
-            
-            carouselInner.innerHTML = html;
+
+            carouselInner.innerHTML = slides.join('');
         }
 
         // --- HÀM RENDER BLOG (Cho bài viết từ Server) ---
@@ -322,6 +348,7 @@
                 renderBlogs(currentBlogs);
                 console.log("Đã tải từ Cache. Tải nền để cập nhật...");
             } else if (!forceReload) {
+                 // Nếu không có cache, hiển thị LOADING SPINNER ĐÚNG VỊ TRÍ
                  container.innerHTML = '<div class="text-center w-100 text-muted" id="initialLoading"><i class="fas fa-spinner fa-spin me-2"></i> Đang tải danh sách bài viết...</div>';
             }
             
@@ -332,6 +359,7 @@
                     
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
                     
+                    // Tổng hợp dữ liệu: Real + Demo
                     let allBlogs = [...realBlogs, ...baseDemoBlogs];
                     
                     currentBlogs = allBlogs;
@@ -348,6 +376,7 @@
             } catch (e) { 
                 console.error("Lỗi load blog từ server:", e);
                 const initialLoading = document.getElementById('initialLoading');
+                // Nếu lỗi và không có cache, thay thế loading spinner bằng thông báo lỗi
                 if (!cachedData) {
                      if(initialLoading) initialLoading.remove(); 
                      container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server.</div>';
