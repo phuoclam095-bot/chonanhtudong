@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Chi tiết Bài viết</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; --card-bg: #ffffff; }
+        /* Đã đồng bộ nền chấm bi */
+        body { 
+            margin: 0; 
+            padding-top: 80px; 
+            font-family: 'Nunito', sans-serif; 
+            background-color: var(--bg-color); 
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px;
+            color: #333; 
+            min-height: 100vh; 
+        }
+        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
+        
+        /* 🔥 ĐÃ SỬA: Style cho nav-link-custom theo mẫu (Xanh lá, không in hoa toàn bộ) */
+        .nav-link-custom { 
+            color: var(--accent-color) !important; /* Dùng màu xanh accent để nổi bật */
+            font-weight: 700; 
+            transition: 0.3s; 
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            /* BỎ text-transform: uppercase; */
+        }
+        .nav-link-custom:hover { 
+            color: white !important; /* Hover chuyển sang trắng */
+            text-decoration: none;
+            transform: translateY(-1px); 
+        }
+        
+        .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
+        .post-title { font-weight: 800; color: var(--dark-green); margin-bottom: 20px; font-size: 2.5rem; }
+        .post-meta { color: #888; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 30px; }
+        .post-image { max-height: 500px; object-fit: cover; border-radius: 10px; margin-bottom: 30px; }
+        .post-content { white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem; color: #444; }
+
+        /* Style Bình luận */
+        #commentSection h5 { color: var(--primary-green); font-weight: 800; }
+        .user-avatar-comment { width: 40px; height: 40px; background: var(--primary-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+        #commentFormContainer { border: 1px solid #eee; border-radius: 10px; padding: 20px; margin-top: 30px; background: #f9f9f9; }
+        
+        /* Style cho bình luận lồng nhau */
+        .comment-item { 
+            position: relative;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
+            
+            <div class="d-flex align-items-center">
+                <a class="nav-link-custom" href="admin.html">
+                    <i class="fas fa-home me-1"></i> Trang chủ
+                </a>
+                <a class="nav-link-custom" href="blog.html">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div id="postContainer" class="main-content">
+                    <div class="text-center text-muted py-5" id="loadingMessage">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ⚠️ CẤU HÌNH WEBHOOK
+        const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
+        const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
+        const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
+        
+        // Cấu hình Cache
+        const POST_CACHE_PREFIX = 'post_detail_';
+        const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
+        
+        // --- LOGIC TIỆN ÍCH ---
+        function getLoggedInUser() {
+            return {
+                name: localStorage.getItem('admin_name'),
+                email: localStorage.getItem('admin_email'),
+                isLoggedIn: !!localStorage.getItem('admin_email')
+            };
+        }
+        
+        function extractDriveFileId(urlOrId) {
+            if (urlOrId && urlOrId.includes('id=')) {
+                const parts = urlOrId.split('id=');
+                return parts[1].split('&')[0];
+            }
+            return urlOrId; 
+        }
+
+        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache + Spinner Hợp lệ) ---
+
+        async function loadPostDetail(forceReload = false) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            const postContainer = document.getElementById('postContainer');
+            const cacheKey = POST_CACHE_PREFIX + postId;
+
+            if (!postId) {
+                postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
+                return;
+            }
+
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
+            const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+            
+            if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
+                // Hiển thị bài viết ngay lập tức từ Cache
+                document.getElementById('pageTitle').innerText = cachedData.blog.title;
+                renderPost(cachedData.blog);
+                loadComments(postId); 
+                console.log("Đã tải bài viết từ Cache.");
+            } 
+            
+            // --- BƯỚC 1.5: HIỂN THỊ SPINNER NẾU KHÔNG CÓ CACHE HOẶC ĐANG BUỘC TẢI LẠI ---
+            if (!cachedData || forceReload) {
+                // Nếu không có cache, hiển thị loading spinner (lần đầu)
+                postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div></div>`;
+            }
+
+
+            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm/Chính) ---
+            try {
+                const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
+                if (!response.ok) throw new Error("Lỗi tải dữ liệu");
+                
+                const rawData = await response.json();
+                let results = Array.isArray(rawData) ? rawData : (rawData.data || []);
+                const blog = results[0] || null;
+                
+                if (!blog) {
+                    if (!cachedData) postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
+                    return;
+                }
+                
+                // Cập nhật Cache
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    blog: blog,
+                    timestamp: Date.now()
+                }));
+
+                // Render lại nếu chưa có cache (để thay thế loading) hoặc dữ liệu mới
+                if (!cachedData || forceReload) {
+                    document.getElementById('pageTitle').innerText = blog.title;
+                    renderPost(blog);
+                    loadComments(postId);
+                }
+
+
+            } catch (error) {
+                console.error("Lỗi tải bài viết từ Server:", error);
+                if (!cachedData) {
+                    postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        // HÀM RENDER (Giữ nguyên logic link ảnh)
+        function renderPost(blog) {
+            const driveFileId = extractDriveFileId(blog.image);
+            
+            const imageUrl = driveFileId 
+                ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
+                : 'https://via.placeholder.com/1000x500';
+
+            const contentHtml = `
+                <h1 class="post-title">${blog.title}</h1>
+                <div class="post-meta">
+                    <span><i class="fas fa-user me-1"></i> ${blog.author}</span> | 
+                    <span><i class="fas fa-clock me-1"></i> ${blog.date}</span>
+                </div>
+                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
+                <div class="post-content">${blog.content.replace(/\n/g, '<br>')}</div>
+                
+                <div id="commentSectionContainer"></div>
+            `;
+            if (document.getElementById('postContainer')) {
+                document.getElementById('postContainer').innerHTML = contentHtml;
+                renderCommentSection(blog.id); 
+            }
+        }
+
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN GIỮ NGUYÊN LOGIC ---
+
+        function renderCommentSection(postId) {
+            const user = getLoggedInUser();
+            const commentSection = document.getElementById('commentSectionContainer');
+            
+            const isDisabled = !user.isLoggedIn;
+            const userStatusHtml = user.isLoggedIn 
+                ? `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`
+                : `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
+
+            commentSection.innerHTML = `
+                <div id="commentSection" class="mt-5 pt-3 border-top">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-comments me-2"></i>Bình Luận</h5>
+                    
+                    <div id="commentsList" class="mb-4"></div>
+
+                    <div id="commentFormContainer">
+                        <h6 class="fw-bold text-success" id="commentAsUser">${userStatusHtml}</h6>
+                        <form id="commentForm" onsubmit="submitComment(event)">
+                            <input type="hidden" id="commentPostId" value="${postId}">
+                            <input type="hidden" id="commentUserName" value="${user.name || ''}">
+                            <input type="hidden" id="commentUserEmail" value="${user.email || ''}">
+                            <input type="hidden" id="commentParentId" value="">
+
+                            <div class="mb-3">
+                                <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" id="btnSubmitComment" class="btn btn-success fw-bold px-4" ${isDisabled ? 'disabled' : ''}>Gửi Bình Luận</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function nestComments(comments) { 
+            const commentMap = {};
+            const topLevelComments = [];
+            comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
+            Object.values(commentMap).forEach(comment => {
+                const parentId = comment.parent_comment_id;
+                if (parentId && parentId !== "" && commentMap[parentId]) { 
+                    commentMap[parentId].replies.push(comment); 
+                } else { 
+                    topLevelComments.push(comment); 
+                }
+            });
+            topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
+            function sortReplies(comment) {
+                if (comment.replies) {
+                    comment.replies.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    comment.replies.forEach(sortReplies);
+                }
+            }
+            topLevelComments.forEach(sortReplies);
+            return topLevelComments;
+        }
+
+        function renderComments(flatComments) { 
+            const commentsList = document.getElementById('commentsList');
+            if (flatComments.length === 0) { commentsList.innerHTML = '<div class="text-center text-muted">Chưa có bình luận nào. Hãy là người đầu tiên!</div>'; return; }
+            const nestedComments = nestComments(flatComments);
+            let html = '';
+            
+            function buildCommentHtml(comment, depth = 0) {
+                const name = comment.author || 'Người ẩn danh';
+                const avatarLetter = name.charAt(0).toUpperCase(); 
+                const isReply = depth > 0;
+                const commentId = comment.id;
+                const marginStyle = isReply ? `margin-left: ${Math.min(depth, 3) * 30}px; border-left: 2px solid #ddd; padding-left: 15px;` : ''; 
+                
+                const user = getLoggedInUser();
+                const replyButton = user.isLoggedIn 
+                    ? `<button class="btn btn-sm btn-outline-secondary" onclick="handleReply('${commentId}', '${name}')">
+                            <i class="fas fa-reply me-1"></i> Trả lời
+                        </button>`
+                    : `<button class="btn btn-sm btn-outline-secondary" disabled>
+                            <i class="fas fa-reply me-1"></i> Trả lời
+                        </button>`;
+
+                let commentBlock = `
+                <div class="comment-item mb-3" style="${marginStyle}">
+                    <div class="d-flex align-items-start pb-2 ${isReply ? '' : 'border-bottom'}">
+                        <div class="user-avatar-comment me-3" style="${isReply ? 'width: 30px; height: 30px; font-size: 0.8rem;' : ''}">${avatarLetter}</div>
+                        <div class="flex-grow-1">
+                            <h6 class="m-0 fw-bold ${isReply ? 'text-secondary' : 'text-primary'}">${name}</h6>
+                            <p class="text-muted small mb-1">${comment.date || 'Vừa xong'}</p>
+                            <p class="mb-2">${comment.content}</p>
+                            ${replyButton}
+                            <div id="reply-form-placeholder-${commentId}" class="mt-2"></div>
+                        </div>
+                    </div>`;
+                if (comment.replies && comment.replies.length > 0) {
+                     comment.replies.forEach(reply => { commentBlock += buildCommentHtml(reply, depth + 1); });
+                }
+                commentBlock += '</div>';
+                return commentBlock;
+            }
+
+            nestedComments.forEach(comment => { html += buildCommentHtml(comment); });
+            commentsList.innerHTML = html;
+        }
+
+        async function loadComments(postId, skipSpinner = false) {
+            const commentsList = document.getElementById('commentsList');
+            const btn = document.getElementById('btnSubmitComment');
+            
+            const user = getLoggedInUser();
+            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
+
+            if (!skipSpinner) {
+                commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
+            }
+
+            try {
+                const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
+                const data = await response.json();
+                const flatComments = Array.isArray(data) ? data : (data.data || []); 
+                renderComments(flatComments);
+                
+                btn.innerHTML = initialCommentStatus; 
+                btn.disabled = !user.isLoggedIn;
+
+            } catch (error) {
+                console.error("Lỗi tải bình luận:", error);
+                commentsList.innerHTML = '<div class="alert alert-danger">Không thể tải bình luận.</div>';
+                btn.innerHTML = initialCommentStatus;
+                btn.disabled = !user.isLoggedIn;
+            }
+        }
+
+        function handleReply(commentId, authorName) { 
+            const user = getLoggedInUser();
+            const commentContent = document.getElementById('commentContent');
+
+            if (!user.isLoggedIn) { alert("Vui lòng đăng nhập Admin để trả lời!"); return; }
+
+            const formContainer = document.getElementById('commentFormContainer');
+            const placeholder = document.getElementById(`reply-form-placeholder-${commentId}`);
+            const currentParentIdInput = document.getElementById('commentParentId');
+            const commentAsUser = document.getElementById('commentAsUser');
+            
+            resetCommentFormState();
+            
+            currentParentIdInput.value = commentId; 
+            
+            placeholder.appendChild(formContainer);
+            
+            commentAsUser.innerHTML = `<i class="fas fa-reply me-1"></i> Trả lời <span class="text-danger fw-bold">${authorName}</span> với tư cách: <span class="text-primary">${user.name}</span> <button class="btn btn-sm btn-link text-danger" onclick="resetCommentFormState()">Hủy</button>`;
+            
+            document.getElementById('btnSubmitComment').disabled = false;
+            commentContent.disabled = false;
+            commentContent.focus(); 
+            commentContent.value = `@${authorName} `;
+        }
+
+        function resetCommentFormState() { 
+            const user = getLoggedInUser();
+            const commentSection = document.getElementById('commentSection');
+            const formContainer = document.getElementById('commentFormContainer');
+            const currentParentIdInput = document.getElementById('commentParentId');
+            const commentContent = document.getElementById('commentContent');
+            const commentAsUser = document.getElementById('commentAsUser');
+            const btnSubmitComment = document.getElementById('btnSubmitComment');
+            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
+
+
+            if (formContainer.parentNode !== commentSection) {
+                commentSection.appendChild(formContainer);
+            }
+            
+            currentParentIdInput.value = '';
+            commentContent.value = '';
+            
+            if (user.isLoggedIn) {
+                 commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
+                 btnSubmitComment.disabled = false;
+                 commentContent.disabled = false;
+            } else {
+                 commentAsUser.innerHTML = `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
+                 btnSubmitComment.disabled = true;
+                 commentContent.disabled = true;
+            }
+            btnSubmitComment.innerHTML = initialCommentStatus;
+        }
+        
+        async function submitComment(e) { 
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitComment');
+            const postId = document.getElementById('commentPostId').value;
+            const content = document.getElementById('commentContent').value;
+            const author = document.getElementById('commentUserName').value;
+            const email = document.getElementById('commentUserEmail').value;
+            const parentId = document.getElementById('commentParentId').value; 
+
+            if (!postId || !content || !email) {
+                console.error("Thiếu thông tin bình luận cần thiết.");
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(N8N_SUBMIT_COMMENT, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        post_id: postId,
+                        author: author,
+                        email: email,
+                        content: content,
+                        date: new Date().toISOString().replace('T', ' ').substring(0, 19), 
+                        parent_comment_id: parentId || null
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('commentContent').value = ''; 
+                    
+                    loadComments(postId, true); 
+
+                    if (parentId) {
+                        resetCommentFormState();
+                    }
+
+                } else {
+                    console.error("Lỗi khi gửi bình luận. Webhook trả về lỗi.");
+                    alert("Gửi bình luận thất bại.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error("Lỗi kết nối Webhook:", error);
+                alert("Lỗi kết nối.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            } 
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPostDetail);
+    </script>
+</body>
+</html>
