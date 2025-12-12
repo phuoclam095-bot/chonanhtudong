@@ -24,6 +24,20 @@
         }
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
+        
+        /* 🔥 BỔ SUNG: Style cho nav-link để giống blog.html */
+        .nav-link-custom { 
+            color: rgba(255,255,255,0.9) !important; 
+            font-weight: 700; 
+            transition: 0.3s; 
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+        }
+        .nav-link-custom:hover { 
+            color: var(--accent-color) !important; 
+            text-decoration: none;
+        }
+        
         .main-content { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
         .post-title { font-weight: 800; color: var(--dark-green); margin-bottom: 20px; font-size: 2.5rem; }
         .post-meta { color: #888; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 30px; }
@@ -49,8 +63,12 @@
             <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
             
             <div class="d-flex align-items-center">
-                <a class="btn btn-sm btn-light fw-bold me-2" href="admin.html"><i class="fas fa-home me-2"></i>Trang chủ</a>
-                <a class="btn btn-sm btn-light fw-bold" href="blog.html"><i class="fas fa-arrow-left me-2"></i>Quay lại</a>
+                <a class="nav-link-custom" href="admin.html">
+                    <i class="fas fa-home me-1"></i> TRANG CHỦ
+                </a>
+                <a class="nav-link-custom" href="blog.html" style="margin-left: 10px;">
+                    <i class="fas fa-arrow-left me-1"></i> QUAY LẠI
+                </a>
             </div>
         </div>
     </nav>
@@ -95,7 +113,7 @@
             return urlOrId; 
         }
 
-        // --- HÀM XỬ LÝ CHÍNH (ĐÃ SỬA: CACHE + SPINNER BAN ĐẦU) ---
+        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache) ---
 
         async function loadPostDetail(forceReload = false) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -108,24 +126,19 @@
                 return;
             }
 
-            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY (Không có spinner nếu Cache còn mới) ---
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY (Vẫn ưu tiên Cache) ---
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
                 // Hiển thị bài viết ngay lập tức từ Cache
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
                 renderPost(cachedData.blog);
-                loadComments(postId); // Tải bình luận vẫn cần chạy
+                loadComments(postId); 
                 console.log("Đã tải bài viết từ Cache.");
-                // CHẠY TIẾP BƯỚC 2 ĐỂ CẬP NHẬT NỀN nếu cần
-            } 
-            
-            // --- BƯỚC 1.5: HIỂN THỊ SPINNER NẾU KHÔNG CÓ CACHE HOẶC ĐANG BUỘC TẢI LẠI ---
-            if (!cachedData || forceReload) {
-                // Nếu không có cache, hiển thị SPINNER
+            } else if (!cachedData || forceReload) {
+                // Nếu không có cache, hiển thị loading spinner
                 postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div></div>`;
             }
-
 
             // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm/Chính) ---
             try {
@@ -154,20 +167,19 @@
                     loadComments(postId);
                 }
 
-
             } catch (error) {
                 console.error("Lỗi tải bài viết từ Server:", error);
                 if (!cachedData) {
-                    // Chỉ hiển thị lỗi nếu KHÔNG có Cache dự phòng
                     postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
                 }
             }
         }
         
-        // HÀM RENDER (Giữ nguyên logic link ảnh)
+        // HÀM RENDER (ĐÃ CHÈN CÔNG THỨC LINK DRIVER)
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             
+            // GÁN TRỰC TIẾP CÔNG THỨC LINK THUMBNAIL TẠI ĐÂY
             const imageUrl = driveFileId 
                 ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                 : 'https://via.placeholder.com/1000x500';
