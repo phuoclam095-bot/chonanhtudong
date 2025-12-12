@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Chi tiết Bài viết</title>
+    <title id="pageTitle">Bài viết</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -54,10 +54,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK - ĐÃ BỔ SUNG ĐẦY ĐỦ URL N8N
+        // ⚠️ CẤU HÌNH WEBHOOK
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
+        
+        // Cấu hình Cache
+        const POST_CACHE_PREFIX = 'post_detail_';
+        const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
         
         // --- LOGIC TIỆN ÍCH ---
         function getLoggedInUser() {
@@ -68,55 +72,89 @@
             };
         }
         
-        // --- XỬ LÝ CHÍNH ---
+        // HÀM: Trích xuất ID tệp Drive (Quan trọng để tạo link thumbnail)
+        function extractDriveFileId(urlOrId) {
+            // Trường hợp URL đã là dạng thumbnail có 'id='
+            if (urlOrId && urlOrId.includes('id=')) {
+                const parts = urlOrId.split('id=');
+                return parts[1].split('&')[0];
+            }
+            // Trường hợp là ID trực tiếp (từ Google Sheet)
+            return urlOrId; 
+        }
 
-        async function loadPostDetail() {
+        // --- HÀM XỬ LÝ CHÍNH (Tích hợp Cache) ---
+
+        async function loadPostDetail(forceReload = false) {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             const postContainer = document.getElementById('postContainer');
-            
-            const user = getLoggedInUser();
-            if (!user.isLoggedIn) {
-                console.warn("Người dùng chưa đăng nhập Admin.");
-            }
+            const cacheKey = POST_CACHE_PREFIX + postId;
 
             if (!postId) {
                 postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
                 return;
             }
 
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
+            const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+            
+            if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
+                // Hiển thị bài viết ngay lập tức từ Cache
+                document.getElementById('pageTitle').innerText = cachedData.blog.title;
+                renderPost(cachedData.blog);
+                loadComments(postId); 
+                console.log("Đã tải bài viết từ Cache.");
+                // Chạy tiếp tục tải Server trong nền
+            } else if (!cachedData || forceReload) {
+                // Nếu không có cache hoặc buộc tải lại, hiển thị loading
+                postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div></div>`;
+            }
+
+            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE ---
             try {
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const rawData = await response.json();
-                
-                let results = [];
-                if (rawData && rawData.data && Array.isArray(rawData.data)) {
-                    results = rawData.data;
-                } else if (Array.isArray(rawData)) {
-                    results = rawData; // Xử lý khi n8n trả về mảng trực tiếp (All Incoming Items)
-                }
+                let results = Array.isArray(rawData) ? rawData : (rawData.data || []);
                 const blog = results[0] || null;
                 
                 if (!blog) {
-                    postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
+                    if (!cachedData) postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
                     return;
                 }
-
-                document.getElementById('pageTitle').innerText = blog.title;
-                renderPost(blog);
                 
-                loadComments(blog.id);
+                // Cập nhật Cache
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    blog: blog,
+                    timestamp: Date.now()
+                }));
+
+                // Render lại nếu chưa có cache hoặc là lần đầu load
+                if (!cachedData || forceReload) {
+                    document.getElementById('pageTitle').innerText = blog.title;
+                    renderPost(blog);
+                    loadComments(postId);
+                }
+
 
             } catch (error) {
-                postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
+                console.error("Lỗi tải bài viết từ Server:", error);
+                if (!cachedData) {
+                    postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
+                }
             }
         }
-
-        // ĐÃ SỬA: Sử dụng URL ảnh từ Sheet (dạng thumbnail)
+        
+        // HÀM RENDER (ĐÃ CHÈN CÔNG THỨC LINK DRIVER)
         function renderPost(blog) {
-            const imageUrl = blog.image || 'https://via.placeholder.com/1000x500';
+            const driveFileId = extractDriveFileId(blog.image);
+            
+            // 🔥 GÁN TRỰC TIẾP CÔNG THỨC LINK THUMBNAIL TẠI ĐÂY
+            const imageUrl = driveFileId 
+                ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
+                : 'https://via.placeholder.com/1000x500';
 
             const contentHtml = `
                 <h1 class="post-title">${blog.title}</h1>
@@ -129,11 +167,15 @@
                 
                 <div id="commentSectionContainer"></div>
             `;
-            document.getElementById('postContainer').innerHTML = contentHtml;
-            renderCommentSection(blog.id); 
+            // Cần đảm bảo rằng postContainer đã được chèn vào HTML
+            if (document.getElementById('postContainer')) {
+                document.getElementById('postContainer').innerHTML = contentHtml;
+                renderCommentSection(blog.id); 
+            }
         }
 
-        // TẠO KHU VỰC BÌNH LUẬN VÀ FORM
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN GIỮ NGUYÊN ---
+
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
             const commentSection = document.getElementById('commentSectionContainer');
@@ -169,15 +211,12 @@
             `;
         }
 
-        // --- LOGIC BÌNH LUẬN LỒNG NHAU (REPLY) ---
-
         function nestComments(comments) { 
             const commentMap = {};
             const topLevelComments = [];
             comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
             Object.values(commentMap).forEach(comment => {
                 const parentId = comment.parent_comment_id;
-                // Kiểm tra nếu parentId tồn tại VÀ nó không phải chuỗi rỗng
                 if (parentId && parentId !== "" && commentMap[parentId]) { 
                     commentMap[parentId].replies.push(comment); 
                 } else { 
@@ -240,12 +279,13 @@
             commentsList.innerHTML = html;
         }
 
-        // ĐÃ SỬA: Loại bỏ spinner khi update sau khi gửi (skipSpinner)
         async function loadComments(postId, skipSpinner = false) {
             const commentsList = document.getElementById('commentsList');
             const btn = document.getElementById('btnSubmitComment');
             
-            // Giữ lại nội dung cũ trong khi tải dữ liệu mới về
+            const user = getLoggedInUser();
+            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
+
             if (!skipSpinner) {
                 commentsList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải bình luận...</div>';
             }
@@ -256,16 +296,14 @@
                 const flatComments = Array.isArray(data) ? data : (data.data || []); 
                 renderComments(flatComments);
                 
-                // Reset nút sau khi tải xong
-                btn.innerHTML = 'Gửi Bình Luận'; 
-                btn.disabled = !getLoggedInUser().isLoggedIn;
+                btn.innerHTML = initialCommentStatus; 
+                btn.disabled = !user.isLoggedIn;
 
             } catch (error) {
                 console.error("Lỗi tải bình luận:", error);
-                // Nếu lỗi, vẫn hiển thị thông báo lỗi
                 commentsList.innerHTML = '<div class="alert alert-danger">Không thể tải bình luận.</div>';
-                btn.innerHTML = 'Gửi Bình Luận';
-                btn.disabled = !getLoggedInUser().isLoggedIn;
+                btn.innerHTML = initialCommentStatus;
+                btn.disabled = !user.isLoggedIn;
             }
         }
 
@@ -302,6 +340,7 @@
             const commentContent = document.getElementById('commentContent');
             const commentAsUser = document.getElementById('commentAsUser');
             const btnSubmitComment = document.getElementById('btnSubmitComment');
+            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
 
 
             if (formContainer.parentNode !== commentSection) {
@@ -320,6 +359,7 @@
                  btnSubmitComment.disabled = true;
                  commentContent.disabled = true;
             }
+            btnSubmitComment.innerHTML = initialCommentStatus;
         }
         
         async function submitComment(e) { 
@@ -354,11 +394,9 @@
                 if (response.ok) {
                     document.getElementById('commentContent').value = ''; 
                     
-                    // 🔥 Tải lại bình luận nhưng KHÔNG hiển thị spinner toàn bộ danh sách
-                    loadComments(postId, true); 
-                    
+                    loadComments(postId, true); // Tải lại mà không hiển thị spinner
+
                     if (parentId) {
-                        // Nếu là trả lời, reset form để form quay về vị trí chung
                         resetCommentFormState();
                     }
 
