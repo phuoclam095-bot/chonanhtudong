@@ -206,13 +206,13 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; 
 
-        // 🔥 CẬP NHẬT 5 BÀI MẪU VÀ GÁN URL ẢNH PLACEHOLDER TRỰC TIẾP
+        // 🔥 ĐÃ SỬA: CẬP NHẬT 5 BÀI MẪU DÙNG URL ẢNH BÌA CHẤT LƯỢNG CAO TƯƠNG TỰ
         const baseDemoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/a35d97/ffffff?text=DEMO+1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://via.placeholder.com/500x300/6fa8dc/ffffff?text=DEMO+2", content: "Làm sao để cả nhà cùng cười tươi..." },
-            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://via.placeholder.com/500x300/e06666/ffffff?text=DEMO+3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên." },
-            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://via.placeholder.com/500x300/6aa84f/ffffff?text=DEMO+4", content: "Màu sắc và chất liệu đóng vai trò quan trọng." },
-            { id: "DEMO5", title: "Review trọn bộ dịch vụ trọn gói", date: "01/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/f6b26b/ffffff?text=DEMO+5", content: "Chúng tôi mang đến trải nghiệm tuyệt vời." },
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?auto=format&fit=crop&w=500&q=60", content: "Làm sao để cả nhà cùng cười tươi..." },
+            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?auto=format&fit=crop&w=500&q=60", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên." },
+            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://images.unsplash.com/photo-1522881373549-d7b1a6c4293f?auto=format&fit=crop&w=500&q=60", content: "Màu sắc và chất liệu đóng vai trò quan trọng." },
+            { id: "DEMO5", title: "Review trọn bộ dịch vụ trọn gói", date: "01/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=500&q=60", content: "Chúng tôi mang đến trải nghiệm tuyệt vời." },
         ];
         
         const demoReviews = [
@@ -245,6 +245,10 @@
 
             let slides = [];
             
+            // 🔥 KHẮC PHỤC LỖI: Xóa Loading Spinner khỏi Carousel khi render xong
+            const initialLoading = document.getElementById('initialLoading');
+            if(initialLoading) initialLoading.remove();
+
             // Chia bài viết thành các nhóm 3 bài/slide
             for (let i = 0; i < blogs.length; i += 3) {
                 const group = blogs.slice(i, i + 3);
@@ -274,7 +278,7 @@
                 // Nếu slide cuối không đủ 3 bài, thêm cột rỗng để giữ layout
                 while (group.length < 3) {
                     groupHtml += '<div class="col-md-4"></div>';
-                    group.push({}); // Thêm phần tử giả để vòng lặp kết thúc
+                    group.push({}); 
                 }
 
                 // Gói nhóm 3 bài viết vào một Carousel Item
@@ -288,15 +292,11 @@
             }
 
             carouselInner.innerHTML = slides.join('');
-            
-            // 🔥 KHẮC PHỤC LỖI: Xóa Loading Spinner khỏi Carousel khi render xong
-            const initialLoading = document.getElementById('initialLoading');
-            if(initialLoading) initialLoading.remove();
         }
 
         // --- HÀM LOAD BLOG (Chính) ---
         async function loadBlogs(forceReload = false) {
-            const container = document.getElementById('carouselInner'); // Thay vì blogGrid
+            const container = document.getElementById('carouselInner'); 
             const cachedData = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
@@ -304,7 +304,7 @@
                 renderMainCarousel(currentBlogs);
                 console.log("Đã tải từ Cache. Tải nền để cập nhật...");
             } else if (!forceReload) {
-                 // Nếu không có cache, spinner đã được đặt sẵn trong HTML
+                 // Spinner đã được đặt trong HTML
             }
             
             try {
@@ -314,7 +314,6 @@
                     
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
                     
-                    // Sắp xếp bài viết thực tế mới nhất lên đầu
                     realBlogs.sort((a, b) => new Date(b.date) - new Date(a.date));
                     
                     // Tổng hợp dữ liệu: Thực tế + Demo
