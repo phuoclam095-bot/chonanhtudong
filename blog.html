@@ -21,7 +21,7 @@
         .btn-write-post { background: var(--accent-color); color: var(--dark-green); font-weight: 800; padding: 10px 25px; border-radius: 50px; border: none; box-shadow: 0 5px 15px rgba(81, 255, 125, 0.3); transition: 0.3s; font-size: 1rem; }
         .btn-write-post:hover { transform: scale(1.05); background: white; }
         
-        /* 🔥 Thẻ bài viết có nền (áp dụng cho cả Carousel và Grid) */
+        /* Thẻ bài viết có nền (áp dụng cho cả Carousel và Grid) */
         .blog-card { 
             background: var(--card-bg); 
             border: none; 
@@ -32,7 +32,6 @@
             display: flex; 
             flex-direction: column; 
             cursor: pointer; 
-            /* 🔥 ĐÃ THÊM NỀN */
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
         }
         .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
@@ -55,10 +54,10 @@
         .form-control { border-radius: 10px; padding: 12px; }
         #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; margin-top: 10px; }
         
-        /* 🔥 STYLE MARQUEE ĐÃ TỐI ƯU TỐC ĐỘ CHẠY */
+        /* STYLE MARQUEE ĐÃ TỐI ƯU TỐC ĐỘ CHẠY */
         .promo-marquee { 
             background: linear-gradient(90deg, #ffc0cb, #ffa500); 
-            color: #333; /* Màu chữ tối */
+            color: #333; 
             padding: 5px 0; 
             font-weight: 800; 
             margin-bottom: 20px;
@@ -70,9 +69,8 @@
         .marquee-content {
             display: inline-block;
             white-space: nowrap;
-            /* Tăng thời gian animation lên 30s để CHẠY CHẬM LẠI */
             animation: marquee-anim 30s linear infinite; 
-            font-size: 1.2rem; /* Phóng to chữ */
+            font-size: 1.2rem; 
             padding-left: 100%; 
         }
         @keyframes marquee-anim {
@@ -126,14 +124,6 @@
         <div id="demoCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner" id="carouselInner">
                 </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#demoCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#demoCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
         </div>
         
         <h2 class="section-header m-0 text-start pt-4"><i class="fas fa-list"></i> Bài Viết Mới Nhất</h2>
@@ -213,11 +203,13 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
 
-        // 🔥 ĐÃ SỬA: CHỈ CẦN 3 BÀI MẪU (Giữ lại 3 bài đầu tiên)
+        // 🔥 ĐÃ SỬA: CẬP NHẬT 5 BÀI MẪU VÀ GÁN URL ẢNH PLACEHOLDER TRỰC TIẾP
         const demoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "FAKE_ID_FAMILY2", content: "Làm sao để cả nhà cùng cười tươi..." },
-            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "FAKE_ID_MINIMAL3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/a35d97/ffffff?text=STUDIO+LNP+DEMO+1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://via.placeholder.com/500x300/6fa8dc/ffffff?text=STUDIO+LNP+DEMO+2", content: "Làm sao để cả nhà cùng cười tươi..." },
+            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://via.placeholder.com/500x300/e06666/ffffff?text=STUDIO+LNP+DEMO+3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
+            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://via.placeholder.com/500x300/6aa84f/ffffff?text=STUDIO+LNP+DEMO+4", content: "Màu sắc và chất liệu đóng vai trò quan trọng..." },
+            { id: "DEMO5", title: "Review trọn bộ dịch vụ trọn gói", date: "01/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/f6b26b/ffffff?text=STUDIO+LNP+DEMO+5", content: "Chúng tôi mang đến trải nghiệm tuyệt vời..." },
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -242,26 +234,24 @@
             return urlOrId; 
         }
 
-        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA LỖI KHỞI TẠO VÀ CHỈ LẤY 3 BÀI) ---
+        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA ĐỂ CÓ 5 BÀI & DÙNG ẢNH PLACEHOLDER) ---
         function renderDemoBlogs() {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
 
             let html = '';
             
-            // Chia demoBlogs thành các nhóm 3 (Bootstrap Carousel Item)
-            // 🔥 CHỈ LẤY CÁC BÀI VIẾT TỪ MẢNG demoBlogs VÀ GOM VÀO 1 ITEM
-            const group = demoBlogs.slice(0, 3); // Lấy tối đa 3 bài
+            // 🔥 ĐÃ SỬA: Lấy tối đa 5 bài viết mẫu (Gom tất cả vào 1 item)
+            const group = demoBlogs.slice(0, 5); 
 
             let groupHtml = group.map((blog) => {
-                const driveFileId = extractDriveFileId(blog.image); 
-                // Sử dụng URL placeholder tạm thời (hoặc bạn có thể sửa lại)
-                const imageUrl = `https://via.placeholder.com/500x300?text=${blog.title}`; 
+                // Sử dụng trực tiếp URL placeholder đã đặt trong demoBlogs
+                const imageUrl = blog.image; 
                 
                 return `
                 <div class="col-md-4">
                     <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
-                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300?text=LNP+Blog'">
                         <div class="blog-body">
                             <div class="blog-title">${blog.title}</div>
                             <div class="blog-desc">${blog.content}</div>
@@ -271,8 +261,7 @@
                 </div>`;
             }).join('');
 
-            // 🔥 SỬA: Gói 3 bài viết (group) vào 1 carousel-item duy nhất (slide)
-            // Loại bỏ các nút Previous/Next vì chỉ có 1 slide
+            // Gói 5 bài viết (group) vào 1 carousel-item duy nhất (slide)
             html += `
             <div class="carousel-item active">
                 <div class="row g-4">
@@ -301,6 +290,7 @@
             let html = '';
             realBlogs.forEach((blog, i) => {
                 const driveFileId = extractDriveFileId(blog.image); 
+                // Logic tải ảnh từ Drive vẫn giữ nguyên cho bài viết THỰC TẾ
                 const imageUrl = driveFileId 
                     ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                     : 'https://via.placeholder.com/500x300';
@@ -324,7 +314,7 @@
             container.innerHTML = html;
         }
         
-        // --- HÀM LOAD BLOG (ĐÃ FIX LOADING) ---
+        // --- HÀM LOAD BLOG ---
         async function loadBlogs(forceReload = false) {
             const container = document.getElementById('blogGrid');
             const cachedData = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY));
