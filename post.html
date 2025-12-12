@@ -12,11 +12,11 @@
         :root { 
             --primary-green: #10B981; /* Green tươi sáng, hiện đại */
             --dark-green: #047857; 
-            --bg-color: #F8FAFC; /* Nền sáng, sạch sẽ */
-            --text-color: #1F2937; /* Màu chữ chính tối */
-            --light-text: #6B7280; /* Màu chữ phụ/meta */
-            --accent-color: #3B82F6; /* Màu xanh dương làm điểm nhấn */
-            --card-bg: #FFFFFF; 
+            --bg-color: #1a1a1a; /* Nền tối gốc */
+            --text-color: #1F2937; 
+            --light-text: #E5E7EB; /* Màu chữ phụ/meta trên nền tối */
+            --accent-color: #3B82F6; 
+            --card-bg: #FFFFFF; /* Màu nền cho main content */
             --border-color: #E5E7EB;
         }
 
@@ -25,15 +25,19 @@
             padding-top: 80px; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
+            /* 🔥 KHẮC PHỤC 2: GIỮ LẠI NỀN CHẤM BI GỐC */
+            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px;
             color: var(--text-color); 
             min-height: 100vh; 
         }
 
-        /* 1. THANH ĐIỀU HƯỚNG MỚI */
+        /* Navbar & Nav links */
         .navbar { 
-            background: var(--card-bg); /* Nền trắng */
+            background: var(--card-bg); 
             border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 1px 10px rgba(0,0,0,0.05); /* Shadow nhẹ nhàng */
+            box-shadow: 0 1px 10px rgba(0,0,0,0.05);
         }
         .navbar-brand { 
             font-weight: 900; 
@@ -41,7 +45,7 @@
             color: var(--dark-green) !important; 
         }
         .nav-link-custom { 
-            color: var(--light-text) !important; 
+            color: var(--dark-green) !important; /* Đặt màu chữ tối hơn để dễ đọc trên nền sáng của Navbar */
             font-weight: 600; 
             transition: color 0.3s, transform 0.3s; 
             padding: 0.5rem 1rem;
@@ -53,30 +57,31 @@
             background-color: #F3F4F6;
         }
         
-        /* 2. KHỐI NỘI DUNG CHÍNH (Card Design) */
+        /* Main Content */
         .main-content { 
             background: var(--card-bg); 
             padding: 40px; 
             border-radius: 12px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Shadow nổi bật */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             border: 1px solid var(--border-color);
         }
         .post-title { 
             font-weight: 900; 
-            color: var(--text-color); 
+            color: var(--dark-green); 
             margin-bottom: 10px; 
-            font-size: 2.8rem; /* Tiêu đề lớn */
+            font-size: 2.8rem; 
         }
         .post-meta { 
-            color: var(--light-text); 
+            color: #888; /* Màu xám nhạt hơn */
             font-size: 0.95rem; 
             padding-bottom: 15px; 
             margin-bottom: 30px; 
             display: flex;
             align-items: center;
+            border-bottom: 1px solid #f0f0f0;
         }
         .post-image { 
-            max-height: 400px; /* Hơi giảm chiều cao */
+            max-height: 400px;
             width: 100%;
             object-fit: cover; 
             border-radius: 10px; 
@@ -84,31 +89,52 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
         }
         
-        /* 3. KHUNG NỘI DUNG */
+        /* Author UI */
+        #postAuthorContainer {
+            background: #F3F4F6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-green);
+            align-items: center;
+        }
+        /* 🔥 KHẮC PHỤC 1: Lỗi Avatar Người đăng bài */
+        #postAuthorAvatar {
+            width: 45px;
+            height: 45px;
+            line-height: 45px; 
+            text-align: center;
+            background: var(--dark-green); /* Dùng màu đậm hơn cho avatar author */
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-right: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #postAuthorContainer .small {
+            color: #666;
+        }
+        
+        /* Content Wrapper & Read More */
         #postContentWrapper {
             transition: max-height 0.5s ease-in-out;
             overflow: hidden; 
             position: relative;
             margin-top: 20px;
         }
-        /* Gradient mờ ảo khi nội dung bị cắt */
+        /* Loại bỏ gradient vì nó có thể gây lỗi hiển thị trên nền trắng nếu max-height không chuẩn */
         .collapsed::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(to top, var(--card-bg), transparent);
+            content: none; 
         }
         
         .post-content { 
             line-height: 1.7; 
             font-size: 1.1rem; 
-            color: var(--text-color); 
+            color: #222; 
             margin: 0; 
             white-space: pre-wrap;
-            /* Cần thêm p để áp dụng margin cho paragraph */
         }
         .post-content p {
             margin-bottom: 1.5em; 
@@ -130,35 +156,7 @@
             color: var(--primary-green);
         }
         
-        /* UI NGƯỜI ĐĂNG BÀI (Đặt dưới meta, trên nội dung) */
-        #postAuthorContainer {
-            background: #F3F4F6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-left: 5px solid var(--primary-green);
-            display: flex; /* Đã có trong HTML gốc, giữ lại để đảm bảo */
-            align-items: center;
-        }
-        #postAuthorAvatar {
-            width: 45px;
-            height: 45px;
-            line-height: 45px; 
-            text-align: center;
-            background: var(--primary-green);
-            color: white;
-            border-radius: 50%;
-            font-weight: 800;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            margin-right: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        #postAuthorContainer .small {
-            color: var(--light-text);
-        }
-        
-        /* 4. KHỐI BÌNH LUẬN */
+        /* Comment UI */
         #commentSection { 
             padding-top: 40px !important; 
         }
@@ -167,23 +165,15 @@
             border-radius: 12px; 
             padding: 25px; 
             margin-top: 30px; 
-            background: #FAFAFA; /* Nền nhạt hơn cho form */
+            background: #FAFAFA;
         }
-        #commentContent {
-            resize: vertical; /* Cho phép resize chiều dọc */
-            border: 1px solid #ddd; 
-            transition: border-color 0.3s;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        #commentContent:focus {
-            border-color: var(--primary-green); 
-            box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25); /* Shadow màu xanh lá nhạt */
+        #btnSubmitComment {
+            background-color: var(--primary-green) !important; 
+            border-color: var(--primary-green) !important;
         }
 
-        /* Bình luận */
         .user-avatar-comment { 
-            background: var(--accent-color); /* Màu xanh dương cho avatar comment */
+            background: var(--accent-color); 
             font-weight: 800;
         }
         .comment-item {
@@ -193,19 +183,14 @@
         .comment-item:last-child {
             border-bottom: none;
         }
-        /* Replies */
         .comment-item .comment-item {
             padding: 10px 0;
-        }
-        .comment-item .comment-item .d-flex {
-            padding-bottom: 0 !important;
         }
         .comment-item .comment-item .text-primary {
             color: var(--accent-color) !important;
         }
-        .comment-item .comment-item .btn-outline-secondary {
-             color: var(--primary-green) !important;
-             border-color: var(--primary-green) !important;
+        .comment-item .comment-item .btn-link {
+            color: var(--primary-green) !important;
         }
 
         /* Responsive adjustments */
@@ -240,7 +225,8 @@
 
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-9"> <div id="postContainer" class="main-content">
+            <div class="col-lg-9">
+                <div id="postContainer" class="main-content">
                     <div class="text-center text-muted py-5" id="loadingMessage">
                         <i class="fas fa-spinner fa-spin fa-2x text-primary-green"></i> Đang tải bài viết...
                     </div>
@@ -251,17 +237,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK (Giữ nguyên)
+        // ⚠️ CẤU HÌNH WEBHOOK
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
         
-        // Cấu hình Cache (Giữ nguyên)
+        // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
-        const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
-        const MAX_CONTENT_HEIGHT = 300; // Tăng nhẹ chiều cao cắt (250 -> 300)
+        const CACHE_EXPIRY = 3600000; 
+        const MAX_CONTENT_HEIGHT = 300; // Chiều cao tối đa trước khi cắt
         
-        // --- LOGIC TIỆN ÍCH --- (Giữ nguyên)
+        // --- LOGIC TIỆN ÍCH ---
         function getLoggedInUser() {
             return {
                 name: localStorage.getItem('admin_name'),
@@ -278,18 +264,21 @@
             return urlOrId; 
         }
         
-        // 🔥 HÀM KHẮC PHỤC LỖI: Xử lý nút "Xem thêm"/"Thu gọn" (Giữ nguyên logic)
+        // 🔥 KHẮC PHỤC 3: Sửa hàm toggleReadMore để đảm bảo hoạt động
         function toggleReadMore() {
             const contentWrapper = document.getElementById('postContentWrapper');
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
             
+            // Lấy chiều cao cuộn thực tế của nội dung.
             const actualHeight = contentDiv.scrollHeight; 
-
+            
+            // Kiểm tra xem nút đã được click hay chưa (kiểm tra trạng thái thu gọn)
             if (contentWrapper.classList.contains('collapsed')) {
-                // Mở rộng nội dung
+                // Mở rộng nội dung: thiết lập max-height lớn hơn chiều cao thực tế
                 contentWrapper.classList.remove('collapsed');
-                contentWrapper.style.maxHeight = actualHeight + 40 + 'px'; 
+                // Cộng thêm 40px để chứa padding 20px trên và 20px dưới của wrapper
+                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 // Thu gọn nội dung
@@ -312,23 +301,18 @@
                 return;
             }
 
-            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
                 renderPost(cachedData.blog);
                 loadComments(postId); 
-                console.log("Đã tải bài viết từ Cache.");
             } 
             
-            // --- BƯỚC 1.5: HIỂN THỊ SPINNER NẾU KHÔNG CÓ CACHE HOẶC ĐANG BUỘC TẢI LẠI ---
             if (!cachedData || forceReload) {
                 postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x text-success"></i> Đang tải bài viết...</div></div>`;
             }
 
-
-            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE (Chạy ngầm/Chính) ---
             try {
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
@@ -348,13 +332,11 @@
                     timestamp: Date.now()
                 }));
 
-                // Render lại nếu chưa có cache (để thay thế loading) hoặc dữ liệu mới
                 if (!cachedData || forceReload) {
                     document.getElementById('pageTitle').innerText = blog.title;
                     renderPost(blog);
                     loadComments(postId);
                 }
-
 
             } catch (error) {
                 console.error("Lỗi tải bài viết từ Server:", error);
@@ -364,21 +346,20 @@
             }
         }
         
-        // HÀM RENDER (Tích hợp logic cắt nội dung và nút "Xem thêm" + UI Người đăng bài)
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             const user = getLoggedInUser();
             
             const imageUrl = driveFileId 
-                ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800` /* Tăng kích thước ảnh */
+                ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800`
                 : 'https://via.placeholder.com/1000x400';
 
-            // Đảm bảo nội dung được xử lý đúng (thay \n bằng <br>)
-            const fullContent = blog.content ? blog.content.replace(/\n/g, '</p><p>') : ''; /* Thay \n bằng đóng/mở p */
-            const wrappedContent = `<p>${fullContent}</p>`; /* Bọc toàn bộ trong p */
+            // Xử lý nội dung: Thay \n bằng </p><p> và bọc toàn bộ trong <p>
+            const fullContent = blog.content ? blog.content.replace(/\n/g, '</p><p>') : ''; 
+            const wrappedContent = `<p>${fullContent}</p>`; 
             let readMoreButtonHtml = '';
             
-            // LOGIC CẮT NỘI DUNG VÀ THÊM NÚT XEM THÊM
+            // Logic kiểm tra cần cắt nội dung
             const requiresCollapse = blog.content && (blog.content.length > 500 || blog.content.split('\n').length > 8); 
             
             if (requiresCollapse) {
@@ -419,7 +400,7 @@
             }
         }
 
-        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN GIỮ NGUYÊN LOGIC ---
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN (GIỮ NGUYÊN) ---
 
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
