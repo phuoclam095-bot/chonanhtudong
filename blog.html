@@ -75,7 +75,9 @@
             </button>
         </div>
 
-        <div class="row g-4" id="blogGrid"></div>
+        <div class="row g-4" id="blogGrid">
+            <div class="text-center w-100" id="initialLoading"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải bài viết...</div>
+        </div>
 
         <h2 class="section-header" id="reviews"><i class="fas fa-heart me-2"></i>Khách Hàng Nói Gì?</h2>
         <div class="row g-4" id="reviewGrid"></div>
@@ -142,10 +144,13 @@
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
 
+        // Cấu hình Cache
+        const BLOG_CACHE_KEY = 'blog_list_cache';
+        const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
+
         const demoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", desc: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=500&q=60", desc: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
-            { id: "DEMO3", title: "Khuyến mãi Giáng Sinh: Giảm 20%", date: "01/12/2025", author: "Marketing", image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=500&q=60", desc: "Chào đón mùa lễ hội, Studio gửi tặng quý khách hàng voucher giảm giá cực sốc khi đặt lịch trong tháng này." }
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=60", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng. Hãy cùng khám phá những góc chụp 'thần thánh' ít người biết..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=600&q=60", content: "Làm sao để cả nhà cùng cười tươi và không bị cứng đơ trước ống kính? Xem ngay bí kíp này nhé!" },
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -156,17 +161,45 @@
         let currentBlogs = [];
 
         // --- HÀM TIỆN ÍCH ---
-        function extractDriveId(url) {
-            if (url && url.includes("id=")) {
-                const idPart = url.split("id=")[1];
-                return idPart.split('&')[0]; 
-            }
-            return null;
+        function getFormattedDateTime() {
+            const now = new Date();
+            const isoString = now.toISOString(); 
+            return isoString.replace('T', ' ').substring(0, 19); 
         }
 
-        function getStableDriveUrl(fileId) {
-            // Đã xác nhận link này hoạt động ổn định nhất
-            return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
+        // --- HÀM RENDER BLOG ---
+        function renderBlogs(blogs) {
+            const container = document.getElementById('blogGrid');
+            const initialLoading = document.getElementById('initialLoading');
+            if(initialLoading) initialLoading.remove();
+            
+            if (!blogs || blogs.length === 0) {
+                container.innerHTML = '<div class="alert alert-info w-100">Chưa có bài viết nào được đăng.</div>';
+                return;
+            }
+
+            let html = '';
+            blogs.forEach((blog, i) => {
+                // Link ảnh bìa ổn định (từ Node Code đã sửa)
+                const imageUrl = blog.image || 'https://via.placeholder.com/500x300'; 
+                
+                html += `
+                <div class="col-md-4">
+                    <div class="blog-card" onclick="viewPost(${i})">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="d-flex justify-content-between text-muted small mb-2">
+                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
+                                <div class="fw-bold text-success">${blog.author}</div>
+                            </div>
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.content || blog.desc}</div>
+                            <button class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
         }
         
         // --- CÁC HÀM XỬ LÝ CHÍNH ---
@@ -239,22 +272,29 @@
             btn.disabled = true;
 
             try {
-                await fetch(N8N_SUBMIT_BLOG, {
+                const response = await fetch(N8N_SUBMIT_BLOG, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         author: document.getElementById('postAuthor').value,
                         email: document.getElementById('postEmail').value,
                         title: document.getElementById('postTitle').value,
                         content: document.getElementById('postContent').value,
-                        date: new Date().toLocaleDateString('vi-VN'),
+                        date: getFormattedDateTime(), // Sửa để dùng ISO
                         image_data: imageBase64,
                         image_name: document.getElementById('postImageName').value
                     })
                 });
-                alert("✅ Đã gửi bài thành công! Chờ duyệt nhé.");
-                bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
-                document.getElementById('postForm').reset();
-                loadBlogs();
+
+                if (response.ok) {
+                    alert("✅ Đã gửi bài thành công! Chờ duyệt nhé.");
+                    bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
+                    document.getElementById('postForm').reset();
+                    // Sau khi gửi thành công, bắt buộc tải lại từ Server để cập nhật danh sách
+                    loadBlogs(true); 
+                } else {
+                    throw new Error("Gửi bài thất bại, kiểm tra Webhook.");
+                }
+
             } catch (e) { alert("Lỗi: " + e.message); } 
             finally { 
                 btn.innerHTML = 'Gửi Duyệt'; 
@@ -262,11 +302,9 @@
             }
         }
 
-        // 🔥 HÀM XỬ LÝ CHUYỂN HƯỚNG SANG TRANG CHI TIẾT
+        // 🔥 HÀM XỬ LÝ CHUYỂN HƯỚNG CÔNG KHAI
         function viewPost(index) {
             const blog = currentBlogs[index];
-            
-            // ⚠️ Đã xóa logic kiểm tra localStorage.getItem('admin_is_logged_in')
             
             if (blog.id) {
                 // CHUYỂN HƯỚNG CÔNG KHAI SANG TRANG POST.HTML
@@ -276,59 +314,55 @@
             }
         }
         
-        async function loadBlogs() {
+        async function loadBlogs(forceReload = false) {
             const container = document.getElementById('blogGrid');
-            currentBlogs = [...demoBlogs]; 
-
+            
+            // --- BƯỚC 1: KIỂM TRA CACHE VÀ HIỂN THỊ NGAY ---
+            const cachedData = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY));
+            
+            if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
+                currentBlogs = cachedData.blogs;
+                renderBlogs(currentBlogs);
+                console.log("Đã tải từ Cache. Tải nền để cập nhật...");
+                // Chạy tiếp tục xuống dưới để cập nhật nền
+            } else if (!forceReload) {
+                 // Chỉ hiển thị loading nếu không có cache
+                 container.innerHTML = '<div class="text-center w-100"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải từ Server...</div>';
+            }
+            
+            // --- BƯỚC 2: TẢI TỪ SERVER VÀ CẬP NHẬT CACHE ---
             try {
                 const response = await fetch(N8N_GET_BLOGS);
                 if(response.ok) {
                     const data = await response.json();
+                    
+                    // Xử lý dữ liệu trả về từ n8n (All Incoming Items)
                     const realBlogs = Array.isArray(data) ? data : (data.data || []);
                     
-                    const processedBlogs = realBlogs.map(blog => {
-                        const rawUrl = blog.image; 
-                        
-                        if (rawUrl) {
-                            const fileId = extractDriveId(rawUrl);
-                            
-                            if (fileId) {
-                                blog.display_image_url = getStableDriveUrl(fileId); 
-                            } else {
-                                blog.display_image_url = rawUrl;
-                            }
-                        }
-                        return blog;
-                    });
+                    // Lọc và thêm bài viết demo
+                    let allBlogs = [...demoBlogs];
+                    if(realBlogs.length > 0) allBlogs = [...realBlogs, ...demoBlogs];
+                    
+                    // Gán vào biến toàn cục
+                    currentBlogs = allBlogs;
 
-                    if(processedBlogs.length > 0) currentBlogs = [...currentBlogs, ...processedBlogs];
+                    // Lưu vào Cache
+                    localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({
+                        blogs: currentBlogs,
+                        timestamp: Date.now()
+                    }));
+                    
+                    // Chỉ render lại nếu chưa render hoặc dữ liệu thay đổi
+                    if (forceReload || !cachedData) {
+                        renderBlogs(currentBlogs);
+                    }
                 }
-            } catch (e) { console.log("Dùng demo data hoặc lỗi load blog:", e); }
-
-            let html = '';
-            currentBlogs.forEach((blog, i) => {
-                const cacheBuster = `&t=${new Date().getTime()}`;
-                
-                const actualImageUrl = blog.display_image_url || blog.image || 'https://via.placeholder.com/500x300';
-                const imgUrl = actualImageUrl + cacheBuster; 
-
-                html += `
-                <div class="col-md-4">
-                    <div class="blog-card" onclick="viewPost(${i})">
-                        <img src="${imgUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
-                        <div class="blog-body">
-                            <div class="d-flex justify-content-between text-muted small mb-2">
-                                <div><i class="far fa-clock me-1"></i>${blog.date}</div>
-                                <div class="fw-bold text-success">${blog.author}</div>
-                            </div>
-                            <div class="blog-title">${blog.title}</div>
-                            <div class="blog-desc">${blog.content || blog.desc}</div>
-                            <button class="btn-read mt-3">Đọc tiếp <i class="fas fa-arrow-right"></i></button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
+            } catch (e) { 
+                console.error("Lỗi load blog từ server:", e);
+                if (!cachedData) {
+                     container.innerHTML = '<div class="alert alert-danger w-100">Lỗi tải bài viết từ Server. Vui lòng kiểm tra Webhook.</div>';
+                }
+            }
         }
 
         function renderReviews() {
