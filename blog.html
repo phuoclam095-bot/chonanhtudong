@@ -124,7 +124,7 @@
         <div id="demoCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner" id="carouselInner">
                 </div>
-        </div>
+            </div>
         
         <h2 class="section-header m-0 text-start pt-4"><i class="fas fa-list"></i> Bài Viết Mới Nhất</h2>
         
@@ -203,14 +203,15 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
 
-        // 🔥 ĐÃ SỬA: CẬP NHẬT 5 BÀI MẪU VÀ GÁN URL ẢNH PLACEHOLDER TRỰC TIẾP
-        const demoBlogs = [
+        // 🔥 ĐÃ SỬA: CHỈ CẦN 3 BÀI MẪU (VÀ LẶP LẠI ĐỂ TẠO 2 SLIDE CHO CAROUSEL)
+        const baseDemoBlogs = [
             { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/a35d97/ffffff?text=STUDIO+LNP+DEMO+1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
             { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://via.placeholder.com/500x300/6fa8dc/ffffff?text=STUDIO+LNP+DEMO+2", content: "Làm sao để cả nhà cùng cười tươi..." },
             { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://via.placeholder.com/500x300/e06666/ffffff?text=STUDIO+LNP+DEMO+3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
-            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://via.placeholder.com/500x300/6aa84f/ffffff?text=STUDIO+LNP+DEMO+4", content: "Màu sắc và chất liệu đóng vai trò quan trọng..." },
-            { id: "DEMO5", title: "Review trọn bộ dịch vụ trọn gói", date: "01/12/2025", author: "Admin", image: "https://via.placeholder.com/500x300/f6b26b/ffffff?text=STUDIO+LNP+DEMO+5", content: "Chúng tôi mang đến trải nghiệm tuyệt vời..." },
         ];
+        // Lặp lại 3 bài viết mẫu để tạo 2 slide, giúp Carousel có thể chạy tự động
+        const demoBlogs = [...baseDemoBlogs, ...baseDemoBlogs.map((b, i) => ({...b, id: b.id + '_2', title: b.title}))];
+
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
             { name: "Trần Văn Nam", avatar: "N", stars: 5, content: "Dịch vụ chuyên nghiệp, giao ảnh đúng hẹn." },
@@ -234,41 +235,42 @@
             return urlOrId; 
         }
 
-        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA ĐỂ CÓ 5 BÀI & DÙNG ẢNH PLACEHOLDER) ---
+        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA LỖI KHỞI TẠO VÀ CHỈ LẤY 3 BÀI/SLIDE) ---
         function renderDemoBlogs() {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
 
             let html = '';
             
-            // 🔥 ĐÃ SỬA: Lấy tối đa 5 bài viết mẫu (Gom tất cả vào 1 item)
-            const group = demoBlogs.slice(0, 5); 
-
-            let groupHtml = group.map((blog) => {
-                // Sử dụng trực tiếp URL placeholder đã đặt trong demoBlogs
-                const imageUrl = blog.image; 
+            // Chia demoBlogs (đã lặp lại) thành các nhóm 3 bài viết (tương đương 1 slide)
+            for (let i = 0; i < demoBlogs.length; i += 3) {
+                const group = demoBlogs.slice(i, i + 3);
                 
-                return `
-                <div class="col-md-4">
-                    <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
-                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300?text=LNP+Blog'">
-                        <div class="blog-body">
-                            <div class="blog-title">${blog.title}</div>
-                            <div class="blog-desc">${blog.content}</div>
-                            <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
+                let groupHtml = group.map((blog) => {
+                    const imageUrl = blog.image; 
+                    
+                    return `
+                    <div class="col-md-4">
+                        <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
+                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300?text=LNP+Blog'">
+                            <div class="blog-body">
+                                <div class="blog-title">${blog.title}</div>
+                                <div class="blog-desc">${blog.content}</div>
+                                <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
+                            </div>
                         </div>
+                    </div>`;
+                }).join('');
+
+                // Gói nhóm 3 bài viết vào một Carousel Item
+                html += `
+                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                    <div class="row g-4">
+                        ${groupHtml}
                     </div>
                 </div>`;
-            }).join('');
+            }
 
-            // Gói 5 bài viết (group) vào 1 carousel-item duy nhất (slide)
-            html += `
-            <div class="carousel-item active">
-                <div class="row g-4">
-                    ${groupHtml}
-                </div>
-            </div>`;
-            
             carouselInner.innerHTML = html;
         }
 
@@ -290,7 +292,6 @@
             let html = '';
             realBlogs.forEach((blog, i) => {
                 const driveFileId = extractDriveFileId(blog.image); 
-                // Logic tải ảnh từ Drive vẫn giữ nguyên cho bài viết THỰC TẾ
                 const imageUrl = driveFileId 
                     ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600`
                     : 'https://via.placeholder.com/500x300';
@@ -482,7 +483,6 @@
                             <div class="user-avatar">${review.avatar}</div>
                             <div><h5 class="m-0 fw-bold">${review.name}</h5><div class="stars">${starHtml}</div></div>
                         </div>
-                        <div class="review-text">"${review.content}"</div>
                     </div>
                 </div>`;
             });
@@ -490,7 +490,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderDemoBlogs(); // Tải Carousel ngay khi load
+            renderDemoBlogs(); 
             loadBlogs();
             renderReviews();
         });
