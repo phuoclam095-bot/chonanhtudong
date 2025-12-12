@@ -20,7 +20,21 @@
         .section-header { text-align: center; margin: 50px 0 30px 0; color: var(--accent-color); font-weight: 800; font-size: 2rem; text-shadow: 0 0 10px rgba(81, 255, 125, 0.3); }
         .btn-write-post { background: var(--accent-color); color: var(--dark-green); font-weight: 800; padding: 10px 25px; border-radius: 50px; border: none; box-shadow: 0 5px 15px rgba(81, 255, 125, 0.3); transition: 0.3s; font-size: 1rem; }
         .btn-write-post:hover { transform: scale(1.05); background: white; }
-        .blog-card { background: var(--card-bg); border: none; border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; height: 100%; display: flex; flex-direction: column; cursor: pointer; }
+        
+        /* 🔥 Thẻ bài viết có nền (áp dụng cho cả Carousel và Grid) */
+        .blog-card { 
+            background: var(--card-bg); 
+            border: none; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            cursor: pointer; 
+            /* 🔥 ĐÃ THÊM NỀN */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
         .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
         .blog-img { height: 200px; object-fit: cover; width: 100%; background: #eee; }
         .blog-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
@@ -41,29 +55,33 @@
         .form-control { border-radius: 10px; padding: 12px; }
         #imagePreviewContainer img { border: 2px dashed #ddd; border-radius: 10px; margin-top: 10px; }
         
-        /* STYLE MARQUEE ĐÃ SỬA */
+        /* 🔥 STYLE MARQUEE ĐÃ TỐI ƯU TỐC ĐỘ CHẠY */
         .promo-marquee { 
             background: linear-gradient(90deg, #ffc0cb, #ffa500); 
-            color: white; 
+            color: #333; /* Màu chữ tối */
             padding: 5px 0; 
             font-weight: 800; 
             margin-bottom: 20px;
             overflow: hidden;
             border-radius: 10px;
-            white-space: nowrap; /* Bắt buộc để Marquee hoạt động */
+            white-space: nowrap; 
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
         }
         .marquee-content {
             display: inline-block;
             white-space: nowrap;
-            /* Dùng thẻ <marquee> HTML cổ điển để tương thích rộng hơn, hoặc CSS animation: */
-            /* Dùng CSS animation đã được thêm vào <style> */
-            animation: marquee-anim 15s linear infinite;
-            font-size: 1.1rem;
-            padding-left: 100%; /* Đảm bảo chạy từ ngoài vào */
+            /* Tăng thời gian animation lên 30s để CHẠY CHẬM LẠI */
+            animation: marquee-anim 30s linear infinite; 
+            font-size: 1.2rem; /* Phóng to chữ */
+            padding-left: 100%; 
         }
         @keyframes marquee-anim {
             0%   { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
+        }
+        /* Đảm bảo các items trong carousel không bị dính vào nhau */
+        #carouselInner .carousel-item {
+             padding: 10px;
         }
     </style>
 </head>
@@ -101,11 +119,11 @@
 
         <div class="promo-marquee">
             <div class="marquee-content">
-                Hãy chia sẻ bài viết của bạn lên đây &nbsp;&nbsp;<i class="fas fa-heart text-danger"></i>&nbsp;&nbsp; Chúng tôi sẽ duyệt và đăng ngay! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hãy chia sẻ bài viết của bạn lên đây &nbsp;&nbsp;<i class="fas fa-heart text-danger"></i>&nbsp;&nbsp; Chúng tôi sẽ duyệt và đăng ngay!
+                🎉 KHUYẾN KHÍCH: Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn lên đây để nhận ƯU ĐÃI đặc biệt! <i class="fas fa-heart text-danger mx-2"></i> Chúng tôi chờ đợi câu chuyện của bạn! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎉 KHUYẾN KHÍCH: Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn lên đây để nhận ƯU ĐÃI đặc biệt! <i class="fas fa-heart text-danger mx-2"></i>
             </div>
         </div>
 
-        <div id="demoCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="3000">
+        <div id="demoCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner" id="carouselInner">
                 </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#demoCarousel" data-bs-slide="prev">
@@ -195,11 +213,11 @@
         const BLOG_CACHE_KEY = 'blog_list_cache';
         const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
 
+        // 🔥 ĐÃ SỬA: CHỈ CẦN 3 BÀI MẪU (Giữ lại 3 bài đầu tiên)
         const demoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp tại Đà Lạt", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
+            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "FAKE_ID_DALAT1", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng..." },
             { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "FAKE_ID_FAMILY2", content: "Làm sao để cả nhà cùng cười tươi..." },
             { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "FAKE_ID_MINIMAL3", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên..." },
-            { id: "DEMO4", title: "Lưu ý khi chọn trang phục chụp ảnh", date: "05/12/2025", author: "Nguyễn B", image: "FAKE_ID_OUTFIT4", content: "Trang phục quyết định 50% sự thành công của bộ ảnh..." },
         ];
         const demoReviews = [
             { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm!" },
@@ -224,7 +242,7 @@
             return urlOrId; 
         }
 
-        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA LỖI KHỞI TẠO) ---
+        // --- HÀM RENDER CAROUSEL (ĐÃ SỬA LỖI KHỞI TẠO VÀ CHỈ LẤY 3 BÀI) ---
         function renderDemoBlogs() {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
@@ -232,37 +250,36 @@
             let html = '';
             
             // Chia demoBlogs thành các nhóm 3 (Bootstrap Carousel Item)
-            for (let i = 0; i < demoBlogs.length; i += 3) {
-                const group = demoBlogs.slice(i, i + 3);
-                
-                let groupHtml = group.map((blog) => {
-                    const driveFileId = extractDriveFileId(blog.image); 
-                    // Dùng URL placeholder tạm thời cho ảnh demo
-                    const imageUrl = `https://via.placeholder.com/500x300?text=${blog.title}`; 
-                    
-                    return `
-                    <div class="col-md-4">
-                        <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
-                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
-                            <div class="blog-body">
-                                <div class="blog-title">${blog.title}</div>
-                                <div class="blog-desc">${blog.content}</div>
-                                <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
+            // 🔥 CHỈ LẤY CÁC BÀI VIẾT TỪ MẢNG demoBlogs VÀ GOM VÀO 1 ITEM
+            const group = demoBlogs.slice(0, 3); // Lấy tối đa 3 bài
 
-                // Gói nhóm 3 bài viết vào một Carousel Item
-                // 🔥 SỬA LỖI: Cần dùng class 'row' bên trong 'carousel-item'
-                html += `
-                <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                    <div class="row g-4">
-                        ${groupHtml}
+            let groupHtml = group.map((blog) => {
+                const driveFileId = extractDriveFileId(blog.image); 
+                // Sử dụng URL placeholder tạm thời (hoặc bạn có thể sửa lại)
+                const imageUrl = `https://via.placeholder.com/500x300?text=${blog.title}`; 
+                
+                return `
+                <div class="col-md-4">
+                    <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="blog-title">${blog.title}</div>
+                            <div class="blog-desc">${blog.content}</div>
+                            <button class="btn-read mt-3">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
+                        </div>
                     </div>
                 </div>`;
-            }
+            }).join('');
 
+            // 🔥 SỬA: Gói 3 bài viết (group) vào 1 carousel-item duy nhất (slide)
+            // Loại bỏ các nút Previous/Next vì chỉ có 1 slide
+            html += `
+            <div class="carousel-item active">
+                <div class="row g-4">
+                    ${groupHtml}
+                </div>
+            </div>`;
+            
             carouselInner.innerHTML = html;
         }
 
