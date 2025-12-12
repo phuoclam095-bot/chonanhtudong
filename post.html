@@ -104,8 +104,9 @@
                 renderPost(cachedData.blog);
                 loadComments(postId); 
                 console.log("Đã tải bài viết từ Cache.");
+                // CHẠY TIẾP BƯỚC 2 ĐỂ CẬP NHẬT NỀN
             } else if (!cachedData || forceReload) {
-                // Nếu không có cache hoặc buộc tải lại, hiển thị loading tĩnh
+                // Nếu không có cache, hiển thị loading tĩnh
                 postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage">Đang tải bài viết...</div></div>`;
             }
 
@@ -171,7 +172,7 @@
             }
         }
 
-        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN GIỮ NGUYÊN ---
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN GIỮ NGUYÊN LOGIC ---
 
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
@@ -391,7 +392,7 @@
                 if (response.ok) {
                     document.getElementById('commentContent').value = ''; 
                     
-                    loadComments(postId, true); // Tải lại mà không hiển thị spinner
+                    loadComments(postId, true); 
 
                     if (parentId) {
                         resetCommentFormState();
