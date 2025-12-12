@@ -99,12 +99,11 @@
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
-                // Hiển thị bài viết ngay lập tức từ Cache
+                // HIỂN THỊ TỨC THỜI
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
                 renderPost(cachedData.blog);
-                loadComments(postId); 
+                loadComments(postId); // Tải bình luận vẫn cần chạy
                 console.log("Đã tải bài viết từ Cache.");
-                // CHẠY TIẾP BƯỚC 2 ĐỂ CẬP NHẬT NỀN
             } else if (!cachedData || forceReload) {
                 // Nếu không có cache, hiển thị loading tĩnh
                 postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage">Đang tải bài viết...</div></div>`;
@@ -130,7 +129,7 @@
                     timestamp: Date.now()
                 }));
 
-                // Render lại nếu chưa có cache hoặc dữ liệu mới
+                // Render lại nếu chưa có cache (để thay thế loading) hoặc dữ liệu mới
                 if (!cachedData || forceReload) {
                     document.getElementById('pageTitle').innerText = blog.title;
                     renderPost(blog);
@@ -161,7 +160,7 @@
                     <span><i class="fas fa-user me-1"></i> ${blog.author}</span> | 
                     <span><i class="fas fa-clock me-1"></i> ${blog.date}</span>
                 </div>
-                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
+                <img src="${imageUrl}" alt="${blog.title}" class="w-w100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
                 <div class="post-content">${blog.content.replace(/\n/g, '<br>')}</div>
                 
                 <div id="commentSectionContainer"></div>
