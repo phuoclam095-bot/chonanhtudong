@@ -54,15 +54,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK - DÙNG CHUNG VỚI BLOG.HTML
+        // ⚠️ CẤU HÌNH WEBHOOK - ĐÃ BỔ SUNG ĐẦY ĐỦ URL N8N
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
-        const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment';
+        const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
         
         // --- LOGIC TIỆN ÍCH ---
-        function extractDriveId(url) { return url && url.includes("id=") ? url.split("id=")[1].split('&')[0] : null; }
-        function getStableDriveUrl(fileId) { return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`; } 
-        
         function getLoggedInUser() {
             return {
                 name: localStorage.getItem('admin_name'),
@@ -73,26 +70,31 @@
         
         // --- XỬ LÝ CHÍNH ---
 
-       // 🔥 HÀM LOADPOSTDETAIL ĐÃ SỬA: Cho phép tải bài viết công khai
         async function loadPostDetail() {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
             const postContainer = document.getElementById('postContainer');
             
-            // ⚠️ ĐÃ XÓA LOGIC CHUYỂN HƯỚNG RA ADMIN.HTML
-            // Người dùng CÔNG KHAI được phép tiếp tục tải bài viết
-            
+            // 1. Kiểm tra đăng nhập Admin (BẮT BUỘC để bình luận, nhưng không chặn xem)
+            const user = getLoggedInUser();
+            if (!user.isLoggedIn) {
+                // Chỉ cảnh báo, không chuyển hướng, để cho phép xem công khai
+                console.warn("Người dùng chưa đăng nhập Admin.");
+            }
+
             if (!postId) {
                 postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
                 return;
             }
-        
+
             try {
+                // 2. Lấy dữ liệu bài viết
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 if (!response.ok) throw new Error("Lỗi tải dữ liệu");
                 
                 const rawData = await response.json();
                 
+                // 🔥 ĐÃ SỬA: Xử lý linh hoạt dữ liệu trả về từ n8n
                 let results = [];
                 if (rawData && rawData.data && Array.isArray(rawData.data)) {
                     results = rawData.data;
@@ -105,20 +107,22 @@
                     postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
                     return;
                 }
-        
+
                 document.getElementById('pageTitle').innerText = blog.title;
                 renderPost(blog);
                 
+                // 3. Tải bình luận
                 loadComments(blog.id);
-        
+
             } catch (error) {
                 postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
             }
         }
 
+        // 🔥 ĐÃ SỬA: Bỏ logic extractDriveId để dùng trực tiếp link ảnh từ Google Sheet
         function renderPost(blog) {
-            const fileId = extractDriveId(blog.image);
-            const imageUrl = fileId ? getStableDriveUrl(fileId) : blog.image;
+            // Sử dụng trực tiếp URL từ Google Sheet (đã được tạo lại bằng export=view&id=...)
+            const imageUrl = blog.image || 'https://via.placeholder.com/1000x500';
 
             const contentHtml = `
                 <h1 class="post-title">${blog.title}</h1>
@@ -140,6 +144,11 @@
             const user = getLoggedInUser();
             const commentSection = document.getElementById('commentSectionContainer');
             
+            const isDisabled = !user.isLoggedIn;
+            const userStatusHtml = user.isLoggedIn 
+                ? `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`
+                : `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
+
             commentSection.innerHTML = `
                 <div id="commentSection" class="mt-5 pt-3 border-top">
                     <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-comments me-2"></i>Bình Luận</h5>
@@ -147,20 +156,18 @@
                     <div id="commentsList" class="mb-4"></div>
 
                     <div id="commentFormContainer">
-                        <h6 class="fw-bold text-success" id="commentAsUser">
-                            <i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>
-                        </h6>
+                        <h6 class="fw-bold text-success" id="commentAsUser">${userStatusHtml}</h6>
                         <form id="commentForm" onsubmit="submitComment(event)">
                             <input type="hidden" id="commentPostId" value="${postId}">
-                            <input type="hidden" id="commentUserName" value="${user.name}">
-                            <input type="hidden" id="commentUserEmail" value="${user.email}">
+                            <input type="hidden" id="commentUserName" value="${user.name || ''}">
+                            <input type="hidden" id="commentUserEmail" value="${user.email || ''}">
                             <input type="hidden" id="commentParentId" value="">
 
                             <div class="mb-3">
-                                <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required></textarea>
+                                <textarea id="commentContent" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea>
                             </div>
                             <div class="text-end">
-                                <button type="submit" id="btnSubmitComment" class="btn btn-success fw-bold px-4">Gửi Bình Luận</button>
+                                <button type="submit" id="btnSubmitComment" class="btn btn-success fw-bold px-4" ${isDisabled ? 'disabled' : ''}>Gửi Bình Luận</button>
                             </div>
                         </form>
                     </div>
@@ -176,7 +183,12 @@
             comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
             Object.values(commentMap).forEach(comment => {
                 const parentId = comment.parent_comment_id;
-                if (parentId && commentMap[parentId]) { commentMap[parentId].replies.push(comment); } else { topLevelComments.push(comment); }
+                // Kiểm tra nếu parentId tồn tại VÀ nó không phải chuỗi rỗng (chuỗi rỗng là top-level)
+                if (parentId && parentId !== "" && commentMap[parentId]) { 
+                    commentMap[parentId].replies.push(comment); 
+                } else { 
+                    topLevelComments.push(comment); 
+                }
             });
             topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
             function sortReplies(comment) {
@@ -202,6 +214,16 @@
                 const commentId = comment.id;
                 const marginStyle = isReply ? `margin-left: ${Math.min(depth, 3) * 30}px; border-left: 2px solid #ddd; padding-left: 15px;` : ''; 
                 
+                // Kiểm tra lại trạng thái đăng nhập để bật/tắt nút Trả lời
+                const user = getLoggedInUser();
+                const replyButton = user.isLoggedIn 
+                    ? `<button class="btn btn-sm btn-outline-secondary" onclick="handleReply('${commentId}', '${name}')">
+                            <i class="fas fa-reply me-1"></i> Trả lời
+                        </button>`
+                    : `<button class="btn btn-sm btn-outline-secondary" onclick="alert('Vui lòng đăng nhập Admin để trả lời.')" disabled>
+                            <i class="fas fa-reply me-1"></i> Trả lời
+                        </button>`;
+
                 let commentBlock = `
                 <div class="comment-item mb-3" style="${marginStyle}">
                     <div class="d-flex align-items-start pb-2 ${isReply ? '' : 'border-bottom'}">
@@ -210,9 +232,7 @@
                             <h6 class="m-0 fw-bold ${isReply ? 'text-secondary' : 'text-primary'}">${name}</h6>
                             <p class="text-muted small mb-1">${comment.date || 'Vừa xong'}</p>
                             <p class="mb-2">${comment.content}</p>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="handleReply('${commentId}', '${name}')">
-                                <i class="fas fa-reply me-1"></i> Trả lời
-                            </button>
+                            ${replyButton}
                             <div id="reply-form-placeholder-${commentId}" class="mt-2"></div>
                         </div>
                     </div>`;
@@ -262,15 +282,19 @@
             commentAsUser.innerHTML = `<i class="fas fa-reply me-1"></i> Trả lời <span class="text-danger fw-bold">${authorName}</span> với tư cách: <span class="text-primary">${user.name}</span> <button class="btn btn-sm btn-link text-danger" onclick="resetCommentFormState()">Hủy</button>`;
             
             document.getElementById('btnSubmitComment').disabled = false;
+            commentContent.disabled = false;
             commentContent.focus(); 
             commentContent.value = `@${authorName} `;
         }
 
         function resetCommentFormState() { 
+            const user = getLoggedInUser();
             const commentSection = document.getElementById('commentSection');
             const formContainer = document.getElementById('commentFormContainer');
             const currentParentIdInput = document.getElementById('commentParentId');
             const commentContent = document.getElementById('commentContent');
+            const commentAsUser = document.getElementById('commentAsUser');
+            const btnSubmitComment = document.getElementById('btnSubmitComment');
 
 
             if (formContainer.parentNode !== commentSection) {
@@ -279,14 +303,17 @@
             
             currentParentIdInput.value = '';
             commentContent.value = '';
-
-            const user = getLoggedInUser();
-            const commentAsUser = document.getElementById('commentAsUser');
-            const btnSubmitComment = document.getElementById('btnSubmitComment');
+            
+            // Cài đặt lại trạng thái Form
             if (user.isLoggedIn) {
                  commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
                  btnSubmitComment.disabled = false;
-            } 
+                 commentContent.disabled = false;
+            } else {
+                 commentAsUser.innerHTML = `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
+                 btnSubmitComment.disabled = true;
+                 commentContent.disabled = true;
+            }
         }
         
         async function submitComment(e) { 
@@ -312,7 +339,8 @@
                         author: author,
                         email: email,
                         content: content,
-                        date: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN'),
+                        // Sử dụng định dạng ISO để dễ dàng lưu trữ và sắp xếp
+                        date: new Date().toISOString().replace('T', ' ').substring(0, 19), 
                         parent_comment_id: parentId || null
                     })
                 });
