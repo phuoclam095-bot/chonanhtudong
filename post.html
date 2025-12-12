@@ -63,11 +63,11 @@
             width: 100%;
             object-fit: cover; 
             border-radius: 10px; 
-            margin-bottom: 20px; /* Giảm khoảng cách */
+            margin-bottom: 20px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
         }
         
-        /* 🔥 KHUNG NỘI DUNG BÀI VIẾT VÀ TÍNH NĂNG XEM THÊM */
+        /* 🔥 KHUNG NỘI DUNG VÀ TÍNH NĂNG XEM THÊM */
         #postContentWrapper {
             border: 1px solid #ddd; 
             border-radius: 8px;
@@ -75,19 +75,18 @@
             background: #fdfdfd; 
             margin-bottom: 20px;
             
-            /* QUAN TRỌNG CHO XEM THÊM */
             transition: max-height 0.5s ease-in-out;
             overflow: hidden; 
             position: relative;
         }
         
         .post-content { 
-            /* Sửa lỗi cỡ chữ nhỏ */
-            line-height: 1.75; 
-            font-size: 1.05rem; 
+            /* 🔥 SỬA LỖI VỊ TRÍ VÀ CỠ CHỮ */
+            line-height: 1.8; /* Tăng khoảng cách dòng */
+            font-size: 1.15rem; /* Tăng cỡ chữ để dễ đọc hơn */
             color: #222; 
-            max-width: 800px; 
-            margin: 0 auto; 
+            /* Bỏ max-width và margin auto để bám sát góc trái */
+            margin: 0; 
             white-space: pre-wrap;
         }
         
@@ -104,7 +103,8 @@
             padding: 0;
             cursor: pointer;
             display: block;
-            margin: 10px auto 0 auto; 
+            /* Căn trái nút */
+            margin: 10px 0 0 0; 
             font-size: 0.95rem;
         }
         
@@ -115,14 +115,13 @@
             padding: 10px 15px;
             margin-bottom: 20px;
             border-left: 5px solid var(--primary-green);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            /* Bỏ max-width để bám sát lề trái */
         }
         #postAuthorAvatar {
             width: 35px;
             height: 35px;
-            line-height: 35px;
+            /* 🔥 FIX: Line-height bằng height để căn chữ giữa */
+            line-height: 35px; 
             text-align: center;
             background: var(--primary-green);
             color: white;
@@ -181,10 +180,6 @@
             }
             .post-content {
                 font-size: 1rem;
-                max-width: 100%; 
-            }
-            #postAuthorContainer {
-                max-width: 100%;
             }
         }
     </style>
@@ -253,14 +248,14 @@
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
             
-            // Lấy chiều cao thực của nội dung
+            // Lấy chiều cao thực của nội dung (đã bao gồm padding/margin)
             const actualHeight = contentDiv.scrollHeight; 
 
             if (contentWrapper.classList.contains('collapsed')) {
                 // Mở rộng nội dung
                 contentWrapper.classList.remove('collapsed');
-                // Thiết lập max-height thành chiều cao cuộn thực tế của nội dung + 30px (padding)
-                contentWrapper.style.maxHeight = actualHeight + 30 + 'px'; 
+                // Thiết lập max-height thành chiều cao cuộn thực tế của nội dung + 20px cho padding trên dưới của wrapper
+                contentWrapper.style.maxHeight = actualHeight + 40 + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 // Thu gọn nội dung
