@@ -37,7 +37,7 @@
             transform: translateY(-1px); 
         }
         
-        /* 🔥 CẢI THIỆN KHỐI NỘI DUNG CHUNG */
+        /* 🔥 CẢI THIỆN KHỐI NỘI DUNG CHÍNH VÀ THÊM KHUNG */
         .main-content { 
             background: var(--card-bg); 
             padding: 50px 70px; 
@@ -49,7 +49,7 @@
             font-weight: 800; 
             color: var(--dark-green); 
             margin-bottom: 10px; 
-            font-size: 2.2rem; /* 🔥 SỬA: Giảm kích thước tiêu đề */
+            font-size: 2.2rem; 
         }
         .post-meta { 
             color: #888; 
@@ -59,7 +59,7 @@
             margin-bottom: 30px; 
         }
         .post-image { 
-            max-height: 450px; /* 🔥 SỬA: Giảm chiều cao tối đa của ảnh */
+            max-height: 450px; 
             width: 100%;
             object-fit: cover; 
             border-radius: 10px; 
@@ -67,19 +67,26 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
         }
         
-        /* TỐI ƯU NỘI DUNG BÀI VIẾT (READABILITY) */
+        /* 🔥 KHUNG NỘI DUNG VÀ READABILITY */
+        #postContentWrapper {
+            border: 1px solid #ddd; /* Thêm đường viền ngoài */
+            border-radius: 8px;
+            padding: 25px; /* Thêm padding bên trong khung */
+            background: #fdfdfd; /* Nền nhẹ để phân biệt */
+            margin-bottom: 20px;
+        }
+        
         .post-content { 
             line-height: 1.75; 
-            font-size: 1.05rem; 
+            font-size: 1.1rem; /* Tăng cỡ chữ */
             color: #222; 
             max-width: 800px; 
             margin: 0 auto; 
-            transition: max-height 0.5s ease;
-            overflow: hidden; /* Quan trọng cho tính năng "Xem thêm" */
-            
-            /* Áp dụng styling cho nội dung bên trong */
-            white-space: pre-wrap; /* Giữ nguyên xuống dòng */
+            transition: max-height 0.5s ease-in-out;
+            overflow: hidden; 
+            white-space: pre-wrap; 
         }
+        
         .post-content p {
             margin-bottom: 1.6em; 
         }
@@ -94,9 +101,12 @@
             cursor: pointer;
             display: block;
             margin-top: 10px;
+            font-size: 1rem;
+            /* Căn chỉnh nút Xem thêm/Thu gọn nằm bên trong khung */
+            margin-left: auto;
+            margin-right: auto;
         }
-
-
+        
         /* KHỐI BÌNH LUẬN (GIỮ NGUYÊN) */
         #commentSection { border-top: 2px solid #f0f0f0 !important; padding-top: 40px !important; }
         
@@ -140,11 +150,14 @@
                 padding: 20px 20px; 
             }
             .post-title {
-                font-size: 1.8rem; /* Nhỏ hơn trên mobile */
+                font-size: 1.8rem; 
             }
             .post-content {
                 font-size: 1rem;
                 max-width: 100%; 
+            }
+            #postContentWrapper {
+                padding: 15px;
             }
         }
     </style>
@@ -188,7 +201,7 @@
         // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; // 1 giờ = 3,600,000 milliseconds
-        const MAX_CONTENT_LENGTH = 500; // 🔥 Giới hạn ký tự trước khi hiển thị "Xem thêm"
+        const MAX_CONTENT_HEIGHT = 250; // 🔥 Chiều cao tối đa (tính bằng px) trước khi ẩn/cắt
         
         // --- LOGIC TIỆN ÍCH ---
         function getLoggedInUser() {
@@ -207,20 +220,22 @@
             return urlOrId; 
         }
         
+        // 🔥 HÀM MỚI: Xử lý nút "Xem thêm"/"Thu gọn"
         function toggleReadMore() {
-            const contentDiv = document.querySelector('.post-content');
+            const contentWrapper = document.getElementById('postContentArea');
             const readMoreBtn = document.getElementById('readMoreBtn');
-            const fullContent = contentDiv.dataset.fullContent;
+            const contentDiv = contentWrapper.querySelector('.post-content');
             
-            if (contentDiv.classList.contains('collapsed')) {
+            if (contentWrapper.classList.contains('collapsed')) {
                 // Mở rộng nội dung
-                contentDiv.classList.remove('collapsed');
-                contentDiv.style.maxHeight = contentDiv.scrollHeight + 'px';
+                contentWrapper.classList.remove('collapsed');
+                // Thiết lập max-height thành chiều cao cuộn thực tế của nội dung
+                contentWrapper.style.maxHeight = contentDiv.scrollHeight + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 // Thu gọn nội dung
-                contentDiv.classList.add('collapsed');
-                contentDiv.style.maxHeight = MAX_CONTENT_LENGTH + 'px'; 
+                contentWrapper.classList.add('collapsed');
+                contentWrapper.style.maxHeight = MAX_CONTENT_HEIGHT + 'px'; 
                 readMoreBtn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down"></i>';
             }
         }
@@ -290,7 +305,7 @@
             }
         }
         
-        // HÀM RENDER (Giữ nguyên logic link ảnh)
+        // HÀM RENDER (Tích hợp logic cắt nội dung và nút "Xem thêm")
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             
@@ -299,14 +314,12 @@
                 : 'https://via.placeholder.com/1000x500';
 
             const fullContent = blog.content.replace(/\n/g, '<br>');
-            let displayedContentHtml = fullContent;
             let readMoreButtonHtml = '';
             
             // 🔥 LOGIC CẮT NỘI DUNG VÀ THÊM NÚT XEM THÊM
-            if (blog.content.length > MAX_CONTENT_LENGTH) {
-                // Cắt nội dung (chỉ hiển thị đoạn văn bản đầu tiên)
-                displayedContentHtml = blog.content.substring(0, MAX_CONTENT_LENGTH).trim().replace(/\n/g, '<br>') + '...';
-                
+            const requiresCollapse = blog.content.length > 500 || blog.content.split('\n').length > 10; // Cắt nếu dài hoặc nhiều dòng
+            
+            if (requiresCollapse) {
                 readMoreButtonHtml = `<button id="readMoreBtn" onclick="toggleReadMore()"><i class="fas fa-chevron-down"></i> Xem thêm</button>`;
             }
 
@@ -318,8 +331,10 @@
                 </div>
                 <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x500'">
                 
-                <div class="post-content ${blog.content.length > MAX_CONTENT_LENGTH ? 'collapsed' : ''}" id="postContentArea" data-full-content="${fullContent.replace(/"/g, '&quot;')}" style="${blog.content.length > MAX_CONTENT_LENGTH ? 'max-height: 200px;' : 'max-height: none;'}">
-                    ${fullContent}
+                <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none;'}">
+                    <div class="post-content" id="postContentActual">
+                        ${fullContent}
+                    </div>
                 </div>
                 ${readMoreButtonHtml}
 
