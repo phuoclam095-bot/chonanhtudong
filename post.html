@@ -12,10 +12,10 @@
         :root { 
             --primary-green: #10B981; /* Xanh lá cây hiện đại */
             --dark-green: #047857; 
-            --bg-color: #F9FAFB; /* Nền xám nhạt */
-            --text-color: #111827; /* Màu chữ chính tối */
-            --light-text: #6B7280; /* Màu chữ phụ */
-            --accent-color: #3B82F6; /* Màu nhấn phụ xanh dương */
+            --bg-color: #F9FAFB; 
+            --text-color: #111827; 
+            --light-text: #6B7280; 
+            --accent-color: #3B82F6; 
             --card-bg: #FFFFFF; 
             --border-color: #E5E7EB;
         }
@@ -25,7 +25,7 @@
             padding-top: 80px; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
-            color: var(--text-color); /* Màu chữ chính mặc định là tối */
+            color: var(--text-color); 
             min-height: 100vh; 
         }
 
@@ -61,7 +61,7 @@
         }
         .post-title { 
             font-weight: 900; 
-            color: var(--dark-green); /* Đảm bảo màu xanh đậm nổi bật */
+            color: var(--dark-green); 
             margin-bottom: 15px; 
             font-size: 3rem;
             line-height: 1.2;
@@ -93,21 +93,19 @@
             margin-bottom: 30px;
             border-left: 4px solid var(--primary-green);
         }
-        /* 🔥 KHẮC PHỤC: Màu chữ trong Avatar Author */
         #postAuthorAvatar {
             width: 40px;
             height: 40px;
             line-height: 40px; 
             text-align: center;
             background: var(--dark-green);
-            color: white; /* Đảm bảo chữ trắng */
+            color: white; 
             border-radius: 50%;
             font-weight: 800;
             font-size: 1rem;
             flex-shrink: 0;
             margin-right: 15px;
         }
-        /* 🔥 KHẮC PHỤC: Màu tên người đăng bài */
         #postAuthorContainer .fw-bold.text-dark {
             color: var(--text-color) !important; 
         }
@@ -123,17 +121,17 @@
             position: relative;
         }
         
-        /* 🔥 KHẮC PHỤC: Căn trái nội dung */
+        /* 🔥 KHẮC PHỤC 1 & 2: Cỡ chữ lớn hơn, Canh đều hai lề */
         .post-content { 
-            line-height: 1.8; 
-            font-size: 1.15rem; 
+            line-height: 1.9; /* Tăng khoảng cách dòng */
+            font-size: 1.2rem; /* Tăng cỡ chữ */
             color: var(--text-color); 
             margin: 0; 
             white-space: pre-wrap;
-            text-align: left; /* Đảm bảo căn trái */
+            text-align: justify; /* Canh đều hai lề (Canh cho đều lại) */
         }
         .post-content p {
-            margin-bottom: 1.7em; 
+            margin-bottom: 1.8em; 
             margin-top: 0;
         }
 
@@ -156,14 +154,14 @@
             padding-top: 40px !important; 
         }
         
-        /* 🔥 KHẮC PHỤC AVATAR NGƯỜI BÌNH LUẬN (Base style) */
+        /* Avatar Người bình luận */
         .user-avatar-comment { 
             width: 40px; 
             height: 40px; 
             line-height: 40px; 
             text-align: center;
             background: var(--primary-green); 
-            color: white; /* Đảm bảo chữ trắng */
+            color: white; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
@@ -172,16 +170,18 @@
             flex-shrink: 0; 
             font-size: 1rem;
         }
-        /* 🔥 KHẮC PHỤC: Màu tên người bình luận chính */
         #commentsList .text-primary {
             color: var(--dark-green) !important; 
         }
 
-        /* Avatar cho Reply: nhỏ hơn và dùng màu nhấn */
-        /* Note: style này sẽ được override thêm trong JS để đảm bảo */
+        /* Avatar cho Reply */
         .comment-item .comment-item .user-avatar-comment {
             background: var(--accent-color) !important;
-            color: white !important; /* Đảm bảo chữ trắng trong reply avatar */
+            color: white !important; 
+            width: 30px !important; 
+            height: 30px !important;
+            line-height: 30px !important;
+            font-size: 0.75rem !important;
         }
 
         #commentFormContainer { 
@@ -260,7 +260,7 @@
         // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 350; /* Chiều cao cắt */
+        const MAX_CONTENT_HEIGHT = 400; /* 🔥 TĂNG CHIỀU CAO CẮT */
         
         // --- LOGIC TIỆN ÍCH --- 
         function getLoggedInUser() {
@@ -279,17 +279,19 @@
             return urlOrId; 
         }
         
-        // --- KHẮC PHỤC NÚT XEM THÊM ---
+        // --- KHẮC PHỤC LỖI "XEM THÊM" ---
         function toggleReadMore() {
             const contentWrapper = document.getElementById('postContentWrapper');
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
             
+            // Lấy chiều cao cuộn thực tế của nội dung.
             const actualHeight = contentDiv.scrollHeight; 
             
             if (contentWrapper.classList.contains('collapsed')) {
                 contentWrapper.classList.remove('collapsed');
-                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px';
+                // Tính toán chính xác max-height
+                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 contentWrapper.classList.add('collapsed');
@@ -495,7 +497,7 @@
                 let avatarClass = 'user-avatar-comment me-3';
                 let avatarStyle = '';
                 if (isReply) {
-                    // Avatar Reply nhỏ hơn (dùng style trong CSS: 30x30)
+                    // Avatar Reply nhỏ hơn, dùng màu nhấn phụ
                     avatarStyle = `background: var(--accent-color); width: 30px; height: 30px; line-height: 30px; font-size: 0.75rem;`; 
                 }
                 
