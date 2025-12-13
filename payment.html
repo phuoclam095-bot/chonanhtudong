@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Gia Hạn - Studio LNP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================= */
+        /* CSS GIAO DIỆN CHUNG & NỀN CHẤP BI */
+        /* ========================================= */
+        :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #f8f9fa; --accent-color: #51ff7d; }
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            background-color: var(--bg-color);
+            /* 🔥 CSS NỀN CHẤP BI (Checkerboard) */
+            background-image: radial-gradient(#ddd 15%, transparent 16%), radial-gradient(#ddd 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px; 
+        }
+        .payment-container { background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 40px; max-width: 800px; width: 100%; position: relative; }
+        h2 { color: var(--dark-green); font-weight: 800; margin-bottom: 30px; text-align: center; }
+        .price-unit { font-size: 2rem; font-weight: 800; color: var(--primary-green); }
+        
+        /* Gói gia hạn */
+        .package-select { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        .package-option { padding: 15px; border: 2px solid #ddd; border-radius: 12px; cursor: pointer; transition: all 0.2s; background: #fff; }
+        .package-option.selected { border-color: var(--primary-green); background-color: #e6f7eb; box-shadow: 0 0 10px rgba(20, 122, 48, 0.2); }
+        .package-option:hover { transform: translateY(-3px); }
+        .package-option h5 { margin: 0; font-weight: 800; color: var(--dark-green); }
+        .package-option small { color: #6c757d; }
+
+        /* QR AREA */
+        #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 30px; text-align: center; display: none; }
+        #qrCodeImg { width: 100%; max-width: 250px; height: auto; border: 1px solid #ddd; border-radius: 10px; margin: 15px 0; }
+        .info-detail { background: #fff; padding: 15px; border-radius: 10px; border: 1px dashed #c3e6cb; margin-top: 15px; }
+        .info-detail strong { color: var(--primary-green); font-size: 1.1rem; }
+        .info-detail span { display: block; margin-top: 5px; }
+        
+        /* Copy Notification */
+        #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background-color: #0f5132; color: white; padding: 12px 25px; border-radius: 50px; z-index: 1050; opacity: 0; transition: 0.3s; }
+        #copyNotification.active { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* 🔥 Dòng chữ chạy */
+        .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 30px; border-radius: 10px; overflow: hidden; }
+        .marquee-text { font-weight: 700; white-space: nowrap; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    
+    <div class="marquee-container">
+        <div class="marquee-text">
+            🌟 Chào mừng Admin! Thanh toán tự động, kích hoạt ngay lập tức! - Chọn gói phù hợp và quét mã QR 🚀
+        </div>
+    </div>
+    
+    <h2><i class="fas fa-credit-card me-2"></i>Chọn Gói Gia Hạn Tài Khoản</h2>
+    
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
+        <i class="fas fa-user-circle fa-lg"></i>
+        <span>Đang gia hạn cho tài khoản: <strong id="userEmailDisplay">...</strong></span>
+    </div>
+
+    <div id="packageSelection" class="row g-3 package-select">
+        </div>
+    
+    <div class="text-center mt-4">
+        <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">
+            <i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán
+        </button>
+    </div>
+
+    <div id="paymentArea" class="mt-5">
+        <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
+        <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản** dưới đây.</p>
+
+        <img id="qrCodeImg" src="https://via.placeholder.com/250" alt="Mã QR VietQR">
+        
+        <div class="row g-3 info-detail text-start">
+            <div class="col-md-4">
+                <p class="mb-0">Số Tiền Cần Chuyển:</p>
+                <strong id="displayAmount" class="text-danger">0 VNĐ</strong>
+            </div>
+            <div class="col-md-8">
+                <p class="mb-0">Nội Dung Chuyển Khoản (BẮT BUỘC):</p>
+                <strong id="displayPaymentCode" class="text-primary" style="cursor: pointer;">MÃ_GIAO_DỊCH</strong>
+                <small class="text-muted">Nhấn vào mã để sao chép.</small>
+            </div>
+        </div>
+        
+        <div class="alert alert-success mt-4">
+            <i class="fas fa-check-circle me-2"></i>Hệ thống sẽ **TỰ ĐỘNG KÍCH HOẠT** tài khoản của bạn sau khi nhận được chuyển khoản (Thường 1-5 phút).
+        </div>
+        <button class="btn btn-sm btn-outline-secondary" onclick="window.location.href='admin.html'"><i class="fas fa-home me-1"></i>Về trang Admin</button>
+    </div>
+</div>
+
+<div id="copyNotification"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ⚠️ CẤU HÌNH CỦA BẠN (Thay thế bằng thông tin ngân hàng và Webhook thực tế)
+    const PAYMENT_CONFIG = {
+        BANK_ID: '970407', // Ví dụ: Vietcombank
+        ACCOUNT_NUMBER: '0123456789', 
+        UNIT_PRICE_PER_MONTH: 30000, // 30.000 VNĐ / tháng
+        
+        // 🔥 WEBHOOK N8N ĐỂ LƯU YÊU CẦU THANH TOÁN (Workflow #1)
+        N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-payment-pending' 
+    };
+
+    const PAYMENT_PACKAGES = [
+        { months: 1, name: "Gói Cơ Bản", priceMultiplier: 1 },
+        { months: 3, name: "Gói Quý", priceMultiplier: 3 },
+        { months: 6, name: "Gói Nửa Năm", priceMultiplier: 5.5, note: "Giảm 5%!" },
+        { months: 12, name: "Gói Năm", priceMultiplier: 10, note: "Giảm 15%!" }
+    ];
+
+    let selectedPackage = null;
+    let finalAmount = 0;
+    let paymentCode = '';
+    let userEmail = '';
+
+    // --- HÀM TIỆN ÍCH ---
+    function showNotification(msg) {
+        const n = document.getElementById('copyNotification');
+        n.innerHTML = `<i class="fas fa-check-circle me-2"></i>${msg}`; n.classList.add('active');
+        setTimeout(() => n.classList.remove('active'), 3000);
+    }
+    
+    function formatCurrency(amount) {
+        return amount.toLocaleString('vi-VN') + ' VNĐ';
+    }
+
+    // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
+    
+    // 🔥 1. Tạo Mã Giao Dịch BẮT BUỘC có tiền tố SEVQR_
+    function generatePaymentCode(email) {
+        const safeEmailPart = email.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const uniquePart = `LNP_${safeEmailPart}_${randomPart}`.substring(0, 15);
+        return `SEVQR_${uniquePart}`; // Đảm bảo SEVQR_ luôn đứng đầu
+    }
+
+    function renderPackages() {
+        const container = document.getElementById('packageSelection');
+        container.innerHTML = '';
+
+        PAYMENT_PACKAGES.forEach(pkg => {
+            const actualPrice = Math.round(PAYMENT_CONFIG.UNIT_PRICE_PER_MONTH * pkg.priceMultiplier);
+            const priceDisplay = formatCurrency(actualPrice);
+            
+            const element = document.createElement('div');
+            // Dùng col-md-6 để hiển thị 2 cột trên di động/tablet
+            element.className = 'package-option col-md-6'; 
+            element.setAttribute('data-months', pkg.months);
+            element.innerHTML = `
+                <h5>${pkg.name} (${pkg.months} tháng)</h5>
+                <p class="price-unit">${priceDisplay}</p>
+                <small>${pkg.note || ''}</small>
+            `;
+            
+            element.addEventListener('click', () => selectPackage(element, pkg, actualPrice));
+            container.appendChild(element);
+        });
+    }
+
+    function selectPackage(element, pkg, price) {
+        document.querySelectorAll('.package-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedPackage = pkg;
+        finalAmount = price;
+        document.getElementById('btnContinue').disabled = false;
+    }
+    
+    async function processPayment() {
+        if (!selectedPackage) return alert("Vui lòng chọn gói gia hạn!");
+        
+        paymentCode = generatePaymentCode(userEmail);
+        
+        const btn = document.getElementById('btnContinue');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
+        btn.disabled = true;
+
+        try {
+            // 2. Gọi Webhook n8n để lưu trạng thái Pending
+            const response = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: userEmail,
+                    paymentCode: paymentCode,
+                    amount: finalAmount,
+                    months: selectedPackage.months,
+                    status: 'PENDING',
+                    timestamp: Date.now()
+                })
+            });
+
+            if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
+            
+            // 3. Hiển thị thông tin QR (Đã mã hóa Nội dung chuyển khoản)
+            // Mã hóa nội dung chuyển khoản để tạo QR chính xác
+            const encodedPaymentCode = encodeURIComponent(paymentCode); 
+            
+            const vietQRUrl = `https://api.vietqr.io/image/${PAYMENT_CONFIG.BANK_ID}/${PAYMENT_CONFIG.ACCOUNT_NUMBER}/${finalAmount}/${encodedPaymentCode}/`;
+            
+            document.getElementById('qrCodeImg').src = vietQRUrl;
+            document.getElementById('displayAmount').innerText = formatCurrency(finalAmount);
+            document.getElementById('displayPaymentCode').innerText = paymentCode; 
+            
+            document.getElementById('paymentArea').style.display = 'block';
+            document.getElementById('packageSelection').style.display = 'none';
+            btn.style.display = 'none';
+            
+            // Tự cuộn lên đầu khu vực thanh toán
+            document.getElementById('paymentArea').scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (e) {
+            alert("Lỗi khởi tạo thanh toán: " + e.message + ". Vui lòng thử lại sau.");
+            btn.innerHTML = '<i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán';
+            btn.disabled = false;
+        }
+    }
+    
+    // --- KHỞI TẠO VÀ COPY ---
+
+    function checkLoginAndInit() {
+        userEmail = localStorage.getItem('admin_email');
+        if (!userEmail) {
+            alert('Vui lòng đăng nhập Admin trước khi thanh toán!');
+            window.location.href = 'admin.html';
+            return;
+        }
+        document.getElementById('userEmailDisplay').innerText = userEmail;
+        renderPackages();
+        
+        // Thêm sự kiện copy cho mã thanh toán
+        document.getElementById('displayPaymentCode').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('displayPaymentCode').innerText).then(() => {
+                showNotification(`✅ Đã sao chép nội dung chuyển khoản!`);
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', checkLoginAndInit);
+</script>
+</body>
+</html>
