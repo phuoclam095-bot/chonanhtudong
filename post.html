@@ -12,9 +12,9 @@
         :root { 
             --primary-green: #10B981; /* Xanh lá cây hiện đại */
             --dark-green: #047857; 
-            --bg-color: #F9FAFB; /* Nền xám nhạt cho sự sang trọng */
-            --text-color: #111827; 
-            --light-text: #6B7280; 
+            --bg-color: #F9FAFB; /* Nền xám nhạt */
+            --text-color: #111827; /* Màu chữ chính tối */
+            --light-text: #6B7280; /* Màu chữ phụ */
             --accent-color: #3B82F6; /* Màu nhấn phụ xanh dương */
             --card-bg: #FFFFFF; 
             --border-color: #E5E7EB;
@@ -25,11 +25,11 @@
             padding-top: 80px; 
             font-family: 'Nunito', sans-serif; 
             background-color: var(--bg-color); 
-            color: var(--text-color); 
+            color: var(--text-color); /* Màu chữ chính mặc định là tối */
             min-height: 100vh; 
         }
 
-        /* Navbar */
+        /* Navbar (Giữ nền xanh lá) */
         .navbar { 
             background: var(--primary-green);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -61,7 +61,7 @@
         }
         .post-title { 
             font-weight: 900; 
-            color: var(--dark-green); 
+            color: var(--dark-green); /* Đảm bảo màu xanh đậm nổi bật */
             margin-bottom: 15px; 
             font-size: 3rem;
             line-height: 1.2;
@@ -93,34 +93,37 @@
             margin-bottom: 30px;
             border-left: 4px solid var(--primary-green);
         }
+        /* 🔥 KHẮC PHỤC: Màu chữ trong Avatar Author */
         #postAuthorAvatar {
             width: 40px;
             height: 40px;
             line-height: 40px; 
             text-align: center;
             background: var(--dark-green);
-            color: white;
+            color: white; /* Đảm bảo chữ trắng */
             border-radius: 50%;
             font-weight: 800;
             font-size: 1rem;
             flex-shrink: 0;
             margin-right: 15px;
         }
+        /* 🔥 KHẮC PHỤC: Màu tên người đăng bài */
+        #postAuthorContainer .fw-bold.text-dark {
+            color: var(--text-color) !important; 
+        }
         
         /* Content Wrapper & Read More */
         #postContentWrapper {
-            /* Loại bỏ viền và padding không cần thiết */
             border: none;
             padding: 0; 
             background: transparent;
             margin-bottom: 20px;
-            
             transition: max-height 0.5s ease-in-out;
             overflow: hidden; 
             position: relative;
         }
         
-        /* 🔥 KHẮC PHỤC LỖI CĂN GIỮA: Đảm bảo nội dung căn trái */
+        /* 🔥 KHẮC PHỤC: Căn trái nội dung */
         .post-content { 
             line-height: 1.8; 
             font-size: 1.15rem; 
@@ -153,15 +156,15 @@
             padding-top: 40px !important; 
         }
         
-        /* 🔥 AVATAR NGƯỜI BÌNH LUẬN: Đảm bảo hình tròn và giữ style gốc */
+        /* 🔥 KHẮC PHỤC AVATAR NGƯỜI BÌNH LUẬN (Base style) */
         .user-avatar-comment { 
             width: 40px; 
             height: 40px; 
             line-height: 40px; 
             text-align: center;
             background: var(--primary-green); 
-            color: white; 
-            border-radius: 50%; /* Rất quan trọng */
+            color: white; /* Đảm bảo chữ trắng */
+            border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -169,16 +172,17 @@
             flex-shrink: 0; 
             font-size: 1rem;
         }
-
-        /* Avatar cho Reply: nhỏ hơn và dùng màu nhấn */
-        .comment-item .comment-item .user-avatar-comment {
-            background: var(--accent-color) !important;
-            width: 30px !important; 
-            height: 30px !important;
-            line-height: 30px !important;
-            font-size: 0.75rem !important;
+        /* 🔥 KHẮC PHỤC: Màu tên người bình luận chính */
+        #commentsList .text-primary {
+            color: var(--dark-green) !important; 
         }
 
+        /* Avatar cho Reply: nhỏ hơn và dùng màu nhấn */
+        /* Note: style này sẽ được override thêm trong JS để đảm bảo */
+        .comment-item .comment-item .user-avatar-comment {
+            background: var(--accent-color) !important;
+            color: white !important; /* Đảm bảo chữ trắng trong reply avatar */
+        }
 
         #commentFormContainer { 
             border: 1px solid var(--border-color); 
@@ -256,7 +260,7 @@
         // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 350; /* Chiều cao cắt cho giao diện mới */
+        const MAX_CONTENT_HEIGHT = 350; /* Chiều cao cắt */
         
         // --- LOGIC TIỆN ÍCH --- 
         function getLoggedInUser() {
@@ -281,14 +285,11 @@
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
             
-            // Lấy chiều cao cuộn thực tế của nội dung.
             const actualHeight = contentDiv.scrollHeight; 
             
             if (contentWrapper.classList.contains('collapsed')) {
                 contentWrapper.classList.remove('collapsed');
-                // Cộng thêm 40px chỉ là dự phòng nếu có padding, trong thiết kế mới padding đã là 0
-                // Tuy nhiên, giữ +40px an toàn hơn cho các margin/padding khác của contentDiv
-                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
+                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px';
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
                 contentWrapper.classList.add('collapsed');
@@ -409,7 +410,7 @@
             }
         }
 
-        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN --- (GIỮ NGUYÊN LOGIC)
+        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN ---
 
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
@@ -491,15 +492,13 @@
                             <i class="fas fa-reply me-1"></i> Trả lời
                         </button>`;
                 
-                // Sử dụng class/style được sửa để đảm bảo hình tròn
                 let avatarClass = 'user-avatar-comment me-3';
                 let avatarStyle = '';
                 if (isReply) {
-                    // Avatar Reply nhỏ hơn, dùng màu nhấn
+                    // Avatar Reply nhỏ hơn (dùng style trong CSS: 30x30)
                     avatarStyle = `background: var(--accent-color); width: 30px; height: 30px; line-height: 30px; font-size: 0.75rem;`; 
                 }
-                // Avatar chính dùng style từ CSS (primary-green, 40px)
-
+                
                 let commentBlock = `
                 <div class="comment-item" style="${marginStyle}">
                     <div class="d-flex align-items-start">
