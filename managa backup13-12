@@ -132,7 +132,7 @@
                 </div>
                 <div class="modal-body bg-light">
                     <p class="text-secondary fw-bold">Sao chép danh sách bên dưới để lọc ảnh:</p>
-                    <div class="alert alert-info py-2">Album: <strong id="modalAlbumName"></strong> | <strong id="modalSelectedCount"></strong> ảnh</div>
+                    <div class="alert alert-info py-2">Album: <strong id="modalAlbumName"></strong> | <strong id="modalSelectedCount"></strong> </div>
                     <textarea id="fileNamesOutput" class="form-control shadow-sm" rows="10" readonly style="font-family: monospace;"></textarea>
                 </div>
                 <div class="modal-footer bg-white">
@@ -145,7 +145,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // CẤU HÌNH WEBHOOK (GIỮ NGUYÊN)
+        // CẤU HÌNH WEBHOOK
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
@@ -262,6 +262,13 @@
             }
         }
 
+        // --- HÀM TẠO LINK ỔN ĐỊNH TỪ ID (THÊM MỚI) ---
+        function getStableDriveUrl(fileId) {
+            // Tự động resize ảnh về 600px để tải nhanh và không chết link
+            return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
+        }
+        // --------------------------------------------
+
         function createAlbumCard(album) {
             const card = document.createElement('div');
             const id = album.folder_id || album.folderId;
@@ -270,8 +277,19 @@
             
             const rawName = album.folderName || album.name || 'Album Mới';
             const escapedName = rawName.replace(/'/g, "\\'"); 
-            const previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL; 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
+
+            // ✅ SỬA LOGIC ẢNH NỀN (Ưu tiên ID -> Link n8n tạo -> Link cũ)
+            const thumbnailFileId = album.thumbnailFileId;
+            let previewImageURL;
+
+            if (thumbnailFileId) {
+                // Nếu có ID, dùng hàm tạo link ổn định (fallback cho n8n)
+                previewImageURL = getStableDriveUrl(thumbnailFileId);
+            } else {
+                // Nếu không có ID, dùng link n8n gửi về hoặc link mặc định
+                previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL;
+            }
 
             // ✅ LOGIC KHÓA NÚT DỰA TRÊN isPremiumUser
             const lockAttr = isPremiumUser ? '' : 'disabled title="Vui lòng nâng cấp tài khoản"';
