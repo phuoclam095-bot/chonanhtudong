@@ -12,19 +12,25 @@
         :root { 
             --primary-green: #10B981; /* Xanh lá cây hiện đại */
             --dark-green: #047857; 
-            --bg-color: #F9FAFB; 
-            --text-color: #111827; 
-            --light-text: #6B7280; 
-            --accent-color: #3B82F6; 
-            --card-bg: #FFFFFF; 
-            --border-color: #E5E7EB;
+            --bg-color: #F9FAFB; /* Nền xám nhạt (base color) */
+            --text-color: #111827; /* Màu chữ chính tối */
+            --light-text: #6B7280; /* Màu chữ phụ */
+            --accent-color: #3B82F6; /* Màu nhấn phụ xanh dương */
+            --card-bg: #FFFFFF; /* Nền chính (thẻ bài viết) */
+            --border-color: #E5E7EB; /* Màu đường viền & chấm bi */
         }
 
+        /* 🔥 KHẮC PHỤC 3: Thêm nền chấm bi */
         body { 
             margin: 0; 
             padding-top: 80px; 
             font-family: 'Nunito', sans-serif; 
+            
+            /* Nền chấm bi subtle */
             background-color: var(--bg-color); 
+            background-image: radial-gradient(var(--border-color) 1px, transparent 0);
+            background-size: 20px 20px;
+            
             color: var(--text-color); 
             min-height: 100vh; 
         }
@@ -53,7 +59,7 @@
         
         /* Main Content - Card Design */
         .main-content { 
-            background: var(--card-bg); 
+            background: var(--card-bg); /* Nền thẻ là trắng để nổi bật trên nền chấm bi */
             padding: 50px 70px;
             border-radius: 12px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
@@ -121,14 +127,14 @@
             position: relative;
         }
         
-        /* 🔥 KHẮC PHỤC 1 & 2: Cỡ chữ lớn hơn, Canh đều hai lề */
+        /* 🔥 KHẮC PHỤC 1 & 2: Giảm cỡ chữ, Canh đều hai lề, Tự động xuống dòng */
         .post-content { 
-            line-height: 1.9; /* Tăng khoảng cách dòng */
-            font-size: 1.2rem; /* Tăng cỡ chữ */
+            line-height: 1.9; 
+            font-size: 1.1rem; /* Đã giảm từ 1.2rem xuống 1.1rem */
             color: var(--text-color); 
             margin: 0; 
-            white-space: pre-wrap;
-            text-align: justify; /* Canh đều hai lề (Canh cho đều lại) */
+            white-space: pre-wrap; /* Giữ nguyên để tự động xuống dòng và giữ cấu trúc đoạn */
+            text-align: justify; /* Canh đều hai lề */
         }
         .post-content p {
             margin-bottom: 1.8em; 
@@ -215,8 +221,9 @@
             .post-title {
                 font-size: 1.8rem;
             }
+            /* Cỡ chữ nhỏ hơn trên thiết bị di động */
             .post-content {
-                font-size: 1rem;
+                font-size: 1rem; 
             }
         }
     </style>
@@ -260,7 +267,7 @@
         // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 400; /* 🔥 TĂNG CHIỀU CAO CẮT */
+        const MAX_CONTENT_HEIGHT = 400; /* Chiều cao cắt (giữ nguyên 400px) */
         
         // --- LOGIC TIỆN ÍCH --- 
         function getLoggedInUser() {
@@ -290,7 +297,7 @@
             
             if (contentWrapper.classList.contains('collapsed')) {
                 contentWrapper.classList.remove('collapsed');
-                // Tính toán chính xác max-height
+                // Đảm bảo max-height lớn hơn chiều cao thực tế 
                 contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
                 readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
             } else {
