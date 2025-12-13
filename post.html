@@ -211,9 +211,10 @@
         }
 
         .user-avatar-comment { 
-            background: var(--primary-green); 
-            border-radius: 50%;
-            font-weight: 600; 
+            border-radius: 50%; /* Đảm bảo hình tròn */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
         /* Reply Avatar */
         .comment-item .comment-item .user-avatar-comment {
