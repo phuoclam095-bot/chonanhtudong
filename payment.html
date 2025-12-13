@@ -24,9 +24,9 @@
             font-family: 'Nunito', sans-serif; 
             min-height: 100vh; 
             display: flex; 
-            flex-direction: column; /* Đảm bảo nội dung nằm trên cùng */
+            flex-direction: column; 
             align-items: center; 
-            justify-content: flex-start; /* Bắt đầu từ trên cùng */
+            justify-content: flex-start; 
             padding-top: 20px;
             background-color: var(--bg-color);
             background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); 
@@ -57,7 +57,7 @@
         .payment-container { 
             background: var(--card-bg); 
             border-radius: 20px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5); /* Shadow đậm hơn, sang trọng hơn */
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
             padding: 40px; 
             max-width: 800px; 
             width: 100%; 
@@ -67,20 +67,20 @@
         .price-unit { font-size: 2.2rem; font-weight: 800; color: var(--primary-green); margin-top: 5px; }
         .price-unit small { font-size: 0.9rem; color: #888; font-weight: 600; display: block; margin-top: -10px; }
         
-        /* 🔥 SỬA LỖI BỐ CỤC: Dùng Flexbox để cố định 2 cột */
+        /* Bố cục 2 cột */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 20px; /* Khoảng cách giữa các gói */
+            gap: 20px; 
             margin-bottom: 30px; 
-            padding: 0 10px; /* Padding để gói không chạm mép */
+            padding: 0 10px; 
         }
         .package-option-wrapper { 
-            width: calc(50% - 10px); /* 50% trừ đi 1 nửa gap */
+            width: calc(50% - 10px); 
             box-sizing: border-box; 
         }
         .package-option { 
-            padding: 25px; /* Tăng padding để sang trọng hơn */
+            padding: 25px; 
             border: 1px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -95,7 +95,7 @@
             border-color: var(--primary-green); 
             background-color: #e6f7eb; 
             box-shadow: 0 5px 15px rgba(20, 122, 48, 0.2); 
-            transform: scale(1.02); /* Hiệu ứng nhấn mạnh */
+            transform: scale(1.02); 
         }
         .package-option:hover { 
             box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
@@ -118,7 +118,7 @@
         .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 30px; border-radius: 10px; overflow: hidden; }
         .marquee-text { font-weight: 700; white-space: nowrap; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
+        
         @media (max-width: 768px) {
             .package-option-wrapper { width: 100%; padding: 0; margin-bottom: 15px; }
             .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
@@ -139,11 +139,13 @@
 <div class="payment-container">
     
     <div class="marquee-container">
-        <div class="marquee-text">
-            🌟 Chào mừng Admin! Thanh toán tự động, kích hoạt ngay lập tức! - Chọn gói phù hợp và quét mã QR 🚀
+        <div class="marquee-text" id="marqueeText">
+            🌟 Chào mừng! Thanh toán tự động, kích hoạt ngay lập tức! - Chọn gói phù hợp và quét mã QR 🚀
         </div>
     </div>
     
+    <h3 id="personalGreeting" class="text-center mb-3" style="color: var(--dark-green); font-weight: 800;"></h3>
+
     <h2><i class="fas fa-credit-card me-2"></i>Chọn Gói Gia Hạn Tài Khoản</h2>
     
     <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
@@ -198,13 +200,10 @@
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-payment-pending' 
     };
 
-    // 🔥 GÓI GIA HẠN ĐÃ CÂN ĐỐI VÀ LÀM TRÒN
     const PAYMENT_PACKAGES = [
         { months: 1, name: "Gói Cơ Bản", priceMultiplier: 1 }, 
         { months: 3, name: "Gói Quý", priceMultiplier: 3 }, 
-        // 6 tháng: 540k. Chiết khấu 5% => 513k
         { months: 6, name: "Gói Nửa Năm", priceMultiplier: 5.7, note: "Giảm 5%!" }, 
-        // 12 tháng: 1,080k. Chiết khấu 15% => 918k
         { months: 12, name: "Gói Năm", priceMultiplier: 10.2, note: "Giảm 15%!" }
     ];
 
@@ -230,7 +229,7 @@
         const safeEmailPart = email.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '');
         const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
         const uniquePart = `LNP_${safeEmailPart}_${randomPart}`.substring(0, 15);
-        return `SEVQR_${uniquePart}`; // Đảm bảo SEVQR_ luôn đứng đầu
+        return `SEVQR_${uniquePart}`; 
     }
 
     function renderPackages() {
@@ -241,7 +240,6 @@
             const actualPrice = Math.round(PAYMENT_CONFIG.UNIT_PRICE_PER_MONTH * pkg.priceMultiplier);
             const priceDisplay = formatCurrency(actualPrice);
             
-            // 🔥 SỬA BỐ CỤC: Dùng wrapper để kiểm soát width (2 gói/dòng)
             const wrapper = document.createElement('div');
             wrapper.className = 'package-option-wrapper col-12 col-md-6';
 
@@ -263,9 +261,7 @@
     }
 
     function selectPackage(element, pkg, price) {
-        // Loại bỏ lớp 'selected' khỏi tất cả các phần tử (qua lớp option)
         document.querySelectorAll('.package-option').forEach(el => el.classList.remove('selected'));
-        
         element.classList.add('selected');
         selectedPackage = pkg;
         finalAmount = price;
@@ -298,9 +294,8 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            // 3. Hiển thị thông tin QR (Đã mã hóa Nội dung chuyển khoản)
+            // 3. Hiển thị thông tin QR
             const encodedPaymentCode = encodeURIComponent(paymentCode); 
-            
             const vietQRUrl = `https://api.vietqr.io/image/${PAYMENT_CONFIG.BANK_ID}/${PAYMENT_CONFIG.ACCOUNT_NUMBER}/${finalAmount}/${encodedPaymentCode}/`;
             
             document.getElementById('qrCodeImg').src = vietQRUrl;
@@ -309,7 +304,7 @@
             
             document.getElementById('paymentArea').style.display = 'block';
             document.getElementById('packageSelection').style.display = 'none';
-            btn.style.display = 'none';
+            document.getElementById('btnContinue').style.display = 'none';
             
             document.getElementById('paymentArea').scrollIntoView({ behavior: 'smooth' });
             
@@ -324,11 +319,18 @@
 
     function checkLoginAndInit() {
         userEmail = localStorage.getItem('admin_email');
+        // 🔥 Lấy tên khách hàng hoặc mặc định là phần trước @
+        const userName = localStorage.getItem('admin_name') || userEmail.split('@')[0]; 
+
         if (!userEmail) {
             alert('Vui lòng đăng nhập Admin trước khi thanh toán!');
             window.location.href = 'admin.html';
             return;
         }
+        
+        // 🔥 Cập nhật lời chào cá nhân
+        document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
+
         document.getElementById('userEmailDisplay').innerText = userEmail;
         renderPackages();
         
