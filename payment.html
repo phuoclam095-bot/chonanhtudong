@@ -105,7 +105,8 @@
             font-weight: 800; 
             color: var(--dark-green); 
         }
-        .package-option small { color: #d9534f; font-weight: 700; }
+        /* Chú thích màu xanh lá cây */
+        .package-option small { color: var(--primary-green); font-weight: 700; } 
 
         /* QR AREA */
         #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 30px; text-align: center; display: none; }
@@ -128,10 +129,10 @@
 <body>
 
 <div class="header-controls">
-    <button class="btn-control" onclick="window.location.href='admin.html'">
-        <i class="fas fa-arrow-left me-1"></i> Trở Về Admin
+    <button class="btn-control" onclick="window.history.back()">
+        <i class="fas fa-arrow-left me-1"></i> Trở Về
     </button>
-    <button class="btn-control" onclick="window.location.href='index.html'">
+    <button class="btn-control" onclick="window.location.href='admin.html'">
         <i class="fas fa-home me-1"></i> Trang Chủ
     </button>
 </div>
@@ -182,7 +183,7 @@
         <div class="alert alert-success mt-4">
             <i class="fas fa-check-circle me-2"></i>Hệ thống sẽ **TỰ ĐỘNG KÍCH HOẠT** tài khoản của bạn sau khi nhận được chuyển khoản (Thường 1-5 phút).
         </div>
-        <button class="btn btn-sm btn-outline-secondary" onclick="window.location.href='admin.html'"><i class="fas fa-arrow-left me-1"></i> Trở Về Admin</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="window.history.back()"><i class="fas fa-arrow-left me-1"></i> Quay lại</button>
     </div>
 </div>
 
@@ -190,20 +191,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ⚠️ CẤU HÌNH CỦA BẠN 
+    // ⚠️ CẤU HÌNH CỦA BẠN (Giá đã cập nhật theo yêu cầu)
     const PAYMENT_CONFIG = {
         BANK_ID: '970407', // Ví dụ: Vietcombank
         ACCOUNT_NUMBER: '0123456789', 
-        UNIT_PRICE_PER_MONTH: 90000, 
+        UNIT_PRICE_PER_MONTH: 90000, // Giá 1 tháng ban đầu
         
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-payment-pending' 
     };
 
+    // 🔥 GÓI GIA HẠN VỚI GIÁ CỐ ĐỊNH (Không dùng Multiplier nữa)
     const PAYMENT_PACKAGES = [
-        { months: 1, name: "Gói Cơ Bản", priceMultiplier: 1 }, 
-        { months: 3, name: "Gói Quý", priceMultiplier: 3 }, 
-        { months: 6, name: "Gói Nửa Năm", priceMultiplier: 5.7, note: "Giảm 5%!" }, 
-        { months: 12, name: "Gói Năm", priceMultiplier: 10.2, note: "Giảm 15%!" }
+        { months: 1, name: "Gói Cơ Bản", price: 90000, note: "Giá cố định" }, 
+        { months: 3, name: "Gói Quý", price: 250000, note: "Giá cố định" }, 
+        { months: 6, name: "Gói Nửa Năm", price: 450000, note: "Giá cố định" }, 
+        { months: 12, name: "Gói Năm", price: 750000, note: "Giá cố định" }
     ];
 
     let selectedPackage = null;
@@ -236,7 +238,8 @@
         container.innerHTML = '';
 
         PAYMENT_PACKAGES.forEach(pkg => {
-            const actualPrice = Math.round(PAYMENT_CONFIG.UNIT_PRICE_PER_MONTH * pkg.priceMultiplier);
+            // 🔥 Lấy giá trực tiếp từ pkg.price
+            const actualPrice = pkg.price;
             const priceDisplay = formatCurrency(actualPrice);
             
             const wrapper = document.createElement('div');
@@ -248,7 +251,7 @@
             element.innerHTML = `
                 <div>
                     <h5>${pkg.name} (${pkg.months} tháng)</h5>
-                    <small style="color: ${pkg.note ? '#d9534f' : '#6c757d'};">${pkg.note || 'Không giảm'}</small>
+                    <small style="color: var(--primary-green);">${pkg.note}</small>
                 </div>
                 <p class="price-unit">${priceDisplay}</p>
             `;
@@ -318,7 +321,6 @@
     // --- KHỞI TẠO VÀ COPY ---
 
     function getCleanUserName(email) {
-        // Lấy phần tên trước @ từ email và chuẩn hóa
         return email.split('@')[0];
     }
 
@@ -331,7 +333,6 @@
             return;
         }
         
-        // Lấy tên khách hàng ưu tiên theo thứ tự: Tên đầy đủ > Tên từ email
         let userName = getCleanUserName(userEmail);
         const storedName = localStorage.getItem('admin_name');
         
@@ -339,9 +340,10 @@
             userName = storedName;
         }
 
-        // 🔥 Cập nhật Marquee Text và Lời chào cá nhân
+        // Cập nhật Lời chào
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
+        // Cập nhật Marquee Text
         const marqueeContent = `🌟 Chào mừng ${userName}! Thanh toán tự động, kích hoạt ngay lập tức! - Chọn gói phù hợp và quét mã QR 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
