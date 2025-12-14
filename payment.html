@@ -185,7 +185,7 @@
             <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
             <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản** dưới đây.</p>
 
-            <img id="qrCodeImg" src="https://i.ibb.co/sd191GYD/z7326992226311-12ecebafb0004c8cbfc3d48989443c6f.jpg" alt="Mã QR VietQR">
+            <img id="qrCodeImg" src="https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg" alt="Mã QR VietQR">
             
             <div class="row g-3 info-detail text-start">
                 <div class="col-md-4">
@@ -291,6 +291,7 @@
 
         document.getElementById('selectionMode').scrollIntoView({ behavior: 'smooth' });
     }
+
 
     // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
     
@@ -476,14 +477,13 @@
         document.getElementById('userEmailDisplay').innerText = userEmail;
         renderPackages();
         
-        // LOGIC QUAN TRỌNG: Kiểm tra phiên thanh toán đang chờ
+        // LOGIC QUAN TRỌNG: Kiểm tra phiên thanh toán đang chờ (người dùng F5 hoặc quay lại)
         const savedAmount = localStorage.getItem('current_payment_amount');
         const savedCode = localStorage.getItem('current_payment_code');
 
-        // 🔥 LỖI FIX: Đặt lại trạng thái nút trước khi kiểm tra logic hiển thị
+        // Đảm bảo nút tiếp tục được đặt lại trạng thái ban đầu
         document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
         document.getElementById('btnContinue').disabled = true;
-
 
         if (savedAmount && savedCode) {
             // Trường hợp 1: Đang trong quá trình thanh toán -> Bắt đầu lại Quét QR
