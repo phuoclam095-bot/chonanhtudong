@@ -12,13 +12,15 @@
             --primary-color: #1a7a30; /* Xanh Lá Cây Đậm */
             --accent-color: #0d6efd; /* Xanh Dương */
             --card-bg: white;
+            --bg-dots: #333; /* Màu chấm bi */
+            --bg-base: #1a1a1a; /* Nền tối */
         }
         body {
-            /* NỀN CHẤM BI */
-            background-color: #f4f6f8; 
-            background-image: radial-gradient(#ccc 1px, transparent 1px), radial-gradient(#ccc 1px, transparent 1px); 
-            background-size: 30px 30px; 
-            background-position: 0 0, 15px 15px; 
+            /* NỀN CHẤM BI ĐEN */
+            background-color: var(--bg-base); 
+            background-image: radial-gradient(var(--bg-dots) 15%, transparent 16%), radial-gradient(var(--bg-dots) 15%, transparent 16%); 
+            background-size: 60px 60px; 
+            background-position: 0 0, 30px 30px; 
             
             font-family: 'Nunito', sans-serif;
             padding: 20px;
@@ -28,12 +30,12 @@
             min-height: 100vh;
         }
         .payment-card {
-            max-width: 550px; /* TĂNG CHIỀU RỘNG */
+            max-width: 550px; 
             width: 100%;
             padding: 0;
             background: var(--card-bg);
             border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); 
             overflow: hidden;
         }
         .header-section {
@@ -44,11 +46,11 @@
         }
         h1 {
             font-weight: 900;
-            font-size: 2rem; /* Lớn hơn một chút */
+            font-size: 2rem;
             margin-bottom: 10px;
         }
         .welcome-text {
-            font-size: 1.1rem; /* Lời chào nổi bật */
+            font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 10px;
         }
@@ -63,7 +65,7 @@
         .qr-box {
             border: 1px solid #e0e0e0;
             border-radius: 15px;
-            padding: 20px; /* Padding rộng hơn */
+            padding: 20px; 
             text-align: center;
             background: #f7fffb; 
             margin-bottom: 25px;
@@ -72,7 +74,7 @@
             max-width: 200px;
             width: 100%;
             height: auto;
-            margin: 15px auto; /* Margin rộng hơn */
+            margin: 15px auto;
             display: block;
             border: 5px solid white;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -81,9 +83,9 @@
         .transfer-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px; /* Khoảng cách rộng hơn */
+            gap: 15px;
             background: #ffffff;
-            padding: 20px; /* Padding rộng hơn */
+            padding: 20px;
             border-radius: 10px;
             border: 1px dashed #ddd;
         }
@@ -94,12 +96,12 @@
         .detail-item small {
             color: #6c757d;
             font-weight: 600;
-            font-size: 0.85rem; /* Lớn hơn một chút */
+            font-size: 0.85rem;
             display: block;
             margin-bottom: 5px;
         }
         .detail-item strong {
-            font-size: 1.3rem; /* Lớn hơn một chút */
+            font-size: 1.3rem;
             color: #333;
             font-weight: 900;
             line-height: 1.3;
@@ -159,7 +161,8 @@
     <div id="qrArea">
         <div class="header-section">
             <h1><i class="fas fa-credit-card me-2"></i>Thanh Toán Gia Hạn</h1>
-            <p class="welcome-text" id="welcomeUser"></p> <p class="user-info">Đang gia hạn cho tài khoản: <strong id="userEmailDisplay"></strong></p>
+            <p class="welcome-text" id="welcomeUser"></p> 
+            <p class="user-info">Đang gia hạn cho tài khoản: <strong id="userEmailDisplay"></strong></p>
         </div>
         
         <div class="main-content">
@@ -190,7 +193,7 @@
                     <i class="fas fa-arrow-left me-1"></i> Quay Lại
                 </button>
                 <button class="btn btn-primary flex-grow-1 ms-2" onclick="handlePaymentSuccess(false)">
-                    <i class="fas fa-check me-1"></i> Đã chuyển khoản & Về Trang Chủ
+                    <i class="fas fa-home me-1"></i> Về Trang Chủ
                 </button>
             </div>
         </div>
@@ -202,8 +205,8 @@
     // CẤU HÌNH CỐ ĐỊNH
     const USER_DATA_API_URL = 'https://dichvufb.tino.page/webhook/google-oauth-callback'; 
     const FALLBACK_AMOUNT = '90.000 VNĐ';
-    const PAYMENT_CODE_PREFIX = 'SEVQR_LNP_'; 
-    const FALLBACK_NAME = 'bạn'; // Tên mặc định nếu không lấy được
+    const PAYMENT_CODE_PREFIX = 'SEVQR_'; // Đã thay đổi từ SEVQR_LNP_ thành SEVQR_
+    const FALLBACK_NAME = 'bạn'; 
 
     let pollingInterval = null; 
 
@@ -213,6 +216,7 @@
     }
 
     function generateUniquePaymentCode() {
+        // Mã: SEVQR_ + 6 chữ số ngẫu nhiên
         const randomCode = generateRandom6Digit();
         return PAYMENT_CODE_PREFIX + randomCode;
     }
@@ -220,7 +224,7 @@
 
     function loadPaymentDetails() {
         const userEmail = localStorage.getItem('admin_email') || 'khongtimthay@gmail.com';
-        const userName = localStorage.getItem('admin_name') || FALLBACK_NAME; // Lấy tên người dùng
+        const userName = localStorage.getItem('admin_name') || FALLBACK_NAME;
         const amount = localStorage.getItem('current_payment_amount') || FALLBACK_AMOUNT;
 
         let code = localStorage.getItem('current_payment_code');
@@ -231,7 +235,7 @@
         }
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
-        document.getElementById('welcomeUser').innerText = `Xin chào, ${userName}!`; // HIỂN THỊ LỜI CHÀO
+        document.getElementById('welcomeUser').innerText = `Xin chào, ${userName}!`;
         document.getElementById('transferAmount').innerText = amount;
         document.getElementById('paymentCode').innerText = code;
         
@@ -289,6 +293,7 @@
 
             if (status === 'active') {
                 clearInterval(pollingInterval);
+                // HIỂN THỊ THÔNG BÁO THÀNH CÔNG
                 document.getElementById('qrArea').classList.add('d-none');
                 document.getElementById('statusMessage').classList.remove('d-none');
             }
@@ -314,11 +319,13 @@
 
         if (pollingInterval) clearInterval(pollingInterval);
 
+        // Xóa dữ liệu cũ (để admin.html tải lại trạng thái mới)
         localStorage.removeItem('admin_status');
         localStorage.removeItem('admin_expiry');
-        // KHÔNG XÓA admin_name ở đây vì nó dùng cho lời chào
+        // XÓA MÃ THANH TOÁN DUY NHẤT để lần sau tạo mã mới
         localStorage.removeItem('current_payment_code'); 
         
+        // Chuyển hướng về trang Admin
         window.location.href = 'admin.html'; 
     }
 
