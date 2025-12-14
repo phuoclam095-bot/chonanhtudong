@@ -174,8 +174,7 @@
         
         <div class="text-center mt-4">
             <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">
-                <i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán
-            </button>
+                </button>
         </div>
     </div>
 
@@ -288,6 +287,7 @@
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = CONTINUE_BTN_TEXT;
         btn.disabled = true; // Vô hiệu hóa vì chưa chọn gói mới
+        selectedPackage = null; // Reset gói đã chọn
 
         document.getElementById('selectionMode').scrollIntoView({ behavior: 'smooth' });
     }
