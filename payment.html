@@ -59,7 +59,7 @@
             border-radius: 20px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
             padding: 40px; 
-            max-width: 800px; /* Độ rộng card chính */
+            max-width: 800px; 
             width: 100%; 
             position: relative; 
         }
@@ -107,32 +107,13 @@
         }
         .package-option small { color: var(--primary-green); font-weight: 700; } 
 
-        /* QR AREA - Mở rộng chiều ngang cho gần bằng card chính */
-        #paymentArea { 
-            background: #f0fff4; 
-            border: 2px solid var(--primary-green); 
-            border-radius: 15px; 
-            padding: 30px; 
-            text-align: center; 
-            /* Loại bỏ max-width để nó chiếm gần hết không gian padding của payment-container */
-            width: 100%; 
-            margin: 0 auto;
-        }
+        /* QR AREA */
+        #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 30px; text-align: center; max-width: 550px; margin: 0 auto;}
         #qrCodeImg { width: 100%; max-width: 250px; height: auto; border: 4px solid #fff; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .info-detail { 
-            background: #fff; 
-            padding: 20px; 
-            border-radius: 15px; 
-            border: 1px solid var(--primary-green); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            margin-top: 15px; 
-        }
-        /* Tối ưu hóa hiển thị 1 dòng cho chi tiết giao dịch */
-        .info-detail strong, .info-detail p, .info-detail small { white-space: nowrap; } 
-        .info-detail .col-md-4 { padding-right: 15px; } /* Căn chỉnh khoảng cách */
-        .info-detail .col-md-8 { padding-left: 15px; } /* Căn chỉnh khoảng cách */
-
-
+        .info-detail { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid var(--primary-green); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px; }
+        .info-detail strong { color: #d9534f; font-size: 1.3rem; }
+        .info-detail p { font-size: 0.95rem; font-weight: 600; color: #555; }
+        
         /* Dòng chữ chạy (giữ nguyên) */
         .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 30px; border-radius: 10px; overflow: hidden; }
         .marquee-text { font-weight: 700; white-space: nowrap; animation: marquee 15s linear infinite; }
@@ -156,8 +137,6 @@
             .payment-container { padding: 20px; }
             .package-option-wrapper { width: 100%; padding: 0; margin-bottom: 15px; }
             .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
-            /* Trên mobile, cho phép nội dung xuống dòng */
-            .info-detail strong, .info-detail p, .info-detail small { white-space: normal; }
         }
     </style>
 </head>
@@ -165,7 +144,7 @@
 
 <div class="header-controls">
     <button class="btn-control" onclick="returnToSelection()">
-        <i class="fas fa-arrow-left me-1"></i> Trở Về Chọn Gói
+        <i class="fas fa-arrow-left me-1"></i> Trở Về
     </button>
     <button class="btn-control" onclick="window.location.href='admin.html'">
         <i class="fas fa-home me-1"></i> Trang Chủ
@@ -267,6 +246,7 @@
     let pollingInterval = null;
     const FALLBACK_NAME = 'bạn';
     const PAYMENT_CODE_PREFIX = 'SEVQR_'; // Nội dung CK: SEVQR_ + 6 số ngẫu nhiên
+    const CONTINUE_BTN_TEXT = '<i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán'; // Text gốc của nút
 
     // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
@@ -291,7 +271,7 @@
             alert("Lỗi sao chép tự động. Vui lòng sao chép thủ công.");
         });
     }
-    
+
     // 🔥 HÀM QUAY LẠI CHỌN GÓI (FIXED: Xóa session và chuyển màn hình)
     function returnToSelection() {
         if (pollingInterval) clearInterval(pollingInterval);
@@ -304,12 +284,13 @@
         document.getElementById('paymentPollingMode').style.display = 'none';
         document.getElementById('selectionMode').style.display = 'block';
         
-        // 3. Vô hiệu hóa nút tiếp tục (do chưa chọn gói mới)
-        document.getElementById('btnContinue').disabled = true;
+        // 3. ĐẶT LẠI TRẠNG THÁI NÚT TIẾP TỤC
+        const btn = document.getElementById('btnContinue');
+        btn.innerHTML = CONTINUE_BTN_TEXT;
+        btn.disabled = true; // Vô hiệu hóa vì chưa chọn gói mới
 
         document.getElementById('selectionMode').scrollIntoView({ behavior: 'smooth' });
     }
-
 
     // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
     
@@ -349,6 +330,8 @@
         finalAmount = price;
         // BẬT nút tiếp tục khi đã chọn gói
         document.getElementById('btnContinue').disabled = false;
+        // ĐẢM BẢO NÚT HIỂN THỊ ĐÚNG TEXT (Fix lỗi loading)
+        document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
     }
     
     async function processPayment() {
@@ -395,7 +378,8 @@
             
         } catch (e) {
             alert("Lỗi khởi tạo thanh toán: " + e.message + ". Vui lòng thử lại sau.");
-            btn.innerHTML = '<i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán';
+            // ĐẶT LẠI TRẠNG THÁI NÚT KHI GẶP LỖI MẠNG/SERVER
+            btn.innerHTML = CONTINUE_BTN_TEXT; 
             btn.disabled = false;
         }
     }
@@ -492,12 +476,17 @@
         document.getElementById('userEmailDisplay').innerText = userEmail;
         renderPackages();
         
-        // LOGIC QUAN TRỌNG: Kiểm tra phiên thanh toán đang chờ (người dùng F5 hoặc quay lại)
+        // LOGIC QUAN TRỌNG: Kiểm tra phiên thanh toán đang chờ
         const savedAmount = localStorage.getItem('current_payment_amount');
         const savedCode = localStorage.getItem('current_payment_code');
 
+        // 🔥 LỖI FIX: Đặt lại trạng thái nút trước khi kiểm tra logic hiển thị
+        document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
+        document.getElementById('btnContinue').disabled = true;
+
+
         if (savedAmount && savedCode) {
-            // Trường hợp 1: Đang trong quá trình thanh toán -> Bắt đầu lại Polling
+            // Trường hợp 1: Đang trong quá trình thanh toán -> Bắt đầu lại Quét QR
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
