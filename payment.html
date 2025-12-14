@@ -11,8 +11,8 @@
         :root {
             --primary-color: #1a7a30; /* Xanh Lá Cây Đậm */
             --accent-color: #0d6efd; /* Xanh Dương */
-            --bg-color: #f4f6f8; /* Nền xám nhạt */
-            --qr-box-bg: #f7fffb; /* Nền QR siêu nhạt */
+            --bg-color: #f4f6f8; 
+            --qr-box-bg: #f7fffb; 
         }
         body {
             background-color: var(--bg-color);
@@ -24,7 +24,7 @@
             min-height: 100vh;
         }
         .payment-card {
-            max-width: 420px; /* Thu gọn chiều rộng */
+            max-width: 420px;
             width: 100%;
             padding: 0;
             background: white;
@@ -51,8 +51,6 @@
         .main-content {
             padding: 30px;
         }
-        
-        /* QR BOX VÀ CHI TIẾT */
         .qr-box {
             border: 1px solid #e0e0e0;
             border-radius: 15px;
@@ -62,7 +60,7 @@
             margin-bottom: 25px;
         }
         .qr-box img {
-            max-width: 200px; /* Thu nhỏ QR code */
+            max-width: 200px;
             width: 100%;
             height: auto;
             margin: 10px auto;
@@ -74,7 +72,7 @@
         .transfer-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px; /* Thu gọn khoảng cách */
+            gap: 10px;
             background: #ffffff;
             padding: 15px;
             border-radius: 10px;
@@ -87,12 +85,12 @@
         .detail-item small {
             color: #6c757d;
             font-weight: 600;
-            font-size: 0.8rem; /* Thu nhỏ label */
+            font-size: 0.8rem;
             display: block;
             margin-bottom: 2px;
         }
         .detail-item strong {
-            font-size: 1.15rem; /* Kích thước nội dung chính */
+            font-size: 1.15rem;
             color: #333;
             font-weight: 900;
             line-height: 1.3;
@@ -105,8 +103,6 @@
         .copy-code:hover {
             color: #0056b3;
         }
-        
-        /* NOTE */
         .note {
             background-color: #d1e7dd;
             color: #0f5132;
@@ -119,8 +115,6 @@
             text-align: left;
             border: 1px solid #badbcc;
         }
-        
-        /* Message Alert */
         .success-message {
             background-color: #d1e7dd;
             color: #0f5132;
@@ -196,37 +190,48 @@
 </div>
 
 <script>
-    // CẤU HÌNH WEBHOOK CHECK STATUS (Cơ sở cho Polling)
+    // CẤU HÌNH CỐ ĐỊNH
     const USER_DATA_API_URL = 'https://dichvufb.tino.page/webhook/google-oauth-callback'; 
-    
-    // 🔥 Dữ liệu mặc định: Cần được cập nhật từ trang chọn gói trước đó
     const FALLBACK_AMOUNT = '90.000 VNĐ';
-    const FALLBACK_CODE = 'SEVQR_LNP_LAMPHUOC111';
-
+    const PAYMENT_CODE_PREFIX = 'SEVQR_LNP_'; 
+    
     let pollingInterval = null; 
+
+    // --- HÀM TẠO MÃ NGẪU NHIÊN ---
+    function generateRandom6Digit() {
+        return Math.floor(100000 + Math.random() * 900000);
+    }
+
+    function generateUniquePaymentCode() {
+        const randomCode = generateRandom6Digit();
+        return PAYMENT_CODE_PREFIX + randomCode;
+    }
+    // -----------------------------
 
     function loadPaymentDetails() {
         const userEmail = localStorage.getItem('admin_email') || 'khongtimthay@gmail.com';
-        const code = localStorage.getItem('current_payment_code') || FALLBACK_CODE;
         const amount = localStorage.getItem('current_payment_amount') || FALLBACK_AMOUNT;
-        const currentStatus = localStorage.getItem('admin_status');
+
+        let code = localStorage.getItem('current_payment_code');
+
+        // LOGIC: Nếu không có mã thanh toán cũ (sau khi đã hoàn tất giao dịch trước đó), tạo mã mới và lưu lại.
+        if (!code) {
+            code = generateUniquePaymentCode();
+            localStorage.setItem('current_payment_code', code);
+        }
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
         document.getElementById('transferAmount').innerText = amount;
         document.getElementById('paymentCode').innerText = code;
         
-        // Kiểm tra và hiển thị khu vực QR/Thông báo
-        if (currentStatus === 'active') {
-             document.getElementById('qrArea').classList.add('d-none');
-             document.getElementById('statusMessage').classList.remove('d-none');
-        } else {
-             document.getElementById('qrArea').classList.remove('d-none');
-             document.getElementById('statusMessage').classList.add('d-none');
+        // 🔥 QUAN TRỌNG: Luôn hiển thị khu vực QR khi tải trang. 
+        // Thông báo thành công chỉ được kích hoạt bởi Polling.
+        document.getElementById('qrArea').classList.remove('d-none');
+        document.getElementById('statusMessage').classList.add('d-none');
              
-             // Bắt đầu Polling nếu chưa active
-             if (userEmail !== 'khongtimthay@gmail.com') {
-                startPollingStatus(userEmail);
-             }
+        // Bắt đầu Polling
+        if (userEmail !== 'khongtimthay@gmail.com') {
+            startPollingStatus(userEmail);
         }
     }
 
@@ -235,18 +240,15 @@
         if (!USER_DATA_API_URL.startsWith('http')) return 'error';
 
         try {
-            // Gọi API kiểm tra trạng thái LIVE
             const response = await fetch(USER_DATA_API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email: email, action: 'check_status_api' }) 
             });
             
-            // Nếu Workflow n8n trả về JSON (thay vì Redirect)
             const data = await response.json(); 
             
             if (data.status === 'active') {
-                // Cập nhật localStorage
                 localStorage.setItem('admin_status', 'active');
                 localStorage.setItem('admin_expiry', data.expiry_timestamp);
                 return 'active';
@@ -280,6 +282,7 @@
 
             if (status === 'active') {
                 clearInterval(pollingInterval);
+                // 🔥 HIỂN THỊ THÔNG BÁO THÀNH CÔNG (Chỉ khi status vừa thay đổi)
                 document.getElementById('qrArea').classList.add('d-none');
                 document.getElementById('statusMessage').classList.remove('d-none');
             }
@@ -306,12 +309,15 @@
 
         if (pollingInterval) clearInterval(pollingInterval);
 
-        // 1. Xóa dữ liệu trạng thái cũ (Buộc admin.html phải tải lại dữ liệu mới qua Smart Refresh)
+        // Xóa dữ liệu cũ (để admin.html tải lại trạng thái mới)
         localStorage.removeItem('admin_status');
         localStorage.removeItem('admin_expiry');
         localStorage.removeItem('admin_name');
         
-        // 2. Chuyển hướng về trang Admin
+        // 🔥 QUAN TRỌNG: XÓA MÃ THANH TOÁN DUY NHẤT để lần sau tạo mã mới
+        localStorage.removeItem('current_payment_code'); 
+        
+        // Chuyển hướng về trang Admin
         window.location.href = 'admin.html'; 
     }
 
