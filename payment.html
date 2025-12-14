@@ -168,7 +168,7 @@
         <div class="main-content">
             <div class="qr-box">
                 <h4 class="text-center mb-3" style="color: #147a30;"><i class="fas fa-qrcode me-2"></i> Quét Mã VietQR</h4>
-                <img src="https://i.ibb.co/tw7qNwjy/qr-code.png" alt="Mã QR VietQR" id="qrImage">
+                <img src="https://i.ibb.co/sd191GYD/z7326992226311-12ecebafb0004c8cbfc3d48989443c6f.jpg" alt="Mã QR VietQR" id="qrImage">
                 
                 <div class="transfer-details">
                     <div class="detail-item">
@@ -205,7 +205,7 @@
     // CẤU HÌNH CỐ ĐỊNH
     const USER_DATA_API_URL = 'https://dichvufb.tino.page/webhook/google-oauth-callback'; 
     const FALLBACK_AMOUNT = '90.000 VNĐ';
-    const PAYMENT_CODE_PREFIX = 'SEVQR_'; // Đã thay đổi từ SEVQR_LNP_ thành SEVQR_
+    const PAYMENT_CODE_PREFIX = 'SEVQR_'; // Mã chuyển khoản: SEVQR_ + 6 số ngẫu nhiên
     const FALLBACK_NAME = 'bạn'; 
 
     let pollingInterval = null; 
@@ -216,16 +216,16 @@
     }
 
     function generateUniquePaymentCode() {
-        // Mã: SEVQR_ + 6 chữ số ngẫu nhiên
         const randomCode = generateRandom6Digit();
         return PAYMENT_CODE_PREFIX + randomCode;
     }
     // -----------------------------
 
     function loadPaymentDetails() {
+        // Lấy dữ liệu thanh toán đã chọn (Giá trị cố định) từ trang trước
         const userEmail = localStorage.getItem('admin_email') || 'khongtimthay@gmail.com';
         const userName = localStorage.getItem('admin_name') || FALLBACK_NAME;
-        const amount = localStorage.getItem('current_payment_amount') || FALLBACK_AMOUNT;
+        const amount = localStorage.getItem('current_payment_amount') || FALLBACK_AMOUNT; // LẤY GIÁ CỐ ĐỊNH ĐÃ CHỌN
 
         let code = localStorage.getItem('current_payment_code');
 
@@ -319,13 +319,10 @@
 
         if (pollingInterval) clearInterval(pollingInterval);
 
-        // Xóa dữ liệu cũ (để admin.html tải lại trạng thái mới)
         localStorage.removeItem('admin_status');
         localStorage.removeItem('admin_expiry');
-        // XÓA MÃ THANH TOÁN DUY NHẤT để lần sau tạo mã mới
         localStorage.removeItem('current_payment_code'); 
         
-        // Chuyển hướng về trang Admin
         window.location.href = 'admin.html'; 
     }
 
