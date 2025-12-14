@@ -288,17 +288,22 @@
             const urlParams = new URLSearchParams(window.location.search);
             
             // 🔥 Xử lý cả callback OAuth LẦN ĐẦU hoặc callback CHECK STATUS
-            if (urlParams.get('auth_status') === 'success' || urlParams.get('status_checked') === 'true') {
+            const isCallback = urlParams.get('auth_status') === 'success';
+            const isStatusRefresh = urlParams.get('status_checked') === 'true';
+
+            if (isCallback || isStatusRefresh) {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', urlParams.get('user_email'));
                 
                 try {
-                    // LƯU 4 TRƯỜNG TRẠNG THÁI MỚI NHẤT
+                    // LƯU 4 TRƯỜNG TRẠNG THÁI MỚI NHẤT TỪ URL VÀO LOCAL STORAGE (QUAN TRỌNG)
                     localStorage.setItem('admin_name', decodeURIComponent(urlParams.get('user_name')));
                     localStorage.setItem('admin_avatar', decodeURIComponent(urlParams.get('user_avatar')));
-                    localStorage.setItem('admin_expiry', urlParams.get('user_expiry') || '0');
-                    localStorage.setItem('admin_status', urlParams.get('user_status') || 'new');
-                } catch(e) {}
+                    localStorage.setItem('admin_expiry', urlParams.get('user_expiry') || '0'); // GHI ĐÈ EXPIRY MỚI
+                    localStorage.setItem('admin_status', urlParams.get('user_status') || 'new'); // GHI ĐÈ STATUS MỚI
+                } catch(e) {
+                     console.error("Error setting localStorage from URL params:", e);
+                }
                 
                 history.replaceState(null, null, window.location.pathname);
                 updateUI();
@@ -317,16 +322,21 @@
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const userEmail = localStorage.getItem('admin_email');
-            const status = localStorage.getItem('admin_status');
-            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+            let status = localStorage.getItem('admin_status');
+            let expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
             const userName = localStorage.getItem('admin_name');
 
             if (isLoggedIn) {
-                // 🔥 LOGIC KIỂM TRA HẾT HẠN CỤC BỘ VÀ BUỘC LÀM MỚI
-                const isExpiredLocally = expiry > 0 && expiry <= Date.now();
+                const currentTimestamp = Date.now();
+                const isExpiredLocally = expiry > 0 && expiry <= currentTimestamp;
 
-                // Nếu hết hạn cục bộ (Expiry <= Now) và trạng thái chưa phải là 'expired' -> Buộc kiểm tra lại
+                // 🔥 LOGIC KIỂM TRA HẾT HẠN CỤC BỘ VÀ BUỘC LÀM MỚI (FIX)
                 if (isExpiredLocally && status !== 'expired') {
+                    // Cập nhật status thành 'expired' cục bộ để hiển thị thông báo chính xác
+                    localStorage.setItem('admin_status', 'expired');
+                    status = 'expired';
+                    
+                    // Sau đó, buộc làm mới trạng thái từ Backend
                     forceRefreshStatus(userEmail);
                     return; // Dừng UI để chờ làm mới
                 }
@@ -343,6 +353,7 @@
                 loginBtn.style.display = 'none';
                 userControl.style.display = 'flex';
                 
+                // Kiểm tra cho phép (status phải là 'active' VÀ chưa hết hạn)
                 const isAllowed = (status === 'active' && !isExpiredLocally);
                 let badgeHtml = '';
 
@@ -358,12 +369,12 @@
                     if (status === 'new' || expiry === 0) {
                         statusAlert.innerHTML = `<i class="fas fa-user-clock text-warning fa-lg"></i> <span>Tài khoản mới. Vui lòng <a href="payment.html">Gia Hạn</a> hoặc <a href="lienhe.html">Liên Hệ Admin</a>.</span>`;
                         badgeHtml = `<span class="status-badge badge-expired">MỚI</span>`;
-                    } else if (isExpiredLocally) {
+                    } else if (status === 'expired' || isExpiredLocally) { 
                         statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Tài khoản hết hạn. Vui lòng <a href="payment.html">Gia Hạn</a>.</span>`;
                         badgeHtml = `<span class="status-badge badge-expired">HẾT HẠN</span>`;
                     } else {
-                        // Trạng thái không xác định (mặc định khóa)
-                        statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
+                         statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
+                         badgeHtml = `<span class="status-badge badge-expired">LỖI/KHÔNG RÕ</span>`;
                     }
                 }
 
