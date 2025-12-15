@@ -16,6 +16,7 @@
             --dark-green: #0e5a22; 
             --bg-color: #1a1a1a; 
             --best-value: #ff9800; 
+            --bg-dark: #121212; /* Màu nền cho footer */
         }
         body { 
             font-family: 'Nunito', sans-serif; 
@@ -24,8 +25,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding-top: 5px; 
-            /* XÓA MỌI KHOẢNG TRỐNG */
+            padding-top: 15px; 
             padding-bottom: 0; 
             margin: 0;
             /* NỀN CHẤM BI ĐEN */
@@ -61,12 +61,15 @@
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 15px; 
+            padding: 15px; /* Tối ưu padding trên/dưới */
+            padding-bottom: 40px; /* TĂNG CHIỀU DÀI KHUNG NHÌN CHÍNH */
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
-            margin-bottom: 5px; /* Giảm margin dưới cùng */
+            margin-bottom: 5px; 
         }
+        
+        /* CÁC THÀNH PHẦN BÊN TRONG (Giữ nguyên tối ưu lần trước) */
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
@@ -79,7 +82,6 @@
             margin-bottom: 5px !important; 
         }
         
-        /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
@@ -93,89 +95,30 @@
             box-sizing: border-box; 
             position: relative;
         }
-        
         .package-option { 
             padding: 10px 8px; 
-            border: 2px solid #ddd; 
             border-radius: 12px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            background: white; 
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .package-option.selected { 
-            border-color: var(--primary-green); 
-            background: linear-gradient(145deg, #e9f5eb, #f5fff5);
-            box-shadow: 0 5px 15px rgba(20, 122, 48, 0.3); 
-            transform: translateY(-2px); 
-        }
-        .package-option.best-value {
-            border-color: var(--best-value);
-            box-shadow: 0 0 0 2px var(--best-value), 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px) scale(1.01);
         }
         
-        .package-option h5 { 
-            font-weight: 900; 
-            color: var(--dark-green); 
-            margin-bottom: 3px; 
-            font-size: 1rem; 
-        }
         .price-unit { 
             font-size: 2rem; 
-            font-weight: 900; 
-            color: var(--primary-green); 
             margin-top: 5px; 
             margin-bottom: 5px; 
         }
-        .price-unit small { 
-            font-size: 0.8rem; 
-            color: #888; 
-            font-weight: 600; 
-            display: block; 
-            margin-top: -5px; 
-        }
-        
-        .best-badge {
-            position: absolute; top: -10px; right: -10px; 
-            background: var(--best-value); color: white; padding: 3px 10px;
-            border-radius: 5px; font-weight: 800; font-size: 0.7rem; 
-            transform: rotate(5deg);
-        }
         
         .feature-list { 
-            list-style: none; 
-            padding: 0; 
-            text-align: left; 
             font-size: 0.8rem; 
             margin-top: 5px; 
         }
         .feature-list li { 
             margin-bottom: 1px; 
-            color: #444; 
-            display: flex; 
-            align-items: flex-start;
-        }
-        .feature-list i.fa-check-circle { 
-            margin-right: 5px; 
-            color: var(--primary-green); 
-            font-size: 0.9rem; 
-            margin-top: 2px; 
-            flex-shrink: 0;
         }
         
-        /* ALERT/USER INFO */
         .alert {
             padding: 5px 10px; 
             margin-bottom: 5px !important; 
-            font-size: 0.9rem;
         }
-        .alert strong { font-size: 0.9rem; }
         
         /* MARQUEE */
         .marquee-container { 
@@ -186,55 +129,50 @@
             border-radius: 8px; 
             overflow: hidden; 
         }
-        
+        .marquee-text { 
+            font-weight: 700; 
+            white-space: nowrap; 
+            /* ĐẢM BẢO CHỮ CHẠY */
+            animation: marquee 15s linear infinite; 
+        }
+        @keyframes marquee { 
+            0% { transform: translateX(100%); } 
+            100% { transform: translateX(-100%); } 
+        }
+
         /* BUTTON */
         #btnContinue {
             padding: 8px 30px; 
             font-size: 1rem; 
-            margin-top: 5px !important; 
+            margin-top: 25px !important; /* ĐẨY NÚT XUỐNG DƯỚI */
         }
 
-        /* QR AREA */
-        #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 20px; text-align: center; max-width: 550px; margin: 0 auto;}
-        #qrCodeImg { width: 100%; max-width: 200px; height: auto; border: 4px solid #fff; border-radius: 12px; margin: 10px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .info-detail { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid var(--primary-green); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 10px; }
-        .info-detail strong { color: #d9534f; font-size: 1.2rem; }
-        .info-detail p { font-size: 0.9rem; font-weight: 600; color: #555; }
-        
-        /* MÀN HÌNH CHỜ/THÔNG BÁO */
-        .status-screen {
+        /* KHỐI QR/POLLING */
+        #paymentPollingMode {
+            padding-bottom: 10px;
+        }
+
+        /* ========================================= */
+        /* CSS FOOTER TỐI GIẢN (KHÔI PHỤC) */
+        /* ========================================= */
+        .app-footer {
+            background-color: var(--bg-dark); 
+            color: #ccc;
+            width: 100%;
+            max-width: 1200px;
             text-align: center;
-            padding: 30px 20px;
-            border-radius: 15px;
-            max-width: 550px; margin: 0 auto;
+            padding: 8px 0; 
+            margin-top: 10px; /* Đảm bảo khoảng cách với khối trên */
+            border-radius: 10px 10px 0 0;
+            font-size: 0.75rem; 
         }
-        
-        /* XÓA HOÀN TOÀN CÁC KHỐI DƯ THỪA Ở CHÂN TRANG */
-        
-        @media (max-width: 1200px) {
-            .package-option-wrapper { 
-                width: calc(33.33% - 10px); 
-            }
-        }
-        @media (max-width: 992px) {
-            .package-option-wrapper { 
-                width: calc(50% - 10px); 
-            }
-        }
-        @media (max-width: 576px) {
-            .payment-container { padding: 10px; }
-            .package-option-wrapper { 
-                width: 100%; 
-                margin-bottom: 5px; 
-            }
-            .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
-        }
+
     </style>
 </head>
 <body>
 
 <div class="header-controls">
-    <button class="btn-control" onclick="returnToSelection()">
+    <button class="btn-control" onclick="window.location.href='admin.html'">
         <i class="fas fa-arrow-left me-1"></i> Trở Về
     </button>
     <button class="btn-control" onclick="window.location.href='admin.html'">
@@ -312,6 +250,9 @@
     </div>
 </div>
 
+<footer class="app-footer">
+    © 2025 Tiện Ích Chọn Ảnh | Hỗ Trợ Kỹ Thuật: <a href="https://zalo.me/0879029170" target="_blank" style="color: var(--primary-green); text-decoration: none;">Zalo</a>
+</footer>
 <div id="copyNotification" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; display: none;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -635,7 +576,7 @@
         
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
-        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
+        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
