@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gia Hạn - Studio LNP</title>
+    <title> - Studio LNP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
@@ -123,30 +123,31 @@
             box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); 
         }
         
-        /* RIBBON BADGE */
+        /* RIBBON BADGE CẬP NHẬT: Nhỏ hơn, cố định vị trí để không che chữ */
         .best-badge {
             position: absolute;
             top: 0; 
             right: 0; 
             overflow: hidden;
-            width: 100px;
-            height: 100px;
+            width: 90px; /* Nhỏ hơn */
+            height: 90px;
         }
         .best-badge:before {
-            content: '⭐ Tốt nhất';
+            content: '⭐ TỐT NHẤT'; /* IN HOA để dễ nhìn */
             position: absolute;
-            top: 20px;
-            right: -30px;
-            padding: 2px 30px;
+            top: 18px; /* Dịch lên một chút */
+            right: -25px; /* Dịch vào một chút */
+            padding: 2px 25px;
             background-color: var(--best-value);
             color: white;
             font-weight: 900;
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* Nhỏ hơn */
             text-align: center;
             line-height: 25px;
             transform: rotate(45deg);
             z-index: 10;
             box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            white-space: nowrap; /* KHÔNG CHO XUỐNG DÒNG */
         }
 
         .package-option h5 { 
@@ -242,28 +243,85 @@
             border-color: var(--dark-green) !important;
         }
 
-        /* KHỐI QR/POLLING */
-        #paymentArea { padding: 20px; text-align: center; } 
-        .info-detail {
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            padding: 15px 0;
-            margin-bottom: 15px;
-        }
-        .info-detail strong { 
-            font-size: 1.4rem; /* Tăng kích thước chữ số tiền/mã */
-            font-weight: 900;
+        /* ========================================= */
+        /* UI KHỐI QR/POLLING CẬP NHẬT */
+        /* ========================================= */
+        #paymentArea { 
+            padding: 10px; 
+            text-align: center; 
         } 
-        .info-detail #displayPaymentCode { color: var(--primary-green) !important; }
-        
-        /* Kích thước QR */
+
+        .qr-section-wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: flex-start;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Khối QR bên trái */
+        .qr-image-container {
+            flex-shrink: 0;
+            width: 300px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
         #qrCodeImg {
-            max-width: 280px; /* Kích thước vừa phải */
+            max-width: 100%; 
             height: auto;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 5px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Khối thông tin bên phải */
+        .payment-info-container {
+            flex-grow: 1;
+            min-width: 300px;
+            padding: 15px 0;
+        }
+        .info-detail-item {
+            background-color: #f7fcf7;
+            border-left: 5px solid var(--primary-green);
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .info-detail-item:last-child {
+            border-left: 5px solid #007bff; /* Màu Xanh dương nổi bật cho mã */
+        }
+
+        .info-detail-item p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+        .info-detail-item strong { 
+            font-size: 1.7rem; 
+            font-weight: 900;
+            display: block;
+            word-wrap: break-word; /* Đảm bảo mã dài vẫn nằm gọn */
+        } 
+        .info-detail-item #displayAmount { 
+            color: #dc3545 !important; 
+        }
+        .info-detail-item #displayPaymentCode { 
+            color: #007bff !important; 
+            cursor: pointer;
+            font-size: 1.5rem; /* Mã nhỏ hơn số tiền để phân biệt */
+        }
+        
+        .payment-info-container small.d-block {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #999;
         }
 
         /* RESPONSIVE */
@@ -280,6 +338,21 @@
             .package-option { min-height: 360px; }
             .package-select { gap: 10px; }
         }
+        @media (max-width: 768px) {
+            .qr-section-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .qr-image-container {
+                width: 100%; 
+                max-width: 250px;
+                padding: 10px;
+            }
+            .payment-info-container {
+                min-width: unset;
+                width: 100%;
+            }
+        }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
             .package-option-wrapper { 
@@ -290,11 +363,10 @@
             .package-option { min-height: auto; padding: 12px; }
             .price-unit { font-size: 2.2rem; margin-top: 6px; margin-bottom: 6px; }
             .price-unit small.currency { font-size: 1.1rem; }
-            .info-detail strong { font-size: 1.2rem; }
+            .info-detail-item strong { font-size: 1.4rem; }
+            .info-detail-item #displayPaymentCode { font-size: 1.2rem; }
             .feature-list { font-size: 0.85rem; margin-top: 8px; }
             .feature-list li { margin-bottom: 5px; }
-            #qrCodeImg { max-width: 200px; margin-bottom: 10px; }
-            .info-detail { padding: 10px 0; }
         }
     </style>
 </head>
@@ -341,19 +413,27 @@
         
         <div id="paymentArea">
             <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
-            <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản** dưới đây.</p>
+            <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản**.</p>
 
-            <img id="qrCodeImg" src="" alt="Mã QR VietQR"> 
-            
-            <div class="row g-3 info-detail text-start">
-                <div class="col-md-4 col-sm-12">
-                    <p class="mb-0 text-muted">Số Tiền Cần Chuyển:</p>
-                    <strong id="displayAmount" class="text-danger">0 VNĐ</strong>
+            <div class="qr-section-wrapper">
+                
+                <div class="qr-image-container">
+                    <img id="qrCodeImg" src="" alt="Mã QR VietQR">
                 </div>
-                <div class="col-md-8 col-sm-12">
-                    <p class="mb-0 text-muted">Nội Dung Chuyển Khoản (BẮT BUỘC):</p>
-                    <strong id="displayPaymentCode" class="text-primary" style="cursor: pointer;" onclick="copyPaymentCode()">MÃ_GIAO_DỊCH</strong>
-                    <small class="text-muted d-block mt-1">Nhấn vào mã để sao chép.</small>
+                
+                <div class="payment-info-container">
+                    
+                    <div class="info-detail-item">
+                        <p>Số Tiền Cần Chuyển (BẮT BUỘC CHÍNH XÁC):</p>
+                        <strong id="displayAmount">0 VNĐ</strong>
+                    </div>
+
+                    <div class="info-detail-item">
+                        <p>Nội Dung Chuyển Khoản (Nhấn để Sao Chép):</p>
+                        <strong id="displayPaymentCode" onclick="copyPaymentCode()">MÃ_GIAO_DỊCH</strong>
+                        <small class="d-block">Hãy chuyển chính xác nội dung này.</small>
+                    </div>
+
                 </div>
             </div>
             
@@ -386,14 +466,14 @@
     // --- CẤU HÌNH HẰNG SỐ ---
     const ADMIN_PAGE_URL = 'admin.html';
     const FALLBACK_NAME = 'Khách hàng thân thiết';
-    const PAYMENT_CODE_PREFIX = 'LNP'; // Tiền tố Mã giao dịch
+    const PAYMENT_CODE_PREFIX = 'LNP'; 
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
     
-    // ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN ĐÃ ĐƯỢC CHÈN LẠI
+    // ĐÃ CẬP NHẬT ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN
     const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
 
 
-    // CẤU HÌNH N8N
+    // CẤU HÌNH N8N (Giữ nguyên theo code cũ của bạn)
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
         N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',   
@@ -468,7 +548,6 @@
     }
 
     function generateNewPaymentCode() {
-        // Dùng tiền tố và 6 số ngẫu nhiên
         return PAYMENT_CODE_PREFIX + generateRandom6Digit();
     }
     
@@ -742,7 +821,7 @@
 
         if (savedAmount && savedCode) {
             // Nếu có giao dịch đang chờ, hiển thị khu vực thanh toán
-            document.getElementById('qrCodeImg').src = STATIC_QR_IMAGE_URL; // Gán lại QR tĩnh
+            document.getElementById('qrCodeImg').src = STATIC_QR_IMAGE_URL; 
             document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
 
