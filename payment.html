@@ -38,7 +38,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 10px; 
+            margin-bottom: 5px; /* Tối ưu margin */
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -60,7 +60,7 @@
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 20px; 
+            padding: 15px; /* Tối ưu padding tổng thể */
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
@@ -69,33 +69,33 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
             text-align: center; 
-            font-size: 1.8rem; 
+            font-size: 1.6rem; /* Tối ưu cỡ chữ */
         }
         h3 {
-            font-size: 1.4rem; 
-            margin-bottom: 8px !important; 
+            font-size: 1.3rem; /* Tối ưu cỡ chữ */
+            margin-bottom: 5px !important; 
         }
         
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 15px; 
-            margin-bottom: 20px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 11.25px); 
-            min-width: 230px; 
+            width: calc(25% - 7.5px); 
+            min-width: 200px; 
             box-sizing: border-box; 
             position: relative;
         }
         
         .package-option { 
-            padding: 20px 15px; 
-            min-height: 580px; 
+            padding: 15px 10px; /* Tối ưu padding */
+            min-height: 450px; /* GIẢM MIN-HEIGHT ĐỂ KHUNG NHỎ LẠI */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -123,34 +123,34 @@
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 5px; 
-            font-size: 1.2rem; 
+            margin-bottom: 3px; 
+            font-size: 1.1rem; /* Tối ưu cỡ chữ */
         }
         .price-unit { 
-            font-size: 2.8rem; 
+            font-size: 2.5rem; /* GIẢM CỠ CHỮ GIÁ */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 20px; 
-            margin-bottom: 20px; 
-            line-height: 1; /* Cố định chiều cao dòng cho giá trị chính */
+            margin-top: 15px; 
+            margin-bottom: 15px; 
+            line-height: 1; 
         }
         .price-unit span {
-            /* Mức giá chính */
-            white-space: nowrap; /* NGĂN SỐ TIỀN VÀ VNĐ BỊ XUỐNG DÒNG */
+            white-space: nowrap; 
         }
         .price-unit small { 
-            font-size: 1rem; 
+            font-size: 0.9rem; /* GIẢM CỠ CHỮ PHỤ */
             color: #888; 
             font-weight: 600; 
-            display: block; /* ĐẢM BẢO XUỐNG DÒNG */
-            margin-top: 5px; /* Khoảng cách giữa giá trị và thời hạn */
+            display: block; 
+            margin-top: 5px; 
             line-height: 1;
         }
         
         .best-badge {
-            position: absolute; top: -15px; right: -15px; 
-            background: var(--best-value); color: white; padding: 5px 12px;
-            border-radius: 5px; font-weight: 800; font-size: 0.8rem; 
+            position: absolute; top: -12px; /* Tối ưu vị trí */
+            right: -12px; /* Tối ưu vị trí */
+            background: var(--best-value); color: white; padding: 4px 10px;
+            border-radius: 5px; font-weight: 800; font-size: 0.75rem; 
             transform: rotate(5deg);
         }
         
@@ -158,40 +158,39 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 1rem; 
-            margin-top: 20px; 
+            font-size: 0.9rem; /* Tối ưu cỡ chữ */
+            margin-top: 15px; 
             flex-grow: 1; 
         }
         .feature-list li { 
-            margin-bottom: 8px; 
+            margin-bottom: 5px; 
             color: #444; 
             display: flex; 
             align-items: flex-start;
             line-height: 1.3; 
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 10px; 
+            margin-right: 8px; 
             color: var(--primary-green); 
-            font-size: 1.1rem; 
+            font-size: 1rem; /* Tối ưu cỡ chữ icon */
             margin-top: 2px; 
             flex-shrink: 0;
         }
         
         /* ALERT/USER INFO */
         .alert {
-            padding: 10px 15px; 
-            margin-bottom: 10px !important; 
-            font-size: 1rem;
+            padding: 8px 15px; 
+            margin-bottom: 8px !important; 
+            font-size: 0.95rem;
         }
-        .alert strong { font-size: 1rem; }
         
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
             color: white; 
-            padding: 8px 0; 
-            margin-bottom: 15px; 
-            border-radius: 10px; 
+            padding: 7px 0; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
             overflow: hidden; 
         }
         .marquee-text { 
@@ -206,20 +205,20 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 12px 40px; 
-            font-size: 1.2rem; 
-            margin-top: 30px !important; 
+            padding: 10px 30px; 
+            font-size: 1.1rem; 
+            margin-top: 20px !important; 
             position: relative; 
         }
 
         /* KHỐI QR/POLLING */
-        #paymentArea { padding: 30px; }
+        #paymentArea { padding: 25px; }
         
         @media (max-width: 992px) {
             .package-option-wrapper { 
                 width: calc(50% - 10px); 
             }
-            .package-option { min-height: 500px; }
+            .package-option { min-height: 400px; }
         }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
@@ -228,7 +227,7 @@
                 margin-bottom: 10px; 
             }
             .package-select { flex-direction: column; gap: 10px; padding: 0 5px; }
-            .package-option { min-height: 400px; }
+            .package-option { min-height: 350px; }
         }
     </style>
 </head>
@@ -384,7 +383,7 @@
 
     // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN'); // Chỉ trả về số tiền, không có VNĐ
+        return amount.toLocaleString('vi-VN'); 
     }
     
     function generateRandom6Digit() {
@@ -455,7 +454,7 @@
             });
             featureListHTML += '</ul>';
 
-            // Cấu trúc mới: Giá trị VNĐ (dòng 1) và / x tháng (dòng 2)
+            // Cấu trúc: Giá trị VNĐ (dòng 1) và / x tháng (dòng 2)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
@@ -491,7 +490,7 @@
         
         paymentCode = generateNewPaymentCode(); 
         localStorage.setItem('current_payment_code', paymentCode);
-        localStorage.setItem('current_payment_amount', finalAmount); // Lưu số tiền thô
+        localStorage.setItem('current_payment_amount', finalAmount); 
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
@@ -513,7 +512,7 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            document.getElementById('displayAmount').innerText = formatCurrency(finalAmount) + ' VNĐ';
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
             document.getElementById('selectionMode').style.display = 'none';
