@@ -8,14 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ========================================= */
-        /* CSS GIAO DIỆN CHUNG & NỀN CHẤP BI - TONE XANH LÁ */
-        /* ========================================= */
+        /* [CSS Cũ - Giữ nguyên] */
         :root { 
-            --primary-green: #147a30; /* Xanh Lá Chính */
-            --dark-green: #0e5a22; /* Xanh Lá Đậm */
+            --primary-green: #147a30; 
+            --dark-green: #0e5a22; 
             --bg-color: #1a1a1a; 
-            --best-value: #ff9800; /* Màu Cam/Vàng cho badge tốt nhất */
+            --best-value: #ff9800; 
         }
         body { 
             font-family: 'Nunito', sans-serif; 
@@ -117,13 +115,11 @@
             box-shadow: 0 10px 30px rgba(20, 122, 48, 0.35); 
         }
         
-        /* Gói tốt nhất: Thêm lại viền và đổ bóng màu cam */
         .package-option.best-value {
             border-color: var(--best-value);
             box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); 
         }
         
-        /* RIBBON BADGE CẬP NHẬT: Đã sửa lỗi che chữ */
         .best-badge {
             position: absolute;
             top: 0; 
@@ -157,7 +153,6 @@
             font-size: 1.3rem; 
         }
 
-        /* 3 Dòng Giá */
         .price-unit { 
             font-size: 2.8rem; 
             font-weight: 900; 
@@ -209,7 +204,6 @@
             font-size: 0.95rem;
         }
 
-        /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
             padding: 7px 0; 
@@ -229,7 +223,6 @@
             100% { transform: translateX(-100%); } 
         }
 
-        /* BUTTON */
         #btnContinue {
             padding: 10px 25px; 
             font-size: 1.1rem; 
@@ -244,26 +237,22 @@
             border-color: var(--dark-green) !important;
         }
 
-        /* ========================================= */
-        /* UI KHỐI QR/POLLING CẬP NHẬT (Căn giữa) */
-        /* ========================================= */
         #paymentArea { 
             padding: 10px; 
             text-align: center; 
-            max-width: 600px; /* Giới hạn chiều rộng cho khối QR để đẹp hơn */
+            max-width: 600px; 
             margin: 0 auto;
         } 
 
-        /* Khối QR */
         .qr-image-container {
             width: 100%;
-            max-width: 300px; /* Kích thước tối đa của ảnh */
+            max-width: 300px; 
             padding: 10px;
             border: 1px solid #e0e0e0;
             border-radius: 15px;
             background: #fff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            margin: 20px auto 30px auto; /* Canh giữa và tạo khoảng cách */
+            margin: 20px auto 30px auto; 
         }
         #qrCodeImg {
             max-width: 100%; 
@@ -272,23 +261,22 @@
             display: block;
         }
         
-        /* Khối thông tin nằm dưới QR */
         .payment-info-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Canh giữa nội dung */
+            align-items: center; 
         }
 
         .info-detail-item {
             width: 100%;
-            max-width: 450px; /* Giới hạn chiều rộng thông tin */
+            max-width: 450px; 
             background-color: #f7fcf7;
             border-left: 5px solid var(--primary-green);
             padding: 12px 15px;
             margin-bottom: 15px;
             border-radius: 8px;
-            text-align: center; /* Canh giữa chữ */
+            text-align: center; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .info-detail-item:last-child {
@@ -322,7 +310,6 @@
             color: #999;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
             .package-option-wrapper { 
@@ -430,83 +417,37 @@
     // --- CẤU HÌNH HẰNG SỐ ---
     const ADMIN_PAGE_URL = 'admin.html';
     const FALLBACK_NAME = 'Khách hàng thân thiết';
-    // CẬP NHẬT: Mã giao dịch mới là SEVQR + 6 số ngẫu nhiên
     const PAYMENT_CODE_PREFIX = 'SEVQR'; 
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
-    
-    // ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN (Dùng cho giao dịch đang chờ khi reload)
-    // Giữ lại URL này vì chúng ta không lưu Data URI vào Local Storage
     const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
-
 
     // CẤU HÌNH N8N
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
-        N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',   
-        N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'   
+        N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',    
+        N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'    
     };
 
     // --- GÓI GIA HẠN (Giữ nguyên) ---
     const PAYMENT_PACKAGES = [
-        {   
-            months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000,   
-            features: [
-                { text: "Lưu trữ 1 tháng", icon: "fas fa-check-circle" },   
-                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },   
-                { text: "Tốc độ thumbnail chuẩn", icon: "fas fa-check-circle" },
-                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" },   
-                { text: "Hỗ trợ Zalo/Email", icon: "fas fa-check-circle" }
-            ]   
-        },   
-        {   
-            months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000,   
-            features: [
-                { text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" },   
-                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },   
-                { text: "Tốc độ thumbnail Nhanh hơn", icon: "fas fa-check-circle" },
-                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" },   
-                { text: "Hỗ trợ ưu tiên (Trong giờ hành chính)", icon: "fas fa-check-circle" }
-            ]
-        },   
-        {   
-            months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000,   
-            features: [
-                { text: "Lưu trữ 6 tháng (Rất ổn định)", icon: "fas fa-check-circle" },   
-                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },   
-                { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
-                { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },   
-                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" },  
-                { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }   
-            ]   
-        },   
-        {   
-            months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000,   
-            features: [
-                { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" },   
-                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },   
-                { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" },
-                { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },   
-                { text: "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" },
-                { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" },   
-                { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" }   
-            ],
-            isBest: true
-        }
+        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: [{ text: "Lưu trữ 1 tháng", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ thumbnail chuẩn", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Hỗ trợ Zalo/Email", icon: "fas fa-check-circle" }] },    
+        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: [{ text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ thumbnail Nhanh hơn", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Hỗ trợ ưu tiên (Trong giờ hành chính)", icon: "fas fa-check-circle" }] },    
+        { months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000, features: [{ text: "Lưu trữ 6 tháng (Rất ổn định)", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" }, { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }, { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }] },    
+        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: [{ text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" }, { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" }, { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }, { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" } ], isBest: true }
     ];
 
     let selectedPackage = null;
     let finalAmount = 0;
     const VN_CURRENCY_SYMBOL = 'VNĐ';
     
-    // Khai báo biến cần thiết
     let userEmail;
     let paymentCode;
     let pollingInterval;
 
 
-    // --- HÀM TIỆN ÍCH (Giữ nguyên) ---
+    // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN');    
+        return amount.toLocaleString('vi-VN');      
     }
     
     function generateRandom6Digit() {
@@ -514,14 +455,13 @@
     }
 
     function generateNewPaymentCode() {
-        // SỬ DỤNG TIỀN TỐ MỚI VÀ KHÔNG CÓ GẠCH DƯỚI
         return PAYMENT_CODE_PREFIX + generateRandom6Digit();
     }
     
     function copyPaymentCode() {
         const code = document.getElementById('displayPaymentCode').innerText;
         navigator.clipboard.writeText(code).then(() => {
-             showNotification(`Đã sao chép nội dung chuyển khoản: ${code}`);
+              showNotification(`Đã sao chép nội dung chuyển khoản: ${code}`);
         }).catch(err => {
             console.error('Không thể sao chép: ', err);
             alert("Lỗi sao chép tự động. Vui lòng sao chép thủ công.");
@@ -540,6 +480,7 @@
 
         localStorage.removeItem('current_payment_code');    
         localStorage.removeItem('current_payment_amount');
+        localStorage.removeItem('current_package_months'); 
 
         document.getElementById('paymentPollingMode').style.display = 'none';
         document.getElementById('selectionMode').style.display = 'block';
@@ -552,12 +493,11 @@
 
         document.getElementById('selectionMode').scrollIntoView({ behavior: 'smooth' });
         
-        // Bỏ chọn gói đã chọn (nếu có)
         document.querySelectorAll('.package-option').forEach(el => el.classList.remove('selected'));
     }
 
 
-    // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI (Giữ nguyên) ---
+    // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
     
     function renderPackages() {
         const container = document.getElementById('packageSelection');
@@ -571,10 +511,9 @@
             wrapper.className = 'package-option-wrapper';
 
             const element = document.createElement('div');
-            element.className = 'package-option';    
+            element.className = 'package-option';      
             if(pkg.isBest) element.classList.add('best-value');
             
-            // Cấu trúc dải băng ôm góc
             let bestBadgeHTML = pkg.isBest ? `<div class="best-badge"></div>` : '';
 
             let featureListHTML = '<ul class="feature-list">';
@@ -583,7 +522,6 @@
             });
             featureListHTML += '</ul>';
 
-            // Cấu trúc: Giá trị (dòng 1), VNĐ (dòng 2), và / x tháng (dòng 3)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
@@ -615,28 +553,27 @@
         document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)} VNĐ)`;
     }
     
-    // ⭐ ĐOẠN CODE ĐÃ SỬA: Xử lý phản hồi QR ĐỘNG từ n8n
+    // Xử lý phản hồi QR ĐỘNG từ n8n
     async function processPayment() {
         if (!selectedPackage) return alert("Vui lòng chọn gói gia hạn!");
         
-        // Cập nhật mã giao dịch và lưu vào LocalStorage
-        paymentCode = generateNewPaymentCode(); 
+        paymentCode = generateNewPaymentCode();  
         localStorage.setItem('current_payment_code', paymentCode);
         localStorage.setItem('current_payment_amount', finalAmount); 
+        localStorage.setItem('current_package_months', selectedPackage.months); 
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
         btn.disabled = true;
 
         try {
-            // 1. Gọi Webhook n8n (hoặc API của bạn) để lưu trạng thái Pending
             const response = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     email: userEmail,
                     paymentCode: paymentCode,
-                    amount: finalAmount,   
+                    amount: finalAmount,    
                     months: selectedPackage.months,
                     status: 'PENDING',
                     timestamp: Date.now()
@@ -645,38 +582,36 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            // ⭐ 1. NHẬN DỮ LIỆU TỪ N8N (chứa qrDataURL)
             const data = await response.json(); 
-            const dynamicQrDataURL = data.qrDataURL; // Nhận chuỗi Base64 Data URI
+            const dynamicQrDataURL = data.qrDataURL; 
             
             if (!dynamicQrDataURL) throw new Error("Lỗi: Không nhận được QR Data URL từ server.");
             
-            // ⭐ 2. CẬP NHẬT THÔNG TIN VÀ ẢNH QR ĐỘNG
-            document.getElementById('qrCodeImg').src = dynamicQrDataURL; // Gán Data URI
+            document.getElementById('qrCodeImg').src = dynamicQrDataURL; 
             document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
-            // 3. Chuyển sang chế độ thanh toán (Giữ nguyên)
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
             document.getElementById('paymentPollingMode').scrollIntoView({ behavior: 'smooth' });
             
-            startPaymentCheckPolling(userEmail, paymentCode);
+            startPaymentCheckPolling(userEmail, paymentCode, selectedPackage);
             
         } catch (e) {
             alert("Lỗi khởi tạo thanh toán: " + e.message + ". Vui lòng thử lại sau.");
-            btn.innerHTML = CONTINUE_BTN_TEXT;    
+            btn.innerHTML = CONTINUE_BTN_TEXT;     
             btn.disabled = false;
         }
     }
     
-    // --- POLLING LOGIC (Giữ nguyên) ---
+    // --- POLLING LOGIC ---
 
     async function checkStatusViaPolling(email, paymentCode) {
-        const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`;    
+        const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`;     
 
         try {
+            // Thực hiện Request Polling
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -684,83 +619,93 @@
                     'Cache-Control': 'no-cache'
                 },
                 body: JSON.stringify({
-                    action: 'check_status',    
-                    email: email,    
-                    paymentCode: paymentCode    
+                    action: 'check_status',     
+                    email: email,     
+                    paymentCode: paymentCode     
                 })
             });
             
-            if (response.status === 304) {
-                console.log("Polling: 304 Not Modified. Dữ liệu chưa thay đổi.");
-                return 'pending';    
+            // ⭐ BẮT TRẠNG THÁI CHUYỂN HƯỚNG TỪ N8N (302)
+            if (response.status === 302 || response.redirected) {
+                console.log("Polling success! N8N triggered redirect (302).");
+                return { user_status: 'redirected' }; 
+            }
+
+            if (response.status === 200) {
+                 // Nếu n8n trả về 200 (Pending)
+                const data = await response.json();     
+                return data; 
             }
             
-            const data = await response.json();    
-            return data.user_status;    
+            // Trường hợp lỗi hoặc 304 (Not Modified)
+            return { user_status: 'error' };
 
         } catch (e) {
             console.error("Lỗi Polling:", e);
-            return 'error';
+            return { user_status: 'error' };
         }
     }
-
-    function startPaymentCheckPolling(email, paymentCode) {
+    
+    // ⭐ HÀM CHÍNH: CHỜ N8N GỬI REDIRECT (302)
+    function startPaymentCheckPolling(email, paymentCode, pkg) {
         if (pollingInterval) clearInterval(pollingInterval);
         
         let attempts = 0;
-        const maxAttempts = 30; // 30 lần x 20 giây = 10 phút
+        const maxAttempts = 60; // 60 lần x 3 giây = 3 phút
         
         pollingInterval = setInterval(async () => {
             attempts++;
             if (attempts >= maxAttempts) {
                 clearInterval(pollingInterval);
-                console.log("Đã dừng Polling sau 10 phút.");
+                console.log("Đã dừng Polling sau 3 phút.");
                 showNotification("Hết thời gian chờ Polling. Vui lòng kiểm tra lại thanh toán.");
                 return;
             }
 
-            const status = await checkStatusViaPolling(email, paymentCode);
+            const data = await checkStatusViaPolling(email, paymentCode);
+            const status = data.user_status;
 
-            if (status === 'active') {
+            if (status === 'redirected') {
+                // Nếu n8n đã gửi mã 302 (Redirect), Polling tự dừng.
                 clearInterval(pollingInterval);
+                console.log("Polling stopped because N8N is handling redirect.");
                 
+                // Hiển thị thông báo thành công (Dù Redirect đã xảy ra, đây là dự phòng UI)
                 document.getElementById('paymentPollingMode').style.display = 'none';
                 document.getElementById('successMode').style.display = 'block';
                 document.getElementById('successMode').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
 
-                forceRefreshAdminStatus(email);    
+            if (status === 'active') {
+                 // Trường hợp này không nên xảy ra nếu 302 hoạt động, nhưng là dự phòng chuyển hướng JS
+                clearInterval(pollingInterval);
+                console.log("Polling success, forcing local redirect (Fallback).");
+                handleSuccessAndGoHome(); 
+                return;
             }
             
             console.log(`Polling check status: ${status} (Lần ${attempts})`);
-        }, 20000);    
-    }
+        }, 3000); // Tần suất Polling: 3 giây
 
-    function forceRefreshAdminStatus(email) {
-        if (pollingInterval) clearInterval(pollingInterval);
-        
-        const N8N_CALLBACK_URL = PAYMENT_CONFIG.N8N_OAUTH_CALLBACK;    
-        const redirectUrl = 'https://phuoclam095-bot.github.io/chonanhtudong/admin.html';    
-        
-        // Gắn thêm cache buster để đảm bảo dữ liệu mới nhất
-        const refreshApiUrl = `${N8N_CALLBACK_URL}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}&_t=${Date.now()}`;
-    
-        localStorage.removeItem('current_payment_code');    
-        localStorage.removeItem('current_payment_amount');
-    
-        window.location.href = refreshApiUrl;    
     }
 
     function handleSuccessAndGoHome() {
         if (pollingInterval) clearInterval(pollingInterval);
         
         const email = localStorage.getItem('admin_email');
-        
-        if(document.getElementById('successMode').style.display === 'block') {
-            forceRefreshAdminStatus(email);    
+        const expiryTime = Date.now() + (31536000000 * 10); 
+
+        // Chuyển hướng thủ công (sau khi nhấn nút hoặc sau khi chuyển hướng N8N thất bại)
+        if(document.getElementById('successMode').style.display === 'block' || confirm('Bạn có chắc chắn đã chuyển khoản và muốn về trang chủ?')) {
+             const redirectUrl = `${ADMIN_PAGE_URL}?user_status=active&user_expiry=${expiryTime}&user_email=${encodeURIComponent(email)}`;
+             window.location.href = redirectUrl;
+
         } else {
             localStorage.removeItem('current_payment_code');    
             localStorage.removeItem('current_payment_amount');
-            window.location.href = ADMIN_PAGE_URL;    
+            localStorage.removeItem('current_package_months');
+            window.location.href = ADMIN_PAGE_URL;     
         }
     }
 
@@ -768,7 +713,7 @@
         return email.split('@')[0];
     }
 
-    // ⭐ ĐOẠN CODE ĐÃ SỬA: Xử lý giao dịch đang chờ (sử dụng ảnh tĩnh)
+    // Xử lý giao dịch đang chờ và Khởi tạo
     function checkLoginAndInit() {
         userEmail = localStorage.getItem('admin_email');
         
@@ -790,13 +735,24 @@
         
         const savedAmount = localStorage.getItem('current_payment_amount');
         const savedCode = localStorage.getItem('current_payment_code');
+        const savedMonths = localStorage.getItem('current_package_months');
 
         document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
         document.getElementById('btnContinue').disabled = true;
+        
+        if (savedMonths) {
+            selectedPackage = PAYMENT_PACKAGES.find(p => p.months == savedMonths);
+            if (selectedPackage) {
+                document.querySelectorAll('.package-option').forEach(el => {
+                    if (el.innerText.includes(selectedPackage.name)) {
+                        el.classList.add('selected');
+                    }
+                });
+            }
+        }
 
         if (savedAmount && savedCode) {
-            // Nếu có giao dịch đang chờ, hiển thị khu vực thanh toán
-            // CHÚ Ý: Dùng ảnh tĩnh vì chuỗi qrDataURL quá dài để lưu Local Storage
+            // Trường hợp có giao dịch đang chờ, tải lại UI và Polling
             document.getElementById('qrCodeImg').src = STATIC_QR_IMAGE_URL; 
             document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
@@ -805,7 +761,7 @@
             document.getElementById('paymentPollingMode').style.display = 'block';
             
             document.getElementById('paymentPollingMode').scrollIntoView();
-            startPaymentCheckPolling(userEmail, savedCode);    
+            startPaymentCheckPolling(userEmail, savedCode, selectedPackage);   
         } else {
             document.getElementById('selectionMode').style.display = 'block';
             document.getElementById('paymentPollingMode').style.display = 'none';
