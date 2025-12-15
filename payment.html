@@ -104,7 +104,7 @@
             justify-content: space-between;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
             text-align: center;
-            overflow: hidden; 
+            overflow: hidden; /* QUAN TRỌNG: để ribbon không tràn ra ngoài */
         }
         .package-option:hover {
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
@@ -122,23 +122,33 @@
             box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); 
         }
         
-        /* RIBBON BADGE */
+        /* RIBBON BADGE (Đã chỉnh sửa để ôm sát góc) */
         .best-badge {
             position: absolute;
-            top: 20px; 
-            right: -25px; 
-            width: 120px; 
-            padding: 5px 0; 
+            top: -15px; /* Đẩy lên để phần chéo nằm trên cạnh trên */
+            right: -15px; /* Đẩy sang phải để phần chéo nằm trên cạnh phải */
+            width: 100px; /* Chiều dài dải băng */
+            height: 40px; /* Chiều cao dải băng */
             background-color: var(--best-value); 
             color: white;
             font-weight: 900;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            line-height: 40px; /* Căn giữa chữ theo chiều dọc */
             transform: rotate(45deg); 
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
             z-index: 10;
+            /* Tạo hình dải băng chéo cắt góc */
+            /* Sử dụng clip-path để cắt dải băng ôm sát góc */
+            transform-origin: 50% 50%;
         }
         
+        /* Chữ bên trong dải băng */
+        .best-badge span {
+             display: block;
+             /* Giảm độ dài text để ôm sát hơn */
+             width: 100%;
+        }
+
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
@@ -210,7 +220,6 @@
             font-size: 1.05rem; 
             white-space: nowrap; 
             animation: marquee 15s linear infinite; 
-            /* THAY ĐỔI MÀU CHỮ CHẠY THÀNH CAM */
             color: var(--best-value); 
         }
         @keyframes marquee { 
@@ -491,8 +500,11 @@
             element.className = 'package-option';    
             if(pkg.isBest) element.classList.add('best-value');
             
-            // Sử dụng lớp mới cho dải băng
-            let bestBadgeHTML = pkg.isBest ? `<div class="best-badge"><i class="fas fa-star me-1"></i>Tốt nhất</div>` : '';
+            // Cấu trúc dải băng ôm góc
+            let bestBadgeHTML = pkg.isBest ? `
+                <div class="best-badge">
+                    <span><i class="fas fa-star me-1"></i>Tốt nhất</span>
+                </div>` : '';
 
             let featureListHTML = '<ul class="feature-list">';
             pkg.features.forEach(f => {
