@@ -24,7 +24,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding-top: 5px; 
+            padding-top: 10px; 
             padding-bottom: 5px; 
             margin: 0;
             /* NỀN CHẤM BI ĐEN */
@@ -38,7 +38,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 5px; 
+            margin-bottom: 10px; /* Tăng margin */
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -56,11 +56,10 @@
 
         /* CARD CHÍNH */
         .payment-container { 
-            /* Nền Gradient xanh lá/trắng */
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 15px; 
+            padding: 20px; /* TĂNG PADDING TỔNG THỂ */
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
@@ -69,35 +68,35 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 8px; 
+            margin-bottom: 15px; 
             text-align: center; 
-            font-size: 1.5rem; 
+            font-size: 1.8rem; /* TĂNG CỠ CHỮ */
         }
         h3 {
-            font-size: 1.2rem; 
-            margin-bottom: 5px !important; 
+            font-size: 1.4rem; /* TĂNG CỠ CHỮ */
+            margin-bottom: 8px !important; 
         }
         
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 10px; 
-            margin-bottom: 10px; 
+            gap: 15px; /* TĂNG GAP NHẸ */
+            margin-bottom: 20px; /* TĂNG MARGIN */
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 7.5px); 
-            min-width: 200px; 
+            width: calc(25% - 11.25px); /* Điều chỉnh width theo gap 15px */
+            min-width: 230px; 
             box-sizing: border-box; 
             position: relative;
         }
         
         .package-option { 
-            padding: 15px 10px; /* TĂNG PADDING DỌC */
-            min-height: 480px; /* SET MIN-HEIGHT CHO GÓI ĐỂ KÉO DÀI KHUNG */
+            padding: 20px 10px; /* TĂNG PADDING DỌC */
+            min-height: 520px; /* TĂNG MIN-HEIGHT ĐỂ KÉO DÀI KHUNG */
             border: 2px solid #ddd; 
-            border-radius: 12px; 
+            border-radius: 15px; 
             cursor: pointer; 
             transition: all 0.3s; 
             background: white; 
@@ -105,46 +104,46 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             text-align: center;
         }
         .package-option.selected { 
             border-color: var(--primary-green); 
             background: linear-gradient(145deg, #e9f5eb, #f5fff5);
-            box-shadow: 0 5px 15px rgba(20, 122, 48, 0.3); 
-            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(20, 122, 48, 0.3); 
+            transform: translateY(-3px); 
         }
         .package-option.best-value {
             border-color: var(--best-value);
-            box-shadow: 0 0 0 2px var(--best-value), 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 0 0 3px var(--best-value), 0 8px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px) scale(1.01);
         }
         
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 3px; 
-            font-size: 1rem; 
+            margin-bottom: 5px; 
+            font-size: 1.1rem; /* TĂNG CỠ CHỮ */
         }
         .price-unit { 
-            font-size: 2rem; 
+            font-size: 2.5rem; /* TĂNG CỠ CHỮ GIÁ */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 15px; /* Tăng margin */
-            margin-bottom: 15px; /* Tăng margin */
+            margin-top: 15px; 
+            margin-bottom: 15px; 
         }
         .price-unit small { 
-            font-size: 0.8rem; 
+            font-size: 0.9rem; /* TĂNG CỠ CHỮ */
             color: #888; 
             font-weight: 600; 
             display: block; 
-            margin-top: -5px; 
+            margin-top: -8px; 
         }
         
         .best-badge {
-            position: absolute; top: -10px; right: -10px; 
-            background: var(--best-value); color: white; padding: 3px 10px;
-            border-radius: 5px; font-weight: 800; font-size: 0.7rem; 
+            position: absolute; top: -15px; right: -15px; 
+            background: var(--best-value); color: white; padding: 5px 12px;
+            border-radius: 5px; font-weight: 800; font-size: 0.8rem; 
             transform: rotate(5deg);
         }
         
@@ -152,38 +151,39 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 0.8rem; 
-            margin-top: 15px; /* Tăng margin */
-            flex-grow: 1; /* Cho danh sách tính năng chiếm hết khoảng trống */
+            font-size: 0.9rem; /* TĂNG CỠ CHỮ */
+            margin-top: 15px; 
+            flex-grow: 1; 
         }
         .feature-list li { 
-            margin-bottom: 3px; 
+            margin-bottom: 5px; 
             color: #444; 
             display: flex; 
             align-items: flex-start;
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 5px; 
+            margin-right: 8px; 
             color: var(--primary-green); 
-            font-size: 0.9rem; 
+            font-size: 1.1rem; 
             margin-top: 2px; 
             flex-shrink: 0;
         }
         
         /* ALERT/USER INFO */
         .alert {
-            padding: 5px 10px; 
-            margin-bottom: 5px !important; 
-            font-size: 0.9rem;
+            padding: 8px 15px; /* TĂNG PADDING */
+            margin-bottom: 10px !important; 
+            font-size: 1rem;
         }
+        .alert strong { font-size: 1rem; }
         
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
             color: white; 
-            padding: 5px 0; 
-            margin-bottom: 8px; 
-            border-radius: 8px; 
+            padding: 8px 0; 
+            margin-bottom: 15px; 
+            border-radius: 10px; 
             overflow: hidden; 
         }
         .marquee-text { 
@@ -198,31 +198,31 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 8px 30px; 
-            font-size: 1rem; 
-            margin-top: 15px !important; /* Đảm bảo có khoảng cách sau các gói */
-            position: relative; /* Đảm bảo nút không bị mất vị trí */
-        }
-        
-        /* KHỐI QR/POLLING */
-        #paymentPollingMode {
-            padding-bottom: 10px;
+            padding: 10px 40px; /* TĂNG PADDING NÚT */
+            font-size: 1.1rem; 
+            margin-top: 20px !important; /* TĂNG KHOẢNG CÁCH */
+            position: relative; 
         }
 
-        /* KHÔNG CÓ FOOTER DƯ THỪA NÀO CÒN LẠI */
+        /* KHỐI QR/POLLING */
+        #paymentArea { padding: 30px; }
+        #qrCodeImg { max-width: 250px; }
+        /* ... CSS cho QR Area (Giữ nguyên) ... */
         
         @media (max-width: 992px) {
             .package-option-wrapper { 
                 width: calc(50% - 10px); 
             }
+            .package-option { min-height: 400px; }
         }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
             .package-option-wrapper { 
                 width: 100%; 
-                margin-bottom: 5px; 
+                margin-bottom: 10px; 
             }
             .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
+            .package-option { min-height: 350px; }
         }
     </style>
 </head>
@@ -630,7 +630,7 @@
         
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
-        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
+        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
@@ -660,4 +660,4 @@
     document.addEventListener('DOMContentLoaded', checkLoginAndInit);
 </script>
 </body>
-</html>
+</html> 
