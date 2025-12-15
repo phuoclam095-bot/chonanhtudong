@@ -28,7 +28,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding-top: 15px; 
+            padding-top: 10px; /* Tối ưu padding trên */
             /* NỀN CHẤM BI ĐEN */
             background-color: var(--bg-color);
             background-image: radial-gradient(#252525 10%, transparent 11%), radial-gradient(#252525 10%, transparent 11%); 
@@ -40,7 +40,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 5px; /* Giảm margin */
+            margin-bottom: 5px; 
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -61,43 +61,44 @@
             /* Nền Gradient xanh lá/trắng */
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
-            padding: 20px; /* Tối ưu padding tổng thể */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Giảm shadow */
+            padding: 15px; /* Tối ưu padding tổng thể */
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
-            margin-bottom: 15px; /* Giảm margin */
+            margin-bottom: 10px; /* Giảm margin */
         }
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 10px; /* Tối ưu margin dưới */
+            margin-bottom: 8px; /* Tối ưu margin dưới */
             text-align: center; 
-            font-size: 1.6rem; /* Giảm cỡ chữ h2 */
+            font-size: 1.5rem; /* Giảm cỡ chữ h2 */
         }
         h3 {
-            font-size: 1.3rem; /* Giảm cỡ chữ h3 (Xin chào) */
+            font-size: 1.2rem; /* Giảm cỡ chữ h3 (Xin chào) */
+            margin-bottom: 5px !important; /* Tối ưu margin */
         }
         
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 15px; /* Giảm gap */
-            margin-bottom: 15px; /* Giảm margin */
+            gap: 10px; /* Giảm gap */
+            margin-bottom: 10px; /* Giảm margin */
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 11.25px); /* Điều chỉnh width theo gap 15px */
-            min-width: 230px; /* Có thể giảm min-width nếu cần */
+            width: calc(25% - 7.5px); /* Điều chỉnh width theo gap 10px */
+            min-width: 200px; /* Giảm min-width để linh hoạt */
             box-sizing: border-box; 
             position: relative;
         }
         
         .package-option { 
-            padding: 15px 10px; /* Tối ưu hóa padding để giảm chiều cao */
+            padding: 10px 8px; /* Tối ưu hóa padding để giảm chiều cao */
             border: 2px solid #ddd; 
-            border-radius: 15px; 
+            border-radius: 12px; /* Giảm bo góc */
             cursor: pointer; 
             transition: all 0.3s; 
             background: white; 
@@ -105,49 +106,46 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             text-align: center;
         }
         .package-option.selected { 
             border-color: var(--primary-green); 
             background: linear-gradient(145deg, #e9f5eb, #f5fff5);
-            box-shadow: 0 8px 25px rgba(20, 122, 48, 0.3); 
-            transform: translateY(-3px); /* Giảm hiệu ứng */
-        }
-        .package-option:hover { 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            box-shadow: 0 5px 15px rgba(20, 122, 48, 0.3); 
+            transform: translateY(-2px); 
         }
         .package-option.best-value {
             border-color: var(--best-value);
-            box-shadow: 0 0 0 3px var(--best-value), 0 8px 25px rgba(0, 0, 0, 0.3);
-            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 0 0 2px var(--best-value), 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px) scale(1.01);
         }
         
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 5px; 
+            margin-bottom: 3px; /* Tối ưu margin */
             font-size: 1rem; /* Giảm cỡ chữ tiêu đề gói */
         }
         .price-unit { 
-            font-size: 2rem; /* Giảm cỡ chữ giá */
+            font-size: 2rem; 
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 8px; 
-            margin-bottom: 8px; 
+            margin-top: 5px; /* Tối ưu margin */
+            margin-bottom: 5px; /* Tối ưu margin */
         }
         .price-unit small { 
             font-size: 0.8rem; 
             color: #888; 
             font-weight: 600; 
             display: block; 
-            margin-top: -8px; 
+            margin-top: -5px; 
         }
         
         .best-badge {
-            position: absolute; top: -15px; right: -15px; 
-            background: var(--best-value); color: white; padding: 5px 15px;
-            border-radius: 5px; font-weight: 800; font-size: 0.8rem;
+            position: absolute; top: -10px; right: -10px; /* Tối ưu vị trí */
+            background: var(--best-value); color: white; padding: 3px 10px;
+            border-radius: 5px; font-weight: 800; font-size: 0.7rem; /* Giảm cỡ chữ */
             transform: rotate(5deg);
         }
         
@@ -155,64 +153,91 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 0.85rem; /* Giảm cỡ chữ tính năng */
-            margin-top: 10px; 
+            font-size: 0.8rem; /* Giảm cỡ chữ tính năng để co gọn */
+            margin-top: 8px; /* Tối ưu margin */
         }
         .feature-list li { 
-            margin-bottom: 4px; /* Giảm khoảng cách giữa các dòng */
+            margin-bottom: 2px; /* Tối ưu khoảng cách giữa các dòng */
             color: #444; 
             display: flex; 
             align-items: flex-start;
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 6px; /* Giảm margin */
+            margin-right: 5px; 
             color: var(--primary-green); 
-            font-size: 1rem;
+            font-size: 0.9rem; /* Giảm cỡ chữ icon */
             margin-top: 2px; 
             flex-shrink: 0;
         }
         
-        /* QR AREA */
-        #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 25px; text-align: center; max-width: 550px; margin: 0 auto;}
-        #qrCodeImg { width: 100%; max-width: 250px; height: auto; border: 4px solid #fff; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .info-detail { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid var(--primary-green); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px; }
-        .info-detail strong { color: #d9534f; font-size: 1.3rem; }
-        .info-detail p { font-size: 0.95rem; font-weight: 600; color: #555; }
+        /* ALERT/USER INFO */
+        .alert {
+            padding: 5px 10px; /* Giảm padding */
+            margin-bottom: 8px !important; /* Tối ưu margin */
+            font-size: 0.9rem;
+        }
+        .alert strong { font-size: 0.9rem; }
         
-        /* Dòng chữ chạy */
-        .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 10px; /* Giảm margin */ border-radius: 10px; overflow: hidden; }
+        /* MARQUEE */
+        .marquee-container { 
+            background: var(--primary-green); 
+            color: white; 
+            padding: 5px 0; 
+            margin-bottom: 10px; /* Giảm margin */
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
         .marquee-text { font-weight: 700; white-space: nowrap; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* MÀN HÌNH CHỜ/THÔNG BÁO */
-        .status-screen {
-            text-align: center;
-            padding: 50px 20px;
-            border-radius: 15px;
-            max-width: 550px; margin: 0 auto;
+        /* BUTTON */
+        #btnContinue {
+            padding: 8px 30px; /* Giảm padding nút */
+            font-size: 1rem; /* Giảm cỡ chữ nút */
+            margin-top: 5px !important; /* Giảm margin trên cùng */
         }
 
+        /* KHỐI QR/POLLING */
+        #paymentPollingMode {
+            padding-bottom: 10px; /* Đảm bảo đủ khoảng trống */
+        }
+        /* ... CSS cho QR Area (Giữ nguyên) ... */
+
         /* ========================================= */
-        /* CSS FOOTER TỐI GIẢN */
+        /* CSS FOOTER TỐI GIẢN (KHÔNG CHỨA GÌ) */
         /* ========================================= */
         .app-footer {
-            background-color: var(--bg-dark); /* Lấy màu nền tối của khối Liên hệ */
+            /* Giữ nguyên phong cách nền tối theo yêu cầu */
+            background-color: var(--bg-dark); 
             color: #ccc;
             width: 100%;
             max-width: 1200px;
             text-align: center;
-            padding: 15px 0;
-            margin-top: auto; 
+            padding: 8px 0; /* Tối giản padding */
+            margin-top: 20px; /* Đảm bảo khoảng cách từ khối chính */
             border-radius: 10px 10px 0 0;
-            font-size: 0.85rem;
+            font-size: 0.75rem; /* Giảm cỡ chữ footer */
         }
 
+        @media (max-width: 992px) {
+            .package-option-wrapper { 
+                width: calc(50% - 10px); 
+            }
+        }
+        @media (max-width: 576px) {
+            .payment-container { padding: 10px; }
+            .package-option-wrapper { 
+                width: 100%; 
+                margin-bottom: 10px; 
+            }
+            .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="header-controls">
-    <button class="btn-control" onclick="returnToSelection()">
+    <button class="btn-control" onclick="window.location.href='admin.html'">
         <i class="fas fa-arrow-left me-1"></i> Trở Về
     </button>
     <button class="btn-control" onclick="window.location.href='admin.html'">
@@ -229,11 +254,11 @@
                 </div>
         </div>
         
-        <h3 id="personalGreeting" class="text-center mb-2" style="color: var(--dark-green); font-weight: 800;"></h3>
+        <h3 id="personalGreeting" class="text-center" style="color: var(--dark-green); font-weight: 800;"></h3>
 
         <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
         
-        <div class="alert alert-info d-flex align-items-center gap-2 mb-2"> 
+        <div class="alert alert-info d-flex align-items-center gap-2"> 
             <i class="fas fa-user-circle fa-lg"></i>
             <span>Tài khoản gia hạn: <strong id="userEmailDisplay">...</strong></span>
         </div>
