@@ -27,6 +27,7 @@
             background-size: 50px 50px; 
             background-position: 0 0, 25px 25px; 
             color: #333;
+            /* Đảm bảo trang vừa khung trên desktop/laptop */
             min-height: 98vh; 
             display: flex; 
             flex-direction: column; 
@@ -53,12 +54,12 @@
         .btn-control:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); }
 
 
-        /* CARD CHÍNH - Tăng kích thước tổng thể */
+        /* CARD CHÍNH */
         .payment-container { 
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 30px; /* Tăng padding */
+            padding: 25px; /* Giảm nhẹ padding */
             max-width: 1200px; 
             width: 100%; 
             margin-bottom: 5px; 
@@ -66,33 +67,33 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 15px; 
-            font-size: 2.0rem; /* Tăng cỡ chữ */
+            margin-bottom: 10px; /* Giảm nhẹ margin */
+            font-size: 1.8rem; /* Giảm nhẹ cỡ chữ */
             text-align: center;
         }
         h3 {
-            font-size: 1.6rem; /* Tăng cỡ chữ */
-            margin-bottom: 10px !important; 
+            font-size: 1.4rem; /* Giảm nhẹ cỡ chữ */
+            margin-bottom: 8px !important; 
         }
 
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 20px; /* Tăng gap */
-            margin-bottom: 25px; 
+            gap: 15px; /* Giảm nhẹ gap */
+            margin-bottom: 20px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 15px); 
-            min-width: 250px; 
+            width: calc(25% - 11.25px); /* Tính toán lại width cho gap 15px */
+            min-width: 230px; /* Giảm nhẹ min width */
             box-sizing: border-box; 
             position: relative;
         }
 
         .package-option { 
-            padding: 25px 20px; /* Tăng padding thẻ gói */
-            min-height: 500px; /* TĂNG CHIỀU CAO TỐI THIỂU */
+            padding: 20px 15px; /* Giảm padding thẻ gói */
+            min-height: 450px; /* GIẢM CHIỀU CAO TỐI THIỂU */
             border: 2px solid #ddd; 
             border-radius: 20px; 
             cursor: pointer; 
@@ -122,26 +123,26 @@
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 8px; 
-            font-size: 1.5rem; 
+            margin-bottom: 5px; 
+            font-size: 1.35rem; /* Giảm nhẹ cỡ chữ */
         }
 
         .price-unit { 
-            font-size: 3.5rem; 
+            font-size: 3.0rem; /* Giảm cỡ chữ giá */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 25px; 
-            margin-bottom: 25px; 
+            margin-top: 20px; 
+            margin-bottom: 20px; 
             line-height: 1; 
             display: block; 
         }
         .price-unit small.currency { 
-            font-size: 1.6rem; 
+            font-size: 1.4rem; /* Giảm nhẹ cỡ chữ */
             color: var(--dark-green); 
             font-weight: 800; 
         }
         .price-unit small.duration { 
-            font-size: 1.1rem; 
+            font-size: 1.0rem; /* Giảm nhẹ cỡ chữ */
             color: #888; 
             font-weight: 600;
         }
@@ -150,21 +151,21 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            margin-top: 20px; 
-            font-size: 1.05rem; 
+            margin-top: 15px; 
+            font-size: 0.95rem; /* Giảm nhẹ cỡ chữ */
             flex-grow: 1;
         }
         .feature-list li { 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; /* Giảm nhẹ margin item list */
             color: #444; 
             display: flex; 
             align-items: flex-start;
-            line-height: 1.5; 
+            line-height: 1.4; 
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 10px; 
+            margin-right: 8px; 
             color: var(--primary-green); 
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-top: 2px;
             flex-shrink: 0;
         }
@@ -178,14 +179,14 @@
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
-            padding: 10px 0; 
+            padding: 8px 0; /* Giảm nhẹ padding */
             margin-bottom: 15px; 
-            border-radius: 12px; 
+            border-radius: 10px; /* Giảm nhẹ radius */
             overflow: hidden; 
         }
         .marquee-text { 
             font-weight: 800; 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; /* Giảm nhẹ cỡ chữ */
             white-space: nowrap; 
             animation: marquee 15s linear infinite; 
         }
@@ -196,10 +197,10 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 15px 40px; 
-            font-size: 1.4rem; 
-            margin-top: 20px !important; 
-            border-radius: 12px;
+            padding: 12px 30px; /* Giảm padding nút */
+            font-size: 1.2rem; /* Giảm cỡ chữ */
+            margin-top: 15px !important; 
+            border-radius: 10px;
             background-color: var(--primary-green) !important; 
             border-color: var(--primary-green) !important;
             transition: all 0.3s;
@@ -210,34 +211,35 @@
         }
 
         /* KHỐI QR/POLLING */
-        #paymentArea { padding: 30px; } 
-        .info-detail strong { font-size: 1.6rem; }
+        #paymentArea { padding: 25px; } /* Giảm nhẹ padding */
+        .info-detail strong { font-size: 1.4rem; } /* Giảm nhẹ cỡ chữ */
         .info-detail #displayPaymentCode { color: var(--primary-green) !important; }
 
         /* RESPONSIVE */
         @media (max-width: 1200px) {
             .payment-container { padding: 20px; }
-            .package-option { min-height: 480px; }
-            .price-unit { font-size: 3.0rem; }
+            .package-option { min-height: 400px; } /* Giảm nhẹ chiều cao cho màn nhỏ hơn */
+            .price-unit { font-size: 2.8rem; }
         }
         @media (max-width: 992px) {
             .package-option-wrapper { 
                 width: calc(50% - 10px); 
                 min-width: 200px;
             }
-            .package-option { min-height: 400px; }
-            .package-select { gap: 20px; }
+            .package-option { min-height: 380px; }
+            .package-select { gap: 15px; }
         }
         @media (max-width: 576px) {
-            .payment-container { padding: 15px; }
+            .payment-container { padding: 10px; }
             .package-option-wrapper { 
                 width: 100%; 
-                margin-bottom: 15px; 
+                margin-bottom: 10px; 
             }
-            .package-select { flex-direction: column; gap: 15px; padding: 0 5px; }
-            .package-option { min-height: 350px; }
-            .price-unit { font-size: 2.5rem; margin-top: 10px; margin-bottom: 10px; }
-            .info-detail strong { font-size: 1.3rem; }
+            .package-select { flex-direction: column; gap: 10px; padding: 0 5px; }
+            .package-option { min-height: 320px; padding: 15px; }
+            .price-unit { font-size: 2.2rem; margin-top: 8px; margin-bottom: 8px; }
+            .info-detail strong { font-size: 1.2rem; }
+            .feature-list { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -368,9 +370,7 @@
                 { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },    
                 { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },    
-                // Sửa lỗi font: "Üu tiên hô trœ (Nhœn ticket söím)" -> "Ưu tiên hỗ trợ (Nhận ticket sớm)"
                 { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }, 
-                // Sửa lỗi font: "Hô trœ chuyên đôi tài khoœn" -> "Hỗ trợ chuyển đổi tài khoản"
                 { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }    
             ]    
         },    
@@ -379,15 +379,10 @@
             features: [
                 { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" },    
                 { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },    
-                // Sửa lỗi font: "Tốc đọ tải ảnh TỨC THÌ" -> "Tốc độ tải ảnh TỨC THÌ"
                 { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" },
-                // Sửa lỗi font: "Tích hơp Gắn Logo/Watermark" -> "Tích hợp Gắn Logo/Watermark"
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },    
-                // Sửa lỗi font: "Üu tiên hô trœ 24/7 & Üu tiên hàng đœu" -> "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu"
                 { text: "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" },
-                // Sửa lỗi font: "Hô trœ chuyên đôi tài khoœn" -> "Hỗ trợ chuyển đổi tài khoản"
                 { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" },    
-                // Sửa lỗi font: "Üu tiên phát trien dich vu riêng (theo yêu cœu)" -> "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)"
                 { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" }    
             ],
             isBest: true
