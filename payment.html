@@ -15,10 +15,10 @@
             --primary-green: #147a30; 
             --dark-green: #0e5a22; 
             --bg-color: #1a1a1a; 
-            --bg-dark: #121212; /* Màu nền cho footer liên hệ */
+            --bg-dark: #121212; 
             --accent-color: #0d6efd; 
             --card-bg: #ffffff;
-            --best-value: #ff9800; /* Màu cam/vàng nhấn mạnh */
+            --best-value: #ff9800; 
             --light-bg: #f8f9fa;
         }
         body { 
@@ -58,7 +58,8 @@
 
         /* CARD CHÍNH */
         .payment-container { 
-            background: var(--card-bg); 
+            /* Nền Gradient xanh lá/trắng */
+            background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
             padding: 25px; 
@@ -192,7 +193,35 @@
         }
 
         /* ========================================= */
-        /* CSS CHO FOOTER TỐI GIẢN */
+        /* CSS KHỐI HỖ TRỢ KỸ THUẬT (Dưới nút Thanh Toán) */
+        /* ========================================= */
+        .support-contact-block {
+            background: linear-gradient(135deg, #0e5a22, #147a30); /* Gradient xanh lá */
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 100%;
+            margin-top: 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: white;
+            text-align: center;
+        }
+        .support-contact-block h4 {
+            font-weight: 900;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .support-contact-block a {
+            color: #ffc107; /* Màu vàng nhấn mạnh */
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .support-contact-block a:hover {
+            color: #fff;
+        }
+        
+        /* ========================================= */
+        /* CSS FOOTER TỐI GIẢN */
         /* ========================================= */
         .app-footer {
             background-color: var(--bg-dark); /* Lấy màu nền tối của khối Liên hệ */
@@ -201,7 +230,7 @@
             max-width: 1200px;
             text-align: center;
             padding: 15px 0;
-            margin-top: auto; /* Đẩy footer xuống dưới */
+            margin-top: auto; 
             border-radius: 10px 10px 0 0;
             font-size: 0.85rem;
         }
@@ -244,7 +273,12 @@
             <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">
                 </button>
         </div>
-    </div>
+        
+        <div class="support-contact-block">
+            <h4><i class="fas fa-headset me-2"></i>Cần hỗ trợ kỹ thuật?</h4>
+            <p class="mb-0">Vui lòng liên hệ qua Zalo: <a href="https://zalo.me/0879029170" target="_blank">0879 029 170</a> hoặc Messenger.</p>
+        </div>
+        </div>
 
     <div id="paymentPollingMode" style="display: none;">
         
