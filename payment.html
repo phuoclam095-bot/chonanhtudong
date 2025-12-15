@@ -95,7 +95,7 @@
         
         .package-option { 
             padding: 15px 10px; 
-            min-height: 450px; /* Chiều cao cố định */
+            min-height: 400px; /* Tối ưu chiều cao cho cân đối */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -136,18 +136,26 @@
             display: block; 
         }
         
-        /* CSS cho khối VNĐ / Thời hạn (Dòng 2) */
+        /* CSS cho khối VNĐ (Dòng 2) và Thời hạn (Dòng 3) */
         .price-unit span {
             white-space: nowrap; 
+            display: block; /* Đảm bảo giá trị số đứng 1 mình 1 dòng */
         }
-        .price-unit small { 
-            font-size: 1.1rem; /* Kích thước chữ VNĐ lớn */
+        .price-unit small.currency { 
+            font-size: 1.8rem; /* PHÓNG TO VNĐ */
             color: var(--dark-green); 
             font-weight: 800; 
-            display: block; /* ĐẢM BẢO XUỐNG DÒNG */
+            display: block; 
             margin-top: 5px; 
             line-height: 1;
-            white-space: nowrap; /* VNĐ / x tháng cùng dòng */
+        }
+        .price-unit small.duration { 
+            font-size: 0.9rem; /* Thời hạn nhỏ hơn */
+            color: #888; 
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+            line-height: 1;
         }
         
         .best-badge {
@@ -452,7 +460,7 @@
             });
             featureListHTML += '</ul>';
 
-            // Cấu trúc: Giá trị (dòng 1) và VNĐ / x tháng (dòng 2)
+            // Cấu trúc: Giá trị (dòng 1), VNĐ (dòng 2), và / x tháng (dòng 3)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
@@ -461,7 +469,8 @@
                 <div>
                     <p class="price-unit">
                         <span>${priceDisplay}</span>
-                        <small>${VN_CURRENCY_SYMBOL} / ${pkg.months} tháng</small>
+                        <small class="currency">${VN_CURRENCY_SYMBOL}</small>
+                        <small class="duration">/ ${pkg.months} tháng</small>
                     </p>
                     ${featureListHTML}
                 </div>
