@@ -27,7 +27,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding-top: 30px;
+            padding-top: 20px; /* Giảm padding trên */
             /* NỀN CHẤM BI ĐEN */
             background-color: var(--bg-color);
             background-image: radial-gradient(#252525 10%, transparent 11%), radial-gradient(#252525 10%, transparent 11%); 
@@ -39,7 +39,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 20px; 
+            margin-bottom: 15px; /* Giảm margin dưới */
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -60,31 +60,40 @@
             background: var(--card-bg); 
             border-radius: 20px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
-            padding: 40px; 
+            padding: 30px; /* Giảm padding tổng thể */
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
-            margin-bottom: 50px;
+            margin-bottom: 30px; /* Giảm margin dưới */
         }
-        h2 { color: var(--dark-green); font-weight: 900; margin-bottom: 30px; text-align: center; }
+        h2 { 
+            color: var(--dark-green); 
+            font-weight: 900; 
+            margin-bottom: 20px; /* Giảm margin dưới */
+            text-align: center; 
+            font-size: 1.8rem; /* Giảm cỡ chữ h2 */
+        }
+        h3 {
+            font-size: 1.5rem; /* Giảm cỡ chữ h3 (Xin chào) */
+        }
         
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 25px; /* Tăng khoảng cách giữa các cột */
-            margin-bottom: 40px; /* Tăng margin */
+            gap: 25px; 
+            margin-bottom: 30px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 20px); /* Điều chỉnh width theo gap */
+            width: calc(25% - 20px); 
             min-width: 250px;
             box-sizing: border-box; 
             position: relative;
         }
         
         .package-option { 
-            padding: 30px 20px; /* Tăng padding để thoáng hơn */
+            padding: 25px 15px; /* Tối ưu hóa padding để giảm chiều cao */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -116,17 +125,17 @@
             font-weight: 900; 
             color: var(--dark-green); 
             margin-bottom: 8px; 
-            font-size: 1.2rem; /* Tăng cỡ chữ tiêu đề */
+            font-size: 1.2rem; 
         }
         .price-unit { 
-            font-size: 2.5rem; /* Tăng cỡ chữ giá */
+            font-size: 2.5rem; 
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 15px; /* Tăng margin */
-            margin-bottom: 15px; /* Tăng margin */
+            margin-top: 15px; 
+            margin-bottom: 15px; 
         }
         .price-unit small { 
-            font-size: 0.9rem; /* Tăng cỡ chữ phụ */
+            font-size: 0.9rem; 
             color: #888; 
             font-weight: 600; 
             display: block; 
@@ -144,20 +153,20 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 1rem; /* Tăng cỡ chữ tính năng */
+            font-size: 0.95rem; /* Tăng nhẹ để dễ đọc hơn */
             margin-top: 20px; 
         }
         .feature-list li { 
-            margin-bottom: 8px; /* Tăng khoảng cách giữa các dòng */
+            margin-bottom: 6px; /* Giảm nhẹ khoảng cách */
             color: #444; 
             display: flex; 
-            align-items: flex-start; /* Canh trên cho văn bản dài */
+            align-items: flex-start;
         }
         .feature-list i.fa-check-circle { 
             margin-right: 8px; 
             color: var(--primary-green); 
             font-size: 1.1rem;
-            margin-top: 3px; /* Căn chỉnh icon cho đẹp */
+            margin-top: 3px; 
             flex-shrink: 0;
         }
         
@@ -169,7 +178,7 @@
         .info-detail p { font-size: 0.95rem; font-weight: 600; color: #555; }
         
         /* Dòng chữ chạy */
-        .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 30px; border-radius: 10px; overflow: hidden; }
+        .marquee-container { background: var(--primary-green); color: white; padding: 8px 0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; }
         .marquee-text { font-weight: 700; white-space: nowrap; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
@@ -291,15 +300,15 @@
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
     };
 
-    // 🔥 GÓI GIA HẠN VỚI GIÁ GỐC (90K, 250K, 450K, 750K) và TẤT CẢ TÍNH NĂNG ĐỀU CHECK XANH
+    // 🔥 GÓI GIA HẠN VỚI GIÁ GỐC VÀ TẤT CẢ TÍNH NĂNG ĐỀU CHECK XANH
     const PAYMENT_PACKAGES = [
         { 
             months: 1, name: "Gói Dùng Thử", price: 90000, 
             features: [
                 { text: "Lưu trữ 1 tháng", icon: "fas fa-check-circle" }, 
-                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, // ĐÃ XÓA (Mọi gói)
                 { text: "Tốc độ thumbnail chuẩn", icon: "fas fa-check-circle" },
-                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, // ĐÃ SỬA TỪ X ĐỎ -> CHECK XANH
+                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, 
                 { text: "Hỗ trợ Zalo/Email", icon: "fas fa-check-circle" }
             ] 
         }, 
@@ -307,9 +316,9 @@
             months: 3, name: "Gói Cơ Bản (3 tháng)", price: 250000, 
             features: [
                 { text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" }, 
-                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, // ĐÃ XÓA (Mọi gói)
                 { text: "Tốc độ thumbnail Nhanh hơn", icon: "fas fa-check-circle" },
-                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, // ĐÃ SỬA TỪ X ĐỎ -> CHECK XANH
+                { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, 
                 { text: "Hỗ trợ ưu tiên (Trong giờ hành chính)", icon: "fas fa-check-circle" }
             ]
         }, 
@@ -317,21 +326,23 @@
             months: 6, name: "Gói Chuyên Nghiệp (6 tháng)", price: 450000, 
             features: [
                 { text: "Lưu trữ 6 tháng (Rất ổn định)", icon: "fas fa-check-circle" }, 
-                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, // ĐÃ XÓA (Mọi gói)
                 { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, 
-                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }
+                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" },
+                { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" } // TÍNH NĂNG MỚI
             ] 
         }, 
         { 
             months: 12, name: "Gói UNLIMITED (1 Năm)", price: 750000, 
             features: [
                 { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" }, 
-                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, // ĐÃ XÓA (Mọi gói)
                 { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" },
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, 
                 { text: "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" },
-                { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" } // TÍNH NĂNG MỚI
+                { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }, // TÍNH NĂNG MỚI
+                { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" } 
             ],
             isBest: true
         }
@@ -600,7 +611,7 @@
         
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
-        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
+        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
