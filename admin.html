@@ -10,7 +10,7 @@
     
     <style>
         /* ========================================= */
-        /* CSS GIAO DIỆN CHÍNH (GIỮ NGUYÊN)         */
+        /* CSS GIAO DIỆN CHÍNH (GIỮ NGUYÊN)        */
         /* ========================================= */
         :root { 
             --primary-green: #147a30; --dark-green: #0e5a22; 
@@ -77,7 +77,7 @@
         @media (max-width: 768px) { .create-card { padding: 30px 20px; } .btn-create { font-size: 16px; } .user-info-mobile { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px; padding-top: 15px; justify-content: flex-end; } }
 
         /* ========================================= */
-        /* CSS CHO CHAT WIDGET & BONG BÓNG CHÀO     */
+        /* CSS CHO CHAT WIDGET & BONG BÓNG CHÀO      */
         /* ========================================= */
         #chat-widget-container {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999; font-family: 'Nunito', sans-serif;
@@ -254,8 +254,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // 🔥 CẤU HÌNH WEBHOOK - ĐẢM BẢO CHÍNH XÁC
         const GOOGLE_CONFIG = {
-            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', 
+            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
+            // WEBHOOK CHÍNH LÀ NƠI PHÂN NHÁNH CHECK STATUS
             N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
             SCOPE: 'openid profile email' 
         };
@@ -265,44 +267,22 @@
 
 
         // =========================================================================
-        // SỬA ĐỔI: Bổ sung paymentCode (Fix lỗi Check Status)
+        // HÀM QUAN TRỌNG: BUỘC LÀM MỚI TRẠNG THÁI (REDIRECT)
         // =========================================================================
-        function forceRefreshStatus(email, paymentCode = null) {
+        // HÀM NÀY CHỈ GỌI KHI CẦN KIỂM TRA TRẠNG THÁI CHUNG (TẢI LẠI TRANG ADMIN)
+        function forceRefreshStatus(email) {
             const redirectUrl = window.location.href.split('?')[0];
             
+            // Luôn gọi Webhook KHÔNG kèm paymentCode để vào Nhánh FALSE (Luồng 3.x)
             let refreshApiUrl = `${GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
 
-            // Thêm Mã Giao Dịch vào URL nếu tồn tại
-            if (paymentCode) {
-                refreshApiUrl += `&paymentCode=${encodeURIComponent(paymentCode)}`;
-            }
-            
-            // Tạm thời xóa trạng thái cục bộ để buộc load lại
+            // Tạm thời xóa trạng thái cục bộ để buộc load lại trạng thái mới nhất từ Webhook
             localStorage.removeItem('admin_status');
             localStorage.removeItem('admin_expiry');
 
-            // Xóa mã giao dịch khỏi localStorage sau khi đã sử dụng
-            localStorage.removeItem('pending_payment_code');
-
+            // Thực hiện REDIRECT (302)
             window.location.href = refreshApiUrl;
         }
-
-
-        // HÀM MỚI: Dùng để lưu Mã Giao Dịch và kích hoạt kiểm tra trạng thái
-        // BẠN CẦN GỌI HÀM NÀY TỪ FLOW TẠO ĐƠN HÀNG/MÃ QR
-        function saveAndCheckPaymentStatus(paymentCode) {
-            const email = localStorage.getItem('admin_email');
-            if (!email) {
-                alert("Lỗi: Không tìm thấy Email đăng nhập.");
-                return;
-            }
-            // Lưu mã vào localStorage để có thể kiểm tra lại sau
-            localStorage.setItem('pending_payment_code', paymentCode); 
-            
-            // Kích hoạt hàm kiểm tra trạng thái, truyền kèm paymentCode
-            forceRefreshStatus(email, paymentCode);
-        }
-        // =========================================================================
 
 
         function startGoogleLogin() {
@@ -311,7 +291,9 @@
         }
 
 
-        // SỬA ĐỔI: checkAuthCallback (Fix lỗi Avatar/Tên)
+        // =========================================================================
+        // HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI
+        // =========================================================================
         function checkAuthCallback() {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -319,31 +301,49 @@
             const isStatusRefresh = urlParams.get('status_checked') === 'true';
 
             if (isCallback || isStatusRefresh) {
+                const newStatus = urlParams.get('user_status');
+                const currentStatus = localStorage.getItem('admin_status');
+
+                // Lấy thời gian hết hạn hiện tại để kiểm tra tính hợp lệ
+                const currentExpiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const isCurrentActive = currentStatus === 'active';
+                const isCurrentlyValid = isCurrentActive && (currentExpiry > Date.now());
+
+                // 🔥 LOGIC BẢO VỆ ACTIVE CŨ:
+                // Nếu Webhook trả về 'pending' (do đơn hàng mới chưa thanh toán)
+                // VÀ trạng thái cục bộ hiện tại là 'active' và CÒN HẠN, 
+                // thì KHÔNG ghi đè trạng thái 'active' cũ.
+                if (newStatus === 'pending' && isCurrentlyValid) {
+                    // Chỉ xóa tham số URL và giữ nguyên trạng thái cũ.
+                    history.replaceState(null, null, window.location.pathname);
+                    updateUI();
+                    return;
+                }
+
+                // --- Logic ghi đè trạng thái mới (Khi đã thanh toán thành công hoặc hết hạn) ---
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', urlParams.get('user_email'));
                 
                 try {
-                    
-                    // 1. Cập nhật TÊN (Chỉ ghi đè nếu tham số tồn tại)
+                    // Cập nhật Tên/Avatar
                     const userNameFromUrl = urlParams.get('user_name');
-                    if (userNameFromUrl !== null) { 
+                    if (userNameFromUrl !== null) { 
                         localStorage.setItem('admin_name', decodeURIComponent(userNameFromUrl));
                     }
-
-                    // 2. Cập nhật AVATAR (Chỉ ghi đè nếu tham số tồn tại)
                     const userAvatarFromUrl = urlParams.get('user_avatar');
-                    if (userAvatarFromUrl !== null) { 
+                    if (userAvatarFromUrl !== null) { 
                         localStorage.setItem('admin_avatar', decodeURIComponent(userAvatarFromUrl));
                     }
                     
-                    // 3. Cập nhật Trạng thái và Thời gian HẾT HẠN MỚI NHẤT
+                    // Ghi đè trạng thái và thời gian hết hạn mới nhất
                     localStorage.setItem('admin_expiry', urlParams.get('user_expiry') || '0');
-                    localStorage.setItem('admin_status', urlParams.get('user_status') || 'new');
+                    localStorage.setItem('admin_status', newStatus || 'new');
                     
                 } catch(e) {
-                     console.error("Lỗi khi đọc tham số URL:", e);
+                    console.error("Lỗi khi đọc tham số URL:", e);
                 }
                 
+                // Dọn dẹp URL sau khi xử lý
                 history.replaceState(null, null, window.location.pathname);
                 updateUI();
             }
@@ -370,13 +370,11 @@
                 const currentTimestamp = Date.now();
                 const isExpiredLocally = expiry > 0 && expiry <= currentTimestamp;
 
-                // LOGIC KIỂM TRA HẾT HẠN CỤC BỘ VÀ BUỘC LÀM MỚI (FIX)
+                // LOGIC TỰ ĐỘNG LÀM MỚI KHI HẾT HẠN CỤC BỘ
                 if (isExpiredLocally && status !== 'expired') {
                     localStorage.setItem('admin_status', 'expired');
                     status = 'expired';
-                    
-                    // GỌI forceRefreshStatus KHÔNG CẦN paymentCode (vì đây là kiểm tra chung)
-                    forceRefreshStatus(userEmail);
+                    forceRefreshStatus(userEmail); // Redirect kiểm tra lại trạng thái
                     return; // Dừng UI để chờ làm mới
                 }
                 
@@ -410,8 +408,8 @@
                         statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Tài khoản hết hạn. Vui lòng <a href="payment.html">Gia Hạn</a>.</span>`;
                         badgeHtml = `<span class="status-badge badge-expired">HẾT HẠN</span>`;
                     } else {
-                         statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
-                         badgeHtml = `<span class="status-badge badge-expired">LỖI/KHÔNG RÕ</span>`;
+                           statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
+                           badgeHtml = `<span class="status-badge badge-expired">LỖI/KHÔNG RÕ</span>`;
                     }
                 }
 
