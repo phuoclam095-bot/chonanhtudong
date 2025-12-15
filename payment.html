@@ -131,17 +131,19 @@
             font-weight: 900; 
             color: var(--primary-green); 
             margin-top: 20px; 
-            /* XÓA display: flex; */
             margin-bottom: 20px; 
-            line-height: 1; /* Đảm bảo giá trị chính không bị giãn dòng quá mức */
+            line-height: 1; /* Cố định chiều cao dòng cho giá trị chính */
+        }
+        .price-unit span {
+            /* Mức giá chính */
+            white-space: nowrap; /* NGĂN SỐ TIỀN VÀ VNĐ BỊ XUỐNG DÒNG */
         }
         .price-unit small { 
             font-size: 1rem; 
             color: #888; 
             font-weight: 600; 
-            /* ĐẢM BẢO XUỐNG DÒNG */
-            display: block; 
-            margin-top: 5px; 
+            display: block; /* ĐẢM BẢO XUỐNG DÒNG */
+            margin-top: 5px; /* Khoảng cách giữa giá trị và thời hạn */
             line-height: 1;
         }
         
@@ -212,7 +214,6 @@
 
         /* KHỐI QR/POLLING */
         #paymentArea { padding: 30px; }
-        /* ... CSS cho QR Area (Giữ nguyên) ... */
         
         @media (max-width: 992px) {
             .package-option-wrapper { 
@@ -383,7 +384,7 @@
 
     // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN') + ' VNĐ';
+        return amount.toLocaleString('vi-VN'); // Chỉ trả về số tiền, không có VNĐ
     }
     
     function generateRandom6Digit() {
@@ -454,14 +455,17 @@
             });
             featureListHTML += '</ul>';
 
-            // Đảm bảo xuống dòng cho (3 tháng), (6 tháng)
+            // Cấu trúc mới: Giá trị VNĐ (dòng 1) và / x tháng (dòng 2)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
                     <h5>${pkg.name}<br><small style="font-weight:700; color:#555">${pkg.name_sub}</small></h5>
                 </div>
                 <div>
-                    <p class="price-unit">${priceDisplay}<small>/ ${pkg.months} tháng</small></p>
+                    <p class="price-unit">
+                        <span>${priceDisplay} VNĐ</span>
+                        <small>/ ${pkg.months} tháng</small>
+                    </p>
                     ${featureListHTML}
                 </div>
             `;
@@ -479,7 +483,7 @@
         selectedPackage = pkg;
         finalAmount = price;
         document.getElementById('btnContinue').disabled = false;
-        document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)})`;
+        document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)} VNĐ)`;
     }
     
     async function processPayment() {
@@ -487,7 +491,7 @@
         
         paymentCode = generateNewPaymentCode(); 
         localStorage.setItem('current_payment_code', paymentCode);
-        localStorage.setItem('current_payment_amount', formatCurrency(finalAmount));
+        localStorage.setItem('current_payment_amount', finalAmount); // Lưu số tiền thô
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
@@ -509,7 +513,7 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            document.getElementById('displayAmount').innerText = formatCurrency(finalAmount);
+            document.getElementById('displayAmount').innerText = formatCurrency(finalAmount) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
             document.getElementById('selectionMode').style.display = 'none';
@@ -651,7 +655,7 @@
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
-            document.getElementById('displayAmount').innerText = savedAmount;
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
             
             document.getElementById('paymentPollingMode').scrollIntoView();
