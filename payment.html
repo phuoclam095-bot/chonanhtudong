@@ -59,7 +59,7 @@
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 25px; /* Giảm nhẹ padding */
+            padding: 24px; /* Giảm nhẹ padding */
             max-width: 1200px; 
             width: 100%; 
             margin-bottom: 5px; 
@@ -67,33 +67,33 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 10px; /* Giảm nhẹ margin */
-            font-size: 1.8rem; /* Giảm nhẹ cỡ chữ */
+            margin-bottom: 8px; /* Giảm nhẹ margin */
+            font-size: 1.7rem; /* Giảm nhẹ cỡ chữ */
             text-align: center;
         }
         h3 {
-            font-size: 1.4rem; /* Giảm nhẹ cỡ chữ */
-            margin-bottom: 8px !important; 
+            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
+            margin-bottom: 6px !important; 
         }
 
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 15px; /* Giảm nhẹ gap */
-            margin-bottom: 20px; 
+            gap: 12px; /* Giảm nhẹ gap */
+            margin-bottom: 18px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 11.25px); /* Tính toán lại width cho gap 15px */
-            min-width: 230px; /* Giảm nhẹ min width */
+            width: calc(25% - 9px); /* Tính toán lại width cho gap 12px */
+            min-width: 225px; /* Giảm nhẹ min width */
             box-sizing: border-box; 
             position: relative;
         }
 
         .package-option { 
-            padding: 20px 15px; /* Giảm padding thẻ gói */
-            min-height: 450px; /* GIẢM CHIỀU CAO TỐI THIỂU */
+            padding: 18px 14px; /* Giảm padding thẻ gói */
+            min-height: 440px; /* GIẢM CHIỀU CAO TỐI THIỂU */
             border: 2px solid #ddd; 
             border-radius: 20px; 
             cursor: pointer; 
@@ -123,26 +123,27 @@
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 5px; 
-            font-size: 1.35rem; /* Giảm nhẹ cỡ chữ */
+            margin-bottom: 4px; 
+            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
         }
 
         .price-unit { 
-            font-size: 3.0rem; /* Giảm cỡ chữ giá */
+            font-size: 2.8rem; /* Giảm cỡ chữ giá */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 20px; 
-            margin-bottom: 20px; 
+            margin-top: 18px; 
+            margin-bottom: 18px; 
             line-height: 1; 
             display: block; 
         }
         .price-unit small.currency { 
-            font-size: 1.4rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
             color: var(--dark-green); 
             font-weight: 800; 
+            display: block; /* Bắt buộc xuống dòng */
         }
         .price-unit small.duration { 
-            font-size: 1.0rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 0.95rem; /* Giảm nhẹ cỡ chữ */
             color: #888; 
             font-weight: 600;
         }
@@ -152,21 +153,21 @@
             padding: 0; 
             text-align: left; 
             margin-top: 15px; 
-            font-size: 0.95rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 0.9rem; /* Giảm nhẹ cỡ chữ */
             flex-grow: 1;
         }
         .feature-list li { 
-            margin-bottom: 8px; /* Giảm nhẹ margin item list */
+            margin-bottom: 7px; /* Giảm nhẹ margin item list */
             color: #444; 
             display: flex; 
             align-items: flex-start;
             line-height: 1.4; 
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 8px; 
+            margin-right: 7px; 
             color: var(--primary-green); 
-            font-size: 1.1rem;
-            margin-top: 2px;
+            font-size: 1.05rem;
+            margin-top: 1px;
             flex-shrink: 0;
         }
 
@@ -174,19 +175,20 @@
             background-color: #e9fff0; 
             border-color: #c4ffd7;
             color: #0e5a22;
+            font-size: 0.95rem;
         }
 
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
-            padding: 8px 0; /* Giảm nhẹ padding */
-            margin-bottom: 15px; 
-            border-radius: 10px; /* Giảm nhẹ radius */
+            padding: 7px 0; /* Giảm nhẹ padding */
+            margin-bottom: 12px; 
+            border-radius: 9px; 
             overflow: hidden; 
         }
         .marquee-text { 
             font-weight: 800; 
-            font-size: 1.1rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.05rem; /* Giảm nhẹ cỡ chữ */
             white-space: nowrap; 
             animation: marquee 15s linear infinite; 
         }
@@ -197,10 +199,10 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 12px 30px; /* Giảm padding nút */
-            font-size: 1.2rem; /* Giảm cỡ chữ */
-            margin-top: 15px !important; 
-            border-radius: 10px;
+            padding: 10px 25px; /* Giảm padding nút */
+            font-size: 1.1rem; /* Giảm cỡ chữ */
+            margin-top: 12px !important; 
+            border-radius: 9px;
             background-color: var(--primary-green) !important; 
             border-color: var(--primary-green) !important;
             transition: all 0.3s;
@@ -211,35 +213,35 @@
         }
 
         /* KHỐI QR/POLLING */
-        #paymentArea { padding: 25px; } /* Giảm nhẹ padding */
-        .info-detail strong { font-size: 1.4rem; } /* Giảm nhẹ cỡ chữ */
+        #paymentArea { padding: 20px; } /* Giảm nhẹ padding */
+        .info-detail strong { font-size: 1.3rem; } /* Giảm nhẹ cỡ chữ */
         .info-detail #displayPaymentCode { color: var(--primary-green) !important; }
 
         /* RESPONSIVE */
         @media (max-width: 1200px) {
-            .payment-container { padding: 20px; }
-            .package-option { min-height: 400px; } /* Giảm nhẹ chiều cao cho màn nhỏ hơn */
-            .price-unit { font-size: 2.8rem; }
+            .payment-container { padding: 18px; }
+            .package-option { min-height: 400px; } 
+            .price-unit { font-size: 2.6rem; }
         }
         @media (max-width: 992px) {
             .package-option-wrapper { 
-                width: calc(50% - 10px); 
-                min-width: 200px;
+                width: calc(50% - 8px); 
+                min-width: 190px;
             }
-            .package-option { min-height: 380px; }
-            .package-select { gap: 15px; }
+            .package-option { min-height: 360px; }
+            .package-select { gap: 10px; }
         }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
             .package-option-wrapper { 
                 width: 100%; 
-                margin-bottom: 10px; 
+                margin-bottom: 8px; 
             }
-            .package-select { flex-direction: column; gap: 10px; padding: 0 5px; }
-            .package-option { min-height: 320px; padding: 15px; }
-            .price-unit { font-size: 2.2rem; margin-top: 8px; margin-bottom: 8px; }
-            .info-detail strong { font-size: 1.2rem; }
-            .feature-list { font-size: 0.9rem; }
+            .package-select { flex-direction: column; gap: 8px; padding: 0 5px; }
+            .package-option { min-height: 300px; padding: 12px; }
+            .price-unit { font-size: 2.0rem; margin-top: 6px; margin-bottom: 6px; }
+            .info-detail strong { font-size: 1.1rem; }
+            .feature-list { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -334,14 +336,14 @@
     const PAYMENT_CODE_PREFIX = 'LNP'; 
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
 
-    // 🔥 CẤU HÌNH ĐÃ ĐƯỢC CẬP NHẬT VỚI DOMAIN CỦA BẠN: https://dichvufb.tino.page
+    // CẤU HÌNH N8N
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',    
         N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',    
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'    
     };
 
-    // --- GÓI GIA HẠN (Đã sửa lỗi font) ---
+    // --- GÓI GIA HẠN ---
     const PAYMENT_PACKAGES = [
         {    
             months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000,    
@@ -391,7 +393,7 @@
 
     let selectedPackage = null;
     let finalAmount = 0;
-    const VN_CURRENCY_SYMBOL = ' VNĐ';
+    const VN_CURRENCY_SYMBOL = 'VNĐ';
     
     // Khai báo biến cần thiết
     let userEmail;
@@ -476,7 +478,7 @@
             });
             featureListHTML += '</ul>';
 
-            // Cấu trúc: Giá trị (dòng 1), VNĐ (dòng 2), và / x tháng (dòng 3)
+            // Điều chỉnh lại cấu trúc để VNĐ và / x tháng xuống dòng.
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
@@ -535,7 +537,7 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + VN_CURRENCY_SYMBOL;
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
             document.getElementById('selectionMode').style.display = 'none';
@@ -678,7 +680,7 @@
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
-            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + VN_CURRENCY_SYMBOL;
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
             
             document.getElementById('paymentPollingMode').scrollIntoView();
