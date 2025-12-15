@@ -157,6 +157,7 @@
             font-size: 1.3rem; 
         }
 
+        /* 3 Dòng Giá */
         .price-unit { 
             font-size: 2.8rem; 
             font-weight: 900; 
@@ -360,7 +361,7 @@
 
         <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
         
-        <div class="alert alert-info d-flex align-items-center gap-2">     
+        <div class="alert alert-info d-flex align-items-center gap-2"> 
             <i class="fas fa-user-circle fa-lg"></i>
             <span>Tài khoản gia hạn: <strong id="userEmailDisplay">...</strong></span>
         </div>
@@ -368,7 +369,7 @@
         <div id="packageSelection" class="package-select">
         </div>
         
-        <div class="text-center mt-2">     
+        <div class="text-center mt-2"> 
             <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">
             </button>
         </div>
@@ -433,7 +434,8 @@
     const PAYMENT_CODE_PREFIX = 'SEVQR'; 
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
     
-    // ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN
+    // ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN (Dùng cho giao dịch đang chờ khi reload)
+    // Giữ lại URL này vì chúng ta không lưu Data URI vào Local Storage
     const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
 
 
@@ -444,7 +446,7 @@
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'   
     };
 
-    // --- GÓI GIA HẠN (Không thay đổi) ---
+    // --- GÓI GIA HẠN (Giữ nguyên) ---
     const PAYMENT_PACKAGES = [
         {   
             months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000,   
@@ -473,7 +475,7 @@
                 { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },   
                 { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },   
-                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }, 
+                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" },  
                 { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }   
             ]   
         },   
@@ -502,9 +504,9 @@
     let pollingInterval;
 
 
-    // --- HÀM TIỆN ÍCH ---
+    // --- HÀM TIỆN ÍCH (Giữ nguyên) ---
     function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN');   
+        return amount.toLocaleString('vi-VN');    
     }
     
     function generateRandom6Digit() {
@@ -536,7 +538,7 @@
     function returnToSelection() {
         if (pollingInterval) clearInterval(pollingInterval);
 
-        localStorage.removeItem('current_payment_code');   
+        localStorage.removeItem('current_payment_code');    
         localStorage.removeItem('current_payment_amount');
 
         document.getElementById('paymentPollingMode').style.display = 'none';
@@ -544,8 +546,8 @@
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = CONTINUE_BTN_TEXT;
-        btn.disabled = true;   
-        selectedPackage = null;   
+        btn.disabled = true;    
+        selectedPackage = null;    
         finalAmount = 0;
 
         document.getElementById('selectionMode').scrollIntoView({ behavior: 'smooth' });
@@ -555,7 +557,7 @@
     }
 
 
-    // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
+    // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI (Giữ nguyên) ---
     
     function renderPackages() {
         const container = document.getElementById('packageSelection');
@@ -569,7 +571,7 @@
             wrapper.className = 'package-option-wrapper';
 
             const element = document.createElement('div');
-            element.className = 'package-option';   
+            element.className = 'package-option';    
             if(pkg.isBest) element.classList.add('best-value');
             
             // Cấu trúc dải băng ôm góc
@@ -613,13 +615,14 @@
         document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)} VNĐ)`;
     }
     
+    // ⭐ ĐOẠN CODE ĐÃ SỬA: Xử lý phản hồi QR ĐỘNG từ n8n
     async function processPayment() {
         if (!selectedPackage) return alert("Vui lòng chọn gói gia hạn!");
         
         // Cập nhật mã giao dịch và lưu vào LocalStorage
-        paymentCode = generateNewPaymentCode();   
+        paymentCode = generateNewPaymentCode(); 
         localStorage.setItem('current_payment_code', paymentCode);
-        localStorage.setItem('current_payment_amount', finalAmount);   
+        localStorage.setItem('current_payment_amount', finalAmount); 
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
@@ -642,12 +645,18 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            // 2. GÁN ẢNH QR TĨNH VÀ CẬP NHẬT THÔNG TIN
-            document.getElementById('qrCodeImg').src = STATIC_QR_IMAGE_URL; 
+            // ⭐ 1. NHẬN DỮ LIỆU TỪ N8N (chứa qrDataURL)
+            const data = await response.json(); 
+            const dynamicQrDataURL = data.qrDataURL; // Nhận chuỗi Base64 Data URI
+            
+            if (!dynamicQrDataURL) throw new Error("Lỗi: Không nhận được QR Data URL từ server.");
+            
+            // ⭐ 2. CẬP NHẬT THÔNG TIN VÀ ẢNH QR ĐỘNG
+            document.getElementById('qrCodeImg').src = dynamicQrDataURL; // Gán Data URI
             document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
-            // 3. Chuyển sang chế độ thanh toán
+            // 3. Chuyển sang chế độ thanh toán (Giữ nguyên)
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
@@ -657,7 +666,7 @@
             
         } catch (e) {
             alert("Lỗi khởi tạo thanh toán: " + e.message + ". Vui lòng thử lại sau.");
-            btn.innerHTML = CONTINUE_BTN_TEXT;   
+            btn.innerHTML = CONTINUE_BTN_TEXT;    
             btn.disabled = false;
         }
     }
@@ -665,7 +674,7 @@
     // --- POLLING LOGIC (Giữ nguyên) ---
 
     async function checkStatusViaPolling(email, paymentCode) {
-        const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`;   
+        const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`;    
 
         try {
             const response = await fetch(apiUrl, {
@@ -675,19 +684,19 @@
                     'Cache-Control': 'no-cache'
                 },
                 body: JSON.stringify({
-                    action: 'check_status',   
-                    email: email,   
-                    paymentCode: paymentCode   
+                    action: 'check_status',    
+                    email: email,    
+                    paymentCode: paymentCode    
                 })
             });
             
             if (response.status === 304) {
                 console.log("Polling: 304 Not Modified. Dữ liệu chưa thay đổi.");
-                return 'pending';   
+                return 'pending';    
             }
             
-            const data = await response.json();   
-            return data.user_status;   
+            const data = await response.json();    
+            return data.user_status;    
 
         } catch (e) {
             console.error("Lỗi Polling:", e);
@@ -719,26 +728,26 @@
                 document.getElementById('successMode').style.display = 'block';
                 document.getElementById('successMode').scrollIntoView({ behavior: 'smooth' });
 
-                forceRefreshAdminStatus(email);   
+                forceRefreshAdminStatus(email);    
             }
             
             console.log(`Polling check status: ${status} (Lần ${attempts})`);
-        }, 20000);   
+        }, 20000);    
     }
 
     function forceRefreshAdminStatus(email) {
         if (pollingInterval) clearInterval(pollingInterval);
         
-        const N8N_CALLBACK_URL = PAYMENT_CONFIG.N8N_OAUTH_CALLBACK;   
-        const redirectUrl = 'https://phuoclam095-bot.github.io/chonanhtudong/admin.html';   
+        const N8N_CALLBACK_URL = PAYMENT_CONFIG.N8N_OAUTH_CALLBACK;    
+        const redirectUrl = 'https://phuoclam095-bot.github.io/chonanhtudong/admin.html';    
         
         // Gắn thêm cache buster để đảm bảo dữ liệu mới nhất
         const refreshApiUrl = `${N8N_CALLBACK_URL}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}&_t=${Date.now()}`;
     
-        localStorage.removeItem('current_payment_code');   
+        localStorage.removeItem('current_payment_code');    
         localStorage.removeItem('current_payment_amount');
     
-        window.location.href = refreshApiUrl;   
+        window.location.href = refreshApiUrl;    
     }
 
     function handleSuccessAndGoHome() {
@@ -747,11 +756,11 @@
         const email = localStorage.getItem('admin_email');
         
         if(document.getElementById('successMode').style.display === 'block') {
-            forceRefreshAdminStatus(email);   
+            forceRefreshAdminStatus(email);    
         } else {
-            localStorage.removeItem('current_payment_code');   
+            localStorage.removeItem('current_payment_code');    
             localStorage.removeItem('current_payment_amount');
-            window.location.href = ADMIN_PAGE_URL;   
+            window.location.href = ADMIN_PAGE_URL;    
         }
     }
 
@@ -759,6 +768,7 @@
         return email.split('@')[0];
     }
 
+    // ⭐ ĐOẠN CODE ĐÃ SỬA: Xử lý giao dịch đang chờ (sử dụng ảnh tĩnh)
     function checkLoginAndInit() {
         userEmail = localStorage.getItem('admin_email');
         
@@ -786,6 +796,7 @@
 
         if (savedAmount && savedCode) {
             // Nếu có giao dịch đang chờ, hiển thị khu vực thanh toán
+            // CHÚ Ý: Dùng ảnh tĩnh vì chuỗi qrDataURL quá dài để lưu Local Storage
             document.getElementById('qrCodeImg').src = STATIC_QR_IMAGE_URL; 
             document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
@@ -794,7 +805,7 @@
             document.getElementById('paymentPollingMode').style.display = 'block';
             
             document.getElementById('paymentPollingMode').scrollIntoView();
-            startPaymentCheckPolling(userEmail, savedCode);   
+            startPaymentCheckPolling(userEmail, savedCode);    
         } else {
             document.getElementById('selectionMode').style.display = 'block';
             document.getElementById('paymentPollingMode').style.display = 'none';
