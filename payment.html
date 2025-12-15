@@ -38,7 +38,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 5px; /* Tối ưu margin */
+            margin-bottom: 5px; 
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -71,10 +71,10 @@
             font-weight: 900; 
             margin-bottom: 8px; 
             text-align: center; 
-            font-size: 1.6rem; /* Tối ưu cỡ chữ */
+            font-size: 1.6rem; 
         }
         h3 {
-            font-size: 1.3rem; /* Tối ưu cỡ chữ */
+            font-size: 1.3rem; 
             margin-bottom: 5px !important; 
         }
         
@@ -94,8 +94,8 @@
         }
         
         .package-option { 
-            padding: 15px 10px; /* Tối ưu padding */
-            min-height: 450px; /* GIẢM MIN-HEIGHT ĐỂ KHUNG NHỎ LẠI */
+            padding: 15px 10px; 
+            min-height: 450px; /* Chiều cao cố định */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -124,31 +124,33 @@
             font-weight: 900; 
             color: var(--dark-green); 
             margin-bottom: 3px; 
-            font-size: 1.1rem; /* Tối ưu cỡ chữ */
+            font-size: 1.1rem; 
         }
         .price-unit { 
-            font-size: 2.5rem; /* GIẢM CỠ CHỮ GIÁ */
+            font-size: 2.5rem; /* Giá trị chính */
             font-weight: 900; 
             color: var(--primary-green); 
             margin-top: 15px; 
             margin-bottom: 15px; 
             line-height: 1; 
+            display: block; /* Đảm bảo khối này chiếm 1 dòng */
         }
-        .price-unit span {
-            white-space: nowrap; 
-        }
+        
+        /* CSS cho khối VNĐ / Thời hạn (Dòng 2) */
         .price-unit small { 
-            font-size: 0.9rem; /* GIẢM CỠ CHỮ PHỤ */
+            font-size: 0.9rem; 
             color: #888; 
             font-weight: 600; 
-            display: block; 
+            display: block; /* ĐẢM BẢO XUỐNG DÒNG */
             margin-top: 5px; 
             line-height: 1;
+            white-space: nowrap; /* NGĂN VNĐ / X THÁNG XUỐNG DÒNG */
+            transform: translateY(10px); /* KÉO XUỐNG DƯỚI */
         }
         
         .best-badge {
-            position: absolute; top: -12px; /* Tối ưu vị trí */
-            right: -12px; /* Tối ưu vị trí */
+            position: absolute; top: -12px; 
+            right: -12px; 
             background: var(--best-value); color: white; padding: 4px 10px;
             border-radius: 5px; font-weight: 800; font-size: 0.75rem; 
             transform: rotate(5deg);
@@ -158,7 +160,7 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 0.9rem; /* Tối ưu cỡ chữ */
+            font-size: 0.9rem; 
             margin-top: 15px; 
             flex-grow: 1; 
         }
@@ -172,7 +174,7 @@
         .feature-list i.fa-check-circle { 
             margin-right: 8px; 
             color: var(--primary-green); 
-            font-size: 1rem; /* Tối ưu cỡ chữ icon */
+            font-size: 1rem; 
             margin-top: 2px; 
             flex-shrink: 0;
         }
@@ -454,7 +456,7 @@
             });
             featureListHTML += '</ul>';
 
-            // Cấu trúc: Giá trị VNĐ (dòng 1) và / x tháng (dòng 2)
+            // Cấu trúc mới: Giá trị (dòng 1) và VNĐ / x tháng (dòng 2)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
@@ -462,8 +464,8 @@
                 </div>
                 <div>
                     <p class="price-unit">
-                        <span>${priceDisplay} VNĐ</span>
-                        <small>/ ${pkg.months} tháng</small>
+                        <span>${priceDisplay}</span>
+                        <small>VNĐ / ${pkg.months} tháng</small>
                     </p>
                     ${featureListHTML}
                 </div>
