@@ -84,7 +84,7 @@
         }
         
         .package-option { 
-            padding: 30px 20px; 
+            padding: 25px 15px; /* Tối ưu hóa padding để giảm chiều cao */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -115,21 +115,22 @@
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Giảm margin */
+            font-size: 1.1rem;
         }
         .price-unit { 
-            font-size: 2.5rem; 
+            font-size: 2.2rem; /* Giảm cỡ chữ giá */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 15px;
-            margin-bottom: 15px;
+            margin-top: 10px; /* Giảm margin */
+            margin-bottom: 10px; /* Giảm margin */
         }
         .price-unit small { 
-            font-size: 0.9rem; 
+            font-size: 0.8rem; /* Giảm cỡ chữ */
             color: #888; 
             font-weight: 600; 
             display: block; 
-            margin-top: -15px; 
+            margin-top: -10px; 
         }
         
         .best-badge {
@@ -143,11 +144,11 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 0.95rem; 
-            margin-top: 20px;
+            font-size: 0.9rem; /* Giảm cỡ chữ */
+            margin-top: 15px; /* Giảm margin */
         }
         .feature-list li { 
-            margin-bottom: 8px; 
+            margin-bottom: 5px; /* Giảm khoảng cách giữa các dòng */
             color: #444; 
             display: flex; 
             align-items: center; 
@@ -224,7 +225,7 @@
         
         <h3 id="personalGreeting" class="text-center mb-3" style="color: var(--dark-green); font-weight: 800;"></h3>
 
-        <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Ổn Định Dịch Vụ</h2>
+        <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
         
         <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
             <i class="fas fa-user-circle fa-lg"></i>
@@ -293,7 +294,7 @@
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
     };
 
-    // 🔥 GÓI GIA HẠN VỚI GIÁ TRỊ NGANG NHAU (90.000 VNĐ/tháng)
+    // 🔥 GÓI GIA HẠN VỚI GIÁ GỐC ĐÃ ĐƯỢC KHÔI PHỤC (90K, 250K, 450K, 750K)
     const PAYMENT_PACKAGES = [
         { 
             months: 1, name: "Gói Dùng Thử", price: 90000, 
@@ -306,7 +307,7 @@
             ] 
         }, 
         { 
-            months: 3, name: "Gói Cơ Bản (3 tháng)", price: 270000, // 90.000 x 3
+            months: 3, name: "Gói Cơ Bản (3 tháng)", price: 250000, // KHÔI PHỤC GIÁ GỐC
             features: [
                 { text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" }, 
                 { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
@@ -316,7 +317,7 @@
             ]
         }, 
         { 
-            months: 6, name: "Gói Chuyên Nghiệp (6 tháng)", price: 540000, // 90.000 x 6
+            months: 6, name: "Gói Chuyên Nghiệp (6 tháng)", price: 450000, // KHÔI PHỤC GIÁ GỐC
             features: [
                 { text: "Lưu trữ 6 tháng (Rất ổn định)", icon: "fas fa-check-circle" }, 
                 { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
@@ -326,7 +327,7 @@
             ] 
         }, 
         { 
-            months: 12, name: "Gói UNLIMITED (1 Năm)", price: 1080000, // 90.000 x 12
+            months: 12, name: "Gói UNLIMITED (1 Năm)", price: 750000, // KHÔI PHỤC GIÁ GỐC
             features: [
                 { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" }, 
                 { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
