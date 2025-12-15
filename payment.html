@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gi- Studio LNP</title>
+    <title>Gia Hạn - Studio LNP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* [CSS Cũ - Giữ nguyên] */
+        /* CSS Styling (Giữ nguyên) */
         :root { 
             --primary-green: #147a30; 
             --dark-green: #0e5a22; 
@@ -52,7 +52,6 @@
         .btn-control:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); }
 
 
-        /* CARD CHÍNH */
         .payment-container { 
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
@@ -74,7 +73,6 @@
             margin-bottom: 6px !important; 
         }
 
-        /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
@@ -422,6 +420,7 @@
     const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
 
     // CẤU HÌNH N8N
+    // LƯU Ý: Webhook này phải trả về JSON 200 (Active hoặc Pending) và có CORS Header
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
         N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',    
@@ -500,6 +499,7 @@
     // --- LOGIC GIAO DỊCH VÀ CHỌN GÓI ---
     
     function renderPackages() {
+        // Code render gói sản phẩm (Giữ nguyên)
         const container = document.getElementById('packageSelection');
         container.innerHTML = '';
 
@@ -611,7 +611,7 @@
         const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`;     
 
         try {
-            // Thực hiện Request Polling
+            // N8N phải trả về JSON 200 (Active hoặc Pending) và có Header CORS
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -625,28 +625,28 @@
                 })
             });
             
-            // ⭐ BẮT TRẠNG THÁI CHUYỂN HƯỚNG TỪ N8N (302)
+            // Nếu n8n trả về mã 302 (Redirect) (Không nên xảy ra trong cấu hình mới)
             if (response.status === 302 || response.redirected) {
-                console.log("Polling success! N8N triggered redirect (302).");
-                return { user_status: 'redirected' }; 
+                console.warn("N8N unexpectedly triggered 302 Redirect. Stopping Polling.");
+                return { status: 'redirected' }; 
             }
 
             if (response.status === 200) {
-                 // Nếu n8n trả về 200 (Pending)
+                 // N8N trả về JSON (Active/Pending)
                 const data = await response.json();     
                 return data; 
             }
             
-            // Trường hợp lỗi hoặc 304 (Not Modified)
-            return { user_status: 'error' };
+            // Trường hợp lỗi khác (ví dụ: 500, 404)
+            return { status: 'error' };
 
         } catch (e) {
-            console.error("Lỗi Polling:", e);
-            return { user_status: 'error' };
+            console.error("Lỗi Polling (Network Error):", e);
+            return { status: 'error' };
         }
     }
     
-    // ⭐ HÀM CHÍNH: CHỜ N8N GỬI REDIRECT (302)
+    // ⭐ HÀM CHÍNH: TỰ CHUYỂN HƯỚNG BẰNG JS KHI NHẬN JSON 200 ACTIVE
     function startPaymentCheckPolling(email, paymentCode, pkg) {
         if (pollingInterval) clearInterval(pollingInterval);
         
@@ -663,26 +663,33 @@
             }
 
             const data = await checkStatusViaPolling(email, paymentCode);
-            const status = data.user_status;
+            // Lấy trạng thái từ trường 'status' hoặc 'user_status'
+            const status = data.status || data.user_status; 
 
-            if (status === 'redirected') {
-                // Nếu n8n đã gửi mã 302 (Redirect), Polling tự dừng.
+            if (status === 'active') {
                 clearInterval(pollingInterval);
-                console.log("Polling stopped because N8N is handling redirect.");
                 
-                // Hiển thị thông báo thành công (Dù Redirect đã xảy ra, đây là dự phòng UI)
+                // 1. Hiện thông báo thành công
                 document.getElementById('paymentPollingMode').style.display = 'none';
                 document.getElementById('successMode').style.display = 'block';
                 document.getElementById('successMode').scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
 
-            if (status === 'active') {
-                 // Trường hợp này không nên xảy ra nếu 302 hoạt động, nhưng là dự phòng chuyển hướng JS
-                clearInterval(pollingInterval);
-                console.log("Polling success, forcing local redirect (Fallback).");
-                handleSuccessAndGoHome(); 
+                // ⭐ 2. TỰ CHUYỂN HƯỚNG BẰNG JS (An toàn nhất)
+                // Lấy dữ liệu từ JSON 200 (tên biến tùy thuộc vào Node Active của bạn)
+                const expiryTime = data.expiry_timestamp || data.user_expiry || (Date.now() + (31536000000 * 10)); 
+                const userEmailRedirect = data.email || data.user_email || email;
+                
+                // Tạo URL CHUYỂN HƯỚNG
+                const redirectUrl = `${ADMIN_PAGE_URL}?user_status=active&user_expiry=${expiryTime}&user_email=${encodeURIComponent(userEmailRedirect)}`;
+
+                console.log("Polling success, client redirecting to: ", redirectUrl);
+                
+                // Chuyển hướng sau 1.5 giây
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 1500); 
                 return;
+
             }
             
             console.log(`Polling check status: ${status} (Lần ${attempts})`);
@@ -696,7 +703,7 @@
         const email = localStorage.getItem('admin_email');
         const expiryTime = Date.now() + (31536000000 * 10); 
 
-        // Chuyển hướng thủ công (sau khi nhấn nút hoặc sau khi chuyển hướng N8N thất bại)
+        // Chuyển hướng thủ công
         if(document.getElementById('successMode').style.display === 'block' || confirm('Bạn có chắc chắn đã chuyển khoản và muốn về trang chủ?')) {
              const redirectUrl = `${ADMIN_PAGE_URL}?user_status=active&user_expiry=${expiryTime}&user_email=${encodeURIComponent(email)}`;
              window.location.href = redirectUrl;
