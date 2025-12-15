@@ -24,7 +24,7 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: flex-start; 
-            padding-top: 10px; 
+            padding-top: 5px; 
             padding-bottom: 5px; 
             margin: 0;
             /* NỀN CHẤM BI ĐEN */
@@ -38,7 +38,7 @@
         .header-controls { 
             width: 100%; 
             max-width: 1200px; 
-            margin-bottom: 10px; 
+            margin-bottom: 5px; 
             display: flex; 
             justify-content: space-between;
             padding: 0 15px;
@@ -60,7 +60,7 @@
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 20px; /* Tăng padding tổng thể */
+            padding: 15px; 
             max-width: 1200px; 
             width: 100%; 
             position: relative; 
@@ -69,33 +69,33 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
             text-align: center; 
-            font-size: 1.8rem; /* TĂNG CỠ CHỮ */
+            font-size: 1.6rem; 
         }
         h3 {
-            font-size: 1.4rem; /* TĂNG CỠ CHỮ */
-            margin-bottom: 8px !important; 
+            font-size: 1.3rem; 
+            margin-bottom: 5px !important; 
         }
         
         /* Bố cục 4 cột (Selection Mode) */
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 15px; 
-            margin-bottom: 20px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 11.25px); 
-            min-width: 230px; 
+            width: calc(25% - 7.5px); 
+            min-width: 200px; 
             box-sizing: border-box; 
             position: relative;
         }
         
         .package-option { 
-            padding: 20px 15px; /* TĂNG PADDING */
-            min-height: 580px; /* TĂNG MIN-HEIGHT ĐỂ KÉO DÀI KHUNG */
+            padding: 15px 10px; 
+            min-height: 400px; /* Tối ưu chiều cao */
             border: 2px solid #ddd; 
             border-radius: 15px; 
             cursor: pointer; 
@@ -123,28 +123,47 @@
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
-            margin-bottom: 5px; 
-            font-size: 1.2rem; /* TĂNG CỠ CHỮ TIÊU ĐỀ */
+            margin-bottom: 3px; 
+            font-size: 1.1rem; 
         }
         .price-unit { 
-            font-size: 2.8rem; /* TĂNG CỠ CHỮ GIÁ */
+            font-size: 2.5rem; /* Giá trị số lớn */
             font-weight: 900; 
             color: var(--primary-green); 
-            margin-top: 20px; /* Tăng margin */
-            margin-bottom: 20px; /* Tăng margin */
-        }
-        .price-unit small { 
-            font-size: 1rem; /* TĂNG CỠ CHỮ PHỤ */
-            color: #888; 
-            font-weight: 600; 
+            margin-top: 15px; 
+            margin-bottom: 15px; 
+            line-height: 1; 
             display: block; 
-            margin-top: -10px; 
+        }
+        
+        /* CSS cho 3 dòng giá */
+        .price-unit span {
+            white-space: nowrap; 
+            display: block; /* Giá trị số - Dòng 1 */
+            margin-bottom: 5px;
+        }
+        .price-unit small.currency { 
+            font-size: 1.2rem; /* TĂNG KÍCH THƯỚC CHỮ VNĐ */
+            color: var(--dark-green); 
+            font-weight: 800; 
+            display: block; /* VNĐ - Dòng 2 */
+            margin-top: 0; 
+            line-height: 1;
+        }
+        .price-unit small.duration { 
+            font-size: 0.9rem; /* Thời hạn nhỏ hơn - Dòng 3 */
+            color: #888; 
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+            line-height: 1;
         }
         
         .best-badge {
-            position: absolute; top: -15px; right: -15px; 
-            background: var(--best-value); color: white; padding: 5px 15px;
-            border-radius: 5px; font-weight: 800; font-size: 0.8rem; 
+            position: absolute; top: -12px; 
+            right: -12px; 
+            background: var(--best-value); color: white; padding: 4px 10px;
+            border-radius: 5px; font-weight: 800; font-size: 0.75rem; 
             transform: rotate(5deg);
         }
         
@@ -152,47 +171,45 @@
             list-style: none; 
             padding: 0; 
             text-align: left; 
-            font-size: 1rem; /* TĂNG CỠ CHỮ TÍNH NĂNG */
-            margin-top: 20px; 
+            font-size: 0.9rem; 
+            margin-top: 15px; 
             flex-grow: 1; 
         }
         .feature-list li { 
-            margin-bottom: 8px; /* Tăng khoảng cách */
+            margin-bottom: 5px; 
             color: #444; 
             display: flex; 
             align-items: flex-start;
-            /* Đảm bảo chữ dài tự động xuống dòng */
             line-height: 1.3; 
         }
         .feature-list i.fa-check-circle { 
-            margin-right: 10px; 
+            margin-right: 8px; 
             color: var(--primary-green); 
-            font-size: 1.1rem; 
+            font-size: 1rem; 
             margin-top: 2px; 
             flex-shrink: 0;
         }
         
         /* ALERT/USER INFO */
         .alert {
-            padding: 10px 15px; /* TĂNG PADDING */
-            margin-bottom: 10px !important; 
-            font-size: 1rem;
+            padding: 8px 15px; 
+            margin-bottom: 8px !important; 
+            font-size: 0.95rem;
         }
-        .alert strong { font-size: 1rem; }
         
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
             color: white; 
-            padding: 8px 0; 
-            margin-bottom: 15px; 
-            border-radius: 10px; 
+            padding: 7px 0; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
             overflow: hidden; 
         }
         .marquee-text { 
             font-weight: 700; 
             white-space: nowrap; 
-            animation: marquee 15s linear infinite; /* Đảm bảo chạy */
+            animation: marquee 15s linear infinite; 
         }
         @keyframes marquee { 
             0% { transform: translateX(100%); } 
@@ -201,21 +218,20 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 12px 40px; /* TĂNG PADDING NÚT */
-            font-size: 1.2rem; 
-            margin-top: 30px !important; /* TĂNG KHOẢNG CÁCH DƯỚI GÓI */
+            padding: 10px 30px; 
+            font-size: 1.1rem; 
+            margin-top: 15px !important; 
             position: relative; 
         }
 
         /* KHỐI QR/POLLING */
-        #paymentArea { padding: 30px; }
-        /* ... CSS cho QR Area (Giữ nguyên) ... */
+        #paymentArea { padding: 25px; }
         
         @media (max-width: 992px) {
             .package-option-wrapper { 
                 width: calc(50% - 10px); 
             }
-            .package-option { min-height: 500px; }
+            .package-option { min-height: 400px; }
         }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
@@ -224,7 +240,7 @@
                 margin-bottom: 10px; 
             }
             .package-select { flex-direction: column; gap: 10px; padding: 0 5px; }
-            .package-option { min-height: 400px; }
+            .package-option { min-height: 350px; }
         }
     </style>
 </head>
@@ -370,17 +386,11 @@
 
     let selectedPackage = null;
     let finalAmount = 0;
-    let paymentCode = '';
-    let userEmail = '';
-    let pollingInterval = null;
-    const FALLBACK_NAME = 'bạn';
-    const PAYMENT_CODE_PREFIX = 'SEVQR_'; 
-    const CONTINUE_BTN_TEXT = '<i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán'; 
-    const ADMIN_PAGE_URL = "admin.html";
+    const VN_CURRENCY_SYMBOL = ' VNĐ';
 
     // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
-        return amount.toLocaleString('vi-VN') + ' VNĐ';
+        return amount.toLocaleString('vi-VN'); 
     }
     
     function generateRandom6Digit() {
@@ -451,14 +461,18 @@
             });
             featureListHTML += '</ul>';
 
-            // Đảm bảo xuống dòng cho (3 tháng), (6 tháng)
+            // Cấu trúc: Giá trị (dòng 1), VNĐ (dòng 2), và / x tháng (dòng 3)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
                     <h5>${pkg.name}<br><small style="font-weight:700; color:#555">${pkg.name_sub}</small></h5>
                 </div>
                 <div>
-                    <p class="price-unit">${priceDisplay}<small>/ ${pkg.months} tháng</small></p>
+                    <p class="price-unit">
+                        <span>${priceDisplay}</span>
+                        <small class="currency">${VN_CURRENCY_SYMBOL}</small>
+                        <small class="duration">/ ${pkg.months} tháng</small>
+                    </p>
                     ${featureListHTML}
                 </div>
             `;
@@ -476,7 +490,7 @@
         selectedPackage = pkg;
         finalAmount = price;
         document.getElementById('btnContinue').disabled = false;
-        document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)})`;
+        document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(finalAmount)} VNĐ)`;
     }
     
     async function processPayment() {
@@ -484,7 +498,7 @@
         
         paymentCode = generateNewPaymentCode(); 
         localStorage.setItem('current_payment_code', paymentCode);
-        localStorage.setItem('current_payment_amount', formatCurrency(finalAmount));
+        localStorage.setItem('current_payment_amount', finalAmount); 
         
         const btn = document.getElementById('btnContinue');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang khởi tạo...';
@@ -506,7 +520,7 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            document.getElementById('displayAmount').innerText = formatCurrency(finalAmount);
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(finalAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
             document.getElementById('selectionMode').style.display = 'none';
@@ -632,7 +646,7 @@
         
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
-        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
+        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
@@ -648,7 +662,7 @@
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             
-            document.getElementById('displayAmount').innerText = savedAmount;
+            document.getElementById('displayAmount').innerText = formatCurrency(parseInt(savedAmount)) + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = savedCode;
             
             document.getElementById('paymentPollingMode').scrollIntoView();
