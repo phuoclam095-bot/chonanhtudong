@@ -27,7 +27,6 @@
             background-size: 50px 50px; 
             background-position: 0 0, 25px 25px; 
             color: #333;
-            /* Đảm bảo trang vừa khung trên desktop/laptop */
             min-height: 98vh; 
             display: flex; 
             flex-direction: column; 
@@ -86,7 +85,7 @@
         }
         .package-option-wrapper { 
             width: calc(25% - 15px); 
-            min-width: 250px; /* Đảm bảo kích thước tối thiểu lớn hơn */
+            min-width: 250px; 
             box-sizing: border-box; 
             position: relative;
         }
@@ -124,11 +123,11 @@
             font-weight: 900; 
             color: var(--dark-green); 
             margin-bottom: 8px; 
-            font-size: 1.5rem; /* Tăng cỡ chữ */
+            font-size: 1.5rem; 
         }
 
         .price-unit { 
-            font-size: 3.5rem; /* Tăng cỡ chữ giá */
+            font-size: 3.5rem; 
             font-weight: 900; 
             color: var(--primary-green); 
             margin-top: 25px; 
@@ -137,26 +136,37 @@
             display: block; 
         }
         .price-unit small.currency { 
-            font-size: 1.6rem; /* Tăng cỡ chữ */
+            font-size: 1.6rem; 
             color: var(--dark-green); 
             font-weight: 800; 
         }
         .price-unit small.duration { 
-            font-size: 1.1rem; /* Tăng cỡ chữ */
+            font-size: 1.1rem; 
             color: #888; 
             font-weight: 600;
         }
         
         .feature-list { 
-            margin-top: 20px; /* Tăng margin list feature */
-            font-size: 1.05rem; /* Tăng cỡ chữ */
+            list-style: none; 
+            padding: 0; 
+            text-align: left; 
+            margin-top: 20px; 
+            font-size: 1.05rem; 
+            flex-grow: 1;
         }
         .feature-list li { 
-            margin-bottom: 10px; /* Tăng margin item list */
+            margin-bottom: 10px; 
+            color: #444; 
+            display: flex; 
+            align-items: flex-start;
+            line-height: 1.5; 
         }
         .feature-list i.fa-check-circle { 
+            margin-right: 10px; 
             color: var(--primary-green); 
             font-size: 1.2rem;
+            margin-top: 2px;
+            flex-shrink: 0;
         }
 
         .alert-info {
@@ -171,10 +181,11 @@
             padding: 10px 0; 
             margin-bottom: 15px; 
             border-radius: 12px; 
+            overflow: hidden; 
         }
         .marquee-text { 
             font-weight: 800; 
-            font-size: 1.2rem; /* Tăng cỡ chữ */
+            font-size: 1.2rem; 
             white-space: nowrap; 
             animation: marquee 15s linear infinite; 
         }
@@ -185,12 +196,13 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 15px 40px; /* Tăng padding nút */
-            font-size: 1.4rem; /* Tăng cỡ chữ */
+            padding: 15px 40px; 
+            font-size: 1.4rem; 
             margin-top: 20px !important; 
             border-radius: 12px;
             background-color: var(--primary-green) !important; 
             border-color: var(--primary-green) !important;
+            transition: all 0.3s;
         }
         #btnContinue:hover {
             background-color: var(--dark-green) !important;
@@ -318,7 +330,6 @@
     const ADMIN_PAGE_URL = 'admin.html';
     const FALLBACK_NAME = 'Khách hàng thân thiết';
     const PAYMENT_CODE_PREFIX = 'LNP'; 
-    // 🔥 Đã đổi chữ ở đây
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
 
     // 🔥 CẤU HÌNH ĐÃ ĐƯỢC CẬP NHẬT VỚI DOMAIN CỦA BẠN: https://dichvufb.tino.page
@@ -328,7 +339,7 @@
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'    
     };
 
-    // --- GÓI GIA HẠN ---
+    // --- GÓI GIA HẠN (Đã sửa lỗi font) ---
     const PAYMENT_PACKAGES = [
         {    
             months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000,    
@@ -357,7 +368,9 @@
                 { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },    
                 { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },    
-                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" },
+                // Sửa lỗi font: "Üu tiên hô trœ (Nhœn ticket söím)" -> "Ưu tiên hỗ trợ (Nhận ticket sớm)"
+                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }, 
+                // Sửa lỗi font: "Hô trœ chuyên đôi tài khoœn" -> "Hỗ trợ chuyển đổi tài khoản"
                 { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" }    
             ]    
         },    
@@ -366,10 +379,15 @@
             features: [
                 { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" },    
                 { text: "Cho phép tải xuống", icon: "fas fa-check-circle" },    
+                // Sửa lỗi font: "Tốc đọ tải ảnh TỨC THÌ" -> "Tốc độ tải ảnh TỨC THÌ"
                 { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" },
+                // Sửa lỗi font: "Tích hơp Gắn Logo/Watermark" -> "Tích hợp Gắn Logo/Watermark"
                 { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" },    
+                // Sửa lỗi font: "Üu tiên hô trœ 24/7 & Üu tiên hàng đœu" -> "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu"
                 { text: "Ưu tiên hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" },
+                // Sửa lỗi font: "Hô trœ chuyên đôi tài khoœn" -> "Hỗ trợ chuyển đổi tài khoản"
                 { text: "Hỗ trợ chuyển đổi tài khoản", icon: "fas fa-check-circle" },    
+                // Sửa lỗi font: "Üu tiên phát trien dich vu riêng (theo yêu cœu)" -> "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)"
                 { text: "Ưu tiên phát triển dịch vụ riêng (theo yêu cầu)", icon: "fas fa-check-circle" }    
             ],
             isBest: true
