@@ -226,17 +226,17 @@
 <script>
     // 🔥 CẤU HÌNH ĐÃ ĐƯỢC CẬP NHẬT VỚI DOMAIN CỦA BẠN: https://dichvufb.tino.page
     const PAYMENT_CONFIG = {
-        // 1. Webhook SAVE PENDING (Khi bấm "Tiếp Tục Thanh Toán")
+        // WEBHOOK GHI GIAO DỊCH PENDING
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending', 
         
-        // 2. Webhook CHECK STATUS (Khi Polling mỗi 10 giây)
-        N8N_CHECK_STATUS: 'https://dichvufb.tino.page/webhook/check-status',
+        // WEBHOOK CHÍNH DÙNG CHO POLLING (Nhánh TRUE trong Flow n8n)
+        N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback', 
         
-        // 3. CALLBACK N8N (Dùng để buộc refresh trạng thái Admin)
+        // CALLBACK N8N (Dùng để buộc refresh trạng thái Admin sau khi thành công)
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
     };
 
-    // 🔥 GÓI GIA HẠN VỚI GIÁ CỐ ĐỊNH
+    // 🔥 GÓI GIA HẠN VỚI GIÁ CỐ ĐỊNH (GIỮ NGUYÊN)
     const PAYMENT_PACKAGES = [
         { months: 1, name: "Gói Cơ Bản (1 tháng)", price: 90000, note: "90.000 VNĐ" }, 
         { months: 3, name: "Gói Quý (3 tháng)", price: 250000, note: "250.000 VNĐ" }, 
@@ -252,6 +252,7 @@
     const FALLBACK_NAME = 'bạn';
     const PAYMENT_CODE_PREFIX = 'SEVQR_'; 
     const CONTINUE_BTN_TEXT = '<i class="fas fa-arrow-right"></i> Tiếp Tục Thanh Toán'; 
+    const ADMIN_PAGE_URL = "admin.html"; // Trang đích cuối cùng
 
     // --- HÀM TIỆN ÍCH ---
     function formatCurrency(amount) {
@@ -263,14 +264,13 @@
     }
 
     function generateNewPaymentCode() {
-        const randomCode = generateRandom6Digit();
-        return PAYMENT_CODE_PREFIX + randomCode;
+        return PAYMENT_CODE_PREFIX + generateRandom6Digit();
     }
     
     function copyPaymentCode() {
         const code = document.getElementById('displayPaymentCode').innerText;
         navigator.clipboard.writeText(code).then(() => {
-             alert(`Đã sao chép nội dung chuyển khoản: ${code}`);
+              alert(`Đã sao chép nội dung chuyển khoản: ${code}`);
         }).catch(err => {
             console.error('Không thể sao chép: ', err);
             alert("Lỗi sao chép tự động. Vui lòng sao chép thủ công.");
@@ -354,7 +354,7 @@
         btn.disabled = true;
 
         try {
-            // 🔥 GỌI WORKFLOW 1: SAVE PENDING
+            // 🔥 GỌI WORKFLOW 1: SAVE PENDING (Ghi vào Payment_Transactions)
             const response = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -380,8 +380,8 @@
             
             document.getElementById('paymentPollingMode').scrollIntoView({ behavior: 'smooth' });
             
-            // 4. Bắt đầu Polling
-            startPollingStatus(userEmail);
+            // 4. Bắt đầu Polling (Gọi Webhook chính kèm paymentCode)
+            startPaymentCheckPolling(userEmail, paymentCode);
             
         } catch (e) {
             alert("Lỗi khởi tạo thanh toán: " + e.message + ". Vui lòng thử lại sau.");
@@ -393,25 +393,18 @@
     
     // --- POLLING LOGIC ---
 
-    async function checkStatusViaAPI(email) {
-        if (!PAYMENT_CONFIG.N8N_CHECK_STATUS.startsWith('http')) return 'error';
+    async function checkStatusViaPolling(email, paymentCode) {
+        // URL Polling (Kích hoạt Nhánh TRUE trong n8n - Luồng 2.x)
+        // **Đây là nơi gọi Webhook chính để phân nhánh**
+        const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}?action=check_status&email=${encodeURIComponent(email)}&paymentCode=${encodeURIComponent(paymentCode)}`;
 
         try {
-            // 🔥 GỌI WORKFLOW 2: CHECK STATUS (Polling)
-            const response = await fetch(PAYMENT_CONFIG.N8N_CHECK_STATUS, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: email, action: 'check_status_api' }) 
-            });
-            
-            // Lưu ý: Dữ liệu trả về phải là 1 JSON Object (không phải Array)
+            // 🔥 GỌI WORKFLOW N8N CHÍNH (AJAX/Fetch)
+            const response = await fetch(apiUrl);
+            // N8N trả về JSON từ Node 2.3/2.4 (user_status: active/pending)
             const data = await response.json(); 
             
-            if (data.status === 'active') {
-                // Chúng ta không lưu vào localStorage ở đây, mà sẽ để n8n làm khi chuyển hướng
-                return 'active';
-            }
-            return 'pending';
+            return data.user_status; // Trả về 'active' hoặc 'pending'
 
         } catch (e) {
             console.error("Lỗi Polling:", e);
@@ -419,11 +412,9 @@
         }
     }
 
-    function startPollingStatus(email) {
+    function startPaymentCheckPolling(email, paymentCode) {
         if (pollingInterval) clearInterval(pollingInterval);
         
-        checkStatusViaAPI(email); 
-
         let attempts = 0;
         const maxAttempts = 30; // 30 lần x 10 giây = 5 phút
         
@@ -435,7 +426,7 @@
                 return;
             }
 
-            const status = await checkStatusViaAPI(email);
+            const status = await checkStatusViaPolling(email, paymentCode);
 
             if (status === 'active') {
                 clearInterval(pollingInterval);
@@ -445,26 +436,24 @@
                 document.getElementById('successMode').style.display = 'block';
                 document.getElementById('successMode').scrollIntoView({ behavior: 'smooth' });
 
-                // 🔥 GỌI HÀM CHUYỂN HƯỚNG TỚI ADMIN PAGE
-                // HÀM NÀY SẼ BUỘC TRANG ADMIN CẬP NHẬT TRẠNG THÁI MỚI NHẤT
+                // 🔥 GỌI HÀM CHUYỂN HƯỚNG BẮT BUỘC ĐẾN ADMIN QUA WEBHOOK N8N
                 forceRefreshAdminStatus(email); 
             }
         }, 10000); // Kiểm tra mỗi 10 giây
     }
 
-    // 🔥 HÀM QUAN TRỌNG: CHUYỂN HƯỚNG BẮT BUỘC ĐẾN ADMIN QUA WEBHOOK N8N
-   // TRONG FILE payment.html (Tìm và thay thế đoạn code trong hàm forceRefreshAdminStatus)
-
+    // 🔥 HÀM QUAN TRỌNG: CHUYỂN HƯỚNG BẮT BUỘC ĐẾN ADMIN QUA WEBHOOK N8N (REDIRECT)
     function forceRefreshAdminStatus(email) {
         if (pollingInterval) clearInterval(pollingInterval);
         
         // 1. Chuẩn bị URL chuyển hướng
         const N8N_CALLBACK_URL = PAYMENT_CONFIG.N8N_OAUTH_CALLBACK; 
         
-        // 🔥🔥 ĐIỂM SỬA CHỮA: Sử dụng URL đích cố định ĐÃ XÁC NHẬN
+        // SỬ DỤNG URL ĐÍCH CỐ ĐỊNH CỦA TRANG ADMIN
         const redirectUrl = 'https://phuoclam095-bot.github.io/chonanhtudong/admin.html'; 
     
         // 2. Tham số action=check_status báo cho Webhook rằng đây là yêu cầu kiểm tra trạng thái
+        // KHÔNG CÓ paymentCode -> Kích hoạt Nhánh FALSE (Luồng 3.x)
         const refreshApiUrl = `${N8N_CALLBACK_URL}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
     
         // Xóa dữ liệu cũ và mã thanh toán duy nhất
@@ -476,7 +465,7 @@
     }
 
     function handleSuccessAndGoHome() {
-        // Hàm này được gọi khi người dùng click nút "Về Trang Chủ" trên màn hình QR/Thành công
+        // Hàm này được gọi khi người dùng click nút "Về Trang Chủ"
         
         if (pollingInterval) clearInterval(pollingInterval);
         
@@ -485,12 +474,13 @@
         
         // Nếu đã hoàn thành (màn hình successMode), gọi hàm buộc làm mới trạng thái
         if(document.getElementById('successMode').style.display === 'block') {
-             forceRefreshAdminStatus(email); 
+            forceRefreshAdminStatus(email); 
         } else {
             // Nếu đang ở màn hình QR (paymentPollingMode) nhưng người dùng bấm nút:
+            // Xóa mã và chuyển về trang Admin (để Admin tự kiểm tra trạng thái chung)
             localStorage.removeItem('current_payment_code'); 
             localStorage.removeItem('current_payment_amount');
-            window.location.href = 'admin.html'; 
+            window.location.href = ADMIN_PAGE_URL; 
         }
     }
 
@@ -506,7 +496,7 @@
         
         if (!userEmail) {
             alert('Vui lòng đăng nhập Admin trước khi thanh toán!');
-            window.location.href = 'admin.html';
+            window.location.href = ADMIN_PAGE_URL;
             return;
         }
         
@@ -524,7 +514,7 @@
         const savedAmount = localStorage.getItem('current_payment_amount');
         const savedCode = localStorage.getItem('current_payment_code');
 
-        // Đảm bảo nút tiếp tục được đặt lại trạng thái ban đầu (Fix lỗi nút)
+        // Đảm bảo nút tiếp tục được đặt lại trạng thái ban đầu
         document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
         document.getElementById('btnContinue').disabled = true;
 
@@ -537,7 +527,7 @@
             document.getElementById('displayPaymentCode').innerText = savedCode;
             
             document.getElementById('paymentPollingMode').scrollIntoView();
-            startPollingStatus(userEmail);
+            startPaymentCheckPolling(userEmail, savedCode); // Bắt đầu lại Polling với mã cũ
         } else {
             // Trường hợp 2: Bắt đầu giao dịch mới -> LUÔN HIỂN THỊ CHỌN GÓI
             document.getElementById('selectionMode').style.display = 'block';
