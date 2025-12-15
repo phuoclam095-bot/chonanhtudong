@@ -27,7 +27,6 @@
             background-size: 50px 50px; 
             background-position: 0 0, 25px 25px; 
             color: #333;
-            /* Đảm bảo trang vừa khung trên desktop/laptop */
             min-height: 98vh; 
             display: flex; 
             flex-direction: column; 
@@ -59,7 +58,7 @@
             background: linear-gradient(145deg, #f0fff4, #ffffff);
             border-radius: 20px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); 
-            padding: 24px; /* Giảm nhẹ padding */
+            padding: 24px; 
             max-width: 1200px; 
             width: 100%; 
             margin-bottom: 5px; 
@@ -67,12 +66,12 @@
         h2 { 
             color: var(--dark-green); 
             font-weight: 900; 
-            margin-bottom: 8px; /* Giảm nhẹ margin */
-            font-size: 1.7rem; /* Giảm nhẹ cỡ chữ */
+            margin-bottom: 8px; 
+            font-size: 1.7rem; 
             text-align: center;
         }
         h3 {
-            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.3rem; 
             margin-bottom: 6px !important; 
         }
 
@@ -80,20 +79,20 @@
         .package-select { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 12px; /* Giảm nhẹ gap */
+            gap: 12px; 
             margin-bottom: 18px; 
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 9px); /* Tính toán lại width cho gap 12px */
-            min-width: 225px; /* Giảm nhẹ min width */
+            width: calc(25% - 9px); 
+            min-width: 225px; 
             box-sizing: border-box; 
             position: relative;
         }
 
         .package-option { 
-            padding: 18px 14px; /* Giảm padding thẻ gói */
-            min-height: 440px; /* GIẢM CHIỀU CAO TỐI THIỂU */
+            padding: 18px 14px; 
+            min-height: 440px; 
             border: 2px solid #ddd; 
             border-radius: 20px; 
             cursor: pointer; 
@@ -105,6 +104,7 @@
             justify-content: space-between;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
             text-align: center;
+            overflow: hidden; 
         }
         .package-option:hover {
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
@@ -115,20 +115,39 @@
             background: linear-gradient(145deg, #e9f5eb, #f5fff5);
             box-shadow: 0 10px 30px rgba(20, 122, 48, 0.35); 
         }
+        
+        /* Gói tốt nhất: Thêm lại viền và đổ bóng màu cam */
         .package-option.best-value {
             border-color: var(--best-value);
-            box-shadow: 0 0 0 5px var(--best-value), 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); 
+        }
+        
+        /* RIBBON BADGE */
+        .best-badge {
+            position: absolute;
+            top: 20px; 
+            right: -25px; 
+            width: 120px; 
+            padding: 5px 0; 
+            background-color: var(--best-value); 
+            color: white;
+            font-weight: 900;
+            text-align: center;
+            font-size: 0.85rem;
+            transform: rotate(45deg); 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 10;
         }
         
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
             margin-bottom: 4px; 
-            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.3rem; 
         }
 
         .price-unit { 
-            font-size: 2.8rem; /* Giảm cỡ chữ giá */
+            font-size: 2.8rem; 
             font-weight: 900; 
             color: var(--primary-green); 
             margin-top: 18px; 
@@ -137,13 +156,13 @@
             display: block; 
         }
         .price-unit small.currency { 
-            font-size: 1.3rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.3rem; 
             color: var(--dark-green); 
             font-weight: 800; 
-            display: block; /* Bắt buộc xuống dòng */
+            display: block; 
         }
         .price-unit small.duration { 
-            font-size: 0.95rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 0.95rem; 
             color: #888; 
             font-weight: 600;
         }
@@ -153,11 +172,11 @@
             padding: 0; 
             text-align: left; 
             margin-top: 15px; 
-            font-size: 0.9rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 0.9rem; 
             flex-grow: 1;
         }
         .feature-list li { 
-            margin-bottom: 7px; /* Giảm nhẹ margin item list */
+            margin-bottom: 7px; 
             color: #444; 
             display: flex; 
             align-items: flex-start;
@@ -181,16 +200,18 @@
         /* MARQUEE */
         .marquee-container { 
             background: var(--primary-green); 
-            padding: 7px 0; /* Giảm nhẹ padding */
+            padding: 7px 0; 
             margin-bottom: 12px; 
             border-radius: 9px; 
             overflow: hidden; 
         }
         .marquee-text { 
             font-weight: 800; 
-            font-size: 1.05rem; /* Giảm nhẹ cỡ chữ */
+            font-size: 1.05rem; 
             white-space: nowrap; 
             animation: marquee 15s linear infinite; 
+            /* THAY ĐỔI MÀU CHỮ CHẠY THÀNH CAM */
+            color: var(--best-value); 
         }
         @keyframes marquee { 
             0% { transform: translateX(100%); } 
@@ -199,8 +220,8 @@
 
         /* BUTTON */
         #btnContinue {
-            padding: 10px 25px; /* Giảm padding nút */
-            font-size: 1.1rem; /* Giảm cỡ chữ */
+            padding: 10px 25px; 
+            font-size: 1.1rem; 
             margin-top: 12px !important; 
             border-radius: 9px;
             background-color: var(--primary-green) !important; 
@@ -213,8 +234,8 @@
         }
 
         /* KHỐI QR/POLLING */
-        #paymentArea { padding: 20px; } /* Giảm nhẹ padding */
-        .info-detail strong { font-size: 1.3rem; } /* Giảm nhẹ cỡ chữ */
+        #paymentArea { padding: 20px; } 
+        .info-detail strong { font-size: 1.3rem; } 
         .info-detail #displayPaymentCode { color: var(--primary-green) !important; }
 
         /* RESPONSIVE */
@@ -470,6 +491,7 @@
             element.className = 'package-option';    
             if(pkg.isBest) element.classList.add('best-value');
             
+            // Sử dụng lớp mới cho dải băng
             let bestBadgeHTML = pkg.isBest ? `<div class="best-badge"><i class="fas fa-star me-1"></i>Tốt nhất</div>` : '';
 
             let featureListHTML = '<ul class="feature-list">';
@@ -478,7 +500,7 @@
             });
             featureListHTML += '</ul>';
 
-            // Điều chỉnh lại cấu trúc để VNĐ và / x tháng xuống dòng.
+            // Cấu trúc: Giá trị (dòng 1), VNĐ (dòng 2), và / x tháng (dòng 3)
             element.innerHTML = `
                 ${bestBadgeHTML}
                 <div>
