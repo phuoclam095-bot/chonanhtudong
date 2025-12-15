@@ -123,31 +123,31 @@
             box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); 
         }
         
-        /* RIBBON BADGE CẬP NHẬT: Nhỏ hơn, cố định vị trí để không che chữ */
+        /* RIBBON BADGE CẬP NHẬT: Đã sửa lỗi che chữ */
         .best-badge {
             position: absolute;
             top: 0; 
             right: 0; 
             overflow: hidden;
-            width: 90px; /* Nhỏ hơn */
+            width: 90px;
             height: 90px;
         }
         .best-badge:before {
-            content: '⭐ TỐT NHẤT'; /* IN HOA để dễ nhìn */
+            content: '⭐ TỐT NHẤT'; 
             position: absolute;
-            top: 18px; /* Dịch lên một chút */
-            right: -25px; /* Dịch vào một chút */
+            top: 18px; 
+            right: -25px; 
             padding: 2px 25px;
             background-color: var(--best-value);
             color: white;
             font-weight: 900;
-            font-size: 0.75rem; /* Nhỏ hơn */
+            font-size: 0.75rem; 
             text-align: center;
             line-height: 25px;
             transform: rotate(45deg);
             z-index: 10;
             box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-            white-space: nowrap; /* KHÔNG CHO XUỐNG DÒNG */
+            white-space: nowrap; 
         }
 
         .package-option h5 { 
@@ -244,57 +244,54 @@
         }
 
         /* ========================================= */
-        /* UI KHỐI QR/POLLING CẬP NHẬT */
+        /* UI KHỐI QR/POLLING CẬP NHẬT (Căn giữa) */
         /* ========================================= */
         #paymentArea { 
             padding: 10px; 
             text-align: center; 
+            max-width: 600px; /* Giới hạn chiều rộng cho khối QR để đẹp hơn */
+            margin: 0 auto;
         } 
 
-        .qr-section-wrapper {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            align-items: flex-start;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        /* Khối QR bên trái */
+        /* Khối QR */
         .qr-image-container {
-            flex-shrink: 0;
-            width: 300px;
-            padding: 15px;
+            width: 100%;
+            max-width: 300px; /* Kích thước tối đa của ảnh */
+            padding: 10px;
             border: 1px solid #e0e0e0;
             border-radius: 15px;
             background: #fff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin: 20px auto 30px auto; /* Canh giữa và tạo khoảng cách */
         }
         #qrCodeImg {
             max-width: 100%; 
             height: auto;
             border-radius: 8px;
             display: block;
-            margin: 0 auto;
         }
         
-        /* Khối thông tin bên phải */
+        /* Khối thông tin nằm dưới QR */
         .payment-info-container {
-            flex-grow: 1;
-            min-width: 300px;
-            padding: 15px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Canh giữa nội dung */
         }
+
         .info-detail-item {
+            width: 100%;
+            max-width: 450px; /* Giới hạn chiều rộng thông tin */
             background-color: #f7fcf7;
             border-left: 5px solid var(--primary-green);
             padding: 12px 15px;
             margin-bottom: 15px;
             border-radius: 8px;
-            text-align: left;
+            text-align: center; /* Canh giữa chữ */
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .info-detail-item:last-child {
-            border-left: 5px solid #007bff; /* Màu Xanh dương nổi bật cho mã */
+            border-left: 5px solid #007bff; 
         }
 
         .info-detail-item p {
@@ -307,7 +304,7 @@
             font-size: 1.7rem; 
             font-weight: 900;
             display: block;
-            word-wrap: break-word; /* Đảm bảo mã dài vẫn nằm gọn */
+            word-wrap: break-word; 
         } 
         .info-detail-item #displayAmount { 
             color: #dc3545 !important; 
@@ -315,7 +312,7 @@
         .info-detail-item #displayPaymentCode { 
             color: #007bff !important; 
             cursor: pointer;
-            font-size: 1.5rem; /* Mã nhỏ hơn số tiền để phân biệt */
+            font-size: 1.5rem;
         }
         
         .payment-info-container small.d-block {
@@ -325,34 +322,6 @@
         }
 
         /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .payment-container { padding: 18px; }
-            .package-option { min-height: 400px; } 
-            .price-unit { font-size: 2.6rem; }
-        }
-        @media (max-width: 992px) {
-            .package-option-wrapper { 
-                width: calc(50% - 8px); 
-                min-width: 190px;
-            }
-            .package-option { min-height: 360px; }
-            .package-select { gap: 10px; }
-        }
-        @media (max-width: 768px) {
-            .qr-section-wrapper {
-                flex-direction: column;
-                align-items: center;
-            }
-            .qr-image-container {
-                width: 100%; 
-                max-width: 250px;
-                padding: 10px;
-            }
-            .payment-info-container {
-                min-width: unset;
-                width: 100%;
-            }
-        }
         @media (max-width: 576px) {
             .payment-container { padding: 10px; }
             .package-option-wrapper { 
@@ -362,11 +331,8 @@
             .package-select { flex-direction: column; gap: 8px; padding: 0 5px; }
             .package-option { min-height: auto; padding: 12px; }
             .price-unit { font-size: 2.2rem; margin-top: 6px; margin-bottom: 6px; }
-            .price-unit small.currency { font-size: 1.1rem; }
             .info-detail-item strong { font-size: 1.4rem; }
             .info-detail-item #displayPaymentCode { font-size: 1.2rem; }
-            .feature-list { font-size: 0.85rem; margin-top: 8px; }
-            .feature-list li { margin-bottom: 5px; }
         }
     </style>
 </head>
@@ -415,26 +381,23 @@
             <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
             <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản**.</p>
 
-            <div class="qr-section-wrapper">
+            <div class="qr-image-container">
+                <img id="qrCodeImg" src="" alt="Mã QR VietQR">
+            </div>
+            
+            <div class="payment-info-container">
                 
-                <div class="qr-image-container">
-                    <img id="qrCodeImg" src="" alt="Mã QR VietQR">
+                <div class="info-detail-item">
+                    <p>Số Tiền Cần Chuyển (BẮT BUỘC CHÍNH XÁC):</p>
+                    <strong id="displayAmount">0 VNĐ</strong>
                 </div>
-                
-                <div class="payment-info-container">
-                    
-                    <div class="info-detail-item">
-                        <p>Số Tiền Cần Chuyển (BẮT BUỘC CHÍNH XÁC):</p>
-                        <strong id="displayAmount">0 VNĐ</strong>
-                    </div>
 
-                    <div class="info-detail-item">
-                        <p>Nội Dung Chuyển Khoản (Nhấn để Sao Chép):</p>
-                        <strong id="displayPaymentCode" onclick="copyPaymentCode()">MÃ_GIAO_DỊCH</strong>
-                        <small class="d-block">Hãy chuyển chính xác nội dung này.</small>
-                    </div>
-
+                <div class="info-detail-item">
+                    <p>Nội Dung Chuyển Khoản (Nhấn để Sao Chép):</p>
+                    <strong id="displayPaymentCode" onclick="copyPaymentCode()">MÃ_GIAO_DỊCH</strong>
+                    <small class="d-block">Hãy chuyển chính xác nội dung này.</small>
                 </div>
+
             </div>
             
             <div class="alert alert-success mt-4">
@@ -466,21 +429,22 @@
     // --- CẤU HÌNH HẰNG SỐ ---
     const ADMIN_PAGE_URL = 'admin.html';
     const FALLBACK_NAME = 'Khách hàng thân thiết';
-    const PAYMENT_CODE_PREFIX = 'LNP'; 
+    // CẬP NHẬT: Mã giao dịch mới là SEVQR + 6 số ngẫu nhiên
+    const PAYMENT_CODE_PREFIX = 'SEVQR'; 
     const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
     
-    // ĐÃ CẬP NHẬT ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN
+    // ĐƯỜNG DẪN ẢNH QR TĨNH CỦA BẠN
     const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
 
 
-    // CẤU HÌNH N8N (Giữ nguyên theo code cũ của bạn)
+    // CẤU HÌNH N8N
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
         N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback',   
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'   
     };
 
-    // --- GÓI GIA HẠN ---
+    // --- GÓI GIA HẠN (Không thay đổi) ---
     const PAYMENT_PACKAGES = [
         {   
             months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000,   
@@ -548,6 +512,7 @@
     }
 
     function generateNewPaymentCode() {
+        // SỬ DỤNG TIỀN TỐ MỚI VÀ KHÔNG CÓ GẠCH DƯỚI
         return PAYMENT_CODE_PREFIX + generateRandom6Digit();
     }
     
