@@ -297,38 +297,48 @@
        // =========================================================================
 // HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (Đã sửa để ưu tiên đọc URL Status)
 // =========================================================================
+// =========================================================================
+// HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI CẬP NHẬT TRẠNG THÁI TỪ URL)
+// =========================================================================
 function checkAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     
+    // 1. Lấy tất cả các tham số trạng thái có sẵn trên URL
     const newStatus = urlParams.get('user_status');
     const newExpiry = urlParams.get('user_expiry');
-    const newEmail = urlParams.get('user_email'); // Lấy email mới
+    const newEmail = urlParams.get('user_email'); 
 
+    // 2. Kiểm tra các cờ cũ từ OAuth hoặc Status Refresh
     const isCallback = urlParams.get('auth_status') === 'success';
-    const hasNewStatus = (newStatus === 'active' || newStatus === 'pending' || newStatus === 'expired') && newEmail && newExpiry;
+    // const isStatusRefresh = urlParams.get('status_checked') === 'true'; // Không cần thiết
 
-    // 🔥 ĐIỀU KIỆN MỚI: Kích hoạt logic cập nhật nếu là OAuth callback HOẶC nếu có dữ liệu trạng thái mới từ URL
-    if (isCallback || hasNewStatus) { 
+    // 🔥 3. KIỂM TRA ĐIỀU KIỆN MỚI: Nếu có đủ 3 tham số trạng thái mới (DÙ KHÔNG PHẢI LÀ OAUTH)
+    const hasNewStatusData = (newStatus && newExpiry && newEmail);
+
+    // Kích hoạt logic cập nhật nếu là OAuth callback HOẶC nếu có dữ liệu trạng thái mới từ URL (sau thanh toán)
+    if (isCallback || hasNewStatusData) { 
         
         const currentStatus = localStorage.getItem('admin_status');
         const currentExpiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
         const isCurrentActive = currentStatus === 'active';
         const isCurrentlyValid = isCurrentActive && (currentExpiry > Date.now());
 
-        // 🔥 LOGIC BẢO VỆ ACTIVE CŨ (Sử dụng trạng thái mới tìm thấy trên URL)
+        // LOGIC BẢO VỆ ACTIVE CŨ: 
+        // Nếu phản hồi là 'pending' (do đang chờ thanh toán) VÀ trạng thái cũ đang Active/Còn hạn, 
+        // thì KHÔNG ghi đè trạng thái 'active' cũ.
         if (newStatus === 'pending' && isCurrentlyValid) {
-            // Chỉ xóa tham số URL và giữ nguyên trạng thái cũ (Active còn hạn)
+            // Chỉ xóa tham số URL và giữ nguyên trạng thái cũ.
             history.replaceState(null, null, window.location.pathname);
             updateUI();
             return;
         }
 
-        // --- Logic ghi đè trạng thái mới (Khi đã thanh toán thành công hoặc hết hạn) ---
+        // --- Logic ghi đè trạng thái MỚI nhất ---
         localStorage.setItem('admin_is_logged_in', 'true');
-        localStorage.setItem('admin_email', newEmail); // Dùng email mới nhất từ URL
+        localStorage.setItem('admin_email', newEmail);
         
         try {
-            // Cập nhật Tên/Avatar (Giữ nguyên logic cũ)
+            // Cập nhật Tên/Avatar
             const userNameFromUrl = urlParams.get('user_name');
             if (userNameFromUrl !== null) { 
                 localStorage.setItem('admin_name', decodeURIComponent(userNameFromUrl));
@@ -338,7 +348,7 @@ function checkAuthCallback() {
                 localStorage.setItem('admin_avatar', decodeURIComponent(userAvatarFromUrl));
             }
             
-            // Ghi đè trạng thái và thời gian hết hạn MỚI NHẤT
+            // Ghi đè trạng thái và thời gian hết hạn mới nhất
             localStorage.setItem('admin_expiry', newExpiry || '0');
             localStorage.setItem('admin_status', newStatus || 'new');
             
