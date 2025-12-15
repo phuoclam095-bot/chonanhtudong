@@ -17,6 +17,7 @@
             --bg-color: #1a1a1a; 
             --accent-color: #0d6efd; 
             --card-bg: #ffffff;
+            --best-value: #ff9800; /* Màu cam/vàng nhấn mạnh */
             --light-bg: #f8f9fa;
         }
         body { 
@@ -27,7 +28,7 @@
             align-items: center; 
             justify-content: flex-start; 
             padding-top: 30px;
-            /* NỀN CHẤM BI ĐEN (Đã thay đổi kích thước và màu sắc để khác biệt) */
+            /* NỀN CHẤM BI ĐEN */
             background-color: var(--bg-color);
             background-image: radial-gradient(#252525 10%, transparent 11%), radial-gradient(#252525 10%, transparent 11%); 
             background-size: 50px 50px; 
@@ -37,7 +38,7 @@
         
         .header-controls { 
             width: 100%; 
-            max-width: 1200px; /* Tăng max-width để chứa 4 cột */
+            max-width: 1200px; 
             margin-bottom: 20px; 
             display: flex; 
             justify-content: space-between;
@@ -60,7 +61,7 @@
             border-radius: 20px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
             padding: 40px; 
-            max-width: 1200px; /* Tăng max-width */
+            max-width: 1200px; 
             width: 100%; 
             position: relative; 
             margin-bottom: 50px;
@@ -76,9 +77,10 @@
             justify-content: center;
         }
         .package-option-wrapper { 
-            width: calc(25% - 15px); /* 4 cột trên desktop */
+            width: calc(25% - 15px); 
             min-width: 250px;
             box-sizing: border-box; 
+            position: relative;
         }
         
         .package-option { 
@@ -104,6 +106,12 @@
         .package-option:hover { 
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
         }
+        .package-option.best-value {
+            border-color: var(--best-value);
+            box-shadow: 0 0 0 3px var(--best-value), 0 8px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px) scale(1.03);
+        }
+        
         .package-option h5 { 
             font-weight: 900; 
             color: var(--dark-green); 
@@ -124,6 +132,13 @@
             margin-top: -15px; 
         }
         
+        .best-badge {
+            position: absolute; top: -15px; right: -15px; 
+            background: var(--best-value); color: white; padding: 5px 15px;
+            border-radius: 5px; font-weight: 800; font-size: 0.8rem;
+            transform: rotate(5deg);
+        }
+        
         .feature-list { 
             list-style: none; 
             padding: 0; 
@@ -137,12 +152,17 @@
             display: flex; 
             align-items: center; 
         }
-        .feature-list i { 
+        .feature-list i.fa-check-circle { 
             margin-right: 8px; 
             color: var(--primary-green); 
             font-size: 1.1rem;
         }
-
+        .feature-list i.fa-times-circle { 
+            margin-right: 8px; 
+            color: #dc3545; /* Màu đỏ cho dấu X */
+            font-size: 1.1rem;
+        }
+        
         /* QR AREA */
         #paymentArea { background: #f0fff4; border: 2px solid var(--primary-green); border-radius: 15px; padding: 30px; text-align: center; max-width: 550px; margin: 0 auto;}
         #qrCodeImg { width: 100%; max-width: 250px; height: auto; border: 4px solid #fff; border-radius: 12px; margin: 15px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
@@ -162,28 +182,20 @@
             border-radius: 15px;
             max-width: 550px; margin: 0 auto;
         }
-        #successMode {
-            background: #e6f7eb;
-            border: 2px solid var(--primary-green);
-        }
-        .status-screen h4 { color: var(--dark-green); font-weight: 800; }
-        .status-screen .spinner-border { color: var(--primary-green) !important; }
         
         @media (max-width: 1200px) {
-            .package-option-wrapper { 
-                width: calc(33.33% - 14px); /* 3 cột trên tablet lớn */
-            }
+            .package-option-wrapper { width: calc(33.33% - 14px); }
         }
         @media (max-width: 992px) {
             .package-option-wrapper { 
-                width: calc(50% - 10px); /* 2 cột trên tablet nhỏ */
+                width: calc(50% - 10px); 
                 min-width: unset;
             }
         }
         @media (max-width: 576px) {
             .payment-container { padding: 20px; }
             .package-option-wrapper { 
-                width: 100%; /* 1 cột trên mobile */
+                width: 100%; 
                 margin-bottom: 15px; 
             }
             .package-select { flex-direction: column; gap: 0; padding: 0 5px; }
@@ -212,7 +224,7 @@
         
         <h3 id="personalGreeting" class="text-center mb-3" style="color: var(--dark-green); font-weight: 800;"></h3>
 
-        <h2><i class="fas fa-gem me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
+        <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Ổn Định Dịch Vụ</h2>
         
         <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
             <i class="fas fa-user-circle fa-lg"></i>
@@ -281,46 +293,46 @@
         N8N_OAUTH_CALLBACK: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
     };
 
-    // 🔥 GÓI GIA HẠN VỚI GIÁ CỐ ĐỊNH VÀ TÍNH NĂNG ĐỀ XUẤT
+    // 🔥 GÓI GIA HẠN VỚI GIÁ TRỊ NGANG NHAU (90.000 VNĐ/tháng)
     const PAYMENT_PACKAGES = [
         { 
             months: 1, name: "Gói Dùng Thử", price: 90000, 
             features: [
-                "Tạo album không giới hạn", 
-                "Lưu trữ 1 tháng", 
-                "Cho phép khách chọn ảnh", 
-                "Tốc độ thumbnail chuẩn",
-                "Hỗ trợ qua Zalo/Email"
+                { text: "Lưu trữ 1 tháng", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Tốc độ thumbnail chuẩn", icon: "fas fa-check-circle" },
+                { text: "Gắn Logo/Watermark", icon: "fas fa-times-circle" }, /* X ĐỎ */
+                { text: "Hỗ trợ Zalo/Email", icon: "fas fa-check-circle" }
             ] 
         }, 
         { 
-            months: 3, name: "Gói Cơ Bản (3 tháng)", price: 250000, 
+            months: 3, name: "Gói Cơ Bản (3 tháng)", price: 270000, // 90.000 x 3
             features: [
-                "Tạo album không giới hạn", 
-                "Lưu trữ 3 tháng", 
-                "Cho phép tải xuống (Chủ động)", 
-                "Tốc độ thumbnail nhanh hơn",
-                "Hỗ trợ ưu tiên"
+                { text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Tốc độ thumbnail Nhanh hơn", icon: "fas fa-check-circle" },
+                { text: "Gắn Logo/Watermark", icon: "fas fa-times-circle" }, /* X ĐỎ */
+                { text: "Hỗ trợ ưu tiên (Trong giờ hành chính)", icon: "fas fa-check-circle" }
             ]
         }, 
         { 
-            months: 6, name: "Gói Chuyên Nghiệp (6 tháng)", price: 450000, 
+            months: 6, name: "Gói Chuyên Nghiệp (6 tháng)", price: 540000, // 90.000 x 6
             features: [
-                "Tạo album không giới hạn", 
-                "Lưu trữ 6 tháng", 
-                "Cho phép tải xuống (Chủ động)", 
-                "Tốc độ thumbnail cực nhanh",
-                "Tích hợp Gắn Logo/Watermark (Mới)"
+                { text: "Lưu trữ 6 tháng (Rất ổn định)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" },
+                { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, /* VÀNG */
+                { text: "Ưu tiên hỗ trợ (Nhận ticket sớm)", icon: "fas fa-check-circle" }
             ] 
         }, 
         { 
-            months: 12, name: "Gói Unlimited (12 tháng)", price: 750000, 
+            months: 12, name: "Gói UNLIMITED (1 Năm)", price: 1080000, // 90.000 x 12
             features: [
-                "Tạo album không giới hạn", 
-                "Lưu trữ 12 tháng", 
-                "Tất cả tính năng nâng cao", 
-                "Tốc độ tải ảnh tức thì",
-                "Ưu tiên xử lý đơn hàng/Hỗ trợ 24/7"
+                { text: "Lưu trữ 12 tháng (Trọn gói)", icon: "fas fa-check-circle" }, 
+                { text: "Cho phép tải xuống (Mọi gói)", icon: "fas fa-check-circle" }, 
+                { text: "Tốc độ tải ảnh TỨC THÌ", icon: "fas fa-check-circle" },
+                { text: "Tích hợp Gắn Logo/Watermark", icon: "fas fa-check-circle" }, /* VÀNG */
+                { text: "Hỗ trợ 24/7 & Ưu tiên hàng đầu", icon: "fas fa-check-circle" }
             ],
             isBest: true
         }
@@ -399,15 +411,18 @@
 
             const element = document.createElement('div');
             element.className = 'package-option'; 
-            if(pkg.isBest) element.style.border = '2px solid #ffc107'; // Nhấn mạnh gói tốt nhất
+            if(pkg.isBest) element.classList.add('best-value');
             
+            let bestBadgeHTML = pkg.isBest ? `<div class="best-badge"><i class="fas fa-star me-1"></i>Tốt nhất</div>` : '';
+
             let featureListHTML = '<ul class="feature-list">';
             pkg.features.forEach(f => {
-                featureListHTML += `<li><i class="fas fa-check-circle"></i>${f}</li>`;
+                featureListHTML += `<li><i class="${f.icon}"></i>${f.text}</li>`;
             });
             featureListHTML += '</ul>';
 
             element.innerHTML = `
+                ${bestBadgeHTML}
                 <div>
                     <h5>${pkg.name}</h5>
                 </div>
@@ -445,7 +460,6 @@
         btn.disabled = true;
 
         try {
-            // GỌI WORKFLOW 1: SAVE PENDING
             const response = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -461,7 +475,6 @@
 
             if (!response.ok) throw new Error("Lỗi server khi khởi tạo giao dịch.");
             
-            // 3. Hiển thị thông tin QR và Polling
             document.getElementById('displayAmount').innerText = formatCurrency(finalAmount);
             document.getElementById('displayPaymentCode').innerText = paymentCode;
             
@@ -470,7 +483,6 @@
             
             document.getElementById('paymentPollingMode').scrollIntoView({ behavior: 'smooth' });
             
-            // 4. Bắt đầu Polling (Kiểm tra mỗi 20 giây - do đã điều chỉnh)
             startPaymentCheckPolling(userEmail, paymentCode);
             
         } catch (e) {
@@ -483,7 +495,6 @@
     // --- POLLING LOGIC ---
 
     async function checkStatusViaPolling(email, paymentCode) {
-        // Sử dụng POST để tránh lỗi 304 Cache
         const apiUrl = `${PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING}`; 
 
         try {
@@ -491,7 +502,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache' // Header chống cache
+                    'Cache-Control': 'no-cache'
                 },
                 body: JSON.stringify({
                     action: 'check_status', 
@@ -500,14 +511,13 @@
                 })
             });
             
-            // Xử lý nếu trả về 304 (Vẫn có thể xảy ra ở một số trình duyệt dù đã dùng POST/Header)
             if (response.status === 304) {
                 console.log("Polling: 304 Not Modified. Dữ liệu chưa thay đổi.");
-                return 'pending'; // Coi như chưa thanh toán
+                return 'pending'; 
             }
             
             const data = await response.json(); 
-            return data.user_status; // Trả về 'active' hoặc 'pending'
+            return data.user_status; 
 
         } catch (e) {
             console.error("Lỗi Polling:", e);
@@ -535,20 +545,17 @@
             if (status === 'active') {
                 clearInterval(pollingInterval);
                 
-                // HIỂN THỊ MÀN HÌNH THÀNH CÔNG
                 document.getElementById('paymentPollingMode').style.display = 'none';
                 document.getElementById('successMode').style.display = 'block';
                 document.getElementById('successMode').scrollIntoView({ behavior: 'smooth' });
 
-                // 🔥 GỌI HÀM CHUYỂN HƯỚNG BẮT BUỘC ĐẾN ADMIN QUA WEBHOOK N8N
                 forceRefreshAdminStatus(email); 
             }
             
             console.log(`Polling check status: ${status} (Lần ${attempts})`);
-        }, 20000); // Kiểm tra mỗi 20 giây (Đã điều chỉnh)
+        }, 20000); 
     }
 
-    // 🔥 HÀM QUAN TRỌNG: CHUYỂN HƯỚNG BẮT BUỘC ĐẾN ADMIN QUA WEBHOOK N8N (REDIRECT)
     function forceRefreshAdminStatus(email) {
         if (pollingInterval) clearInterval(pollingInterval);
         
@@ -577,9 +584,6 @@
         }
     }
 
-
-    // --- KHỞI TẠO TRANG ---
-
     function getCleanUserName(email) {
         return email.split('@')[0];
     }
@@ -597,7 +601,7 @@
         
         document.getElementById('personalGreeting').innerText = `Xin chào, ${userName}!`;
         
-        const marqueeContent = `🌟 Chào mừng ${userName}! Thanh toán tự động, kích hoạt ngay lập tức! - Chọn gói phù hợp và quét mã QR 🚀`;
+        const marqueeContent = `🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀`;
         document.getElementById('marqueeText').innerText = marqueeContent;
 
         document.getElementById('userEmailDisplay').innerText = userEmail;
