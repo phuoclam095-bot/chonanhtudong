@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chọn Ảnh  </title>
+    <title>ADMIN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* ========================================= */
-        /* CSS GIAO DIỆN CHÍNH (GIỮ NGUYÊN)        */
+        /* CSS GIAO DIỆN CHÍNH (GIỮ NGUYÊN)         */
         /* ========================================= */
         :root { 
             --primary-green: #147a30; --dark-green: #0e5a22; 
@@ -269,7 +269,6 @@
         // =========================================================================
         // HÀM QUAN TRỌNG: BUỘC LÀM MỚI TRẠNG THÁI (REDIRECT)
         // =========================================================================
-        // HÀM NÀY CHỈ GỌI KHI CẦN KIỂM TRA TRẠNG THÁI CHUNG (TẢI LẠI TRANG ADMIN)
         function forceRefreshStatus(email) {
             const redirectUrl = window.location.href.split('?')[0];
             
@@ -292,85 +291,93 @@
 
 
         // =========================================================================
-        // HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI
+        // HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI TIMESTAMP & CẬP NHẬT)
         // =========================================================================
-       // =========================================================================
-// HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (Đã sửa để ưu tiên đọc URL Status)
-// =========================================================================
-// =========================================================================
-// HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI CẬP NHẬT TRẠNG THÁI TỪ URL)
-// =========================================================================
-// =========================================================================
-// HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI TIMESTAMP LỆCH)
-// =========================================================================
-function checkAuthCallback() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // 1. Lấy tất cả các tham số trạng thái có sẵn trên URL
-    const newStatus = urlParams.get('user_status');
-    const newExpiryString = urlParams.get('user_expiry'); // Giữ nguyên là chuỗi
-    const newEmail = urlParams.get('user_email'); 
-
-    // 2. Kiểm tra các cờ cũ từ OAuth
-    const isCallback = urlParams.get('auth_status') === 'success';
-
-    // 3. KIỂM TRA ĐIỀU KIỆN MỚI: Nếu có đủ 3 tham số trạng thái mới (sau thanh toán)
-    const hasNewStatusData = (newStatus && newExpiryString && newEmail);
-
-    if (isCallback || hasNewStatusData) { 
-        
-        // ⭐ BƯỚC SỬA LỖI TIMESTAMP: CHUYỂN CHUỖI SANG SỐ NGUYÊN (NUMBER)
-        let newExpiry = 0;
-        if (newExpiryString && !isNaN(newExpiryString)) {
-            // Sử dụng Number() thay vì parseInt() để tránh lỗi tràn/dôi dư nếu giá trị quá lớn
-            newExpiry = Number(newExpiryString); 
-        }
-
-        const currentStatus = localStorage.getItem('admin_status');
-        const currentExpiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-        const isCurrentActive = currentStatus === 'active';
-        const isCurrentlyValid = isCurrentActive && (currentExpiry > Date.now());
-
-        // LOGIC BẢO VỆ ACTIVE CŨ: 
-        if (newStatus === 'pending' && isCurrentlyValid) {
-            history.replaceState(null, null, window.location.pathname);
-            updateUI();
-            return;
-        }
-
-        // --- Logic ghi đè trạng thái MỚI nhất ---
-        localStorage.setItem('admin_is_logged_in', 'true');
-        localStorage.setItem('admin_email', newEmail);
-        
-        try {
-            // Cập nhật Tên/Avatar (Giữ nguyên)
-            const userNameFromUrl = urlParams.get('user_name');
-            if (userNameFromUrl !== null) { 
-                localStorage.setItem('admin_name', decodeURIComponent(userNameFromUrl));
-            }
-            const userAvatarFromUrl = urlParams.get('user_avatar');
-            if (userAvatarFromUrl !== null) { 
-                localStorage.setItem('admin_avatar', decodeURIComponent(userAvatarFromUrl));
-            }
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
             
-            // Ghi đè trạng thái và thời gian hết hạn mới nhất (Lưu dưới dạng chuỗi)
-            localStorage.setItem('admin_expiry', newExpiry.toString());
-            localStorage.setItem('admin_status', newStatus || 'new');
-            
-        } catch(e) {
-            console.error("Lỗi khi đọc tham số URL:", e);
+            // 1. Lấy tất cả các tham số trạng thái có sẵn trên URL
+            const newStatus = urlParams.get('user_status');
+            const newExpiryString = urlParams.get('user_expiry'); // Chuỗi Timestamp
+            const newEmail = urlParams.get('user_email'); 
+
+            // 2. Kiểm tra các cờ cũ từ OAuth
+            const isCallback = urlParams.get('auth_status') === 'success';
+
+            // 🔥 3. KIỂM TRA ĐIỀU KIỆN MỚI: Nếu có đủ 3 tham số trạng thái mới (sau thanh toán)
+            const hasNewStatusData = (newStatus && newExpiryString && newEmail);
+
+            if (isCallback || hasNewStatusData) { 
+                
+                // ⭐ BƯỚC SỬA LỖI TIMESTAMP: Chuyển chuỗi thành NUMBER an toàn
+                let newExpiry = 0;
+                if (newExpiryString && !isNaN(newExpiryString)) {
+                    // Sử dụng Number() để chuyển đổi chuỗi số thành số nguyên lớn (milliseconds)
+                    newExpiry = Number(newExpiryString); 
+                }
+
+                const currentStatus = localStorage.getItem('admin_status');
+                const currentExpiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const isCurrentActive = currentStatus === 'active';
+                const isCurrentlyValid = isCurrentActive && (currentExpiry > Date.now());
+
+                // LOGIC BẢO VỆ ACTIVE CŨ: 
+                if (newStatus === 'pending' && isCurrentlyValid) {
+                    history.replaceState(null, null, window.location.pathname);
+                    updateUI();
+                    return;
+                }
+
+                // --- Logic ghi đè trạng thái MỚI nhất ---
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', newEmail);
+                
+                try {
+                    // Cập nhật Tên/Avatar
+                    const userNameFromUrl = urlParams.get('user_name');
+                    if (userNameFromUrl !== null) { 
+                        localStorage.setItem('admin_name', decodeURIComponent(userNameFromUrl));
+                    }
+                    const userAvatarFromUrl = urlParams.get('user_avatar');
+                    if (userAvatarFromUrl !== null) { 
+                        localStorage.setItem('admin_avatar', decodeURIComponent(userAvatarFromUrl));
+                    }
+                    
+                    // Ghi đè trạng thái và thời gian hết hạn mới nhất (Lưu dưới dạng chuỗi)
+                    localStorage.setItem('admin_expiry', newExpiry.toString() || '0'); 
+                    localStorage.setItem('admin_status', newStatus || 'new');
+                    
+                    // Xóa tham số thanh toán đang chờ (Quan trọng sau khi thanh toán thành công)
+                    localStorage.removeItem('current_payment_code');
+                    localStorage.removeItem('current_payment_amount');
+
+                } catch(e) {
+                    console.error("Lỗi khi đọc tham số URL:", e);
+                }
+                
+                // Dọn dẹp URL sau khi xử lý (RẤT QUAN TRỌNG)
+                history.replaceState(null, null, window.location.pathname);
+                updateUI();
+            }
         }
-        
-        // Dọn dẹp URL sau khi xử lý (RẤT QUAN TRỌNG)
-        history.replaceState(null, null, window.location.pathname);
-        updateUI();
-    }
-}
+
+
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
 
         function formatTimestamp(timestamp) {
-            if (!timestamp || parseInt(timestamp) <= Date.now()) return 'Đã hết hạn';
-            const date = new Date(parseInt(timestamp));
+            // ⭐ Đảm bảo timestamp được chuyển đổi thành số nguyên
+            const tsNumber = parseInt(timestamp); 
+            
+            if (!tsNumber || tsNumber <= Date.now()) return 'Đã hết hạn';
+            
+            // Sử dụng tsNumber đã được ép kiểu
+            const date = new Date(tsNumber); 
+            // Kiểm tra năm để tìm lỗi Timestamp lớn (2035)
+            if (date.getFullYear() > 2050) {
+                 console.error("Lỗi Timestamp: Ngày tháng nhảy quá xa. Giá trị TS:", tsNumber);
+                 return 'LỖI NGÀY/HẠN SỬ DỤNG';
+            }
+            
             return date.toLocaleString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
         }
 
@@ -424,8 +431,8 @@ function checkAuthCallback() {
                         statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Tài khoản hết hạn. Vui lòng <a href="payment.html">Gia Hạn</a>.</span>`;
                         badgeHtml = `<span class="status-badge badge-expired">HẾT HẠN</span>`;
                     } else {
-                           statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
-                           badgeHtml = `<span class="status-badge badge-expired">LỖI/KHÔNG RÕ</span>`;
+                            statusAlert.innerHTML = `<i class="fas fa-lock text-danger fa-lg"></i> <span>Trạng thái không rõ.</span>`;
+                            badgeHtml = `<span class="status-badge badge-expired">LỖI/KHÔNG RÕ</span>`;
                     }
                 }
 
