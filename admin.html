@@ -364,39 +364,41 @@
 
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
 
-       function formatTimestamp(timestamp) {
-    // ⭐ BƯỚC 1: Buộc chuyển đổi thành chuỗi để kiểm tra độ dài
-    let tsString = String(timestamp);
-    let tsNumber = Number(timestamp);
-    
-    // Nếu giá trị là 10 chữ số (giây), ta phải nhân 1000
-    if (tsString.length === 10) { 
-        tsNumber *= 1000;
-        tsString = String(tsNumber);
-    } 
-    
-    // Nếu giá trị là 13 chữ số (milliseconds) nhưng vẫn bị nhảy ngày (lỗi 2035),
-    // ta thử chia 10, vì lỗi này thường là do lỗi ép kiểu làm dôi dư một số 0.
-    if (tsString.length === 13 && new Date(tsNumber).getFullYear() > (new Date().getFullYear() + 10)) {
-         console.warn("Lỗi Timestamp 13 chữ số bị nhảy ngày. Thử chia 10 để sửa lỗi ép kiểu.");
-         tsNumber = tsNumber / 10;
-    }
+      // Thời gian 10 năm tính bằng milliseconds:
+// (365.25 ngày/năm * 10 năm * 24 giờ/ngày * 60 phút/giờ * 60 giây/phút * 1000 ms/giây)
+const TEN_YEARS_IN_MS = 315576000000; 
+
+function formatTimestamp(timestamp) {
+    let tsNumber = Number(timestamp); 
     
     if (!tsNumber || tsNumber <= Date.now()) return 'Đã hết hạn';
     
     let date = new Date(tsNumber); 
     const currentYear = new Date().getFullYear();
 
+    // ⭐ BƯỚC SỬA LỖI 10 NĂM: Nếu ngày tháng nhảy xa hơn 10 năm so với ngày hiện tại (2025)
+    // Và năm quá lớn, ta bù trừ đi 10 năm.
+    if (date.getFullYear() > (currentYear + 10)) { 
+         
+         // Thử trừ đi chính xác 10 năm tính bằng milliseconds
+         tsNumber = tsNumber - TEN_YEARS_IN_MS; 
+         date = new Date(tsNumber);
+         
+         // Nếu ngày vẫn không hợp lý sau khi bù trừ, ta thử lại cách chia 10 (lỗi dôi dư)
+         if (date.getFullYear() > (currentYear + 15)) {
+              tsNumber = Number(timestamp) / 10;
+              date = new Date(tsNumber);
+         }
+    }
+    
     // Kiểm tra cuối cùng trước khi hiển thị
     if (date.getFullYear() > (currentYear + 15) || date.getFullYear() < currentYear) {
         console.error("LỖI TIMESTAMP KHÔNG THỂ KHẮC PHỤC (Năm không hợp lệ):", timestamp);
         return 'LỖI NGÀY/HẠN SỬ DỤNG';
     }
     
-    // Hiển thị đúng định dạng
     return date.toLocaleString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
-
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
