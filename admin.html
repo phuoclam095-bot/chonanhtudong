@@ -293,61 +293,74 @@
         // =========================================================================
         // HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI TIMESTAMP & CẬP NHẬT)
         // =========================================================================
-      // =========================================================================
-// HÀM QUAN TRỌNG: KIỂM TRA VÀ BẢO VỆ TRẠNG THÁI (ĐÃ SỬA LỖI TIMESTAMP LỆCH)
-// =========================================================================
-function checkAuthCallback() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Cờ báo hiệu sau khi hoàn tất thanh toán hoặc Relogin
-    const isSuccessRedirect = urlParams.get('auth_status') === 'success';
+        function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // 1. Lấy tất cả các tham số trạng thái có sẵn trên URL
+            const newStatus = urlParams.get('user_status');
+            const newExpiryString = urlParams.get('user_expiry'); // Chuỗi Timestamp
+            const newEmail = urlParams.get('user_email'); 
 
-    // Lấy email nếu có (từ Redirect thanh toán hoặc Relogin)
-    const newEmail = urlParams.get('user_email'); 
+            // 2. Kiểm tra các cờ cũ từ OAuth
+            const isCallback = urlParams.get('auth_status') === 'success';
 
-    // Nếu đây là Redirect sau khi thanh toán hoặc Relogin:
-    if (isSuccessRedirect && newEmail) {
-        
-        // --- LOGIC XỬ LÝ LỖI LỆCH NGÀY CHỈ KHI REDIRECT ---
-        
-        // 1. Dọn dẹp URL cũ (Quan trọng)
-        history.replaceState(null, null, window.location.pathname);
-        
-        // 2. Lưu email mới (Nếu có)
-        localStorage.setItem('admin_email', newEmail);
+            // 🔥 3. KIỂM TRA ĐIỀU KIỆN MỚI: Nếu có đủ 3 tham số trạng thái mới (sau thanh toán)
+            const hasNewStatusData = (newStatus && newExpiryString && newEmail);
 
-        // 3. ⭐ GỌI LỆNH REFRESH (RELGIN GIẢ)
-        // Thay vì cố gắng đọc TIMESTAMP lỗi từ URL, ta buộc hệ thống gọi lại Webhook n8n 
-        // để N8N trả về dữ liệu JSON CHUẨN (như khi đăng nhập lại)
-        forceRefreshStatus(newEmail);
-        
-        // Dừng tại đây, vì forceRefreshStatus sẽ REDIRECT lại trang này với dữ liệu JSON CHUẨN 
-        // trong các tham số khác.
-        return; 
-    } 
-    
-    // --- LOGIC GỐC (XỬ LÝ KHI DỮ LIỆU ĐÃ VỀ TỪ REFRESH) ---
-    // Giữ lại logic cũ (dùng để xử lý khi dữ liệu đã được n8n gửi về qua JSON an toàn)
-    
-    const newStatus = urlParams.get('user_status');
-    const newExpiryString = urlParams.get('user_expiry'); 
-    
-    // Nếu có đủ dữ liệu trạng thái MỚI (chỉ xảy ra sau khi forceRefreshStatus chạy lần 2)
-    if (newStatus && newExpiryString && newEmail) {
-        
-        // (LƯU Ý: Nếu lỗi 2035 vẫn xảy ra ngay cả khi dữ liệu đến từ refresh/relogin, 
-        // bạn vẫn phải giữ lại logic bù trừ 10 năm trong formatTimestamp()
-        
-        let newExpiry = 0;
-        if (newExpiryString && !isNaN(newExpiryString)) { newExpiry = Number(newExpiryString); }
+            if (isCallback || hasNewStatusData) { 
+                
+                // ⭐ BƯỚC SỬA LỖI TIMESTAMP: Chuyển chuỗi thành NUMBER an toàn
+                let newExpiry = 0;
+                if (newExpiryString && !isNaN(newExpiryString)) {
+                    // Sử dụng Number() để chuyển đổi chuỗi số thành số nguyên lớn (milliseconds)
+                    newExpiry = Number(newExpiryString); 
+                }
 
-        // ... (Giữ nguyên logic cập nhật localStorage và bảo vệ active cũ) ...
-        
-        // Dọn dẹp URL sau khi xử lý (RẤT QUAN TRỌNG)
-        history.replaceState(null, null, window.location.pathname);
-        updateUI();
-    }
-}
+                const currentStatus = localStorage.getItem('admin_status');
+                const currentExpiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const isCurrentActive = currentStatus === 'active';
+                const isCurrentlyValid = isCurrentActive && (currentExpiry > Date.now());
+
+                // LOGIC BẢO VỆ ACTIVE CŨ: 
+                if (newStatus === 'pending' && isCurrentlyValid) {
+                    history.replaceState(null, null, window.location.pathname);
+                    updateUI();
+                    return;
+                }
+
+                // --- Logic ghi đè trạng thái MỚI nhất ---
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', newEmail);
+                
+                try {
+                    // Cập nhật Tên/Avatar
+                    const userNameFromUrl = urlParams.get('user_name');
+                    if (userNameFromUrl !== null) { 
+                        localStorage.setItem('admin_name', decodeURIComponent(userNameFromUrl));
+                    }
+                    const userAvatarFromUrl = urlParams.get('user_avatar');
+                    if (userAvatarFromUrl !== null) { 
+                        localStorage.setItem('admin_avatar', decodeURIComponent(userAvatarFromUrl));
+                    }
+                    
+                    // Ghi đè trạng thái và thời gian hết hạn mới nhất (Lưu dưới dạng chuỗi)
+                    localStorage.setItem('admin_expiry', newExpiry.toString() || '0'); 
+                    localStorage.setItem('admin_status', newStatus || 'new');
+                    
+                    // Xóa tham số thanh toán đang chờ (Quan trọng sau khi thanh toán thành công)
+                    localStorage.removeItem('current_payment_code');
+                    localStorage.removeItem('current_payment_amount');
+
+                } catch(e) {
+                    console.error("Lỗi khi đọc tham số URL:", e);
+                }
+                
+                // Dọn dẹp URL sau khi xử lý (RẤT QUAN TRỌNG)
+                history.replaceState(null, null, window.location.pathname);
+                updateUI();
+            }
+        }
+
 
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
 
