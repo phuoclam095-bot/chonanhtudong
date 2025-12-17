@@ -21,17 +21,24 @@
         
         h2 { font-weight: 900; color: var(--primary-green); font-size: 2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         
-        /* HIỆU ỨNG NHỊP TIM SLOGAN */
-        .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; }
+        /* ⭐ HIỆU ỨNG NHỊP TIM CHO THÔNG BÁO LOGIN */
+        .heartbeat-effect { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; letter-spacing: 1px; }
         @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         
         .welcome-msg { margin-bottom: 25px; font-size: 1rem; font-weight: 700; color: #444; line-height: 1.8; }
-        .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,104,255,0.3); }
-        .gia-han-btn { color: var(--primary-green); font-weight: 900; font-size: 1.15rem; text-decoration: underline; }
+        .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
 
+        /* ⭐ KHUNG DÁN LINK SANG TRỌNG: VIỀN XANH KHI HOVER & MẤT GỢI Ý KHI FOCUS */
         .premium-input-group { text-align: center; margin-bottom: 30px; }
         .premium-input-group label { display: block; margin-bottom: 12px; font-weight: 900; color: var(--primary-green); font-size: 1.1rem; text-transform: uppercase; }
         input[type="text"] { width: 100%; padding: 18px 22px; border: 2.5px solid #f1f5f9; border-radius: 18px; outline: none; background: #fcfdfe; font-weight: 700; color: #334155; text-align: center; transition: 0.3s; }
+        
+        /* Viền xanh khi đưa chuột vào (Hover) */
+        input[type="text"]:hover { border-color: var(--primary-green); }
+        
+        /* Mất gợi ý khi nhấp chuột vào (Focus) */
+        input[type="text"]:focus::placeholder { color: transparent; }
+        input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 10px 20px -5px rgba(20, 122, 48, 0.15); }
 
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
@@ -41,25 +48,13 @@
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
         
-        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-bottom: 15px; }
-        .btn-locked { background: #94a3b8 !important; cursor: not-allowed; box-shadow: none; }
+        .btn-create { background: var(--primary-green); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-bottom: 15px; }
+        .btn-locked { background: #94a3b8 !important; cursor: not-allowed; }
 
-        /* ⭐ ĐIỀU CHỈNH RIÊNG BIỆT: THU NHỎ CỤM AVATAR VÀ TÊN */
+        /* USER CONTROL THU NHỎ */
         .user-info-container { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.15); padding: 4px 14px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); }
-        
-        /* Avatar nhỏ lại */
         .user-avatar-circle { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
-        .user-avatar-initial { color: var(--accent-color); font-weight: 900; font-size: 1.1rem; }
-        
-        /* Tên và nhãn nhỏ lại */
-        .expiry-stack { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
-        .status-badge-row { display: flex; align-items: center; gap: 6px; }
-        .status-badge-active { background: #147a30; color: #fff; padding: 1px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; }
-        .expiry-time-text { color: var(--accent-color); font-weight: 800; font-size: 0.9rem; }
-        .expiry-date-text { color: #fff; font-weight: 700; font-size: 0.75rem; opacity: 0.9; }
-
-        .central-login-area { margin-top: 15px; display: none; }
-        .btn-google-central { background: white; color: #1e293b; border: 2px solid #e2e8f0; padding: 14px 28px; border-radius: 50px; font-weight: 900; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); cursor: pointer; }
+        .status-badge-active { background: #147a30; color: #fff; padding: 1px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; margin-right: 6px; }
     </style>
 </head>
 <body>
@@ -82,7 +77,7 @@
                             <div class="user-avatar-circle" id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column">
                                 <span id="userNameDisplay" style="color:white; font-weight:900; font-size:0.95rem;"></span>
-                                <div id="expiryDisplay" class="expiry-stack"></div>
+                                <div id="expiryDisplay" style="display: flex; flex-direction: column; line-height: 1.1; text-align: left;"></div>
                             </div>
                         </div>
                         <button class="btn btn-danger rounded-pill px-3 py-1 ms-2" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i></button>
@@ -98,10 +93,10 @@
             
             <div id="welcomeArea" class="welcome-msg" style="display: none;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
-                Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
+                Trải nghiệm dịch vụ <span class="heartbeat-effect">NHANH - GỌN - CHÍNH XÁC</span>. 
                 <div class="contact-row mt-2">
                     <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
-                    để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" class="gia-han-btn">Gia hạn ngay</a>.
+                    để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" style="color:var(--primary-green); font-weight:900;">Gia hạn ngay</a>.
                 </div>
             </div>
             
@@ -116,11 +111,13 @@
             
             <button class="btn-create" id="btnCreate">Tạo Album Ngay</button>
 
-            <div id="centralLoginArea" class="central-login-area">
-                <div id="centralLoginMessage" style="color: #d63031; font-weight: 900; font-size: 1.1rem; margin-bottom: 15px; text-transform: uppercase;">Vui lòng đăng nhập để sử dụng dịch vụ</div>
-                <button class="btn-google-central" onclick="startGoogleLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Đăng nhập bằng Google
-                </button>
+            <div id="centralLoginArea" class="mt-3" style="display: none;">
+                <div id="centralLoginMessage" class="heartbeat-effect">VUI LÒNG ĐĂNG NHẬP ĐỂ SỬ DỤNG DỊCH VỤ</div>
+                <div class="mt-3">
+                    <button class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" onclick="startGoogleLogin()">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" class="me-2"> Đăng nhập bằng Google
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -167,18 +164,16 @@
                 userControl.setAttribute('style', 'display: flex !important;'); 
                 userNameDisplay.innerText = name;
                 
-                if (avatar && avatar !== 'undefined' && avatar !== 'null' && avatar !== '') {
-                    avatarPlaceholder.innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
-                } else {
-                    avatarPlaceholder.innerHTML = `<span class="user-avatar-initial">${name.charAt(0).toUpperCase()}</span>`;
-                }
+                avatarPlaceholder.innerHTML = (avatar && avatar !== 'undefined' && avatar !== 'null') ? 
+                    `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">` : 
+                    `<span style="color:var(--accent-color); font-weight:900; font-size:1.1rem;">${name.charAt(0).toUpperCase()}</span>`;
 
                 if (status === 'active' && expiry > Date.now()) {
                     btn.innerHTML = `<i class="fas fa-magic"></i> Tạo Album Ngay`;
                     btn.classList.remove('btn-locked');
-                    document.getElementById('welcomeArea').style.display = 'none';
+                    welcomeArea.style.display = 'none';
                     const d = new Date(expiry);
-                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span class="expiry-time-text">${d.getHours()}:${d.getMinutes()}</span></div><div class="expiry-date-text">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
+                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span style="color:var(--accent-color); font-weight:800; font-size:0.9rem;">${d.getHours()}:${d.getMinutes()}</span></div><div style="color:#fff; font-size:0.75rem; opacity:0.9;">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
                 } else {
                     btn.innerHTML = `<i class="fas fa-lock me-2"></i> Tính năng bị khóa`;
                     btn.classList.add('btn-locked');
