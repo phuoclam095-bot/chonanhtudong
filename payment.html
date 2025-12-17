@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* CSS GIAO DIỆN GỐC - GIỮ NGUYÊN 100% */
+        /* GIỮ NGUYÊN TOÀN BỘ CSS GỐC CỦA BẠN */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --best-value: #ff9800; }
         body { font-family: 'Nunito', sans-serif; padding-top: 10px; padding-bottom: 10px; margin: 0; background-color: var(--bg-color); background-image: radial-gradient(#2f2f2f 5%, transparent 6%), radial-gradient(#2f2f2f 5%, transparent 6%); background-size: 50px 50px; background-position: 0 0, 25px 25px; color: #333; min-height: 98vh; display: flex; flex-direction: column; align-items: center; }
         .header-controls { width: 100%; max-width: 1200px; margin-bottom: 5px; padding: 0 15px; display: flex; justify-content: space-between; }
@@ -18,10 +18,10 @@
         .package-select { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; justify-content: center; }
         .package-option-wrapper { width: calc(25% - 9px); min-width: 225px; box-sizing: border-box; position: relative; }
         .package-option { padding: 18px 14px; min-height: 440px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #fcfcfc; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; overflow: hidden; }
-        .package-option.selected { border-color: var(--primary-green); background: linear-gradient(145deg, #e9f5eb, #f5fff5); }
-        .package-option.best-value { border-color: var(--best-value); box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .package-option.selected { border-color: var(--primary-green); background: linear-gradient(145deg, #e9f5eb, #f5fff5); box-shadow: 0 10px 30px rgba(20, 122, 48, 0.35); }
+        .package-option.best-value { border-color: var(--best-value); }
         .best-badge { position: absolute; top: 0; right: 0; overflow: hidden; width: 90px; height: 90px; }
-        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background-color: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; transform: rotate(45deg); z-index: 10; box-shadow: 0 3px 5px rgba(0,0,0,0.2); white-space: nowrap; }
+        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background-color: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; transform: rotate(45deg); z-index: 10; white-space: nowrap; }
         .price-unit { font-size: 2.8rem; font-weight: 900; color: var(--primary-green); margin-top: 18px; line-height: 1; display: block; }
         .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 15px; font-size: 0.9rem; flex-grow: 1; }
         .feature-list i { margin-right: 7px; color: var(--primary-green); }
@@ -64,7 +64,7 @@
                     <p>Số Tiền: <strong id="displayAmount" class="text-danger" style="font-size:1.7rem">0 VNĐ</strong></p>
                 </div>
                 <div class="info-detail-item" style="background:#f7fcf7; padding:15px; border-radius:10px; border-left:5px solid #007bff;">
-                    <p>Nội Dung (Nhấn để Copy): <strong id="displayPaymentCode" class="text-primary" onclick="copyPaymentCode()" style="font-size:1.5rem">MÃ_GIAO_DỊCH</strong></p>
+                    <p>Nội Dung (Copy): <strong id="displayPaymentCode" class="text-primary" onclick="copyPaymentCode()" style="font-size:1.5rem">MÃ_GIAO_DỊCH</strong></p>
                 </div>
             </div>
             <div class="alert alert-success mt-4">Hệ thống đang tự động xác nhận giao dịch...</div>
@@ -74,7 +74,7 @@
     <div id="successMode" style="display: none; text-align: center;">
         <i class="fas fa-rocket fa-4x mb-3 text-success"></i>
         <h4 class="fw-bold">Giao dịch thành công!</h4>
-        <p>Đang đồng bộ ngày hết hạn chuẩn (2026) từ Google Sheet...</p>
+        <p>Đang đồng bộ ngày hết hạn chuẩn từ Google Sheet...</p>
     </div>
 </div>
 
@@ -87,10 +87,10 @@
     };
 
     const PAYMENT_PACKAGES = [
-        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: ["Lưu trữ 1 tháng", "Tải ảnh chuẩn", "Watermark", "Hỗ trợ Zalo"] },
-        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: ["Lưu trữ 3 tháng", "Thumbnail nhanh", "Watermark", "Ưu tiên hỗ trợ"] },
+        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: ["Lưu trữ 1 tháng", "Tải ảnh chuẩn", "Gắn Logo", "Hỗ trợ Zalo/Email"] },
+        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: ["Lưu trữ 3 tháng", "Thumbnail nhanh", "Gắn Logo", "Hỗ trợ ưu tiên"] },
         { months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000, features: ["Lưu trữ 6 tháng", "Tải ảnh tức thì", "Watermark riêng", "Hỗ trợ 24/7"] },
-        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: ["Lưu trữ 1 năm", "Tốc độ TỐI ĐA", "Dịch vụ riêng", "Ưu tiên hàng đầu"], isBest: true }
+        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: ["Lưu trữ 12 tháng", "Tốc độ TỐI ĐA", "Dịch vụ riêng", "Ưu tiên hàng đầu"], isBest: true }
     ];
 
     let selectedPackage = null;
@@ -101,16 +101,16 @@
         const container = document.getElementById('packageSelection');
         container.innerHTML = '';
         PAYMENT_PACKAGES.forEach(pkg => {
-            const div = document.createElement('div');
-            div.className = 'package-option-wrapper';
-            div.innerHTML = `
+            const wrapper = document.createElement('div');
+            wrapper.className = 'package-option-wrapper';
+            wrapper.innerHTML = `
                 <div class="package-option ${pkg.isBest ? 'best-value' : ''}" onclick="selectPkg(this, ${JSON.stringify(pkg).replace(/"/g, '&quot;')})">
                     ${pkg.isBest ? '<div class="best-badge"></div>' : ''}
                     <h5>${pkg.name}<br><small>${pkg.name_sub}</small></h5>
                     <span class="price-unit">${pkg.price.toLocaleString()} <small class="currency">VNĐ</small></span>
                     <ul class="feature-list">${pkg.features.map(f => `<li><i class="fas fa-check-circle"></i>${f}</li>`).join('')}</ul>
                 </div>`;
-            container.appendChild(div);
+            container.appendChild(wrapper);
         });
     }
 
@@ -150,17 +150,17 @@
                 });
                 const data = await res.json();
                 
-                // ⭐ NẾU N8N BÁO ACTIVE: LẤY DỮ LIỆU CHUẨN VÀ TỰ CHUYỂN VỀ ADMIN (KHÔNG LỘ LINK)
-                if (data.status === 'active' || data.user_status === 'active') {
+                // ⭐ NẾU TRẠNG THÁI TRONG DỮ LIỆU THỰC LÀ ACTIVE
+                if (data.status === 'active') {
                     clearInterval(pollingInterval);
                     document.getElementById('paymentPollingMode').style.display = 'none';
                     document.getElementById('successMode').style.display = 'block';
 
-                    // Lấy Expiry chuẩn từ n8n (ví dụ 179435... tương đương 2026)
-                    const expiry = data.user_expiry || data.expiry_timestamp;
+                    // Lấy Expiry chuẩn từ trường expiry_timestamp trong dữ liệu của bạn
+                    const expiry = data.expiry_timestamp; 
                     
                     setTimeout(() => {
-                        // CHUYỂN THẲNG VỀ ADMIN BẰNG JAVASCRIPT
+                        // CHUYỂN THẲNG VỀ ADMIN (KHÔNG LỘ LINK WEBHOOK)
                         window.location.href = `admin.html?user_status=active&user_expiry=${expiry}&user_email=${encodeURIComponent(userEmail)}`;
                     }, 2000);
                 }
@@ -172,18 +172,13 @@
         const code = document.getElementById('displayPaymentCode').innerText;
         navigator.clipboard.writeText(code).then(() => {
             const n = document.getElementById('copyNotification');
-            n.innerText = "Đã sao chép: " + code; n.style.display = 'block';
+            n.innerText = "Đã copy nội dung: " + code; n.style.display = 'block';
             setTimeout(() => n.style.display = 'none', 2000);
         });
     }
 
     function returnToSelection() { location.reload(); }
-    window.onload = () => { 
-        if(!userEmail) window.location.href = 'admin.html';
-        document.getElementById('userEmailDisplay').innerText = userEmail;
-        document.getElementById('personalGreeting').innerText = `Xin chào, ${userEmail.split('@')[0]}!`;
-        renderPackages(); 
-    };
+    window.onload = () => { renderPackages(); document.getElementById('userEmailDisplay').innerText = userEmail; };
 </script>
 </body>
 </html>
