@@ -20,7 +20,7 @@
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 28px; padding: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; }
         h2 { font-weight: 900; color: var(--primary-green); font-size: 1.8rem; text-transform: uppercase; margin-bottom: 20px; }
         
-        /* HIỆU ỨNG NHỊP ĐẬP Slogan */
+        /* HIỆU ỨNG NHỊP ĐẬP SLOGAN */
         .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         
@@ -47,8 +47,8 @@
         .expiry-time-text { color: var(--accent-color); font-weight: 800; font-size: 1rem; }
         .expiry-date-text { color: #fff; font-weight: 700; font-size: 0.8rem; opacity: 0.95; }
 
-        /* ⭐ CHỮ "VUI LÒNG ĐĂNG NHẬP" NGOÀI MÀN HÌNH */
-        #loginMessage { color: white; font-weight: 800; font-size: 0.85rem; margin-top: 8px; text-align: right; letter-spacing: 0.3px; opacity: 0.9; }
+        /* ⭐ CHỮ THÔNG BÁO TẠI TRUNG TÂM */
+        #centralLoginMessage { color: #d63031; font-weight: 900; font-size: 1.1rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -65,12 +65,10 @@
                     <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li> 
                     <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                 </ul>
-                <div class="ms-auto d-flex flex-column align-items-end">
+                <div class="ms-auto d-flex align-items-center">
                     <button id="loginBtn" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" onclick="startGoogleLogin()">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" class="me-2"> Đăng nhập Google
                     </button>
-                    <div id="loginMessage">Vui lòng đăng nhập để sử dụng dịch vụ</div>
-
                     <div id="userControl" style="display: none !important;" class="align-items-center gap-3">
                         <div class="user-info-container">
                             <div class="user-avatar-circle" id="avatarPlaceholder"></div>
@@ -89,6 +87,9 @@
     <div class="main-container">
         <div class="create-card">
             <h2>Tạo Album Ảnh Mới</h2>
+            
+            <div id="centralLoginMessage">Vui lòng đăng nhập để sử dụng dịch vụ</div>
+
             <div id="welcomeArea" class="welcome-msg" style="display: none;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
                 Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
@@ -97,10 +98,12 @@
                     để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" class="gia-han-btn">Gia hạn ngay</a>.
                 </div>
             </div>
+            
             <div class="premium-input-group"><label>Dán Link Thư mục Google Drive</label><input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/..."></div>
             <div class="switch-group"><span>Cho phép tải xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
             <div class="switch-group"><span>Tải Logo/Watermark lên</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
             <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+            
             <button class="btn-create mt-2" id="btnCreate">Tạo Album Ngay</button>
         </div>
     </div>
@@ -134,7 +137,7 @@
 
             const navLinks = document.getElementById('adminNavLinks');
             const loginBtn = document.getElementById('loginBtn');
-            const loginMessage = document.getElementById('loginMessage');
+            const centralMsg = document.getElementById('centralLoginMessage');
             const userControl = document.getElementById('userControl');
             const avatarPlaceholder = document.getElementById('avatarPlaceholder');
             const userNameDisplay = document.getElementById('userNameDisplay');
@@ -144,7 +147,7 @@
             if (isLoggedIn) {
                 navLinks.style.display = 'flex';
                 loginBtn.style.display = 'none';
-                loginMessage.style.display = 'none'; // ⭐ ẨN THÔNG BÁO KHI ĐÃ LOGIN
+                centralMsg.style.display = 'none'; // ⭐ ẨN THÔNG BÁO TRUNG TÂM KHI ĐÃ LOGIN
                 userControl.setAttribute('style', 'display: flex !important;'); 
                 userNameDisplay.innerText = name;
                 
@@ -159,7 +162,9 @@
                     btn.classList.remove('btn-locked');
                     document.getElementById('welcomeArea').style.display = 'none';
                     const d = new Date(expiry);
-                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span class="expiry-time-text">${d.getHours()}:${d.getMinutes()}</span></div><div class="expiry-date-text">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
+                    const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    const dateStr = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span class="expiry-time-text">${timeStr}</span></div><div class="expiry-date-text">Hạn: ${dateStr}</div>`;
                 } else {
                     btn.innerHTML = `<i class="fas fa-lock me-2"></i> Tính năng bị khóa`;
                     btn.classList.add('btn-locked');
@@ -168,10 +173,10 @@
                     expiryEl.innerHTML = `<span style="color:#ff9800; font-weight:900; font-size:0.95rem;">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
                 }
             } else {
-                // ⭐ XỬ LÝ TRIỆT ĐỂ KHI ĐĂNG XUẤT
+                // ⭐ TRẠNG THÁI CHƯA LOGIN: HIỆN THÔNG BÁO TRUNG TÂM
                 navLinks.style.display = 'none';
                 loginBtn.style.display = 'block';
-                loginMessage.style.display = 'block'; // ⭐ HIỂN THỊ THÔNG BÁO KHI CHƯA LOGIN
+                centralMsg.style.display = 'block'; 
                 userControl.setAttribute('style', 'display: none !important;'); 
                 document.getElementById('welcomeArea').style.display = 'none';
                 avatarPlaceholder.innerHTML = ""; 
