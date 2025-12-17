@@ -20,10 +20,7 @@
         .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.15); padding: 5px 15px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); }
         .expiry-stack { display: flex; flex-direction: column; line-height: 1.1; text-align: left; font-size: 0.75rem; color: #fff; font-weight: 700; }
         .status-pill { background: #0f5132; color: #51ff7d; padding: 1px 6px; border-radius: 4px; font-size: 0.6rem; text-transform: uppercase; font-weight: 800; margin-right: 5px; }
-        
-        /* ⭐ SỬA LẠI VIỀN AVATAR MÀU XANH SÁNG (ACCENT COLOR) */
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-color); object-fit: cover; }
-        
         .btn-google-login { background: white; color: #444; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 700; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
@@ -32,7 +29,9 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
+        /* STYLE NÚT BẤM GỐC */
         .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; }
+        .btn-locked { background: #6c757d !important; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -74,16 +73,15 @@
             <h2>Tạo Album Ảnh Mới</h2>
             <div id="statusAlert" class="alert alert-warning" style="display: none; border-radius:12px; margin-bottom: 20px;"></div>
             
-            <div id="mainFormArea">
-                <div class="form-group mb-4">
-                    <label class="fw-bold mb-2">Dán Link Thư mục Google Drive</label>
-                    <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/..." class="form-control p-3 border-2" style="border-radius: 12px;">
-                </div>
-                <div class="switch-group"><span>Cho phép tải xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
-                <div class="switch-group"><span>Tải Logo/Watermark lên</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
-                <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
-                <button class="btn-create w-100 p-3 fw-bold mt-3" id="btnCreate">Tạo Album Ngay</button>
+            <div class="form-group mb-4">
+                <label class="fw-bold mb-2">Dán Link Thư mục Google Drive</label>
+                <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/..." class="form-control p-3 border-2" style="border-radius: 12px;">
             </div>
+            <div class="switch-group"><span>Cho phép tải xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
+            <div class="switch-group"><span>Tải Logo/Watermark lên</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
+            <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+            
+            <button class="btn-create mt-3" id="btnCreate">Tạo Album Ngay</button>
         </div>
     </div>
 
@@ -131,18 +129,25 @@
                 const isAllowed = (status === 'active' && expiry > Date.now());
                 const expiryEl = document.getElementById('expiryDisplay');
                 const alertBox = document.getElementById('statusAlert');
-                const formArea = document.getElementById('mainFormArea');
+                const btn = document.getElementById('btnCreate');
                 
                 if (!isAllowed) {
-                    // ⭐ HIỂN THỊ THÔNG BÁO KHÓA NGAY TRÊN GIAO DIỆN
-                    formArea.style.opacity = "0.4";
-                    formArea.style.pointerEvents = "none";
+                    // ⭐ ĐỔI CHỮ NÚT BẤM & LỜI CHÀO MỚI
+                    btn.innerHTML = `<i class="fas fa-lock me-2"></i> Tính năng bị khóa`;
+                    btn.classList.add('btn-locked');
+                    btn.disabled = true;
+
                     alertBox.style.display = 'block';
-                    alertBox.innerHTML = `<i class="fas fa-lock me-2"></i> <strong>Tính năng bị khóa!</strong> <br> ${status === 'new' ? 'Vui lòng <a href="payment.html" class="fw-bold text-dark">Gia hạn gói</a> để bắt đầu sử dụng.' : 'Tài khoản hết hạn. Vui lòng <a href="payment.html" class="fw-bold text-dark">Gia hạn ngay</a>.'}`;
+                    // Cập nhật lời chào Liên hệ Admin
+                    alertBox.innerHTML = status === 'new' ? 
+                        `<i class="fas fa-info-circle me-2"></i> Chào mừng! Liên hệ Admin để dùng thử Miễn phí hoặc <a href="payment.html" class="fw-bold text-dark">Gia hạn ngay</a>.` : 
+                        `<i class="fas fa-exclamation-triangle me-2"></i> Tài khoản hết hạn. Vui lòng <a href="payment.html" class="fw-bold text-dark">Gia hạn</a> để tiếp tục.`;
+                    
                     expiryEl.innerHTML = `<span style="color:#ff9800">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN'}</span>`;
                 } else {
-                    formArea.style.opacity = "1";
-                    formArea.style.pointerEvents = "auto";
+                    btn.innerHTML = `<i class="fas fa-magic"></i> Tạo Album Ngay`;
+                    btn.classList.remove('btn-locked');
+                    btn.disabled = false;
                     alertBox.style.display = 'none';
                     const d = new Date(expiry);
                     expiryEl.innerHTML = `<div><span class="status-pill">ACTIVE</span><span style="color:var(--accent-color)">${d.getHours()}:${d.getMinutes()}</span></div><div style="font-size:0.7rem">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
@@ -152,10 +157,6 @@
                 document.getElementById('adminNavLinks').style.display = 'none';
                 document.getElementById('loginBtn').style.display = 'block';
                 document.getElementById('userControl').style.display = 'none';
-                document.getElementById('mainFormArea').style.opacity = "0.4";
-                document.getElementById('mainFormArea').style.pointerEvents = "none";
-                document.getElementById('statusAlert').style.display = 'block';
-                document.getElementById('statusAlert').innerText = "Vui lòng đăng nhập Google để tiếp tục.";
             }
         }
 
