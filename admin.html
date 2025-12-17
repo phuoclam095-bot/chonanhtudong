@@ -19,20 +19,18 @@
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 30px; padding: 45px 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.4); text-align: center; }
         
-        /* ⭐ HIỆU ỨNG NHỊP TIM SLOGAN */
-        .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; letter-spacing: 1px; }
-        @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.15); } 60% { transform: scale(1); } }
+        /* ⭐ HIỆU ỨNG NHỊP TIM SLOGAN VÀ THÔNG BÁO LOGIN */
+        .heartbeat-effect { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; letter-spacing: 1px; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         
         .welcome-msg { margin-bottom: 25px; font-size: 1rem; font-weight: 700; color: #444; line-height: 1.8; }
         .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
 
-        /* KHUNG DÁN LINK SANG TRỌNG CĂN GIỮA */
         .premium-input-group { text-align: center; margin-bottom: 30px; }
         .premium-input-group label { display: block; margin-bottom: 12px; font-weight: 900; color: var(--primary-green); font-size: 1.1rem; text-transform: uppercase; }
         input[type="text"] { width: 100%; padding: 18px 22px; border: 2.5px solid #f1f5f9; border-radius: 18px; outline: none; background: #fcfdfe; font-weight: 700; color: #334155; text-align: center; transition: 0.3s; }
         input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 10px 20px -5px rgba(20, 122, 48, 0.15); }
 
-        /* NÚT GẠT MẶC ĐỊNH TẮT */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -44,16 +42,12 @@
         .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-bottom: 15px; }
         .btn-locked { background: #94a3b8 !important; cursor: not-allowed; box-shadow: none; }
 
-        /* NÚT ĐĂNG NHẬP DƯỚI */
         .central-login-area { margin-top: 15px; display: none; }
-        #centralLoginMessage { color: #d63031; font-weight: 900; font-size: 1rem; margin-bottom: 15px; text-transform: uppercase; }
         .btn-google-central { background: white; color: #1e293b; border: 2px solid #e2e8f0; padding: 14px 28px; border-radius: 50px; font-weight: 900; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); transition: 0.3s; cursor: pointer; }
 
-        /* USER CONTROL VIỀN XANH SÁNG */
         .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.18); padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.25); }
         .user-avatar-circle { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
         .status-badge-active { background: #147a30; color: #fff; padding: 1px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; margin-right: 8px; }
-        .expiry-time-text { color: var(--accent-color); font-weight: 800; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -92,7 +86,7 @@
             
             <div id="welcomeArea" class="welcome-msg" style="display: none;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
-                Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
+                Trải nghiệm dịch vụ <span class="heartbeat-effect">NHANH - GỌN - CHÍNH XÁC</span>. 
                 <div class="contact-row mt-2">
                     <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
                     để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" style="color:var(--primary-green); font-weight:900;">Gia hạn</a>.
@@ -111,8 +105,8 @@
             <button class="btn-create" id="btnCreate">Tạo Album Ngay</button>
 
             <div id="centralLoginArea" class="central-login-area">
-                <div id="centralLoginMessage">Vui lòng đăng nhập để sử dụng dịch vụ</div>
-                <button class="btn-google-central" onclick="startGoogleLogin()">
+                <div id="centralLoginMessage" class="heartbeat-effect">VUI LÒNG ĐĂNG NHẬP ĐỂ SỬ DỤNG DỊCH VỤ</div>
+                <button class="btn-google-central mt-3" onclick="startGoogleLogin()">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Đăng nhập bằng Google
                 </button>
             </div>
