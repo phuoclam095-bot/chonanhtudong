@@ -17,37 +17,42 @@
         .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2) !important; color: #fff !important; transform: translateY(-2px); }
 
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
-        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 28px; padding: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); }
-        h2 { text-align: center; margin-bottom: 20px; font-weight: 900; color: var(--primary-green); font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 28px; padding: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; }
+        h2 { font-weight: 900; color: var(--primary-green); font-size: 1.8rem; text-transform: uppercase; margin-bottom: 20px; }
         
-        /* ⭐ LỜI CHÀO & HIỆU ỨNG NHỊP ĐẬP */
-        .welcome-msg { text-align: center; margin-bottom: 25px; font-size: 1rem; font-weight: 700; color: #444; line-height: 1.6; }
-        .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; margin: 0 5px; }
+        /* ⭐ SỬA LỖI CHỮ KHÔNG ĐỀU - DÀN HÀNG NGANG */
+        .welcome-msg { margin-bottom: 25px; font-size: 1rem; font-weight: 700; color: #444; line-height: 1.8; }
+        .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
-        .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 16px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,104,255,0.3); transition: 0.3s; vertical-align: middle; }
+        .contact-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,104,255,0.3); }
 
-        /* ⭐ KHUNG DÁN LINK SANG TRỌNG */
-        .premium-input-group { position: relative; margin-bottom: 25px; }
-        .premium-input-group label { display: block; margin-bottom: 10px; font-weight: 800; color: #333; font-size: 0.95rem; }
-        input[type="text"] { width: 100%; padding: 16px 20px; border: 2px solid #edf2f7; border-radius: 16px; outline: none; font-weight: 600; background: #f8fafc; transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-        input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 0 0 4px rgba(20, 122, 48, 0.1), 0 10px 15px -3px rgba(0,0,0,0.05); }
+        /* KHUNG DÁN LINK */
+        .premium-input-group { text-align: left; margin-bottom: 25px; }
+        .premium-input-group label { display: block; margin-bottom: 10px; font-weight: 800; color: #333; }
+        input[type="text"] { width: 100%; padding: 16px; border: 2px solid #edf2f7; border-radius: 16px; outline: none; background: #f8fafc; font-weight: 600; }
 
+        /* NÚT GẠT */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
         
-        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 16px; font-size: 18px; border-radius: 16px; width: 100%; font-weight: 900; transition: 0.3s; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); text-transform: uppercase; }
+        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 16px; font-size: 18px; border-radius: 16px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); }
         .btn-locked { background: #94a3b8 !important; cursor: not-allowed; box-shadow: none; }
 
-        /* ⭐ USER CONTROL & AVATAR CHUẨN MẪU */
+        /* ⭐ SỬA KHUNG NGÀY GIỜ CHUẨN MẪU */
         .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.18); padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.25); }
-        .status-badge-active { background: #147a30; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; margin-right: 8px; }
         .user-avatar-circle { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
         .user-avatar-initial { color: var(--accent-color); font-weight: 900; font-size: 1.3rem; }
+        .expiry-stack { display: flex; flex-direction: column; line-height: 1.2; text-align: left; }
+        .status-badge-row { display: flex; align-items: center; gap: 8px; }
+        .status-badge-active { background: #147a30; color: #fff; padding: 1px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; }
+        .expiry-time-text { color: var(--accent-color); font-weight: 800; font-size: 1rem; }
+        .expiry-date-text { color: #fff; font-weight: 700; font-size: 0.8rem; opacity: 0.95; }
     </style>
 </head>
 <body>
@@ -70,8 +75,8 @@
                         <div class="user-info-container">
                             <div class="user-avatar-circle" id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column">
-                                <span id="userNameDisplay" style="color:white; font-weight:900; font-size:1.1rem;"></span>
-                                <div id="expiryDisplay" class="expiry-stack" style="display: flex; flex-direction: column; line-height: 1.1;"></div>
+                                <span id="userNameDisplay" style="color:white; font-weight:900; font-size:1.1rem; margin-bottom: 2px;"></span>
+                                <div id="expiryDisplay" class="expiry-stack"></div>
                             </div>
                         </div>
                         <button class="btn btn-danger rounded-pill px-3 py-1" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i></button>
@@ -88,10 +93,10 @@
             <div id="welcomeArea" class="welcome-msg" style="display: none;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
                 Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
-                <br>
-                <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
-                để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc 
-                <a href="payment.html" style="color:var(--primary-green); text-decoration: underline;">Gia hạn</a>.
+                <div class="contact-row">
+                    <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
+                    để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" style="color:var(--primary-green); text-decoration: underline;">Gia hạn</a>.
+                </div>
             </div>
             
             <div class="premium-input-group">
@@ -153,35 +158,57 @@
                 const btn = document.getElementById('btnCreate');
                 const expiryEl = document.getElementById('expiryDisplay');
                 
-                document.getElementById('avatarPlaceholder').innerHTML = (avatar && avatar !== 'undefined') ? 
-                    `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">` : 
-                    `<span class="user-avatar-initial">${name.charAt(0).toUpperCase()}</span>`;
+                // ⭐ SỬA LỖI AVATAR
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                if (avatar && avatar !== 'undefined' && avatar !== 'null') {
+                    avatarPlaceholder.innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    avatarPlaceholder.innerHTML = `<span class="user-avatar-initial">${name.charAt(0).toUpperCase()}</span>`;
+                }
 
                 if (!isAllowed) {
                     btn.innerHTML = `<i class="fas fa-lock me-2"></i> Tính năng bị khóa`;
                     btn.classList.add('btn-locked');
                     welcomeArea.style.display = 'block';
                     document.getElementById('welcomeUserName').innerText = name;
-                    expiryEl.innerHTML = `<span style="color:#ff9800; font-weight:900; font-size:0.9rem; margin-top:2px;">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
+                    expiryEl.innerHTML = `<span style="color:#ff9800; font-weight:900; font-size:0.95rem;">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
                 } else {
                     btn.innerHTML = `<i class="fas fa-magic"></i> Tạo Album Ngay`;
                     btn.classList.remove('btn-locked');
                     welcomeArea.style.display = 'none';
+                    
                     const d = new Date(expiry);
                     const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     const dateStr = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                    expiryEl.innerHTML = `<div><span class="status-badge-active">ACTIVE</span><span style="color:var(--accent-color); font-weight:800; font-size:0.95rem;">${timeStr}</span></div><div style="color:#fff; font-weight:700; font-size:0.8rem; opacity:0.9;">Hạn: ${dateStr}</div>`;
+                    
+                    // Cấu trúc 2 dòng chuẩn mẫu
+                    expiryEl.innerHTML = `
+                        <div class="status-badge-row">
+                            <span class="status-badge-active">ACTIVE</span>
+                            <span class="expiry-time-text">${timeStr}</span>
+                        </div>
+                        <div class="expiry-date-text">Hạn: ${dateStr}</div>
+                    `;
                 }
             } else {
+                // ⭐ XỬ LÝ KHI ĐĂNG XUẤT: Xóa sạch dữ liệu UI
                 document.getElementById('adminNavLinks').style.display = 'none';
                 document.getElementById('loginBtn').style.display = 'block';
                 document.getElementById('userControl').style.display = 'none';
                 document.getElementById('welcomeArea').style.display = 'none';
+                document.getElementById('avatarPlaceholder').innerHTML = "";
+                document.getElementById('userNameDisplay').innerText = "";
             }
         }
 
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
+        
+        function logoutAdmin() { 
+            localStorage.clear(); 
+            // Buộc trang load lại để xóa sạch trạng thái cũ
+            window.location.href = 'admin.html'; 
+        }
+        
         window.onload = checkAuthCallback;
     </script>
 </body>
