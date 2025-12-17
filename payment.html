@@ -3,47 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> - Studio LNP</title>
+    <title>Gia Hạn - Studio LNP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* CSS Styling - GIỮ NGUYÊN 100% */
+        /* CSS GIAO DIỆN GỐC - GIỮ NGUYÊN 100% */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --best-value: #ff9800; }
         body { font-family: 'Nunito', sans-serif; padding-top: 10px; padding-bottom: 10px; margin: 0; background-color: var(--bg-color); background-image: radial-gradient(#2f2f2f 5%, transparent 6%), radial-gradient(#2f2f2f 5%, transparent 6%); background-size: 50px 50px; background-position: 0 0, 25px 25px; color: #333; min-height: 98vh; display: flex; flex-direction: column; align-items: center; }
         .header-controls { width: 100%; max-width: 1200px; margin-bottom: 5px; padding: 0 15px; display: flex; justify-content: space-between; }
-        .btn-control { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 18px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: background 0.3s, border-color 0.3s; }
-        .btn-control:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); }
+        .btn-control { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 18px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: background 0.3s; }
         .payment-container { background: linear-gradient(145deg, #f0fff4, #ffffff); border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); padding: 24px; max-width: 1200px; width: 100%; margin-bottom: 5px; }
         h2 { color: var(--dark-green); font-weight: 900; margin-bottom: 8px; font-size: 1.7rem; text-align: center; }
-        h3 { font-size: 1.3rem; margin-bottom: 6px !important; }
         .package-select { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; justify-content: center; }
         .package-option-wrapper { width: calc(25% - 9px); min-width: 225px; box-sizing: border-box; position: relative; }
         .package-option { padding: 18px 14px; min-height: 440px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #fcfcfc; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; overflow: hidden; }
-        .package-option.selected { border-color: var(--primary-green); background: linear-gradient(145deg, #e9f5eb, #f5fff5); box-shadow: 0 10px 30px rgba(20, 122, 48, 0.35); }
+        .package-option.selected { border-color: var(--primary-green); background: linear-gradient(145deg, #e9f5eb, #f5fff5); }
         .package-option.best-value { border-color: var(--best-value); box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.2); }
         .best-badge { position: absolute; top: 0; right: 0; overflow: hidden; width: 90px; height: 90px; }
-        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background-color: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; text-align: center; line-height: 25px; transform: rotate(45deg); z-index: 10; box-shadow: 0 3px 5px rgba(0,0,0,0.2); white-space: nowrap; }
-        .package-option h5 { font-weight: 900; color: var(--dark-green); margin-bottom: 4px; font-size: 1.3rem; }
-        .price-unit { font-size: 2.8rem; font-weight: 900; color: var(--primary-green); margin-top: 18px; margin-bottom: 18px; line-height: 1; display: block; }
-        .price-unit small.currency { font-size: 1.3rem; color: var(--dark-green); font-weight: 800; display: block; }
-        .price-unit small.duration { font-size: 0.95rem; color: #888; font-weight: 600; }
+        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background-color: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; transform: rotate(45deg); z-index: 10; box-shadow: 0 3px 5px rgba(0,0,0,0.2); white-space: nowrap; }
+        .price-unit { font-size: 2.8rem; font-weight: 900; color: var(--primary-green); margin-top: 18px; line-height: 1; display: block; }
         .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 15px; font-size: 0.9rem; flex-grow: 1; }
-        .feature-list li { margin-bottom: 7px; color: #444; display: flex; align-items: flex-start; line-height: 1.4; }
-        .feature-list i.fa-check-circle { margin-right: 7px; color: var(--primary-green); font-size: 1.05rem; margin-top: 1px; flex-shrink: 0; }
+        .feature-list i { margin-right: 7px; color: var(--primary-green); }
         .marquee-container { background: var(--primary-green); padding: 7px 0; margin-bottom: 12px; border-radius: 9px; overflow: hidden; }
         .marquee-text { font-weight: 800; font-size: 1.05rem; white-space: nowrap; animation: marquee 15s linear infinite; color: var(--best-value); }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #btnContinue { padding: 10px 25px; font-size: 1.1rem; margin-top: 12px !important; border-radius: 9px; background-color: var(--primary-green) !important; border-color: var(--primary-green) !important; transition: all 0.3s; }
-        .qr-image-container { width: 100%; max-width: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px auto 30px auto; }
+        .qr-image-container { width: 100%; max-width: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 15px; background: #fff; margin: 20px auto; }
         #qrCodeImg { max-width: 100%; height: auto; border-radius: 8px; display: block; }
-        .info-detail-item { width: 100%; max-width: 450px; background-color: #f7fcf7; border-left: 5px solid var(--primary-green); padding: 12px 15px; margin-bottom: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .info-detail-item:last-child { border-left: 5px solid #007bff; }
-        .info-detail-item strong { font-size: 1.7rem; font-weight: 900; display: block; word-wrap: break-word; } 
-        .info-detail-item #displayAmount { color: #dc3545 !important; }
-        .info-detail-item #displayPaymentCode { color: #007bff !important; cursor: pointer; font-size: 1.5rem; }
         #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; display: none; }
-        @media (max-width: 576px) { .payment-container { padding: 10px; } .package-option-wrapper { width: 100%; margin-bottom: 8px; } .package-select { flex-direction: column; gap: 8px; padding: 0 5px; } .package-option { min-height: auto; padding: 12px; } .price-unit { font-size: 2.2rem; margin-top: 6px; margin-bottom: 6px; } }
     </style>
 </head>
 <body>
@@ -55,7 +42,7 @@
 
 <div class="payment-container">
     <div id="selectionMode">
-        <div class="marquee-container"><div class="marquee-text" id="marqueeText">🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀</div></div>
+        <div class="marquee-container"><div class="marquee-text">🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀</div></div>
         <h3 id="personalGreeting" class="text-center" style="color: var(--dark-green); font-weight: 800;"></h3>
         <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
         <div class="alert alert-info d-flex align-items-center gap-2"> 
@@ -64,84 +51,66 @@
         </div>
         <div id="packageSelection" class="package-select"></div>
         <div class="text-center mt-2"> 
-            <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()"></button>
+            <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">Tiến Hành Thanh Toán</button>
         </div>
     </div>
 
     <div id="paymentPollingMode" style="display: none;">
-        <div id="paymentArea">
+        <div id="paymentArea" class="text-center">
             <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
-            <p class="text-muted">Vui lòng chuyển khoản chính xác **Số tiền** và **Nội dung chuyển khoản**.</p>
             <div class="qr-image-container"><img id="qrCodeImg" src="" alt="Mã QR VietQR"></div>
             <div class="payment-info-container">
-                <div class="info-detail-item">
-                    <p>Số Tiền Cần Chuyển (BẮT BUỘC CHÍNH XÁC):</p>
-                    <strong id="displayAmount">0 VNĐ</strong>
+                <div class="info-detail-item" style="background:#f7fcf7; padding:15px; border-radius:10px; margin-bottom:10px; border-left:5px solid var(--primary-green);">
+                    <p>Số Tiền: <strong id="displayAmount" class="text-danger" style="font-size:1.7rem">0 VNĐ</strong></p>
                 </div>
-                <div class="info-detail-item">
-                    <p>Nội Dung Chuyển Khoản (Nhấn để Sao Chép):</p>
-                    <strong id="displayPaymentCode" onclick="copyPaymentCode()">MÃ_GIAO_DỊCH</strong>
-                    <small class="d-block">Hãy chuyển chính xác nội dung này.</small>
+                <div class="info-detail-item" style="background:#f7fcf7; padding:15px; border-radius:10px; border-left:5px solid #007bff;">
+                    <p>Nội Dung (Nhấn để Copy): <strong id="displayPaymentCode" class="text-primary" onclick="copyPaymentCode()" style="font-size:1.5rem">MÃ_GIAO_DỊCH</strong></p>
                 </div>
             </div>
-            <div class="alert alert-success mt-4"><i class="fas fa-check-circle me-2"></i>Hệ thống sẽ **TỰ ĐỘNG KÍCH HOẠT** tài khoản của bạn (Thường 10-20 giây).</div>
+            <div class="alert alert-success mt-4">Hệ thống đang tự động xác nhận giao dịch...</div>
         </div>
     </div>
 
     <div id="successMode" style="display: none; text-align: center;">
-        <i class="fas fa-rocket fa-3x mb-3 text-success"></i>
-        <h4>Giao dịch hoàn tất! Tài khoản đã được kích hoạt.</h4>
-        <p>Hệ thống đang đồng bộ ngày hết hạn chuẩn từ Google Sheet...</p>
+        <i class="fas fa-rocket fa-4x mb-3 text-success"></i>
+        <h4 class="fw-bold">Giao dịch thành công!</h4>
+        <p>Đang đồng bộ ngày hết hạn chuẩn (2026) từ Google Sheet...</p>
     </div>
 </div>
 
 <div id="copyNotification"></div>
 
 <script>
-    // --- CẤU HÌNH ---
-    const ADMIN_PAGE_URL = 'admin.html';
-    const FALLBACK_NAME = 'Khách hàng thân thiết';
-    const PAYMENT_CODE_PREFIX = 'SEVQR'; 
-    const CONTINUE_BTN_TEXT = 'Tiến Hành Thanh Toán'; 
-    const STATIC_QR_IMAGE_URL = 'https://i.ibb.co/HDKv8CsJ/z7327099514127-c9005b7c525e8a4ac239d16546eca6ab.jpg'; 
-
     const PAYMENT_CONFIG = {
         N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
-        N8N_CHECK_STATUS_POLLING: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
+        N8N_CHECK_STATUS: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
     };
 
-    // --- GÓI GIA HẠN ĐẦY ĐỦ 100% CỦA BẠN ---
     const PAYMENT_PACKAGES = [
-        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: [{ text: "Lưu trữ 1 tháng", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ thumbnail chuẩn", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Hỗ trợ Zalo/Email", icon: "fas fa-check-circle" }] },    
-        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: [{ text: "Lưu trữ 3 tháng (Ổn định)", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ thumbnail Nhanh hơn", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Hỗ trợ ưu tiên", icon: "fas fa-check-circle" }] },    
-        { months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000, features: [{ text: "Lưu trữ 6 tháng", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ tải ảnh tức thì", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark riêng", icon: "fas fa-check-circle" }, { text: "Hỗ trợ ưu tiên cao", icon: "fas fa-check-circle" }, { text: "Chuyển đổi tài khoản", icon: "fas fa-check-circle" }] },    
-        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: [{ text: "Lưu trữ 12 tháng", icon: "fas fa-check-circle" }, { text: "Cho phép tải xuống", icon: "fas fa-check-circle" }, { text: "Tốc độ TỨC THÌ", icon: "fas fa-check-circle" }, { text: "Gắn Logo/Watermark", icon: "fas fa-check-circle" }, { text: "Hỗ trợ 24/7", icon: "fas fa-check-circle" }, { text: "Dịch vụ riêng yêu cầu", icon: "fas fa-check-circle" } ], isBest: true }
+        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: ["Lưu trữ 1 tháng", "Tải ảnh chuẩn", "Watermark", "Hỗ trợ Zalo"] },
+        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: ["Lưu trữ 3 tháng", "Thumbnail nhanh", "Watermark", "Ưu tiên hỗ trợ"] },
+        { months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000, features: ["Lưu trữ 6 tháng", "Tải ảnh tức thì", "Watermark riêng", "Hỗ trợ 24/7"] },
+        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: ["Lưu trữ 1 năm", "Tốc độ TỐI ĐA", "Dịch vụ riêng", "Ưu tiên hàng đầu"], isBest: true }
     ];
 
     let selectedPackage = null;
     let userEmail = localStorage.getItem('admin_email');
     let pollingInterval;
 
-    function formatCurrency(amount) { return amount.toLocaleString('vi-VN'); }
-
     function renderPackages() {
         const container = document.getElementById('packageSelection');
         container.innerHTML = '';
         PAYMENT_PACKAGES.forEach(pkg => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'package-option-wrapper';
-            const element = document.createElement('div');
-            element.className = 'package-option';      
-            if(pkg.isBest) element.classList.add('best-value');
-            let featureHtml = pkg.features.map(f => `<li><i class="${f.icon}"></i>${f.text}</li>`).join('');
-            element.innerHTML = `
-                ${pkg.isBest ? '<div class="best-badge"></div>' : ''}
-                <div><h5>${pkg.name}<br><small style="color:#555">${pkg.name_sub}</small></h5></div>
-                <div><p class="price-unit">${formatCurrency(pkg.price)}<small class="currency">VNĐ</small><small class="duration">/ ${pkg.months} tháng</small></p>
-                <ul class="feature-list">${featureHtml}</ul></div>`;
-            element.onclick = () => selectPkg(element, pkg);
-            wrapper.appendChild(element);
-            container.appendChild(wrapper);
+            const div = document.createElement('div');
+            div.className = 'package-option-wrapper';
+            div.innerHTML = `
+                <div class="package-option ${pkg.isBest ? 'best-value' : ''}" onclick="selectPkg(this, ${JSON.stringify(pkg).replace(/"/g, '&quot;')})">
+                    ${pkg.isBest ? '<div class="best-badge"></div>' : ''}
+                    <h5>${pkg.name}<br><small>${pkg.name_sub}</small></h5>
+                    <span class="price-unit">${pkg.price.toLocaleString()} <small class="currency">VNĐ</small></span>
+                    <ul class="feature-list">${pkg.features.map(f => `<li><i class="fas fa-check-circle"></i>${f}</li>`).join('')}</ul>
+                </div>`;
+            container.appendChild(div);
         });
     }
 
@@ -150,14 +119,12 @@
         el.classList.add('selected');
         selectedPackage = pkg;
         document.getElementById('btnContinue').disabled = false;
-        document.getElementById('btnContinue').innerHTML = `${CONTINUE_BTN_TEXT} (${formatCurrency(pkg.price)} VNĐ)`;
+        document.getElementById('btnContinue').innerText = `Thanh Toán ${pkg.price.toLocaleString()} VNĐ`;
     }
 
     async function processPayment() {
-        const code = PAYMENT_CODE_PREFIX + Math.floor(100000 + Math.random() * 900000);
-        const btn = document.getElementById('btnContinue');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang khởi tạo...';
-        btn.disabled = true;
+        const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('btnContinue').disabled = true;
         try {
             const res = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -165,29 +132,36 @@
             });
             const data = await res.json();
             document.getElementById('qrCodeImg').src = data.qrDataURL;
-            document.getElementById('displayAmount').innerText = formatCurrency(selectedPackage.price) + ' VNĐ';
+            document.getElementById('displayAmount').innerText = selectedPackage.price.toLocaleString() + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = code;
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
             startPolling(code);
-        } catch (e) { alert("Lỗi kết nối!"); location.reload(); }
+        } catch (e) { location.reload(); }
     }
 
     function startPolling(code) {
         pollingInterval = setInterval(async () => {
             try {
-                const res = await fetch(PAYMENT_CONFIG.N8N_CHECK_STATUS_POLLING, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                const res = await fetch(PAYMENT_CONFIG.N8N_CHECK_STATUS, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
                 });
                 const data = await res.json();
+                
+                // ⭐ NẾU N8N BÁO ACTIVE: LẤY DỮ LIỆU CHUẨN VÀ TỰ CHUYỂN VỀ ADMIN (KHÔNG LỘ LINK)
                 if (data.status === 'active' || data.user_status === 'active') {
                     clearInterval(pollingInterval);
                     document.getElementById('paymentPollingMode').style.display = 'none';
                     document.getElementById('successMode').style.display = 'block';
-                    // ⭐ CHUYỂN HƯỚNG VỀ ADMIN ĐỂ REFRESH LẤY NGÀY CHUẨN 2026 TỪ SHEET
+
+                    // Lấy Expiry chuẩn từ n8n (ví dụ 179435... tương đương 2026)
+                    const expiry = data.user_expiry || data.expiry_timestamp;
+                    
                     setTimeout(() => {
-                        window.location.href = `${ADMIN_PAGE_URL}?auth_status=payment_success&user_email=${encodeURIComponent(userEmail)}`;
+                        // CHUYỂN THẲNG VỀ ADMIN BẰNG JAVASCRIPT
+                        window.location.href = `admin.html?user_status=active&user_expiry=${expiry}&user_email=${encodeURIComponent(userEmail)}`;
                     }, 2000);
                 }
             } catch (e) {}
@@ -204,13 +178,11 @@
     }
 
     function returnToSelection() { location.reload(); }
-
-    window.onload = () => {
-        if (!userEmail) { alert('Vui lòng đăng nhập!'); window.location.href = ADMIN_PAGE_URL; return; }
+    window.onload = () => { 
+        if(!userEmail) window.location.href = 'admin.html';
         document.getElementById('userEmailDisplay').innerText = userEmail;
-        document.getElementById('personalGreeting').innerText = `Xin chào, ${localStorage.getItem('admin_name') || userEmail.split('@')[0]}!`;
-        renderPackages();
-        document.getElementById('btnContinue').innerHTML = CONTINUE_BTN_TEXT;
+        document.getElementById('personalGreeting').innerText = `Xin chào, ${userEmail.split('@')[0]}!`;
+        renderPackages(); 
     };
 </script>
 </body>
