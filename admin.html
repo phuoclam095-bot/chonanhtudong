@@ -16,49 +16,45 @@
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: all 0.3s; border-radius: 8px; padding: 8px 15px !important; }
         .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2) !important; color: #fff !important; transform: translateY(-2px); }
 
-        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
+        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 30px; padding: 45px 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.4); text-align: center; }
         
-        /* ⭐ FORM SIÊU GỌN: GIẢM CHIỀU RỘNG VÀ THU HẸP PADDING */
-        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 500px; border-radius: 20px; padding: 25px 35px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); text-align: center; }
+        /* TIÊU ĐỀ MÀU XANH PHẲNG */
+        h2 { font-weight: 900; color: var(--primary-green); font-size: 2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         
-        /* TIÊU ĐỀ GỌN HƠN */
-        h2 { font-weight: 900; color: var(--primary-green); font-size: 1.5rem; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; }
+        /* ⭐ TINH CHỈNH LỜI CHÀO NHỎ GỌN & ĐẸP */
+        .welcome-msg { margin-bottom: 20px; font-size: 0.9rem; font-weight: 700; color: #444; line-height: 1.6; }
+        .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; font-size: 0.95rem; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         
-        /* HIỆU ỨNG NHỊP TIM SLOGAN */
-        .heartbeat-effect { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; font-size: 0.85rem; }
-        @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.08); } 60% { transform: scale(1); } }
-        
-        /* ⭐ LỜI CHÀO SIÊU GỌN */
-        .welcome-msg { margin-bottom: 15px; font-size: 0.85rem; font-weight: 700; color: #555; line-height: 1.5; }
-        .trial-highlight { color: #ff9800; font-weight: 900; } 
-        .zalo-link-btn { background: #0068ff; color: white !important; padding: 3px 10px; border-radius: 50px; text-decoration: none; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; margin: 2px; }
-        .gia-han-row { display: block; font-size: 0.8rem; margin-top: 5px; }
+        .trial-highlight { color: #ff9800; font-weight: 900; }
+        .zalo-link-btn { background: #0068ff; color: white !important; padding: 4px 12px; border-radius: 50px; text-decoration: none; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; margin: 0 4px; vertical-align: middle; }
+        .gia-han-btn { color: var(--primary-green); font-weight: 900; text-decoration: underline; font-size: 0.9rem; display: block; margin-top: 5px; }
 
-        /* KHUNG NHẬP LIỆU GỌN */
-        .premium-input-group { text-align: center; margin-bottom: 15px; }
-        .premium-input-group label { display: block; margin-bottom: 8px; font-weight: 900; color: var(--primary-green); font-size: 0.85rem; text-transform: uppercase; }
-        input[type="text"] { width: 100%; padding: 10px 15px; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; background: #fcfdfe; font-weight: 700; color: #334155; text-align: center; font-size: 0.9rem; }
+        .premium-input-group { text-align: center; margin-bottom: 30px; }
+        .premium-input-group label { display: block; margin-bottom: 12px; font-weight: 900; color: var(--primary-green); font-size: 1.1rem; text-transform: uppercase; }
+        input[type="text"] { width: 100%; padding: 18px 22px; border: 2.5px solid #f1f5f9; border-radius: 18px; outline: none; background: #fcfdfe; font-weight: 700; color: #334155; text-align: center; transition: 0.3s; }
+        input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 10px 20px -5px rgba(20, 122, 48, 0.15); }
 
-        /* NÚT GẠT GỌN */
-        .switch-group { display: flex; align-items: center; margin-bottom: 8px; justify-content: space-between; font-weight: 800; color: #555; font-size: 0.8rem; }
-        .toggle-switch { position: relative; width: 38px; height: 20px; }
+        .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider:before { transform: translateX(24px); }
         
-        .btn-create { background: var(--primary-green); color: white; border: none; padding: 12px; font-size: 14px; border-radius: 12px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 10px; }
-        .btn-locked { background: #94a3b8 !important; cursor: not-allowed; }
+        .btn-create { background: var(--primary-green); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-bottom: 15px; transition: 0.3s; }
+        .btn-locked { background: #94a3b8 !important; cursor: not-allowed; box-shadow: none; }
 
-        /* LOGIN TRUNG TÂM GỌN */
-        .central-login-area { margin-top: 15px; }
-        .heartbeat-login { color: #d63031; font-weight: 900; font-size: 0.85rem; margin-bottom: 10px; text-transform: uppercase; }
-        .btn-google-central { background: white; color: #1e293b; border: 2px solid #e2e8f0; padding: 10px 20px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; }
+        .central-login-area { margin-top: 15px; display: none; }
+        .heartbeat-login { color: #d63031; font-weight: 900; font-size: 1rem; margin-bottom: 15px; text-transform: uppercase; animation: heartbeat 1.2s infinite; }
+        .btn-google-central { background: white; color: #1e293b; border: 2px solid #e2e8f0; padding: 14px 28px; border-radius: 50px; font-weight: 900; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); transition: 0.3s; cursor: pointer; }
 
-        /* USER CONTROL VIỀN XANH CHUẨN */
-        .user-info-container { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.15); padding: 5px 12px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); }
-        .user-avatar-circle { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
+        /* USER CONTROL CHUẨN */
+        .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.18); padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.25); }
+        .user-avatar-circle { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
+        .status-badge-active { background: #147a30; color: #fff; padding: 1px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -80,8 +76,8 @@
                         <div class="user-info-container">
                             <div class="user-avatar-circle" id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column">
-                                <span id="userNameDisplay" style="color:white; font-weight:900; font-size:0.9rem;"></span>
-                                <div id="expiryDisplay" style="display: flex; flex-direction: column; line-height: 1.1; text-align: left;"></div>
+                                <span id="userNameDisplay" style="color:white; font-weight:900; font-size:1.1rem; margin-bottom: 2px;"></span>
+                                <div id="expiryDisplay" style="display: flex; flex-direction: column; line-height: 1.2; text-align: left;"></div>
                             </div>
                         </div>
                         <button class="btn btn-danger rounded-pill px-3 py-1" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i></button>
@@ -97,11 +93,11 @@
             
             <div id="welcomeArea" class="welcome-msg" style="display: none;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
-                Trải nghiệm dịch vụ <span class="heartbeat-effect">NHANH - GỌN - CHÍNH XÁC</span>. 
+                Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
                 <div class="mt-1">
                     Hãy <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
                     để kích hoạt <span class="trial-highlight">Dùng thử Miễn phí</span>
-                    <span class="gia-han-row">hoặc <a href="payment.html" style="color:var(--primary-green); font-weight:900; text-decoration: underline;">Gia hạn ngay</a></span>
+                    <a href="payment.html" class="gia-han-btn">Hoặc Gia hạn ngay</a>
                 </div>
             </div>
             
@@ -119,7 +115,7 @@
             <div id="centralLoginArea" class="central-login-area">
                 <div id="centralLoginMessage" class="heartbeat-login">VUI LÒNG ĐĂNG NHẬP ĐỂ SỬ DỤNG DỊCH VỤ</div>
                 <button class="btn-google-central" onclick="startGoogleLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="16"> Đăng nhập bằng Google
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Đăng nhập bằng Google
                 </button>
             </div>
         </div>
@@ -170,21 +166,22 @@
                 if (avatar && avatar !== 'undefined' && avatar !== 'null' && avatar !== '') {
                     avatarPlaceholder.innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
                 } else {
-                    avatarPlaceholder.innerHTML = `<span style="color:var(--accent-color); font-weight:900; font-size:1rem;">${name.charAt(0).toUpperCase()}</span>`;
+                    avatarPlaceholder.innerHTML = `<span style="color:var(--accent-color); font-weight:900; font-size:1.3rem;">${name.charAt(0).toUpperCase()}</span>`;
                 }
 
                 if (status === 'active' && expiry > Date.now()) {
                     btn.innerHTML = `<i class="fas fa-magic"></i> Tạo Album Ngay`;
                     btn.classList.remove('btn-locked');
-                    welcomeArea.style.display = 'none';
+                    document.getElementById('welcomeArea').style.display = 'none';
                     const d = new Date(expiry);
-                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span style="color:var(--accent-color); font-weight:800; font-size:0.8rem;">${d.getHours()}:${d.getMinutes()}</span></div><div style="color:#fff; font-size:0.7rem; opacity:0.9;">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
+                    expiryEl.innerHTML = `<div class="status-badge-row"><span class="status-badge-active">ACTIVE</span><span style="color:var(--accent-color); font-weight:800;">${d.getHours()}:${d.getMinutes()}</span></div><div style="color:#fff; font-size:0.8rem; opacity:0.9;">Hạn: ${d.toLocaleDateString('vi-VN')}</div>`;
                 } else {
-                    btn.innerHTML = `<i class="fas fa-lock me-1"></i> Tính năng bị khóa`;
+                    btn.innerHTML = `<i class="fas fa-lock me-2"></i> Tính năng bị khóa`;
                     btn.classList.add('btn-locked');
                     welcomeArea.style.display = 'block';
                     document.getElementById('welcomeUserName').innerText = name;
-                    expiryEl.innerHTML = `<span style="color:#ff9800; font-weight:900; font-size:0.8rem;">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
+                    // Nhãn trạng thái tài khoản mới/hết hạn
+                    expiryEl.innerHTML = `<span style="color:#ff9800; font-weight:900; font-size:0.95rem;">${status === 'new' ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
                 }
             } else {
                 navLinks.style.display = 'none';
