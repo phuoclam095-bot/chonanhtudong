@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN</title>
+    <title>ADMIN - Studio LNP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* GIỮ NGUYÊN TOÀN BỘ CSS CỦA BẠN */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; }
         body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; display: flex; flex-direction: column; padding-top: 80px; }
+        
+        /* NAVBAR & HOVER EFFECT */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
-        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; }
-        /* PHỤC HỒI HOVER KHUNG TRẮNG */
+        .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; margin: 0 5px; transition: all 0.3s; border-radius: 8px; padding: 8px 15px !important; }
         .nav-link:hover, .nav-link.active { background-color: rgba(255,255,255,0.2) !important; color: #fff !important; transform: translateY(-2px); }
+
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
-        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
+        .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         h2 { text-align: center; margin-bottom: 30px; font-weight: 800; color: var(--primary-green); }
+        
+        /* STYLE INPUT */
         .form-group label { display: block; margin-bottom: 10px; font-weight: 700; color: #444; }
-        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; }
+        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; transition: 0.3s; outline: none; }
+        input:focus { border-color: var(--primary-green); }
+
+        /* SWITCH GROUP */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -28,14 +35,16 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
-        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; }
         
-        /* CSS HẠN DÙNG 2 DÒNG */
+        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; }
+        .btn-create:disabled { background: #6c757d; cursor: not-allowed; opacity: 0.6; }
+
+        /* USER INFO & EXPIRY 2 DÒNG */
         .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.15); padding: 5px 15px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); }
         .expiry-stack { display: flex; flex-direction: column; line-height: 1.1; text-align: left; font-size: 0.75rem; color: #fff; font-weight: 700; }
-        .expiry-time { color: var(--accent-color); font-size: 0.8rem; font-weight: 800; }
         .status-pill { background: #0f5132; color: #51ff7d; padding: 1px 6px; border-radius: 4px; font-size: 0.6rem; text-transform: uppercase; font-weight: 800; margin-right: 5px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-color); }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-color); object-fit: cover; }
+        .btn-google-login { background: white; color: #444; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 700; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -47,7 +56,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="adminNavLinks" style="display: none;">
                     <li class="nav-item"><a href="admin.html" class="nav-link active">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link" id="copyLinkTab">Sao Chép</a></li>
                     <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
                     <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li> 
                     <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
@@ -55,12 +64,14 @@
                     <li class="nav-item"><a href="feedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
-                    <button id="loginBtn" class="btn btn-light rounded-pill px-4 fw-bold" onclick="startGoogleLogin()">Đăng Nhập</button>
+                    <button id="loginBtn" class="btn-google-login" onclick="startGoogleLogin()">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18"> Đăng nhập Google
+                    </button>
                     <div id="userControl" style="display: none;" class="align-items-center gap-3">
                         <div class="user-info-container">
                             <div id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column">
-                                <span id="userNameDisplay" style="color:white; font-weight:800; font-size:0.85rem;">Admin</span>
+                                <span id="userNameDisplay" style="color:white; font-weight:800; font-size:0.85rem;"></span>
                                 <div class="expiry-stack" id="expiryDisplay"></div>
                             </div>
                         </div>
@@ -74,13 +85,26 @@
     <div class="main-container">
         <div class="create-card">
             <h2>Bắt Đầu Tạo Album Ảnh</h2>
+            <div id="statusAlert" class="alert alert-warning" style="display: none; border-radius:12px; font-size: 0.9rem;"></div>
+            
             <div class="form-group mb-4">
                 <label>Dán Link Thư mục Google Drive</label>
                 <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
             </div>
-            <div class="switch-group"><span>Cho phép tải xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
-            <div class="switch-group"><span>Tải Logo/Watermark lên</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
-            <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+
+            <div class="switch-group">
+                <span><i class="fas fa-download me-2"></i>Cho phép tải xuống</span>
+                <label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label>
+            </div>
+            <div class="switch-group">
+                <span><i class="fas fa-copyright me-2"></i>Tải Logo/Watermark lên</span>
+                <label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label>
+            </div>
+            <div class="switch-group">
+                <span><i class="fas fa-images me-2"></i>Giới hạn số ảnh</span>
+                <label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label>
+            </div>
+            
             <button class="btn-create mt-3" id="btnCreate" onclick="createAlbum()"><i class="fas fa-magic"></i> Tạo Album Ngay</button>
         </div>
     </div>
@@ -88,7 +112,7 @@
     <script>
         const GOOGLE_CONFIG = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
-            N8N_OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback'
+            N8N_OAUTH_REDIRECT_URI: 'https://dichvufb.tino.page/webhook/google-oauth-callback'
         };
 
         function checkAuthCallback() {
@@ -96,38 +120,60 @@
             const status = urlParams.get('user_status');
             const expiry = urlParams.get('user_expiry'); 
             const email = urlParams.get('user_email'); 
-            const isGoogleLogin = urlParams.get('auth_status') === 'success';
+            const name = urlParams.get('user_name');
+            const avatar = urlParams.get('user_avatar');
+            const isGoogleCallback = urlParams.get('auth_status') === 'success';
 
-            if (status && expiry && email) {
-                // Nhận expiry chuẩn từ Payment gửi về
+            // ⭐ Nếu có dữ liệu từ Webhook hoặc Google quay về
+            if (email) {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', email);
-                localStorage.setItem('admin_expiry', expiry);
-                localStorage.setItem('admin_status', status);
+                // Trạng thái mặc định là 'new' nếu n8n chưa trả về status khác
+                localStorage.setItem('admin_status', status || 'new');
+                localStorage.setItem('admin_expiry', expiry || '0');
+                if (name) localStorage.setItem('admin_name', decodeURIComponent(name));
+                if (avatar) localStorage.setItem('admin_avatar', decodeURIComponent(avatar));
+
                 history.replaceState(null, null, window.location.pathname);
-            } else if (isGoogleLogin && email) {
-                forceRefreshStatus(email);
-                return;
+                
+                // Nếu vừa đăng nhập lần đầu (isGoogleCallback), buộc đồng bộ với Sheet để lấy data chuẩn
+                if (isGoogleCallback) {
+                    forceRefreshStatus(email);
+                    return;
+                }
             }
             updateUI();
         }
 
         function forceRefreshStatus(email) {
             const redirectUrl = window.location.origin + window.location.pathname;
-            window.location.href = `${GOOGLE_CONFIG.N8N_OAUTH}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
+            window.location.href = `${GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
         }
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const email = localStorage.getItem('admin_email');
             const status = localStorage.getItem('admin_status');
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+            const name = localStorage.getItem('admin_name');
+            const avatar = localStorage.getItem('admin_avatar');
 
-            if (isLoggedIn && email) {
-                document.getElementById('adminNavLinks').style.display = 'flex';
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('userControl').style.display = 'flex';
+            const navLinks = document.getElementById('adminNavLinks');
+            const loginBtn = document.getElementById('loginBtn');
+            const userControl = document.getElementById('userControl');
+            const btnCreate = document.getElementById('btnCreate');
+            const alertBox = document.getElementById('statusAlert');
+
+            if (isLoggedIn) {
+                navLinks.style.display = 'flex';
+                loginBtn.style.display = 'none';
+                userControl.style.display = 'flex';
                 
+                // ⭐ HIỂN THỊ TÊN TỪ GOOGLE
+                document.getElementById('userNameDisplay').innerText = name || 'Thành viên';
+                document.getElementById('avatarPlaceholder').innerHTML = avatar ? 
+                    `<img src="${avatar}" class="user-avatar">` : 
+                    `<div class="user-avatar d-flex align-items-center justify-content-center bg-dark text-success fw-bold">${(name||'A').charAt(0)}</div>`;
+
                 const isAllowed = (status === 'active' && expiry > Date.now());
                 const expiryEl = document.getElementById('expiryDisplay');
                 
@@ -135,16 +181,35 @@
                     const d = new Date(expiry);
                     const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     const dateStr = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                    expiryEl.innerHTML = `<div><span class="status-pill">ACTIVE</span><span class="expiry-time">${timeStr}</span></div><div style="margin-top:2px">Hạn: ${dateStr}</div>`;
+                    expiryEl.innerHTML = `<div><span class="status-pill">ACTIVE</span><span style="color:var(--accent-color)">${timeStr}</span></div><div style="font-size:0.7rem">Hạn: ${dateStr}</div>`;
+                    alertBox.style.display = 'none';
+                    btnCreate.disabled = false;
                 } else {
-                    expiryEl.innerHTML = `<span style="color:#ff6b6b">HẾT HẠN</span>`;
+                    // ⭐ TRẠNG THÁI NEW HOẶC HẾT HẠN
+                    const isNew = (status === 'new' || expiry === 0);
+                    expiryEl.innerHTML = `<span style="color:#ff9800">${isNew ? 'TÀI KHOẢN MỚI' : 'HẾT HẠN DÙNG'}</span>`;
+                    alertBox.style.display = 'block';
+                    alertBox.innerHTML = isNew ? 
+                        `Chào mừng! Vui lòng <a href="payment.html" class="fw-bold">Gia hạn gói</a> để bắt đầu sử dụng.` : 
+                        `Tài khoản đã hết hạn. Vui lòng <a href="payment.html" class="fw-bold">Gia hạn ngay</a>.`;
+                    btnCreate.disabled = true;
+                    // Khóa thêm tab sao chép nếu cần thiết
+                    document.getElementById('copyLinkTab').href = "javascript:alert('Vui lòng gia hạn để dùng tính năng này!')";
                 }
-                document.getElementById('avatarPlaceholder').innerHTML = `<div class="user-avatar d-flex align-items-center justify-content-center bg-dark text-success fw-bold">${email.charAt(0).toUpperCase()}</div>`;
-                document.getElementById('btnCreate').disabled = !isAllowed;
+            } else {
+                // ⭐ CHƯA ĐĂNG NHẬP: KHÓA HẾT
+                navLinks.style.display = 'none';
+                loginBtn.style.display = 'block';
+                userControl.style.display = 'none';
+                btnCreate.disabled = true;
+                alertBox.style.display = 'block';
+                alertBox.innerHTML = `Vui lòng đăng nhập để sử dụng tính năng Admin.`;
             }
         }
 
-        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
+        function startGoogleLogin() { 
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; 
+        }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         window.onload = checkAuthCallback;
     </script>
