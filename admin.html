@@ -9,21 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* GIỮ NGUYÊN CSS GỐC CỦA BẠN */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --accent-color: #51ff7d; }
         body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: #333; min-height: 100vh; display: flex; flex-direction: column; padding-top: 80px; }
+        
+        /* NAVBAR & HOVER EFFECT */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* ⭐ PHỤC HỒI HIỆU ỨNG KHUNG TRẮNG KHI HOVER TAB */
         .nav-link { 
             color: rgba(255,255,255,0.9) !important; 
             font-weight: 600; margin: 0 5px; 
             transition: all 0.3s; border-radius: 8px; 
             padding: 8px 15px !important;
         }
+        /* Phục hồi khung trắng khi đưa chuột vào tab */
         .nav-link:hover, .nav-link.active { 
-            background-color: rgba(255,255,255,0.2) !important; /* Khung trắng mờ như cũ */
+            background-color: rgba(255,255,255,0.2) !important; 
             color: #fff !important; 
             transform: translateY(-2px); 
         }
@@ -31,12 +31,26 @@
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 30px 20px; }
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
         h2 { text-align: center; margin-bottom: 30px; font-weight: 800; color: var(--primary-green); }
-        .form-group { margin-bottom: 25px; }
-        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; }
         
-        .preview-box { border: 2px dashed #c3e6cb; background-color: #f0fff4; padding: 20px; border-radius: 12px; margin-bottom: 25px; display: none; }
-        #finalLinkBox { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .btn-copy-link { background: #fff; color: var(--primary-green); border: none; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        /* Cấu trúc hạn dùng 2 dòng */
+        .user-info-container {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 15px; border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .expiry-stack {
+            display: flex; flex-direction: column; 
+            line-height: 1.1; text-align: left;
+            font-size: 0.75rem; color: #fff; font-weight: 700;
+        }
+        .expiry-time { color: var(--accent-color); font-size: 0.8rem; font-weight: 800; }
+        .status-pill {
+            background: #0f5132; color: #51ff7d;
+            padding: 1px 6px; border-radius: 4px;
+            font-size: 0.6rem; text-transform: uppercase;
+            font-weight: 800; margin-right: 5px;
+        }
 
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
@@ -46,38 +60,15 @@
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
         
-        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 20px rgba(20, 122, 48, 0.3); }
-        .btn-create:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
-        
-        /* ⭐ CSS CHO BADGE HẠN DÙNG 2 DÒNG */
-        .user-info-container {
-            display: flex; align-items: center; gap: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 5px 15px; border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .expiry-stack {
-            display: flex; flex-direction: column; /* 2 dòng */
-            line-height: 1.1; text-align: left;
-            font-size: 0.75rem; color: #fff; font-weight: 700;
-        }
-        .expiry-time { color: var(--accent-color); font-size: 0.8rem; }
-        .status-pill {
-            background: #0f5132; color: #51ff7d;
-            padding: 2px 8px; border-radius: 5px;
-            font-size: 0.65rem; text-transform: uppercase;
-            font-weight: 800; margin-right: 5px;
-        }
+        .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; width: 100%; font-weight: 800; transition: 0.3s; }
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent-color); }
-        #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background-color: #28a745; color: white; padding: 12px 25px; border-radius: 50px; z-index: 1050; opacity: 0; transition: 0.3s; }
-        #copyNotification.active { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#"><i class="fas fa-camera me-2"></i>Tạo Album</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-camera me-2"></i>Studio LNP</a>
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="adminNavLinks" style="display: none;">
                     <li class="nav-item"><a href="admin.html" class="nav-link active">Tạo Album</a></li>
@@ -85,7 +76,8 @@
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
                     <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li> 
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="donate.html" class="nav-link"><i class="fas fa-heart me-1"></i>Donate</a></li>
+                    <li class="nav-item"><a href="feedback.html" class="nav-link"><i class="fas fa-comment-dots me-1"></i>Góp Ý</a></li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
                     <button id="loginBtn" class="btn btn-light rounded-pill px-4 fw-bold" onclick="startGoogleLogin()">Đăng Nhập</button>
@@ -93,7 +85,7 @@
                         <div class="user-info-container">
                             <div id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column">
-                                <span id="userNameDisplay" style="color:white; font-weight:800; font-size:0.9rem;">Admin</span>
+                                <span id="userNameDisplay" style="color:white; font-weight:800; font-size:0.85rem;">Admin</span>
                                 <div class="expiry-stack" id="expiryDisplay">
                                     </div>
                             </div>
@@ -108,41 +100,29 @@
     <div class="main-container">
         <div class="create-card">
             <h2>Bắt Đầu Tạo Album Ảnh</h2>
-            <div id="statusAlert" class="alert alert-warning" style="display: none; border-radius:12px;"></div>
-            
-            <div class="form-group">
-                <label><i class="fab fa-google-drive me-2 text-success"></i>Dán Link Thư mục Google Drive</label>
+            <div class="form-group mb-4">
+                <label class="fw-bold mb-2">Dán Link Thư mục Google Drive</label>
                 <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
             </div>
 
-            <div id="previewBox" class="preview-box">
-                <p>Tên Album: <span id="previewFolderName" class="text-success fw-bold">...</span></p>
-                <div id="finalLinkBox">
-                    <a href="#" id="previewClientLink" target="_blank" style="color:white; text-decoration:underline">...</a>
-                    <button class="btn-copy-link" onclick="copyFinalLink()">Copy</button>
-                </div>
-            </div>
-
             <div class="switch-group">
-                <span><i class="fas fa-download me-2 text-muted"></i>Cho phép tải xuống</span>
+                <span><i class="fas fa-download me-2"></i>Cho phép tải xuống</span>
                 <label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label>
             </div>
             
             <div class="switch-group">
-                <span><i class="fas fa-copyright me-2 text-muted"></i>Tải Logo/Watermark lên</span>
+                <span><i class="fas fa-copyright me-2"></i>Tải Logo/Watermark lên</span>
                 <label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label>
             </div>
 
             <div class="switch-group">
-                <span><i class="fas fa-images me-2 text-muted"></i>Giới hạn số ảnh</span>
+                <span><i class="fas fa-images me-2"></i>Giới hạn số ảnh</span>
                 <label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label>
             </div>
             
-            <button class="btn-create" id="btnCreate" onclick="createAlbum()"><i class="fas fa-magic"></i> Tạo Album Ngay</button>
+            <button class="btn-create mt-3" id="btnCreate" onclick="createAlbum()"><i class="fas fa-magic"></i> Tạo Album Ngay</button>
         </div>
     </div>
-    
-    <div id="copyNotification">Đã sao chép link!</div>
 
     <script>
         const GOOGLE_CONFIG = {
@@ -155,38 +135,22 @@
             const status = urlParams.get('user_status');
             const expiry = urlParams.get('user_expiry'); 
             const email = urlParams.get('user_email'); 
-            const isGoogleLogin = urlParams.get('auth_status') === 'success';
 
             if (status && expiry && email) {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', email);
                 localStorage.setItem('admin_expiry', expiry);
                 localStorage.setItem('admin_status', status);
-                
-                // Lưu thêm info từ webhook mới (row_number, name...)
-                const name = urlParams.get('user_name');
-                if (name) localStorage.setItem('admin_name', decodeURIComponent(name));
-
                 history.replaceState(null, null, window.location.pathname);
-            } else if (isGoogleLogin && email) {
-                forceRefreshStatus(email);
-                return;
             }
             updateUI();
         }
 
-        function forceRefreshStatus(email) {
-            const redirectUrl = window.location.origin + window.location.pathname;
-            window.location.href = `${GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI}?action=check_status&email=${encodeURIComponent(email)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
-        }
-
-        // ⭐ HÀM XỬ LÝ HẠN DÙNG 2 DÒNG
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const email = localStorage.getItem('admin_email');
             const status = localStorage.getItem('admin_status');
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-            const name = localStorage.getItem('admin_name') || 'Admin';
 
             if (isLoggedIn && email) {
                 document.getElementById('adminNavLinks').style.display = 'flex';
@@ -194,44 +158,28 @@
                 document.getElementById('userControl').style.display = 'flex';
                 
                 const isAllowed = (status === 'active' && expiry > Date.now());
-                
-                // Hiển thị tên
-                document.getElementById('userNameDisplay').innerText = name;
-
-                // ⭐ Logic hiển thị 2 dòng: Giờ ở trên, Ngày ở dưới
                 const expiryEl = document.getElementById('expiryDisplay');
+                
                 if (isAllowed) {
-                    const dateObj = new Date(expiry);
-                    const timePart = dateObj.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-                    const datePart = dateObj.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const d = new Date(expiry);
+                    const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    const dateStr = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
                     
                     expiryEl.innerHTML = `
-                        <div class="d-flex align-items-center">
-                            <span class="status-pill">ACTIVE</span>
-                            <span class="expiry-time">${timePart}</span>
-                        </div>
-                        <span>Hạn: ${datePart}</span>
+                        <div><span class="status-pill">ACTIVE</span><span class="expiry-time">${timeStr}</span></div>
+                        <div style="margin-top:2px">Hạn: ${dateStr}</div>
                     `;
                 } else {
-                    expiryEl.innerHTML = `<span style="color:#ff6b6b">HẾT HẠN DÙNG</span>`;
+                    expiryEl.innerHTML = `<span style="color:#ff6b6b">HẾT HẠN</span>`;
                 }
 
-                // Avatar
-                const avatar = localStorage.getItem('admin_avatar');
-                document.getElementById('avatarPlaceholder').innerHTML = avatar ? 
-                    `<img src="${avatar}" class="user-avatar">` : 
-                    `<div class="user-avatar d-flex align-items-center justify-content-center bg-dark text-success fw-bold">${name.charAt(0).toUpperCase()}</div>`;
-
+                document.getElementById('avatarPlaceholder').innerHTML = `<div class="user-avatar d-flex align-items-center justify-content-center bg-dark text-success fw-bold">${email.charAt(0).toUpperCase()}</div>`;
                 document.getElementById('btnCreate').disabled = !isAllowed;
             }
         }
 
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_OAUTH_REDIRECT_URI)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
-        async function createAlbum() { /* Logic cũ của bạn */ }
-        function copyFinalLink() { /* Logic cũ của bạn */ }
-        function showNotification(msg) { /* Logic cũ của bạn */ }
-
         window.onload = checkAuthCallback;
     </script>
 </body>
