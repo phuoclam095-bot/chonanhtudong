@@ -20,19 +20,20 @@
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 28px; padding: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; }
         h2 { font-weight: 900; color: var(--primary-green); font-size: 1.8rem; text-transform: uppercase; margin-bottom: 20px; }
         
-        /* ⭐ SỬA LỖI CHỮ KHÔNG ĐỀU - DÀN HÀNG NGANG */
+        /* LỜI CHÀO & GIA HẠN NỔI BẬT */
         .welcome-msg { margin-bottom: 25px; font-size: 1rem; font-weight: 700; color: #444; line-height: 1.8; }
         .slogan-heartbeat { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         .contact-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .zalo-link-btn { background: #0068ff; color: white !important; padding: 5px 15px; border-radius: 50px; text-decoration: none; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,104,255,0.3); }
+        /* TĂNG CỠ CHỮ GIA HẠN */
+        .gia-han-btn { color: var(--primary-green); font-weight: 900; font-size: 1.1rem; text-decoration: underline; transition: 0.3s; }
+        .gia-han-btn:hover { color: var(--dark-green); transform: scale(1.1); }
 
-        /* KHUNG DÁN LINK */
         .premium-input-group { text-align: left; margin-bottom: 25px; }
         .premium-input-group label { display: block; margin-bottom: 10px; font-weight: 800; color: #333; }
         input[type="text"] { width: 100%; padding: 16px; border: 2px solid #edf2f7; border-radius: 16px; outline: none; background: #f8fafc; font-weight: 600; }
 
-        /* NÚT GẠT */
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -44,7 +45,7 @@
         .btn-create { background: linear-gradient(135deg, #147a30, #0e5a22); color: white; border: none; padding: 16px; font-size: 18px; border-radius: 16px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); }
         .btn-locked { background: #94a3b8 !important; cursor: not-allowed; box-shadow: none; }
 
-        /* ⭐ SỬA KHUNG NGÀY GIỜ CHUẨN MẪU */
+        /* USER INFO & AVATAR */
         .user-info-container { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.18); padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.25); }
         .user-avatar-circle { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--accent-color); display: flex; align-items: center; justify-content: center; background: #2d3436; overflow: hidden; }
         .user-avatar-initial { color: var(--accent-color); font-weight: 900; font-size: 1.3rem; }
@@ -95,7 +96,7 @@
                 Trải nghiệm dịch vụ <span class="slogan-heartbeat">NHANH - GỌN - CHÍNH XÁC</span>. 
                 <div class="contact-row">
                     <a href="https://zalo.me/0879029170" target="_blank" class="zalo-link-btn"><i class="fab fa-zalo"></i> Liên hệ Admin</a> 
-                    để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" style="color:var(--primary-green); text-decoration: underline;">Gia hạn</a>.
+                    để kích hoạt <strong>Dùng thử Miễn phí</strong> hoặc <a href="payment.html" class="gia-han-btn">Gia hạn ngay</a>.
                 </div>
             </div>
             
@@ -147,20 +148,26 @@
             const name = localStorage.getItem('admin_name') || 'Khách hàng';
             const avatar = localStorage.getItem('admin_avatar');
 
+            // Phần tử UI
+            const navLinks = document.getElementById('adminNavLinks');
+            const loginBtn = document.getElementById('loginBtn');
+            const userControl = document.getElementById('userControl');
+            const welcomeArea = document.getElementById('welcomeArea');
+            const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            const expiryEl = document.getElementById('expiryDisplay');
+            const btn = document.getElementById('btnCreate');
+
             if (isLoggedIn) {
-                document.getElementById('adminNavLinks').style.display = 'flex';
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('userControl').style.display = 'flex';
-                document.getElementById('userNameDisplay').innerText = name;
+                navLinks.style.display = 'flex';
+                loginBtn.style.display = 'none';
+                userControl.style.display = 'flex';
+                userNameDisplay.innerText = name;
                 
                 const isAllowed = (status === 'active' && expiry > Date.now());
-                const welcomeArea = document.getElementById('welcomeArea');
-                const btn = document.getElementById('btnCreate');
-                const expiryEl = document.getElementById('expiryDisplay');
                 
-                // ⭐ SỬA LỖI AVATAR
-                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-                if (avatar && avatar !== 'undefined' && avatar !== 'null') {
+                // ⭐ XỬ LÝ AVATAR
+                if (avatar && avatar !== 'undefined' && avatar !== 'null' && avatar !== '') {
                     avatarPlaceholder.innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
                 } else {
                     avatarPlaceholder.innerHTML = `<span class="user-avatar-initial">${name.charAt(0).toUpperCase()}</span>`;
@@ -181,7 +188,6 @@
                     const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     const dateStr = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
                     
-                    // Cấu trúc 2 dòng chuẩn mẫu
                     expiryEl.innerHTML = `
                         <div class="status-badge-row">
                             <span class="status-badge-active">ACTIVE</span>
@@ -191,22 +197,25 @@
                     `;
                 }
             } else {
-                // ⭐ XỬ LÝ KHI ĐĂNG XUẤT: Xóa sạch dữ liệu UI
-                document.getElementById('adminNavLinks').style.display = 'none';
-                document.getElementById('loginBtn').style.display = 'block';
-                document.getElementById('userControl').style.display = 'none';
-                document.getElementById('welcomeArea').style.display = 'none';
-                document.getElementById('avatarPlaceholder').innerHTML = "";
-                document.getElementById('userNameDisplay').innerText = "";
+                // ⭐ KHẮC PHỤC LỖI HIỂN THỊ AVATAR KHI ĐĂNG XUẤT
+                navLinks.style.display = 'none';
+                loginBtn.style.display = 'block';
+                userControl.style.display = 'none';
+                welcomeArea.style.display = 'none';
+                avatarPlaceholder.innerHTML = ""; // Xóa avatar cũ
+                userNameDisplay.innerText = ""; // Xóa tên cũ
+                expiryEl.innerHTML = ""; // Xóa hạn dùng cũ
             }
         }
 
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         
         function logoutAdmin() { 
+            // ⭐ Xóa sạch toàn bộ dữ liệu lưu trữ
             localStorage.clear(); 
-            // Buộc trang load lại để xóa sạch trạng thái cũ
-            window.location.href = 'admin.html'; 
+            sessionStorage.clear();
+            // Xóa tham số URL và load lại trang sạch
+            window.location.href = window.location.pathname; 
         }
         
         window.onload = checkAuthCallback;
