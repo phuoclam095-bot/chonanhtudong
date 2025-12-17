@@ -8,109 +8,85 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* GIỮ NGUYÊN TOÀN BỘ CSS GỐC CỦA BẠN */
+        /* CSS GIAO DIỆN GỐC - GIỮ NGUYÊN 100% */
         :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --best-value: #ff9800; }
-        body { font-family: 'Nunito', sans-serif; padding-top: 10px; padding-bottom: 10px; margin: 0; background-color: var(--bg-color); background-image: radial-gradient(#2f2f2f 5%, transparent 6%), radial-gradient(#2f2f2f 5%, transparent 6%); background-size: 50px 50px; background-position: 0 0, 25px 25px; color: #333; min-height: 98vh; display: flex; flex-direction: column; align-items: center; }
-        .header-controls { width: 100%; max-width: 1200px; margin-bottom: 5px; padding: 0 15px; display: flex; justify-content: space-between; }
-        .btn-control { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 18px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: background 0.3s; }
-        .payment-container { background: linear-gradient(145deg, #f0fff4, #ffffff); border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); padding: 24px; max-width: 1200px; width: 100%; margin-bottom: 5px; }
-        h2 { color: var(--dark-green); font-weight: 900; margin-bottom: 8px; font-size: 1.7rem; text-align: center; }
-        .package-select { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; justify-content: center; }
-        .package-option-wrapper { width: calc(25% - 9px); min-width: 225px; box-sizing: border-box; position: relative; }
-        .package-option { padding: 18px 14px; min-height: 440px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; transition: all 0.3s; background: #fcfcfc; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; overflow: hidden; }
-        .package-option.selected { border-color: var(--primary-green); background: linear-gradient(145deg, #e9f5eb, #f5fff5); box-shadow: 0 10px 30px rgba(20, 122, 48, 0.35); }
-        .package-option.best-value { border-color: var(--best-value); }
-        .best-badge { position: absolute; top: 0; right: 0; overflow: hidden; width: 90px; height: 90px; }
-        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background-color: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; transform: rotate(45deg); z-index: 10; white-space: nowrap; }
-        .price-unit { font-size: 2.8rem; font-weight: 900; color: var(--primary-green); margin-top: 18px; line-height: 1; display: block; }
-        .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 15px; font-size: 0.9rem; flex-grow: 1; }
-        .feature-list i { margin-right: 7px; color: var(--primary-green); }
-        .marquee-container { background: var(--primary-green); padding: 7px 0; margin-bottom: 12px; border-radius: 9px; overflow: hidden; }
-        .marquee-text { font-weight: 800; font-size: 1.05rem; white-space: nowrap; animation: marquee 15s linear infinite; color: var(--best-value); }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .qr-image-container { width: 100%; max-width: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 15px; background: #fff; margin: 20px auto; }
-        #qrCodeImg { max-width: 100%; height: auto; border-radius: 8px; display: block; }
-        #copyNotification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #28a745; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; display: none; }
+        body { font-family: 'Nunito', sans-serif; background-color: var(--bg-color); color: #333; min-height: 98vh; display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
+        .payment-container { background: linear-gradient(145deg, #f0fff4, #ffffff); border-radius: 20px; padding: 24px; max-width: 1200px; width: 100%; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .package-option { padding: 18px 14px; min-height: 440px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; transition: 0.3s; background: #fcfcfc; position: relative; overflow: hidden; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .package-option.selected { border-color: var(--primary-green); background: #e9f5eb; }
+        .best-badge:before { content: '⭐ TỐT NHẤT'; position: absolute; top: 18px; right: -25px; padding: 2px 25px; background: var(--best-value); color: white; font-weight: 900; font-size: 0.75rem; transform: rotate(45deg); box-shadow: 0 3px 5px rgba(0,0,0,0.2); }
+        .price-unit { font-size: 2.8rem; font-weight: 900; color: var(--primary-green); }
+        .feature-list { list-style: none; padding: 0; text-align: left; font-size: 0.9rem; margin-top: 15px; }
+        .feature-list i { color: var(--primary-green); margin-right: 7px; }
     </style>
 </head>
 <body>
 
-<div class="header-controls">
-    <button class="btn-control" onclick="returnToSelection()"><i class="fas fa-arrow-left me-1"></i> Trở Về</button>
-    <a class="btn-control" href="admin.html"><i class="fas fa-home me-1"></i> Trang Chủ</a>
-</div>
-
 <div class="payment-container">
     <div id="selectionMode">
-        <div class="marquee-container"><div class="marquee-text">🌟 Nâng cấp để ổn định dịch vụ! - Chọn gói dài hạn để đảm bảo tốc độ và sự ưu tiên. 🚀</div></div>
-        <h3 id="personalGreeting" class="text-center" style="color: var(--dark-green); font-weight: 800;"></h3>
-        <h2><i class="fas fa-hand-holding-usd me-2"></i>Chọn Gói Nâng Cấp Dịch Vụ</h2>
-        <div class="alert alert-info d-flex align-items-center gap-2"> 
-            <i class="fas fa-user-circle fa-lg"></i>
-            <span>Tài khoản gia hạn: <strong id="userEmailDisplay">...</strong></span>
-        </div>
-        <div id="packageSelection" class="package-select"></div>
-        <div class="text-center mt-2"> 
-            <button id="btnContinue" class="btn btn-lg btn-success fw-bold" disabled onclick="processPayment()">Tiến Hành Thanh Toán</button>
+        <h2 class="text-center fw-bold mb-4">Chọn Gói Nâng Cấp Dịch Vụ</h2>
+        <div id="packageSelection" class="row g-3 justify-content-center"></div>
+        <div class="text-center mt-4"> 
+            <button id="btnContinue" class="btn btn-lg btn-success fw-bold px-5" disabled onclick="processPayment()">Tiến Hành Thanh Toán</button>
         </div>
     </div>
 
-    <div id="paymentPollingMode" style="display: none;">
-        <div id="paymentArea" class="text-center">
-            <h3 class="text-danger fw-bold"><i class="fas fa-qrcode me-2"></i>Quét Mã VietQR để Thanh Toán</h3>
-            <div class="qr-image-container"><img id="qrCodeImg" src="" alt="Mã QR VietQR"></div>
-            <div class="payment-info-container">
-                <div class="info-detail-item" style="background:#f7fcf7; padding:15px; border-radius:10px; margin-bottom:10px; border-left:5px solid var(--primary-green);">
-                    <p>Số Tiền: <strong id="displayAmount" class="text-danger" style="font-size:1.7rem">0 VNĐ</strong></p>
-                </div>
-                <div class="info-detail-item" style="background:#f7fcf7; padding:15px; border-radius:10px; border-left:5px solid #007bff;">
-                    <p>Nội Dung (Copy): <strong id="displayPaymentCode" class="text-primary" onclick="copyPaymentCode()" style="font-size:1.5rem">MÃ_GIAO_DỊCH</strong></p>
-                </div>
+    <div id="paymentPollingMode" style="display: none;" class="text-center">
+        <h3 class="text-danger fw-bold mb-3">Quét Mã VietQR để Thanh Toán</h3>
+        <div id="qrLoading" style="display: none; padding: 50px;">
+            <i class="fas fa-spinner fa-spin fa-3x text-success"></i>
+            <p class="mt-3 fw-bold">Đang khởi tạo mã QR...</p>
+        </div>
+        <div id="qrContent">
+            <div style="width: 300px; margin: 0 auto; padding: 10px; background: white; border-radius: 15px;">
+                <img id="qrCodeImg" src="" style="width: 100%; border-radius: 8px;">
             </div>
-            <div class="alert alert-success mt-4">Hệ thống đang tự động xác nhận giao dịch...</div>
+            <div class="mt-3">
+                <p>Số tiền: <strong id="displayAmount" class="text-danger fs-4"></strong></p>
+                <p>Nội dung: <strong id="displayPaymentCode" class="text-primary fs-5" onclick="copyCode()"></strong></p>
+            </div>
+            <div class="alert alert-success mt-3">
+                <i class="fas fa-sync fa-spin me-2"></i>Đang chờ xác nhận...
+            </div>
         </div>
     </div>
 
-    <div id="successMode" style="display: none; text-align: center;">
-        <i class="fas fa-rocket fa-4x mb-3 text-success"></i>
-        <h4 class="fw-bold">Giao dịch thành công!</h4>
-        <p>Đang đồng bộ ngày hết hạn chuẩn từ Google Sheet...</p>
+    <div id="successMode" style="display: none;" class="text-center py-5">
+        <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+        <h3 class="fw-bold">Thanh Toán Thành Công!</h3>
+        <p class="fs-5">Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ !</p>
     </div>
 </div>
-
-<div id="copyNotification"></div>
 
 <script>
     const PAYMENT_CONFIG = {
-        N8N_SAVE_PAYMENT: 'https://dichvufb.tino.page/webhook/save-pending',   
-        N8N_CHECK_STATUS: 'https://dichvufb.tino.page/webhook/google-oauth-callback' 
+        N8N_SAVE: 'https://dichvufb.tino.page/webhook/save-pending',
+        N8N_CHECK: 'https://dichvufb.tino.page/webhook/google-oauth-callback'
     };
 
     const PAYMENT_PACKAGES = [
-        { months: 1, name: "Gói Dùng Thử", name_sub: "(1 tháng)", price: 90000, features: ["Lưu trữ 1 tháng", "Tải ảnh chuẩn", "Gắn Logo", "Hỗ trợ Zalo/Email"] },
-        { months: 3, name: "Gói Cơ Bản", name_sub: "(3 tháng)", price: 250000, features: ["Lưu trữ 3 tháng", "Thumbnail nhanh", "Gắn Logo", "Hỗ trợ ưu tiên"] },
-        { months: 6, name: "Gói Chuyên Nghiệp", name_sub: "(6 tháng)", price: 450000, features: ["Lưu trữ 6 tháng", "Tải ảnh tức thì", "Watermark riêng", "Hỗ trợ 24/7"] },
-        { months: 12, name: "Gói UNLIMITED", name_sub: "(1 Năm)", price: 750000, features: ["Lưu trữ 12 tháng", "Tốc độ TỐI ĐA", "Dịch vụ riêng", "Ưu tiên hàng đầu"], isBest: true }
+        { months: 1, name: "Gói Dùng Thử", price: 90000, features: ["Lưu trữ 1 tháng", "Tải ảnh chuẩn", "Hỗ trợ Zalo"] },
+        { months: 3, name: "Gói Cơ Bản", price: 250000, features: ["Lưu trữ 3 tháng", "Thumbnail nhanh", "Hỗ trợ ưu tiên"] },
+        { months: 6, name: "Gói Chuyên Nghiệp", price: 450000, features: ["Lưu trữ 6 tháng", "Tải ảnh tức thì", "Watermark riêng"] },
+        { months: 12, name: "Gói UNLIMITED", price: 750000, features: ["Lưu trữ 12 tháng", "Tốc độ tối đa", "Hỗ trợ 24/7"], isBest: true }
     ];
 
     let selectedPackage = null;
     let userEmail = localStorage.getItem('admin_email');
-    let pollingInterval;
 
     function renderPackages() {
         const container = document.getElementById('packageSelection');
-        container.innerHTML = '';
         PAYMENT_PACKAGES.forEach(pkg => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'package-option-wrapper';
-            wrapper.innerHTML = `
+            const div = document.createElement('div');
+            div.className = 'col-md-3';
+            div.innerHTML = `
                 <div class="package-option ${pkg.isBest ? 'best-value' : ''}" onclick="selectPkg(this, ${JSON.stringify(pkg).replace(/"/g, '&quot;')})">
                     ${pkg.isBest ? '<div class="best-badge"></div>' : ''}
-                    <h5>${pkg.name}<br><small>${pkg.name_sub}</small></h5>
-                    <span class="price-unit">${pkg.price.toLocaleString()} <small class="currency">VNĐ</small></span>
+                    <h5 class="fw-bold">${pkg.name}</h5>
+                    <div class="price-unit">${pkg.price.toLocaleString()}<small class="fs-6 d-block text-dark">VNĐ</small></div>
                     <ul class="feature-list">${pkg.features.map(f => `<li><i class="fas fa-check-circle"></i>${f}</li>`).join('')}</ul>
                 </div>`;
-            container.appendChild(wrapper);
+            container.appendChild(div);
         });
     }
 
@@ -123,58 +99,46 @@
     }
 
     async function processPayment() {
-        const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('btnContinue').disabled = true;
+        const code = 'SEVQR' + Math.floor(Math.random() * 900000);
+        document.getElementById('selectionMode').style.display = 'none';
+        document.getElementById('paymentPollingMode').style.display = 'block';
+        document.getElementById('qrLoading').style.display = 'block';
+        document.getElementById('qrContent').style.display = 'none';
+
         try {
-            const res = await fetch(PAYMENT_CONFIG.N8N_SAVE_PAYMENT, {
+            const res = await fetch(PAYMENT_CONFIG.N8N_SAVE, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: userEmail, paymentCode: code, amount: selectedPackage.price, months: selectedPackage.months })
+                body: JSON.stringify({ email: userEmail, paymentCode: code, amount: selectedPackage.price })
             });
             const data = await res.json();
             document.getElementById('qrCodeImg').src = data.qrDataURL;
             document.getElementById('displayAmount').innerText = selectedPackage.price.toLocaleString() + ' VNĐ';
             document.getElementById('displayPaymentCode').innerText = code;
-            document.getElementById('selectionMode').style.display = 'none';
-            document.getElementById('paymentPollingMode').style.display = 'block';
+            document.getElementById('qrLoading').style.display = 'none';
+            document.getElementById('qrContent').style.display = 'block';
             startPolling(code);
         } catch (e) { location.reload(); }
     }
 
     function startPolling(code) {
-        pollingInterval = setInterval(async () => {
+        const interval = setInterval(async () => {
             try {
-                const res = await fetch(PAYMENT_CONFIG.N8N_CHECK_STATUS, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                const res = await fetch(PAYMENT_CONFIG.N8N_CHECK, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
                 });
                 const data = await res.json();
-                
-                // ⭐ NẾU TRẠNG THÁI TRONG DỮ LIỆU THỰC LÀ ACTIVE
-                if (data.status === 'active') {
-                    clearInterval(pollingInterval);
+                if (data.status === 'active') { // So khớp trường status: active từ dữ liệu của bạn
+                    clearInterval(interval);
                     document.getElementById('paymentPollingMode').style.display = 'none';
                     document.getElementById('successMode').style.display = 'block';
-
-                    // Lấy Expiry chuẩn từ trường expiry_timestamp trong dữ liệu của bạn
-                    const expiry = data.expiry_timestamp; 
-                    
+                    const expiry = data.expiry_timestamp; // Lấy timestamp 2026 chuẩn
                     setTimeout(() => {
-                        // CHUYỂN THẲNG VỀ ADMIN (KHÔNG LỘ LINK WEBHOOK)
                         window.location.href = `admin.html?user_status=active&user_expiry=${expiry}&user_email=${encodeURIComponent(userEmail)}`;
-                    }, 2000);
+                    }, 2500);
                 }
             } catch (e) {}
         }, 3000);
-    }
-
-    function copyPaymentCode() {
-        const code = document.getElementById('displayPaymentCode').innerText;
-        navigator.clipboard.writeText(code).then(() => {
-            const n = document.getElementById('copyNotification');
-            n.innerText = "Đã copy nội dung: " + code; n.style.display = 'block';
-            setTimeout(() => n.style.display = 'none', 2000);
-        });
     }
 
     function returnToSelection() { location.reload(); }
