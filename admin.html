@@ -230,24 +230,35 @@
         }
 
         // ⭐ LOGIC TẠO ALBUM TỪ LINK DRIVE
-        async function handleCreateAlbum() {
-            const link = document.getElementById('driveLink').value.trim();
+       async function handleCreateAlbum() {
+            const linkInput = document.getElementById('driveLink').value.trim();
             const btn = document.getElementById('btnCreate');
-            if (btn.classList.contains('btn-locked')) return;
-            if (!link) return alert("Vui lòng dán link thư mục Google Drive!");
-
-            // Tách ID từ link
-            const folderId = link.match(/folders\/([\w-]+)/) ? link.match(/folders\/([\w-]+)/)[1] : link;
             
+            if (btn.classList.contains('btn-locked')) return;
+            if (!linkInput) return alert("Vui lòng dán link thư mục Google Drive!");
+        
+            // ⭐ TỐI ƯU TÁCH ID: Chấp nhận mọi loại link hoặc chỉ dán ID
+            let folderId = "";
+            const folderRegex = /folders\/([a-zA-Z0-9_-]+)|id=([a-zA-Z0-9_-]+)/;
+            const match = linkInput.match(folderRegex);
+            
+            if (match) {
+                folderId = match[1] || match[2]; // Lấy ID từ link
+            } else if (linkInput.length > 20 && !linkInput.includes('/')) {
+                folderId = linkInput; // Nếu dán thẳng ID
+            }
+        
+            if (!folderId) return alert("Link Drive không hợp lệ! Vui lòng kiểm tra lại.");
+        
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> ĐANG XỬ LÝ...';
             btn.disabled = true;
-
+        
             try {
                 const res = await fetch(API_CREATE, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        folderId,
+                        folderId: folderId,
                         adminEmail: localStorage.getItem('admin_email'),
                         settings: {
                             download: document.getElementById('allowDownload').checked,
@@ -256,15 +267,31 @@
                         }
                     })
                 });
-                const data = await res.json();
-                if (data.success) {
+        
+                const text = await res.text(); // Đọc dạng text trước để tránh lỗi JSON
+                
+                // Kiểm tra nếu n8n trả về lỗi hệ thống thay vì JSON
+                if (text === "Workflow was started") {
+                    throw new Error("n8n chưa được chỉnh chế độ 'When Last Node Finishes'.");
+                }
+        
+                const data = JSON.parse(text);
+                
+                if (data.success || data.clientLink) {
                     document.getElementById('resFolderName').innerText = data.folderName || "Album Mới";
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('previewBox').style.display = 'block';
                     window.scrollTo({ top: 100, behavior: 'smooth' });
-                } else { alert("Lỗi: " + (data.message || "Không thể tạo album")); }
-            } catch (e) { alert("Lỗi kết nối server!"); }
-            finally { btn.innerHTML = 'Tạo Album Ngay'; btn.disabled = false; }
+                } else {
+                    alert("Lỗi từ hệ thống: " + (data.message || "Không rõ nguyên nhân"));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Lỗi cấu hình: " + e.message);
+            } finally {
+                btn.innerHTML = 'Tạo Album Ngay';
+                btn.disabled = false;
+            }
         }
 
         // ⭐ LOGIC CHAT AI WIDGET
