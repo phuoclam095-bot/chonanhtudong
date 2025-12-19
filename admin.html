@@ -3,132 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TaoAnhNhanh.vn - Admin Professional</title>
+    <title>Chonanhnhanh.vn - Dịch vụ chọn ảnh Google Drive Siêu Tốc</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --primary: #00ebb0;
+            --primary: #00ebb0; 
+            --accent: #51ff7d;
             --bg-deep: #050a14;
             --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
         }
 
         body { 
-            margin: 0; font-family: 'Inter', sans-serif; 
+            margin: 0; font-family: 'Roboto', sans-serif; 
             background-color: var(--bg-deep);
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.6) 30%, rgba(5, 10, 20, 0.9) 100%), 
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), 
                               url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
-            color: #fff; min-height: 100vh; padding-top: 100px;
+            color: #fff; min-height: 100vh; padding-top: 110px;
         }
 
-        /* ================= NAVBAR & TABS ================= */
+        /* ================= HEADER & MARQUEE ================= */
         .navbar { 
-            background: linear-gradient(to bottom, var(--bg-deep) 0%, rgba(5, 10, 20, 0.8) 100%);
-            backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%);
+            backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05);
+            min-height: 95px;
         }
-        .navbar-brand img { height: 50px; }
+        .navbar-brand img { height: 50px; filter: drop-shadow(0 0 10px var(--primary)); }
+        
+        .marquee-wrapper {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 45%; overflow: hidden; white-space: nowrap;
+            background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px;
+            border: 1px solid rgba(0, 235, 176, 0.15);
+        }
+        .marquee-text {
+            display: inline-block; font-weight: 700; font-size: 0.8rem;
+            text-transform: uppercase; color: var(--primary);
+            letter-spacing: 3px;
+            animation: marquee-run 40s linear infinite;
+            will-change: transform;
+        }
+        @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .nav-link { 
-            color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem;
-            text-transform: uppercase; padding: 10px 12px !important;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+        #adminNavLinks { display: none !important; }
+        #adminNavLinks.show-tabs { display: flex !important; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; padding: 10px 12px !important; }
+        .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
-        /* ================= LOGIN VIP RAINBOW ================= */
-        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        .btn-login-vip-rainbow {
-            position: relative; padding: 2px; border-radius: 50px;
-            background: var(--rainbow); background-size: 200% auto;
-            animation: rainbow-move 3s linear infinite; border: none;
-        }
-        .btn-login-inner {
-            background: #fff; color: #000; font-weight: 900; border-radius: 50px;
-            padding: 6px 18px; display: block; font-size: 0.8rem;
-        }
-
-        .user-pill {
-            background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 50px;
-            display: flex; align-items: center; gap: 8px; border: 1px solid var(--primary);
-        }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; }
-
-        /* ================= CARD THIẾT LẬP CHI TIẾT ================= */
-        .main-container { padding: 20px; display: flex; justify-content: center; }
+        /* ================= CARD & TIÊU ĐỀ ================= */
+        .main-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .rainbow-border-wrapper {
             position: relative; padding: 3px; border-radius: 35px;
             background: var(--rainbow); background-size: 200% auto;
-            animation: rainbow-move 6s linear infinite;
-            max-width: 650px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            animation: rainbow-move 4s linear infinite;
+            max-width: 620px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
         }
         .create-card { background: #080d1a; border-radius: 32px; padding: 40px; }
+        .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        /* INPUT STYLE */
-        .label-highlight {
-            color: #ffffff !important; font-weight: 800; font-size: 0.85rem;
-            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-        .form-control-luxury {
-            width: 100%; padding: 14px 20px; background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; 
-            color: #fff; font-size: 0.95rem; margin-bottom: 20px; transition: 0.3s;
-        }
-        .form-control-luxury:focus { border-color: var(--primary); outline: none; background: #000; }
+        .label-white { color: #fff !important; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; display: block; text-transform: uppercase; }
+        input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
 
-        .btn-create-vip {
-            width: 100%; padding: 18px; border: none; border-radius: 18px;
-            background: var(--primary); color: #000; font-weight: 900;
-            font-size: 1.1rem; text-transform: uppercase; margin-top: 10px;
-        }
+        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; }
+        .toggle-switch { position: relative; width: 45px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(21px); }
 
-        /* AI & HEARTBEAT */
-        .ai-zone { margin-top: 25px; text-align: center; }
-        .heartbeat-sync {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: var(--primary); font-weight: 800; font-size: 0.7rem;
-            text-transform: uppercase; animation: heartbeat 1.5s infinite;
-        }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); opacity: 0.6; } 20% { transform: scale(1.05); opacity: 1; } }
+        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 20px 0; text-align: center; }
+        .sync-highlight { color: var(--primary); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 15px rgba(0, 235, 176, 0.6); animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.7; transform: scale(1); } }
 
-        @media (max-width: 991px) { .nav-remind { display: none; } }
+        /* ================= CHAT HỖ TRỢ & THÔNG BÁO GỢI Ý ================= */
+        .chat-support-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
+        
+        .ai-suggestion-bubble {
+            background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px;
+            font-weight: 800; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; transform-origin: bottom right; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 260px; border: 2.5px solid var(--primary);
+        }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.5) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .chat-trigger {
+            width: 60px; height: 60px; background: var(--primary); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+            box-shadow: 0 0 20px var(--primary);
+        }
+        .chat-trigger i { font-size: 1.6rem; color: #000; }
+        .ripple { position: absolute; inset: 0; border-radius: 50%; background: var(--primary); animation: ripple-effect 2s infinite; opacity: 0; }
+        @keyframes ripple-effect { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
+
+        .chat-panel {
+            position: fixed; bottom: 100px; right: 30px; width: 320px; height: 450px;
+            background: rgba(10, 20, 40, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px;
+            display: none; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.8); overflow: hidden;
+        }
+        .chat-header { background: var(--primary); padding: 12px 18px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { background: rgba(255,255,255,0.06); padding: 10px; border-radius: 12px 12px 12px 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
+
+        /* LOGIN AREA */
+        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; border: none; }
+        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; }
+        .user-pill { background: rgba(255,255,255,0.05); padding: 6px 18px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--primary); }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="#">
-                <img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo">
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" href="admin.html">Tạo Album</a></li>
-                    <li class="nav-item"><a class="nav-link" href="manage.html">Quản Lý</a></li>
-                    <li class="nav-item"><a class="nav-link" href="payment.html">Gia Hạn</a></li>
-                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Liên Hệ</a></li>
-                </ul>
-
-                <div class="d-flex align-items-center gap-3">
-                    <div id="loggedOutNav">
-                        <div class="btn-login-vip-rainbow" onclick="startGoogleLogin()">
-                            <span class="btn-login-inner">LOGIN VIP</span>
-                        </div>
+            <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
+            <div class="marquee-wrapper d-none d-lg-block">
+                <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - Phát triển theo nhu cầu khách hàng</span>
+            </div>
+            <div class="ms-auto">
+                <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()"><span class="btn-login-inner">LOGIN VIP</span></div></div>
+                <div id="loggedInNav" style="display: none !important;" class="align-items-center gap-2">
+                    <div class="user-pill">
+                        <div id="avatarPlaceholder" class="overflow-hidden rounded-circle" style="width:30px; height:30px; border:1px solid var(--primary)"></div>
+                        <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem;"></span>
                     </div>
-                    <div id="loggedInNav" style="display: none;" class="align-items-center gap-2">
-                        <div class="user-pill" id="userEmailDisplay"></div>
-                        <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()">
-                            <i class="fas fa-power-off"></i>
-                        </button>
-                    </div>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
                 </div>
             </div>
         </div>
@@ -137,71 +141,107 @@
     <div class="main-container">
         <div class="rainbow-border-wrapper">
             <div class="create-card">
-                <h2 class="fw-900 text-center mb-4">Thiết Lập Album VIP</h2>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="label-highlight"><i class="fas fa-image"></i> Link Ảnh Tải Lên</label>
-                        <input type="text" class="form-control-luxury" id="imageLink" placeholder="Link ảnh hoặc Folder...">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="label-highlight"><i class="fas fa-copyright"></i> Link Logo Brand</label>
-                        <input type="text" class="form-control-luxury" id="logoLink" placeholder="Link ảnh logo của bạn...">
-                    </div>
+                <h1 class="luxury-title">Thiết Lập Album VIP</h1>
+                <div class="mb-4">
+                    <label class="label-white ms-2">Dán Link Thư Mục Google Drive</label>
+                    <input type="text" id="driveLink" placeholder="https://drive.google.com/drive/folders/...">
                 </div>
-
-                <label class="label-highlight"><i class="fas fa-list-ol"></i> Giới hạn số lượng ảnh</label>
-                <input type="text" class="form-control-luxury" id="limitCount" placeholder="Ví dụ: 50, 100 hoặc Không giới hạn">
-
-                <label class="label-highlight"><i class="fab fa-google-drive"></i> Link Thư Mục Google Drive</label>
-                <input type="text" class="form-control-luxury" id="driveLink" placeholder="Dán link folder drive của bạn...">
-
-                <button class="btn-create-vip" id="btnCreate" onclick="handleAction()">
-                    KHỞI TẠO ALBUM NGAY
-                </button>
-
-                <div class="ai-zone">
-                    <div class="heartbeat-sync">
-                        <i class="fas fa-robot"></i> AI INTEGRATED - ĐỒNG BỘ 1-5 GIÂY
-                    </div>
-                </div>
+                <div class="switch-group"><span>Cho phép tải ảnh xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Chèn Logo/Watermark</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
+                <div class="switch-group"><span>Giới hạn số lượng ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+                <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
+                <button class="btn btn-success w-100 p-3 fw-bold rounded-pill d-none" id="btnCreate" style="background:var(--primary); border:none; color:#000;">KHỞI TẠO ALBUM NGAY</button>
+                <div class="mt-4 text-center"><span class="sync-highlight"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</span></div>
             </div>
         </div>
     </div>
 
-    <script>
-        function startGoogleLogin() {
-            const loginPath = "https://dichvufb.tino.page/webhook/google-oauth-callback";
-            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(loginPath)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`;
-        }
+    <div class="chat-support-container">
+        <div class="ai-suggestion-bubble" id="aiSuggestion"></div>
+        <div class="chat-trigger" onclick="toggleChat()"><div class="ripple"></div><i class="fas fa-comment-dots"></i></div>
+    </div>
 
-        function checkAuthCallback() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('auth_status') === 'success') {
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_name', params.get('user_name'));
-                localStorage.setItem('admin_avatar', params.get('user_avatar'));
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header"><span>HỖ TRỢ TRỰC TUYẾN</span><i class="fas fa-times cursor-pointer" onclick="toggleChat()"></i></div>
+        <div class="chat-body" id="chatBody"></div>
+        <form class="chat-footer" onsubmit="sendChat(event)" style="padding:10px; display:flex; gap:5px; background:rgba(0,0,0,0.2)">
+            <input type="text" id="chatInput" placeholder="Nhập nội dung cần hỗ trợ..." style="flex:1; background:#1e293b; border:none; border-radius:8px; padding:8px 12px; color:#fff; font-size:0.8rem; outline:none">
+            <button type="submit" style="background:var(--primary); border:none; border-radius:50%; width:32px; height:32px; color:#000; cursor:pointer"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <audio id="tingSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script>
+        const CONFIG = { 
+            AUTH_URL: 'https://dichvufb.tino.page/webhook/google-oauth-callback',
+            CHAT_URL: 'https://dichvufb.tino.page/webhook/chat-admin'
+        };
+
+        function toggleChat() {
+            const chat = document.getElementById('chatPanel');
+            chat.style.display = (chat.style.display === 'flex') ? 'none' : 'flex';
+            document.getElementById('aiSuggestion').style.display = 'none';
         }
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const name = localStorage.getItem('admin_name') || 'Bạn';
             if (isLoggedIn) {
+                document.getElementById('adminNavLinks').classList.add('show-tabs');
                 document.getElementById('loggedOutNav').style.display = 'none';
-                document.getElementById('loggedInNav').style.display = 'flex';
-                const name = localStorage.getItem('admin_name') || 'Admin';
-                const avatar = localStorage.getItem('admin_avatar') || '';
-                document.getElementById('userEmailDisplay').innerHTML = `<img src="${avatar}" class="user-avatar"> <span class="fw-bold small">${name}</span>`;
+                document.getElementById('loggedInNav').setAttribute('style', 'display: flex !important;');
+                document.getElementById('authReminder').style.display = 'none';
+                document.getElementById('btnCreate').classList.remove('d-none');
+                document.getElementById('userNameDisplay').innerText = name;
+                document.getElementById('avatarPlaceholder').innerHTML = `<img src="${localStorage.getItem('admin_avatar')}" style="width:100%">`;
             }
+
+            // 1. THÔNG BÁO BONG BÓNG (SAU 2 GIÂY)
+            setTimeout(() => {
+                const bubble = document.getElementById('aiSuggestion');
+                bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Bạn cần hỗ trợ gì không?`;
+                bubble.style.display = 'block';
+                document.getElementById('tingSound').play().catch(e => {});
+            }, 2000);
+
+            // 2. DÒNG CHÀO TRONG KHUNG CHAT (KHÁC BIỆT)
+            document.getElementById('chatBody').innerHTML = `<div class="msg-bubble">Hệ thống hỗ trợ <strong>chonanhnhanh.vn</strong> đã sẵn sàng. Bạn vui lòng nhập nội dung cần giải đáp phía dưới nhé! ✨</div>`;
         }
 
+        async function sendChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            if(!input.value) return;
+            const msg = input.value;
+            document.getElementById('chatBody').innerHTML += `<div class="text-end mb-2"><span class="bg-primary text-white p-2 rounded small" style="background:#00ebb0 !important; color:#000 !important; font-weight:700;">${msg}</span></div>`;
+            input.value = '';
+            try {
+                const res = await fetch(CONFIG.CHAT_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: msg, user_name: localStorage.getItem('admin_name') || 'Khách', session_id: 'sid_' + Date.now() })
+                });
+                const data = await res.json();
+                if(data.output) { document.getElementById('chatBody').innerHTML += `<div class="msg-bubble">${data.output}</div>`; }
+                const body = document.getElementById('chatBody');
+                body.scrollTop = body.scrollHeight;
+            } catch(e) {}
+        }
+
+        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(CONFIG.AUTH_URL)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuthCallback();
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('auth_status') === 'success') {
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
+                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+                history.replaceState(null, null, window.location.pathname);
+            }
             updateUI();
-        });
+        };
     </script>
 </body>
 </html>
