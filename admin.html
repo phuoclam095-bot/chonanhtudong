@@ -112,9 +112,19 @@
         .msg-bubble { background: rgba(255,255,255,0.06); padding: 10px; border-radius: 12px 12px 12px 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
 
         /* LOGIN AREA */
-        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; border: none; }
+        .btn-login-rainbow { 
+            position: relative; padding: 2px; border-radius: 50px; 
+            background: var(--rainbow); background-size: 200% auto; 
+            animation: rainbow-move 3s linear infinite; border: none; 
+            cursor: pointer; /* Thay đổi hiệu ứng con chuột */
+        }
         .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; }
         .user-pill { background: rgba(255,255,255,0.05); padding: 6px 18px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--primary); }
+        
+        /* Chỉnh sửa chung cho con chuột trên các thành phần tương tác */
+        .cursor-pointer, .chat-trigger, .btn-login-rainbow, .slider, .nav-link, button {
+            cursor: pointer !important;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +136,11 @@
                 <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - Phát triển theo nhu cầu khách hàng</span>
             </div>
             <div class="ms-auto">
-                <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()"><span class="btn-login-inner">LOGIN VIP</span></div></div>
+                <div id="loggedOutNav">
+                    <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                        <span class="btn-login-inner">LOGIN VIP</span>
+                    </div>
+                </div>
                 <div id="loggedInNav" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-pill">
                         <div id="avatarPlaceholder" class="overflow-hidden rounded-circle" style="width:30px; height:30px; border:1px solid var(--primary)"></div>
@@ -149,8 +163,10 @@
                 <div class="switch-group"><span>Cho phép tải ảnh xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
                 <div class="switch-group"><span>Chèn Logo/Watermark</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
                 <div class="switch-group"><span>Giới hạn số lượng ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+                
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
                 <button class="btn btn-success w-100 p-3 fw-bold rounded-pill d-none" id="btnCreate" style="background:var(--primary); border:none; color:#000;">KHỞI TẠO ALBUM NGAY</button>
+                
                 <div class="mt-4 text-center"><span class="sync-highlight"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</span></div>
             </div>
         </div>
@@ -173,7 +189,9 @@
     <audio id="tingSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
+        // Cấu hình đồng bộ với n8n của bạn
         const CONFIG = { 
+            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
             AUTH_URL: 'https://dichvufb.tino.page/webhook/google-oauth-callback',
             CHAT_URL: 'https://dichvufb.tino.page/webhook/chat-admin'
         };
@@ -187,25 +205,33 @@
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const name = localStorage.getItem('admin_name') || 'Bạn';
+            const avatar = localStorage.getItem('admin_avatar');
+
             if (isLoggedIn) {
-                document.getElementById('adminNavLinks').classList.add('show-tabs');
+                // Hiển thị các tab admin nếu cần (theo code n8n bạn gửi)
+                const navLinks = document.getElementById('adminNavLinks');
+                if(navLinks) navLinks.classList.add('show-tabs');
+
                 document.getElementById('loggedOutNav').style.display = 'none';
                 document.getElementById('loggedInNav').setAttribute('style', 'display: flex !important;');
                 document.getElementById('authReminder').style.display = 'none';
                 document.getElementById('btnCreate').classList.remove('d-none');
                 document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = `<img src="${localStorage.getItem('admin_avatar')}" style="width:100%">`;
+                
+                if (avatar && avatar !== 'undefined') {
+                    document.getElementById('avatarPlaceholder').innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
             }
 
-            // 1. THÔNG BÁO BONG BÓNG (SAU 2 GIÂY)
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
-                bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Bạn cần hỗ trợ gì không?`;
-                bubble.style.display = 'block';
-                document.getElementById('tingSound').play().catch(e => {});
+                if(bubble) {
+                    bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Bạn cần hỗ trợ gì không?`;
+                    bubble.style.display = 'block';
+                    document.getElementById('tingSound').play().catch(e => {});
+                }
             }, 2000);
 
-            // 2. DÒNG CHÀO TRONG KHUNG CHAT (KHÁC BIỆT)
             document.getElementById('chatBody').innerHTML = `<div class="msg-bubble">Hệ thống hỗ trợ <strong>chonanhnhanh.vn</strong> đã sẵn sàng. Bạn vui lòng nhập nội dung cần giải đáp phía dưới nhé! ✨</div>`;
         }
 
@@ -229,15 +255,22 @@
             } catch(e) {}
         }
 
-        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(CONFIG.AUTH_URL)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
+        // Hàm đăng nhập chuyển hướng qua Google theo n8n
+        function startGoogleLogin() { 
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(CONFIG.AUTH_URL)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; 
+        }
+
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('auth_status') === 'success') {
                 localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', params.get('user_email') || '');
                 localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+                localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 history.replaceState(null, null, window.location.pathname);
             }
             updateUI();
