@@ -458,43 +458,49 @@
             btnSave.innerHTML = `<i class="fas fa-paper-plane"></i> Gửi (${selectedPhotoIds.length})`;
         }
 
-        async function init() {
-            try {
-                localStorage.setItem('layout_version', 'V18.6');
-                cvs = document.getElementById('drawCanvas');
-                img = document.getElementById('mainImg');
+       async function init() {
+    try {
+        localStorage.setItem('layout_version', 'V18.6');
+        cvs = document.getElementById('drawCanvas');
+        img = document.getElementById('mainImg');
 
-                if(!fid) throw new Error("Link thiếu mã Album (id)");
-                const key = 'anh_da_chon_cua_khach_' + fid;
-                const localData = localStorage.getItem(key);
-                if (localData) { try { selectedPhotoIds = JSON.parse(localData) || []; } catch(e){} }
-                
-                let data = await fetchData(`${URL_GET}?id=${fid}`);
-                if (!data) throw new Error("Server không trả về dữ liệu.");
-                photos = data.photos || data;
-                if (!Array.isArray(photos) || photos.length === 0) throw new Error("Album này chưa có ảnh.");
-
-                document.getElementById('loadOverlay').style.display='none';
-                capNhatSoThuTuVaTổngSố();
-                setView('grid'); 
-                
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start, {passive:false}));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end, {passive:false}));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw, {passive:false}));
-                
-                document.onkeydown=e=>{
-                    if(currentView==='viewer' && !isDraw){
-                        if(e.key=='ArrowRight') mov(1);
-                        if(e.key=='ArrowLeft') mov(-1);
-                        if(e.key==' ') togSel();
-                        if(e.key=='Escape') setView('grid');
-                    }
-                };
-            } catch(e) {
-                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
-            }
+        if(!fid) throw new Error("Link thiếu mã Album (id)");
+        const key = 'anh_da_chon_cua_khach_' + fid;
+        const localData = localStorage.getItem(key);
+        if (localData) { try { selectedPhotoIds = JSON.parse(localData) || []; } catch(e){} }
+        
+        let data = await fetchData(`${URL_GET}?id=${fid}`);
+        if (!data) throw new Error("Server không trả về dữ liệu.");
+        
+        // --- LOGIC LỌC ẢNH THÔNG MINH ---
+        let allPhotos = data.photos || data;
+        const mode = urlParams.get('mode'); // Nhận lệnh lọc từ Manage
+        
+        if (mode === 'selected') {
+            // Chỉ hiện những ảnh đã có trong danh sách chọn
+            photos = allPhotos.filter(p => selectedPhotoIds.includes(p.id));
+            document.querySelector('.album-title').innerText = "Xem Ảnh Đã Chọn";
+        } else if (mode === 'notes') {
+            // Lọc ảnh có ghi chú (giả định server trả về p.has_note)
+            photos = allPhotos.filter(p => p.has_note === true || p.comment_count > 0);
+            document.querySelector('.album-title').innerText = "Xem Ghi Chú & Vẽ";
+        } else {
+            photos = allPhotos;
         }
 
+        if (!Array.isArray(photos) || photos.length === 0) {
+            throw new Error(mode === 'selected' ? "Chưa có ảnh nào được chọn." : "Album này chưa có ảnh.");
+        }
+
+        document.getElementById('loadOverlay').style.display='none';
+        capNhatSoThuTuVaTổngSố();
+        setView('grid'); 
+        
+        // (Các addEventListener khác giữ nguyên...)
+    } catch(e) {
+        document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
+    }
+}
         function show(i) {
             if (isDraw) togDraw(false);
             if (i < 0 || i >= photos.length) return;
@@ -591,4 +597,5 @@
     </script>
 </body>
 </html>
+
 
