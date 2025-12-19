@@ -22,12 +22,12 @@
             color: #fff; min-height: 100vh; padding-top: 110px;
         }
 
-        /* HEADER & NAV */
+        /* HEADER & MARQUEE */
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 50px; filter: drop-shadow(0 0 10px var(--primary)); }
         
-        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 45%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 3px; animation: marquee-run 40s linear infinite; }
+        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 40%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); display: block; }
+        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 3px; animation: marquee-run 30s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         #adminNavLinks { display: none !important; }
@@ -42,7 +42,20 @@
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; }
+        input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+
+        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; }
+        .toggle-switch { position: relative; width: 45px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(21px); }
+
+        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 20px 0; text-align: center; }
+        .sync-highlight { color: var(--primary); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.7; transform: scale(1); } }
         .btn-locked { background: #334155 !important; cursor: not-allowed !important; opacity: 0.6; }
 
         /* USER & STATUS */
@@ -54,13 +67,19 @@
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
 
-        /* CHAT PANEL */
+        /* CHAT AI */
         .chat-support-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
-        .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 800; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 260px; }
-        .chat-panel { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 450px; background: rgba(10, 20, 40, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; }
-        .chat-header { background: var(--primary); padding: 12px 18px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
+        .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 800; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 260px; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+        .chat-trigger { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: 0 0 20px var(--primary); }
+        .chat-trigger i { font-size: 1.6rem; color: #000; }
+        .ripple { position: absolute; inset: 0; border-radius: 50%; background: var(--primary); animation: ripple-effect 2s infinite; opacity: 0; }
+        @keyframes ripple-effect { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
+
+        .chat-panel { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 450px; background: rgba(10, 20, 40, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        .chat-header { background: var(--primary); padding: 12px 18px; font-weight: 800; color: #000; display: flex; justify-content: space-between; align-items: center; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { background: rgba(255,255,255,0.06); padding: 10px; border-radius: 12px 12px 12px 0; font-size: 0.8rem; color: #e2e8f0; }
+        .msg-bubble { background: rgba(255,255,255,0.06); padding: 10px; border-radius: 12px 12px 12px 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -84,7 +103,7 @@
                 </ul>
             </div>
 
-            <div class="ms-auto">
+            <div class="ms-auto d-flex align-items-center">
                 <div id="loggedOutNav">
                     <div class="btn-login-rainbow" onclick="startGoogleLogin()"><span class="btn-login-inner">LOGIN VIP</span></div>
                 </div>
@@ -107,7 +126,7 @@
             <div class="create-card">
                 <h1 class="luxury-title">Thiết Lập Album VIP</h1>
                 <div class="mb-4">
-                    <label class="label-white ms-2 text-uppercase fw-bold" style="font-size:0.75rem">Link Google Drive</label>
+                    <label class="label-white ms-2 text-uppercase fw-bold" style="font-size:0.75rem; color:#fff !important;">Link Google Drive Thư Mục</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây...">
                 </div>
                 <div class="switch-group"><span>Cho phép tải ảnh xuống</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
@@ -119,22 +138,24 @@
 
                 <button class="btn btn-success w-100 p-3 fw-bold rounded-pill d-none" id="btnCreate" style="background:var(--primary); border:none; color:#000;">KHỞI TẠO ALBUM NGAY</button>
                 
-                <div class="mt-4 text-center"><span class="sync-highlight"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</span></div>
+                <div class="mt-4 text-center">
+                    <span class="sync-highlight"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</span>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="chat-support-container">
         <div class="ai-suggestion-bubble" id="aiSuggestion"></div>
-        <div class="chat-trigger" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></div>
+        <div class="chat-trigger" onclick="toggleChat()"><div class="ripple"></div><i class="fas fa-comment-dots"></i></div>
     </div>
 
     <div class="chat-panel" id="chatPanel">
-        <div class="chat-header"><span>HỖ TRỢ TRỰC TUYẾN</span><i class="fas fa-times cursor-pointer" onclick="toggleChat()"></i></div>
+        <div class="chat-header"><span>HỖ TRỢ TRỰC TUYẾN</span><i class="fas fa-times cursor-pointer" style="cursor:pointer" onclick="toggleChat()"></i></div>
         <div class="chat-body" id="chatBody"></div>
         <form class="chat-footer" onsubmit="sendChat(event)" style="padding:10px; display:flex; gap:5px; background:rgba(0,0,0,0.2)">
-            <input type="text" id="chatInput" placeholder="Nhập nội dung..." style="flex:1; background:#1e293b; border:none; border-radius:8px; padding:8px 12px; color:#fff; outline:none">
-            <button type="submit" style="background:var(--primary); border:none; border-radius:50%; width:32px; height:32px; color:#000;"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" id="chatInput" placeholder="Nhập nội dung cần hỗ trợ..." style="flex:1; background:#1e293b; border:none; border-radius:8px; padding:8px 12px; color:#fff; font-size:0.8rem; outline:none">
+            <button type="submit" style="background:var(--primary); border:none; border-radius:50%; width:32px; height:32px; color:#000; cursor:pointer"><i class="fas fa-paper-plane"></i></button>
         </form>
     </div>
 
@@ -165,7 +186,7 @@
                 marquee.style.display = 'none';
                 navLinks.classList.add('show-tabs');
                 loggedOut.style.display = 'none';
-                loggedIn.style.display = 'flex';
+                loggedIn.setAttribute('style', 'display: flex !important;');
                 btn.classList.remove('d-none');
                 document.getElementById('authReminder').style.display = 'none';
                 document.getElementById('userNameDisplay').innerText = name;
@@ -174,6 +195,7 @@
                 if (status === 'active' && expiry > Date.now()) {
                     statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
                     btn.classList.remove('btn-locked'); notice.style.display = 'none';
+                    btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
                 } else if (status === 'new') {
                     statusEl.innerHTML = `<span class="status-tag tag-new">Tài khoản mới</span>`;
                     btn.classList.add('btn-locked'); btn.innerHTML = `KHÓA TÍNH NĂNG`;
@@ -185,16 +207,22 @@
                     notice.style.display = 'block';
                     notice.innerHTML = `<a href="payment.html" style="color:#ff4757; text-decoration:none">Gia hạn ngay để tiếp tục sử dụng</a>`;
                 }
+            } else {
+                marquee.style.display = 'block';
+                navLinks.classList.remove('show-tabs');
+                loggedOut.style.display = 'block';
+                loggedIn.style.display = 'none';
+                btn.classList.add('d-none');
+                document.getElementById('authReminder').style.display = 'block';
             }
 
-            // AI Suggestion & Chat Init
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
-                bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Cần n8n hỗ trợ gì không?`;
+                bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Bạn cần hỗ trợ gì không?`;
                 bubble.style.display = 'block';
                 document.getElementById('tingSound').play().catch(e => {});
             }, 2000);
-            document.getElementById('chatBody').innerHTML = `<div class="msg-bubble">Hệ thống hỗ trợ n8n sẵn sàng!</div>`;
+            document.getElementById('chatBody').innerHTML = `<div class="msg-bubble">Hệ thống hỗ trợ <strong>chonanhnhanh.vn</strong> đã sẵn sàng!</div>`;
         }
 
         async function sendChat(e) {
@@ -202,7 +230,7 @@
             const input = document.getElementById('chatInput');
             if(!input.value) return;
             const msg = input.value;
-            document.getElementById('chatBody').innerHTML += `<div class="text-end mb-2"><span style="background:var(--primary); color:#000; padding:5px 10px; border-radius:10px; font-size:0.8rem;">${msg}</span></div>`;
+            document.getElementById('chatBody').innerHTML += `<div class="text-end mb-2"><span style="background:var(--primary); color:#000; padding:8px 12px; border-radius:12px; font-size:0.8rem; font-weight:700;">${msg}</span></div>`;
             input.value = '';
             try {
                 const res = await fetch(PATHS.CHAT_WEBHOOK, {
@@ -218,7 +246,7 @@
 
         function toggleChat() { 
             const panel = document.getElementById('chatPanel');
-            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+            panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
             document.getElementById('aiSuggestion').style.display = 'none';
         }
 
