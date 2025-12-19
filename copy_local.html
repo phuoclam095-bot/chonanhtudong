@@ -25,18 +25,19 @@
         .dir-box { background: rgba(0, 0, 0, 0.4); border: 1px dashed #777; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100px; }
         .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.15); border-style: solid; }
         .btn-select-dir { background: #333; color: white; border: 1px solid #555; padding: 6px 15px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 8px; }
+        
+        /* BỐ CỤC Ô ĐỔI ĐUÔI FILE */
         .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .label-row label { margin-bottom: 0; font-weight: 700; color: var(--highlight-color); font-size: 0.95rem; }
         .ext-input-wrap { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); padding: 4px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
         .ext-input-wrap span { font-size: 0.75rem; color: #ccc; font-weight: 700; }
         .ext-box { background: transparent; border: none; color: var(--accent-gold); font-weight: 800; width: 60px; outline: none; text-align: center; font-size: 0.9rem; text-transform: uppercase; }
+
         textarea { background: rgba(0,0,0,0.4); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; padding: 12px; border-radius: 10px; resize: vertical; font-family: 'Consolas', monospace; min-height: 120px; }
         #btnCopy { background: #555; color: #aaa; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: 800; margin-top: 20px; transition: 0.3s; cursor: not-allowed; }
         #btnCopy.active { background: linear-gradient(135deg, #0d6efd, #0043a8); color: white; cursor: pointer; box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4); }
         #btnCopy.locked { background: #94a3b8 !important; color: #fff !important; cursor: not-allowed !important; }
         #statusLog { margin-top: 25px; background: #0f0f0f; padding: 15px; border-radius: 8px; border: 1px solid #333; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #ccc; height: 250px; overflow-y: auto; }
-        .log-success { color: #51ff7d; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
-        .log-error { color: #ff6b6b; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
     </style>
 </head>
 <body>
@@ -93,11 +94,11 @@
                 <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file cần chép:</label>
                 <div class="ext-input-wrap">
                     <span>Đổi sang đuôi:</span>
-                    <input type="text" id="targetExt" class="ext-box" placeholder="JPG" oninput="autoChangeAllExtensions()">
+                    <input type="text" id="targetExt" class="ext-box" placeholder="JPG" oninput="applyExtension()">
                 </div>
             </div>
             
-            <textarea id="txtFiles" rows="5" placeholder="Ví dụ: PHUOC_3125.JPG..." onfocus="saveOriginalData()"></textarea>
+            <textarea id="txtFiles" rows="5" placeholder="Dán danh sách tên file vào đây..." oninput="storeOriginal()"></textarea>
 
             <button id="btnCopy" onclick="runCopyProcess()" disabled>
                 <i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP
@@ -110,39 +111,32 @@
     </div>
 
     <script>
-        // ⭐ LOGIC MỚI: LƯU TRỮ DỮ LIỆU GỐC ĐỂ XÓA/SỬA ĐUÔI KHÔNG BỊ MẤT TÊN
-        let originalText = ""; 
+        // ⭐ LOGIC MỚI: DÙNG REGEX ĐỂ ĐỔI TẤT CẢ ĐUÔI TRONG CHUỖI CÁCH NHAU BẰNG DẤU PHẨY
+        let baseContent = ""; 
 
-        function saveOriginalData() {
-            // Chỉ lưu khi textarea có nội dung và chưa được lưu lần nào trong phiên dán này
-            originalText = document.getElementById('txtFiles').value;
+        function storeOriginal() {
+            // Khi khách dán vào, ta lưu lại nội dung này làm gốc
+            baseContent = document.getElementById('txtFiles').value;
         }
 
-        function autoChangeAllExtensions() {
+        function applyExtension() {
             const textarea = document.getElementById('txtFiles');
-            const targetExt = document.getElementById('targetExt').value.trim().toUpperCase();
-            
-            // Luôn cập nhật originalText khi người dùng gõ trực tiếp vào textarea
-            textarea.onkeyup = () => { originalText = textarea.value; };
+            const targetExt = document.getElementById('targetExt').value.trim();
 
-            if (!originalText) return;
+            if (!baseContent) baseContent = textarea.value; 
 
-            // Xử lý thay thế thông minh: Tách tên và đuôi để ghép lại
-            const lines = originalText.split('\n');
-            const updatedLines = lines.map(line => {
-                if (!line.trim()) return line;
-                // Tìm vị trí dấu chấm cuối cùng
-                const lastDotIndex = line.lastIndexOf('.');
-                if (lastDotIndex === -1) return line + (targetExt ? '.' + targetExt : '');
-                
-                const fileNameOnly = line.substring(0, lastDotIndex);
-                return targetExt ? `${fileNameOnly}.${targetExt}` : fileNameOnly;
-            });
+            if (!targetExt) {
+                textarea.value = baseContent;
+                return;
+            }
 
-            textarea.value = updatedLines.join('\n');
+            // Regex tìm tất cả các phần mở rộng (sau dấu chấm cho đến khi gặp dấu phẩy, khoảng trắng hoặc hết chuỗi)
+            // Ví dụ: .jpg, .JPG, .cr3 sẽ bị thay thế bằng . + targetExt
+            const regex = /\.[a-zA-Z0-9]+/g;
+            textarea.value = baseContent.replace(regex, "." + targetExt);
         }
 
-        // --- GIỮ NGUYÊN CÁC LOGIC CÒN LẠI ---
+        // --- AUTH & COPY LOGIC GIỮ NGUYÊN ---
         const rawExpiry = localStorage.getItem('admin_expiry');
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
         let isExpired = false;
@@ -173,7 +167,6 @@
         }
 
         let dirHandleSource = null, dirHandleDest = null;
-
         async function handleSelectSource() {
             if (isExpired) return;
             try {
@@ -183,7 +176,6 @@
                 checkReady();
             } catch (err) {}
         }
-
         async function handleSelectDest() {
             if (isExpired) return;
             try {
@@ -193,7 +185,6 @@
                 checkReady();
             } catch (err) {}
         }
-
         function checkReady() {
             const btn = document.getElementById('btnCopy');
             if (!isExpired && dirHandleSource && dirHandleDest) {
@@ -201,17 +192,14 @@
                 btn.classList.add('active'); 
             }
         }
-
         async function runCopyProcess() {
             if (isExpired) return;
             const txtFiles = document.getElementById('txtFiles').value;
             const btn = document.getElementById('btnCopy');
             if (!txtFiles.trim()) return;
-
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
-
             let success = 0;
             for (let i = 0; i < fileList.length; i++) {
                 try {
@@ -228,11 +216,9 @@
                 }
             }
             btn.disabled = false;
-            btn.classList.add('active');
             btn.innerHTML = '<i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP';
             alert(`Hoàn tất sao chép ${success} file.`);
         }
-
         function log(msg, type) {
             const logBox = document.getElementById('statusLog');
             const div = document.createElement('div');
@@ -241,7 +227,6 @@
             logBox.appendChild(div);
             logBox.scrollTop = logBox.scrollHeight;
         }
-
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         document.addEventListener('DOMContentLoaded', updateHeaderUI);
     </script>
