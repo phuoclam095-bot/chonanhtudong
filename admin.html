@@ -238,7 +238,7 @@
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì hôm nay không ạ?`;
                     bubble.style.display = 'block';
                 }
             }, 1500);
@@ -271,7 +271,7 @@
                 const res = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
                 const data = await res.json();
                 if(data.clientLink) {
-                    document.getElementById('resFolderName').innerText = "✅ " + (data.folderName || "Album mới");
+                    document.getElementById('resFolderName').innerText =  (data.folderName || "Album mới");
                     document.getElementById('resClientLink').href = data.clientLink;
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('resultBox').style.display = 'block';
