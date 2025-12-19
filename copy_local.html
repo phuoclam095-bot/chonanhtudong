@@ -32,41 +32,154 @@
             padding-top: 80px; 
         }
 
-        .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        .navbar {
+            background: var(--primary-green);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px;}
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); border-radius: 8px; }
+        .navbar-toggler { border: none; color: white; }
 
-        .user-status-box { background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
-        .user-avatar-circle { width: 32px; height: 32px; background: #333; color: var(--highlight-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid var(--highlight-color); text-transform: uppercase; }
-        .status-badge { background-color: #198754; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .user-status-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .user-avatar-circle {
+            width: 32px; height: 32px;
+            background: #333; color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; border: 2px solid var(--highlight-color);
+            text-transform: uppercase;
+        }
+        .status-badge {
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-        .copy-container { max-width: 900px; margin: 0 auto 40px auto; padding: 30px; background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.9) 0%, rgba(14, 90, 34, 0.8) 100%); border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; }
-        h2 { color: var(--highlight-color); text-align: center; margin-bottom: 20px; font-weight: 800; text-shadow: 0 0 10px rgba(81, 255, 125, 0.5); }
+        .copy-container {
+            max-width: 900px;
+            margin: 0 auto 40px auto; 
+            padding: 30px;
+            background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.9) 0%, rgba(14, 90, 34, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: transparent;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff; 
+        }
 
-        .alert-custom { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 8px; padding: 10px 15px; margin-bottom: 25px; font-size: 0.9rem; text-align: left; }
-        .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .dir-box { background: rgba(0, 0, 0, 0.4); border: 1px dashed #777; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100px; }
+        h2 { 
+            color: var(--highlight-color); 
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-weight: 800; 
+            text-shadow: 0 0 10px rgba(81, 255, 125, 0.5);
+        }
+
+        .alert-custom {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+
+        .dir-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+
+        .dir-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed #777;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 100px;
+        }
         .dir-box.success { border-color: #28a745; background: rgba(40, 167, 69, 0.15); border-style: solid; }
-        .btn-select-dir { background: #333; color: white; border: 1px solid #555; padding: 6px 15px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 8px; }
 
-        /* ⭐ BỐ CỤC NHÃN VÀ Ô ĐUÔI FILE BÊN PHẢI */
+        .btn-select-dir {
+            background: #333; color: white; border: 1px solid #555;
+            padding: 6px 15px; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; margin-bottom: 8px;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-select-dir:hover { background: #555; transform: translateY(-2px); border-color: #aaa; }
+
+        .dir-status { font-size: 0.85rem; word-break: break-all; min-height: 20px; text-align: center; }
+        .text-empty { color: #ff6b6b; font-style: italic; opacity: 0.8; }
+        .text-ok { color: #51ff7d; font-weight: bold; }
+
+        /* ⭐ ĐIỀU CHỈNH TIÊU ĐỀ VÀ Ô ĐỔI ĐUÔI FILE */
         .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .label-row label { margin-bottom: 0; font-weight: 700; color: var(--highlight-color); font-size: 0.95rem; }
-        .ext-input-wrap { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+        .ext-input-wrap { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); padding: 4px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
         .ext-input-wrap span { font-size: 0.75rem; color: #ccc; font-weight: 700; }
-        .ext-box { background: transparent; border: none; color: var(--accent-gold); font-weight: 800; width: 50px; outline: none; text-align: center; font-size: 0.9rem; text-transform: uppercase; }
+        .ext-box { background: transparent; border: none; color: var(--accent-gold); font-weight: 800; width: 60px; outline: none; text-align: center; font-size: 0.9rem; text-transform: uppercase; }
 
-        textarea { background: rgba(0,0,0,0.4); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%; padding: 12px; border-radius: 10px; resize: vertical; font-family: 'Consolas', monospace; min-height: 120px; }
+        textarea { 
+            background: rgba(0,0,0,0.4); color: #fff; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            width: 100%; padding: 12px; border-radius: 10px; 
+            resize: vertical; font-family: 'Consolas', monospace;
+            transition: border 0.3s; min-height: 120px; 
+        }
         textarea:focus { outline: none; border-color: var(--highlight-color); background: rgba(0,0,0,0.6); }
 
-        #btnCopy { background: #555; color: #aaa; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: 800; margin-top: 20px; transition: 0.3s; cursor: not-allowed; }
-        #btnCopy.active { background: linear-gradient(135deg, #0d6efd, #0043a8); color: white; cursor: pointer; box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4); }
-        #btnCopy.locked { background: #94a3b8 !important; color: #fff !important; cursor: not-allowed !important; }
+        #btnCopy { 
+            background: #555; color: #aaa; border: none; padding: 12px; 
+            width: 100%; border-radius: 10px; font-size: 1.1rem; font-weight: 800; 
+            margin-top: 20px; transition: 0.3s; cursor: not-allowed;
+        }
+        #btnCopy.active {
+            background: linear-gradient(135deg, #0d6efd, #0043a8); color: white; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
+        }
+        #btnCopy.locked { background: #94a3b8 !important; color: #fff !important; cursor: not-allowed !important; box-shadow: none !important; }
 
-        #statusLog { margin-top: 25px; background: #0f0f0f; padding: 15px; border-radius: 8px; border: 1px solid #333; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #ccc; height: 250px; overflow-y: auto; }
+        #statusLog {
+            margin-top: 25px; background: #0f0f0f; padding: 15px; 
+            border-radius: 8px; border: 1px solid #333; 
+            font-family: 'Consolas', monospace; font-size: 0.85rem; color: #ccc;
+            height: 250px; overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            display: block; 
+        }
         .log-success { color: #51ff7d; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
         .log-error { color: #ff6b6b; border-bottom: 1px solid #222; display: block; padding: 2px 0; }
+        .log-info { color: #4dabf7; margin-bottom: 10px; display: block; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .copy-container { margin: 15px; padding: 20px; }
+            .dir-grid { grid-template-columns: 1fr; gap: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -74,12 +187,17 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand" href="admin.html"><i class="fas fa-copy me-2"></i>Sao Chép Ảnh</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link active">Sao Chép</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link active"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
+                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
                 </ul>
+                
                 <div id="authControl" style="display: none;" class="align-items-center gap-3">
                     <div class="user-status-box">
                         <div class="user-avatar-circle" id="userAvatarLetter">A</div>
@@ -91,7 +209,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger rounded-pill px-3"><i class="fas fa-sign-out-alt"></i></a>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold rounded-pill px-3"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -103,36 +221,60 @@
             
             <div class="dir-grid">
                 <div class="dir-box" id="boxSource">
-                    <button class="btn-select-dir" onclick="handleSelectSource()"><i class="fas fa-folder-open"></i> Chọn Nguồn</button>
-                    <div id="lblSource" class="dir-status">Chưa chọn nguồn</div>
+                    <button class="btn-select-dir" onclick="handleSelectSource()">
+                        <i class="fas fa-folder-open"></i> Chọn Nguồn
+                    </button>
+                    <div id="lblSource" class="dir-status text-empty">Chưa chọn thư mục nguồn</div>
                 </div>
                 <div class="dir-box" id="boxDest">
-                    <button class="btn-select-dir" onclick="handleSelectDest()"><i class="fas fa-folder-plus"></i> Chọn Đích</button>
-                    <div id="lblDest" class="dir-status">Chưa chọn đích</div>
+                    <button class="btn-select-dir" onclick="handleSelectDest()">
+                        <i class="fas fa-folder-plus"></i> Chọn Đích
+                    </button>
+                    <div id="lblDest" class="dir-status text-empty">Chưa chọn thư mục đích</div>
                 </div>
             </div>
 
             <div class="label-row">
-                <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file:</label>
+                <label for="txtFiles"><i class="fas fa-list-ul me-2"></i>Danh sách tên file cần chép:</label>
                 <div class="ext-input-wrap">
                     <span>Đổi sang đuôi:</span>
-                    <input type="text" id="targetExt" class="ext-box" placeholder="JPG" value="JPG">
+                    <input type="text" id="targetExt" class="ext-box" placeholder="JPG" maxlength="4" oninput="autoChangeExtension()">
                 </div>
             </div>
-            
-            <textarea id="txtFiles" rows="5" placeholder="Dán tên file vào đây (Ví dụ: PHUOC_3125.JPG...)"></textarea>
+
+            <textarea id="txtFiles" rows="5" placeholder="Ví dụ: IMG_001.JPG, DSC_0555.CR3..."></textarea>
 
             <button id="btnCopy" onclick="runCopyProcess()" disabled>
                 <i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP
             </button>
 
             <div id="statusLog">
-                <div class="log-info">>> Sẵn sàng. Chọn thư mục và dán tên file...</div>
+                <div class="log-info">>> Sẵn sàng. Vui lòng chọn thư mục và nhập tên file...</div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- LOGIC ĐỔI ĐUÔI TRỰC TIẾP ---
+        function autoChangeExtension() {
+            const textarea = document.getElementById('txtFiles');
+            const targetExt = document.getElementById('targetExt').value.trim().toUpperCase();
+            if (!targetExt) return;
+
+            const lines = textarea.value.split(/\n/);
+            const newLines = lines.map(line => {
+                if (!line.trim()) return line;
+                // Tìm vị trí dấu chấm cuối cùng để thay thế đuôi
+                const lastDotIndex = line.lastIndexOf('.');
+                if (lastDotIndex !== -1) {
+                    return line.substring(0, lastDotIndex + 1) + targetExt;
+                }
+                return line; // Nếu không có dấu chấm thì không đổi
+            });
+            textarea.value = newLines.join('\n');
+        }
+
+        // --- AUTH LOGIC ---
         const rawExpiry = localStorage.getItem('admin_expiry');
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
         let isExpired = false;
@@ -155,20 +297,22 @@
                 isExpired = false;
                 badge.innerText = "ACTIVE";
                 badge.style.backgroundColor = "#198754";
-                expiryEl.innerText = `(Hạn: ${new Date(expiryTime).toLocaleDateString('vi-VN')})`;
+                const date = new Date(expiryTime);
+                expiryEl.innerText = `(Hạn: ${date.toLocaleDateString('vi-VN')})`;
             }
             document.getElementById('userNameDisplay').innerText = localStorage.getItem('admin_name') || 'Admin';
             document.getElementById('userAvatarLetter').innerText = (localStorage.getItem('admin_name') || 'A').charAt(0).toUpperCase();
             document.getElementById('authControl').style.display = 'flex';
         }
 
-        let dirHandleSource = null, dirHandleDest = null;
+        let dirHandleSource = null;
+        let dirHandleDest = null;
 
         async function handleSelectSource() {
             if (isExpired) return;
             try {
                 dirHandleSource = await window.showDirectoryPicker();
-                document.getElementById('lblSource').innerHTML = `<span style="color:#51ff7d">${dirHandleSource.name}</span>`;
+                document.getElementById('lblSource').innerHTML = `<span class="text-ok">${dirHandleSource.name}</span>`;
                 document.getElementById('boxSource').classList.add('success');
                 checkReady();
             } catch (err) {}
@@ -178,7 +322,7 @@
             if (isExpired) return;
             try {
                 dirHandleDest = await window.showDirectoryPicker({ mode: 'readwrite' });
-                document.getElementById('lblDest').innerHTML = `<span style="color:#51ff7d">${dirHandleDest.name}</span>`;
+                document.getElementById('lblDest').innerHTML = `<span class="text-ok">${dirHandleDest.name}</span>`;
                 document.getElementById('boxDest').classList.add('success');
                 checkReady();
             } catch (err) {}
@@ -195,37 +339,32 @@
         async function runCopyProcess() {
             if (isExpired) return;
             const txtFiles = document.getElementById('txtFiles').value;
-            const targetExt = document.getElementById('targetExt').value.trim().toUpperCase().replace('.', ''); //
             const btn = document.getElementById('btnCopy');
             if (!txtFiles.trim()) return;
 
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
             btn.disabled = true;
+            btn.classList.remove('active');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
 
             let success = 0;
             for (let i = 0; i < fileList.length; i++) {
-                let originalName = fileList[i];
-                
-                // ⭐ LOGIC TỰ ĐỘNG ĐỔI ĐUÔI TRONG KHI XỬ LÝ
-                let fileNameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.')) || originalName;
-                let finalFileName = targetExt ? `${fileNameWithoutExt}.${targetExt}` : originalName;
-
                 try {
-                    const fileHandle = await dirHandleSource.getFileHandle(finalFileName);
+                    const fileHandle = await dirHandleSource.getFileHandle(fileList[i]);
                     const fileData = await fileHandle.getFile();
-                    const newFileHandle = await dirHandleDest.getFileHandle(finalFileName, { create: true });
+                    const newFileHandle = await dirHandleDest.getFileHandle(fileList[i], { create: true });
                     const writable = await newFileHandle.createWritable();
                     await writable.write(fileData);
                     await writable.close();
                     success++;
-                    log(`✅ OK: ${finalFileName}`, 'success');
+                    log(`✅ OK: ${fileList[i]}`, 'success');
                 } catch (e) {
-                    log(`❌ LỖI: Không tìm thấy ${finalFileName}`, 'error');
+                    log(`❌ Lỗi: ${fileList[i]}`, 'error');
                 }
             }
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-bolt me-2"></i> BẮT ĐẦU SAO CHÉP';
+            btn.classList.add('active');
+            btn.innerHTML = 'BẮT ĐẦU SAO CHÉP';
             alert(`Hoàn tất sao chép ${success} file.`);
         }
 
