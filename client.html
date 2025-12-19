@@ -8,57 +8,73 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-green: #147a30; --accent-gold: #f0c300; --bg-dark: #121212; --text-light: #f0f0f0; --selected-border: #0d6efd; --header-height: 60px; --footer-height: 75px; }
-        body { background-color: var(--bg-dark); color: var(--text-light); font-family: 'Nunito', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; user-select: none; margin: 0; }
-        .navbar { height: var(--header-height); background: var(--primary-green); box-shadow: 0 2px 10px rgba(0,0,0,0.5); flex-shrink: 0; z-index: 3000; padding: 0 10px; display: flex; justify-content: space-between; align-items: center; }
-        .album-title { font-weight: 800; font-size: 1rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-        .view-switcher { background: rgba(0,0,0,0.2); border-radius: 50px; padding: 3px; display: flex; }
-        .view-btn { border: none; background: transparent; color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; }
-        .view-btn.active { background: var(--accent-gold); color: #000; }
+        :root { --primary-green: #147a30; --accent-gold: #f0c300; --bg-dark: #121212; --text-light: #f0f0f0; --selected-border: #0d6efd; --header-height: 60px; --footer-height: 80px; }
+        body { background-color: var(--bg-dark); color: var(--text-light); font-family: 'Nunito', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
+        
+        /* HEADER */
+        .navbar { height: var(--header-height); background: var(--primary-green); padding: 0 12px; display: flex; justify-content: space-between; align-items: center; z-index: 3000; }
+        .album-title { font-weight: 800; font-size: 0.95rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+        /* MAIN CONTENT */
         .main-container { flex: 1; position: relative; overflow: hidden; }
-        #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; align-content: start; padding-bottom: 90px; }
+        #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
         @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 1200px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
-        .grid-item { position: relative; width: 100%; padding-bottom: 100%; background: #2a2a2a; border-radius: 8px; overflow: hidden; border: 3px solid transparent; }
+        
+        /* GRID ITEM */
+        .grid-item { position: relative; width: 100%; padding-bottom: 100%; background: #222; border-radius: 12px; overflow: hidden; border: 3px solid transparent; transition: border 0.2s; }
         .grid-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-        .grid-item.focused { border-color: var(--accent-gold); z-index: 2; }
         .grid-item.selected { border-color: var(--selected-border); }
         .grid-item.selected img { opacity: 0.6; }
-        .grid-dot { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; background: var(--accent-gold); color: #000; border-radius: 50%; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 5; }
+        .grid-dot { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; background: var(--accent-gold); color: #000; border-radius: 50%; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); z-index: 5; }
+
+        /* VIEWER MODE */
         #photoViewer { position: absolute; inset: 0; display: none; flex-direction: column; background: #000; z-index: 100; }
-        .stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; z-index: 1; }
-        .strip { height: 90px; display: flex; align-items: center; padding: 10px; gap: 8px; overflow-x: auto; background: #111; border-top: 1px solid #333; }
-        .th { width: 65px; height: 65px; flex-shrink: 0; border-radius: 6px; overflow: hidden; border: 2px solid transparent; opacity: 0.5; position: relative; }
+        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        /* ⭐ THUMBNAIL CHO ĐIỆN THOẠI */
+        .strip { height: 100px; display: flex; align-items: center; padding: 10px; gap: 10px; overflow-x: auto; background: #111; border-top: 1px solid #333; scroll-behavior: smooth; }
+        .th { width: 75px; height: 75px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; opacity: 0.4; position: relative; transition: 0.3s; }
         .th img { width: 100%; height: 100%; object-fit: cover; }
-        .th.act { opacity: 1; border-color: var(--accent-gold); transform: scale(1.05); }
-        .th.sel { border-color: var(--selected-border); opacity: 1; }
-        .bottom-bar { height: var(--footer-height); background: #1a1a1a; border-top: 1px solid #333; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; z-index: 4000; }
+        .th.act { opacity: 1; border-color: var(--accent-gold); border-width: 3px; transform: scale(1.05); }
+        .th.sel { border-color: var(--selected-border); opacity: 0.9; }
+        .th .grid-dot { width: 18px; height: 18px; font-size: 10px; top: 3px; right: 3px; }
+
+        /* BOTTOM BAR */
+        .bottom-bar { height: var(--footer-height); background: #1a1a1a; border-top: 1px solid #333; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; padding-bottom: env(safe-area-inset-bottom); }
+        .btn-select-fixed { background: var(--selected-border); color: white; border: none; padding: 10px 25px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3); }
+        .btn-select-fixed.off { background: #333; color: #aaa; box-shadow: none; }
+
         #loadOverlay { position: fixed; inset: 0; background: #121212; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent-gold); }
     </style>
 </head>
 <body>
-    <div id="loadOverlay"><div class="spinner-border text-warning mb-3"></div><b>Đang tải thư viện...</b></div>
-    <nav class="navbar">
-        <div class="album-title"><i class="fas fa-images me-2 text-warning"></i><span id="albumTitleText">Thư Viện</span></div>
-        <div class="view-switcher">
-            <button class="view-btn active" id="btnGrid" onclick="setView('grid')">Lưới</button>
-            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">Chi Tiết</button>
+    <div id="loadOverlay"><div class="spinner-border text-warning mb-3"></div><b>Đang chuẩn bị...</b></div>
+
+    <nav class="navbar text-white">
+        <div class="album-title"><span id="titleText">Đang tải...</span></div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="setView('grid')" id="navGrid" style="display:none">Lưới</button>
+            <button class="btn btn-sm btn-warning rounded-pill px-3 fw-bold" onclick="setView('viewer')" id="navViewer">Xem Ảnh</button>
         </div>
     </nav>
+
     <div class="main-container">
         <div id="photoGrid"></div>
         <div id="photoViewer">
-            <div class="btn-close-viewer" style="position:absolute; top:15px; right:15px; z-index:300; background:rgba(0,0,0,0.5); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="setView('grid')"><i class="fas fa-times text-white"></i></div>
-            <div class="stage"><img id="mainImg" src=""><canvas id="drawCanvas" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); pointer-events:none;"></canvas></div>
+            <div class="stage"><img id="mainImg" src=""></div>
             <div class="strip" id="strip"></div>
         </div>
     </div>
+
     <div class="bottom-bar">
-        <div style="max-width:50%"><div id="pName" style="color:var(--accent-gold); font-weight:700; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">...</div><div id="pCount" style="font-size:0.8rem; color:#aaa;">0 / 0</div></div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-dark border-secondary text-light px-3" id="btnSel" onclick="togSel()" style="border-radius:10px; font-weight:700;">Chọn</button>
-            <button class="btn btn-sm btn-success px-3" onclick="finalCommit()" style="border-radius:10px; font-weight:700;">Gửi (<span id="selNum">0</span>)</button>
+        <div style="max-width:40%">
+            <div id="pName" style="color:var(--accent-gold); font-weight:800; font-size:0.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">...</div>
+            <div id="pCount" style="font-size:0.75rem; color:#888;">0/0</div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button id="btnSel" class="btn-select-fixed off" onclick="togSel()">Chọn</button>
+            <button class="btn btn-success rounded-pill fw-bold px-3" onclick="finalCommit()"><i class="fas fa-paper-plane"></i> <span id="selCount">0</span></button>
         </div>
     </div>
 
@@ -66,72 +82,133 @@
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos';
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
+        
         let photos=[], cur=0, currentView='grid', selectedPhotoIds = [];
-        const urlParams = new URLSearchParams(window.location.search), fid = urlParams.get('id');
+        const urlParams = new URLSearchParams(window.location.search), fid = urlParams.get('id'), mode = urlParams.get('mode');
 
         function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
 
-        function setView(view) {
-            currentView = view;
-            document.getElementById('photoGrid').style.display = view === 'grid' ? 'grid' : 'none';
-            document.getElementById('photoViewer').style.display = view === 'viewer' ? 'flex' : 'none';
-            document.getElementById('btnGrid').classList.toggle('active', view === 'grid');
-            document.getElementById('btnViewer').classList.toggle('active', view === 'viewer');
-            if(view === 'viewer') { renderStrip(); show(cur); } else { renderGrid(); }
+        // ⭐ CẢI TIẾN: CHỈ CẬP NHẬT GIAO DIỆN TẤM ẢNH ĐANG CHỌN (KHÔNG VẼ LẠI TOÀN BỘ)
+        function updateSingleItemUI(index) {
+            const p = photos[index];
+            const isSel = selectedPhotoIds.includes(p.id);
+            const selIdx = selectedPhotoIds.indexOf(p.id) + 1;
+            
+            // Cập nhật ở Lưới
+            const gridItem = document.querySelector(`.grid-item[data-id="${p.id}"]`);
+            if (gridItem) {
+                gridItem.classList.toggle('selected', isSel);
+                let dot = gridItem.querySelector('.grid-dot');
+                if (isSel) {
+                    if (!dot) gridItem.insertAdjacentHTML('beforeend', `<div class="grid-dot">${selIdx}</div>`);
+                    else dot.innerText = selIdx;
+                } else if (dot) dot.remove();
+            }
+
+            // Cập nhật ở Dải ảnh (Viewer)
+            const stripItem = document.querySelector(`.th[data-id="${p.id}"]`);
+            if (stripItem) {
+                stripItem.classList.toggle('sel', isSel);
+                let dot = stripItem.querySelector('.grid-dot');
+                if (isSel) {
+                    if (!dot) stripItem.insertAdjacentHTML('beforeend', `<div class="grid-dot">${selIdx}</div>`);
+                    else dot.innerText = selIdx;
+                } else if (dot) dot.remove();
+            }
+            
+            // Cập nhật Bottom Bar
+            const btn = document.getElementById('btnSel');
+            btn.innerText = isSel ? 'Đã Chọn' : 'Chọn';
+            btn.className = `btn-select-fixed ${isSel ? '' : 'off'}`;
+            document.getElementById('selCount').innerText = selectedPhotoIds.length;
         }
 
-        function renderGrid() {
+        function setView(v) {
+            currentView = v;
+            document.getElementById('photoGrid').style.display = v==='grid' ? 'grid' : 'none';
+            document.getElementById('photoViewer').style.display = v==='viewer' ? 'flex' : 'none';
+            document.getElementById('navGrid').style.display = v==='viewer' ? 'block' : 'none';
+            document.getElementById('navViewer').style.display = v==='grid' ? 'block' : 'none';
+            if (v==='viewer') { renderStripOnce(); show(cur); }
+        }
+
+        async function init() {
+            try {
+                if(!fid) throw new Error("ID Album trống!");
+                const res = await fetch(`${URL_GET}?id=${fid}`);
+                const data = await res.json();
+                const allPhotos = Array.isArray(data) ? data : (data.photos || []);
+                
+                // Lọc dữ liệu chuẩn SQL (TRUE/FALSE/1)
+                const dbSel = allPhotos.filter(p => String(p.selected).toUpperCase()==='TRUE' || p.selected===1 || p.selected===true).map(p=>p.id);
+
+                if (mode === 'selected') {
+                    photos = allPhotos.filter(p => dbSel.includes(p.id));
+                    selectedPhotoIds = dbSel;
+                    document.getElementById('titleText').innerText = "Ảnh Đã Chọn (" + photos.length + ")";
+                } else {
+                    const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
+                    selectedPhotoIds = local ? JSON.parse(local) : dbSel;
+                    photos = allPhotos;
+                    document.getElementById('titleText').innerText = "Thư Viện (" + photos.length + ")";
+                }
+
+                if (!photos.length) throw new Error(mode==='selected' ? "Chưa chọn ảnh nào!" : "Album rỗng.");
+                
+                renderFullGrid();
+                document.getElementById('loadOverlay').style.display = 'none';
+            } catch(e) { document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center p-4"><b>LỖI:</b><br>${e.message}</div>`; }
+        }
+
+        function renderFullGrid() {
             const grid = document.getElementById('photoGrid');
-            grid.innerHTML = '';
-            photos.forEach((p, i) => {
-                const isSel = selectedPhotoIds.includes(p.id);
-                const item = document.createElement('div');
-                item.className = `grid-item ${isSel ? 'selected' : ''} ${i === cur ? 'focused' : ''}`;
-                item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">${isSel ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id)+1}</div>` : ''}`;
-                item.onclick = () => { cur = i; renderGrid(); updateInfo(); };
-                item.ondblclick = () => { cur = i; setView('viewer'); };
-                grid.appendChild(item);
-            });
-            updateInfo();
+            grid.innerHTML = photos.map((p, i) => `
+                <div class="grid-item ${selectedPhotoIds.includes(p.id) ? 'selected' : ''}" data-id="${p.id}" onclick="handleGridClick(${i})">
+                    <img src="${getLink(p.id, 's400')}" loading="lazy">
+                    ${selectedPhotoIds.includes(p.id) ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id)+1}</div>` : ''}
+                </div>
+            `).join('');
+            updateInfoOnly();
         }
 
-        function renderStrip() {
+        function renderStripOnce() {
             const strip = document.getElementById('strip');
-            strip.innerHTML = '';
-            photos.forEach((p, i) => {
-                const isSel = selectedPhotoIds.includes(p.id);
-                const th = document.createElement('div');
-                th.className = `th ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(p.id, 's150')}">${isSel ? `<div class="grid-dot" style="width:18px; height:18px; font-size:9px;">${selectedPhotoIds.indexOf(p.id)+1}</div>` : ''}`;
-                th.onclick = () => show(i);
-                strip.appendChild(th);
-            });
-            if(strip.children[cur]) strip.children[cur].scrollIntoView({ behavior:'smooth', inline:'center' });
+            strip.innerHTML = photos.map((p, i) => `
+                <div class="th ${i===cur?'act':''} ${selectedPhotoIds.includes(p.id)?'sel':''}" data-id="${p.id}" onclick="show(${i})">
+                    <img src="${getLink(p.id, 's150')}">
+                    ${selectedPhotoIds.includes(p.id) ? `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id)+1}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function handleGridClick(i) {
+            cur = i;
+            document.querySelectorAll('.grid-item').forEach((el, idx) => el.classList.toggle('focused', idx===i));
+            updateInfoOnly();
         }
 
         function show(i) {
-            if (i < 0 || i >= photos.length) return; cur = i;
+            cur = i;
             const mainImg = document.getElementById('mainImg');
-            mainImg.src = getLink(photos[i].id, 's100'); // Load preview cực nhanh
+            mainImg.src = getLink(photos[i].id, 's100');
             const hd = new Image(); hd.src = getLink(photos[i].id, 's1600');
             hd.onload = () => { mainImg.src = hd.src; };
-            
-            // Cập nhật trạng thái Act cho thumbnail
-            document.querySelectorAll('.th').forEach((t, idx) => t.classList.toggle('act', idx === cur));
-            const activeTh = document.querySelector('.th.act');
-            if(activeTh) activeTh.scrollIntoView({ behavior:'smooth', inline:'center' });
-            updateInfo();
+            document.querySelectorAll('.th').forEach((t, idx) => {
+                t.classList.toggle('act', idx === i);
+                if (idx === i) t.scrollIntoView({ inline:'center', behavior:'smooth' });
+            });
+            updateInfoOnly();
         }
 
-        function updateInfo() {
-            if (!photos[cur]) return;
-            const p = photos[cur], isSel = selectedPhotoIds.includes(p.id);
+        function updateInfoOnly() {
+            const p = photos[cur];
             document.getElementById('pName').innerText = p.name || `Photo_${cur+1}`;
             document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
-            document.getElementById('selNum').innerText = selectedPhotoIds.length;
+            document.getElementById('selCount').innerText = selectedPhotoIds.length;
+            const isSel = selectedPhotoIds.includes(p.id);
             const btn = document.getElementById('btnSel');
-            btn.innerHTML = isSel ? `<i class="fas fa-check-circle me-1"></i> Đã Chọn` : `Chọn`;
-            btn.className = `btn btn-sm ${isSel ? 'btn-primary' : 'btn-dark border-secondary text-light'} px-3`;
+            btn.innerText = isSel ? 'Đã Chọn' : 'Chọn';
+            btn.className = `btn-select-fixed ${isSel ? '' : 'off'}`;
         }
 
         function togSel() {
@@ -139,41 +216,12 @@
             if (selectedPhotoIds.includes(id)) selectedPhotoIds = selectedPhotoIds.filter(x => x !== id);
             else selectedPhotoIds.push(id);
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedPhotoIds));
-            currentView === 'grid' ? renderGrid() : renderStrip();
+            updateSingleItemUI(cur); // ⭐ CHỈ CẬP NHẬT 1 ITEM - KHÔNG LAG
             fetch(URL_SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:id, selected:selectedPhotoIds.includes(id)}) });
-            updateInfo();
-        }
-
-        // ⭐ SỬA LỖI LỌC DỮ LIỆU CHUẨN SQL BOOLEAN
-        async function init() {
-            try {
-                if(!fid) throw new Error("ID Album không hợp lệ.");
-                const res = await fetch(`${URL_GET}?id=${fid}`);
-                const data = await res.json();
-                const allPhotos = Array.isArray(data) ? data : (data.photos || []);
-                const mode = urlParams.get('mode');
-
-                // Ép kiểu so sánh để bắt được TRUE của Database
-                const dbSelected = allPhotos.filter(p => String(p.selected).toUpperCase() === 'TRUE' || p.selected === 1 || p.selected === true).map(p => p.id);
-
-                if (mode === 'selected') {
-                    photos = allPhotos.filter(p => dbSelected.includes(p.id));
-                    selectedPhotoIds = dbSelected;
-                    document.getElementById('albumTitleText').innerText = "Ảnh Đã Chọn";
-                } else {
-                    const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
-                    selectedPhotoIds = local ? JSON.parse(local) : dbSelected;
-                    photos = allPhotos;
-                }
-
-                if (!photos.length) throw new Error(mode === 'selected' ? "Chưa có ảnh nào được chọn." : "Album trống.");
-                document.getElementById('loadOverlay').style.display = 'none';
-                renderGrid();
-            } catch(e) { document.getElementById('loadOverlay').innerHTML = `<div class="text-danger p-4 text-center"><b>LỖI:</b><br>${e.message}</div>`; }
         }
 
         async function finalCommit() {
-            if(confirm(`Gửi ${selectedPhotoIds.length} ảnh này?`)) {
+            if (confirm(`Gửi ${selectedPhotoIds.length} ảnh này?`)) {
                 await fetch(URL_DONE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:fid, count:selectedPhotoIds.length}) });
                 alert("Đã gửi thành công!");
             }
