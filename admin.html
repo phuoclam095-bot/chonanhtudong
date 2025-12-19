@@ -11,39 +11,42 @@
         :root { --primary-green: #147a30; --accent-color: #51ff7d; --bg-dark: #1a1a1a; }
         body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background-color: var(--bg-dark); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 50px 50px; background-position: 0 0, 25px 25px; min-height: 100vh; padding-top: 75px; overflow-x: hidden; }
         
-        /* NAVBAR & TAB NGANG (PHONG CÁCH COPY_LOCAL) */
+        /* NAVBAR PHONG CÁCH LOCAL COPY */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 2000; border-bottom: 1.5px solid var(--accent-color); }
-        .navbar-brand { font-weight: 800; font-size: 1.2rem; color: white !important; text-transform: uppercase; }
+        .navbar-brand { font-weight: 800; font-size: 1.1rem; color: white !important; text-transform: uppercase; }
         
-        /* Nút 3 gạch to rõ cho Mobile */
-        .navbar-toggler { border: 2px solid white !important; padding: 6px 10px; border-radius: 10px; }
-        .navbar-toggler-icon { width: 30px; height: 30px; filter: brightness(0) invert(1); }
+        /* Menu 3 gạch to cho Mobile */
+        .navbar-toggler { border: 1.5px solid white !important; padding: 5px 8px; margin-right: 5px; }
+        .navbar-toggler-icon { width: 25px; height: 25px; filter: brightness(0) invert(1); }
 
-        .navbar-nav { flex-direction: row !important; flex-wrap: wrap; gap: 5px; }
-        .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 800; font-size: 0.8rem; padding: 8px 12px !important; transition: 0.3s; text-transform: uppercase; position: relative; }
+        /* TABS NGANG (GIỐNG COPY_LOCAL) */
+        .navbar-nav { flex-direction: row !important; gap: 5px; }
+        .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 800; font-size: 0.75rem; padding: 8px 12px !important; transition: 0.3s; text-transform: uppercase; position: relative; }
         .nav-link.active { color: var(--accent-color) !important; }
-        .nav-link.active::after { content: ""; position: absolute; bottom: 2px; left: 15%; width: 70%; height: 3px; background: var(--accent-color); border-radius: 10px; }
+        .nav-link.active::after { content: ""; position: absolute; bottom: 0; left: 15%; width: 70%; height: 3px; background: var(--accent-color); border-radius: 10px; }
 
-        /* HEADER USER INFO (PHỤC HỒI AVATAR + HẠN + LOGOUT) */
-        .header-profile-box { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); padding: 5px 12px; border-radius: 50px; border: 1.5px solid var(--accent-color); }
-        .avatar-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent-color); overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        /* ⭐ USER INFO BÊN PHẢI (SYNC COPY_LOCAL) */
+        .user-right-box { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); margin-left: auto; }
+        .avatar-circle { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent-color); overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .user-info-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
-        .u-name { color: white; font-weight: 800; font-size: 0.75rem; white-space: nowrap; max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
-        .u-expiry { color: var(--accent-color); font-size: 0.65rem; font-weight: 800; }
-        .btn-logout-icon { color: #ff5e57; background: none; border: none; font-size: 1rem; padding: 0 4px; transition: 0.3s; }
+        .user-meta { display: flex; flex-direction: column; line-height: 1; text-align: left; }
+        .u-name { color: white; font-weight: 900; font-size: 0.75rem; white-space: nowrap; max-width: 70px; overflow: hidden; text-overflow: ellipsis; }
+        .u-expiry { color: var(--accent-color); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
+        .btn-logout-head { color: #ff5e57; background: none; border: none; font-size: 1rem; padding: 0 2px; }
 
         .main-container { padding: 15px; display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 120px); }
         .create-card { background: #fff; width: 100%; max-width: 450px; border-radius: 25px; padding: 30px 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center; }
-        h2 { font-weight: 900; color: var(--primary-green); font-size: 1.4rem; margin-bottom: 20px; text-transform: uppercase; }
+        h2 { font-weight: 900; color: var(--primary-green); font-size: 1.3rem; margin-bottom: 20px; text-transform: uppercase; }
+        .heartbeat { color: #d63031; animation: heartbeat-anim 1.5s infinite; display: inline-block; font-weight: 900; }
+        @keyframes heartbeat-anim { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        input[type="text"] { width: 100%; padding: 14px; border: 2.5px solid #f1f5f9; border-radius: 18px; font-weight: 800; text-align: center; font-size: 0.95rem; margin-bottom: 15px; transition: 0.3s; }
+        input[type="text"] { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 18px; font-weight: 800; text-align: center; font-size: 0.95rem; margin-bottom: 15px; }
         input[type="text"]:focus { border-color: var(--primary-green) !important; outline: none; }
 
-        /* KẾT QUẢ TÊN ALBUM NHỎ */
+        /* PREVIEW BOX TÊN ALBUM NHỎ */
         .preview-box { border: 2px dashed var(--primary-green); background: #f0fff4; padding: 15px; border-radius: 20px; margin: 15px 0; display: none; text-align: left; }
         #resFolderName { font-size: 1rem; font-weight: 900; color: #111; display: block; margin-top: 4px; }
-        #finalLinkBox { background: #000; padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; margin-top: 10px; }
+        #finalLinkBox { background: #000; padding: 8px 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; margin-top: 10px; }
         #finalLinkBox a { color: var(--accent-color); font-size: 0.7rem; text-decoration: underline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%; font-family: monospace; }
         .btn-copy-sm { background: var(--primary-green); color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; }
 
@@ -57,16 +60,15 @@
         input:checked + .slider:before { transform: translateX(21px); }
         
         .btn-create { background: var(--primary-green); color: white; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.2); font-size: 1rem; }
-        .btn-locked { background: #94a3b8 !important; pointer-events: none; opacity: 0.7; }
 
-        /* FIX CHAT AI MOBILE 100% */
+        /* CHAT AI WIDGET MOBILE FIX */
         #chat-widget-container { position: fixed; bottom: 20px; right: 15px; z-index: 3000; display: flex; flex-direction: column; align-items: flex-end; }
         #chat-toggle-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #147a30, #51ff7d); color: white; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; position: relative; z-index: 3001; }
         #chat-greeting-bubble { visibility: hidden; opacity: 0; position: absolute; bottom: 15px; right: 70px; background: white; padding: 10px 15px; border-radius: 15px; border-bottom-right-radius: 2px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 0.8rem; font-weight: 800; border: 2px solid var(--accent-color); white-space: nowrap; transition: 0.5s; z-index: 3000; }
         #chat-greeting-bubble.show { visibility: visible; opacity: 1; }
         #chat-box { display: none; position: absolute; bottom: 75px; right: 0; width: 310px; height: 400px; background: white; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); overflow: hidden; flex-direction: column; border: 1px solid #eee; z-index: 3002; }
-        .chat-header { background: linear-gradient(to right, #147a30, #0e5a22); color: white; padding: 12px 15px; font-weight: 800; font-size: 0.85rem; display: flex; justify-content: space-between; }
-        #chat-messages { flex: 1; overflow-y: auto; padding: 15px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; }
+        .chat-header { background: linear-gradient(to right, #147a30, #0e5a22); color: white; padding: 12px 15px; font-weight: 800; font-size: 0.8rem; display: flex; justify-content: space-between; }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; }
         .message { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-weight: 600; }
         .bot-msg { background: white; border: 1px solid #e2e8f0; align-self: flex-start; }
         .user-msg { background: var(--primary-green); color: white; align-self: flex-end; }
@@ -75,11 +77,15 @@
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-3">
-            <a class="navbar-brand" href="admin.html">Studio LNP</a>
-            
-            <div id="userControl" style="display: none !important;" class="ms-auto d-flex align-items-center gap-2">
-                <div class="user-header-box">
+        <div class="container-fluid px-2">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <a class="navbar-brand d-none d-sm-block" href="admin.html">LNP</a>
+
+            <div id="userControl" style="display: none !important;" class="ms-auto d-flex align-items-center">
+                <div class="user-right-box">
                     <div class="avatar-circle" id="userAvatarPlaceholder"></div>
                     <div class="user-meta">
                         <span id="userNameDisplay" class="u-name">Admin</span>
@@ -88,27 +94,26 @@
                     <button onclick="logoutAdmin()" class="btn-logout-head"><i class="fas fa-power-off"></i></button>
                 </div>
             </div>
-
-            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             
             <div class="collapse navbar-collapse" id="navContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 py-2 py-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 py-2 py-lg-0 px-3">
                     <li class="nav-item"><a href="admin.html" class="nav-link active">TẠO ALBUM</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">QUẢN LÝ</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">SAO CHÉP</a></li>
                     <li class="nav-item"><a href="blog.html" class="nav-link">BLOG</a></li>
                     <li class="nav-item"><a href="payment.html" class="nav-link">GIA HẠN</a></li> 
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">LIÊN HỆ</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="main-container">
-        <div class="create-card shadow-lg">
+        <div class="create-card shadow">
             <h2>Tạo Album Mới</h2>
+            <div id="welcomeArea" class="welcome-msg" style="display: none; font-size: 0.8rem; color: #666; margin-bottom: 15px;">
+                Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
+                <div class="heartbeat mt-1">NHANH - GỌN - CHÍNH XÁC</div>
+            </div>
             <input type="text" id="driveLink" placeholder="Dán link hoặc ID thư mục Drive...">
             <div id="previewBox" class="preview-box">
                 <small class="fw-bold text-secondary text-uppercase">THÀNH CÔNG!</small>
@@ -121,11 +126,9 @@
             <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
             <div class="switch-group"><span>Chèn Watermark</span><label class="toggle-switch"><input type="checkbox" id="allowLogo"><span class="slider"></span></label></div>
             <div class="switch-group"><span>Giới hạn ảnh chọn</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
-            <button class="btn-create" id="btnCreate" onclick="handleCreateAlbum()">Bắt Đầu Tạo Ngay</button>
+            <button class="btn-create" id="btnCreate" onclick="handleCreateAlbum()">Tạo Album Ngay</button>
             <div id="centralLoginArea" class="mt-4" style="display: none;">
-                <button class="btn btn-light border rounded-pill px-4 fw-bold" onclick="startGoogleLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" class="me-2"> Đăng nhập Google
-                </button>
+                <button class="btn btn-light border rounded-pill px-4 fw-bold" onclick="startGoogleLogin()">Đăng nhập Google</button>
             </div>
         </div>
     </div>
@@ -181,17 +184,30 @@
 
             if (logged) {
                 document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('userAvatarPlaceholder').innerHTML = (avatar && avatar !== 'null' && avatar !== 'undefined') ? `<img src="${avatar}">` : `<b style="color:var(--accent-color)">${name.charAt(0)}</b>`;
-                
+                document.getElementById('userAvatarPlaceholder').innerHTML = (avatar && avatar !== 'null') ? `<img src="${avatar}">` : `<b style="color:var(--accent-color)">${name.charAt(0)}</b>`;
                 const canCreate = (localStorage.getItem('admin_status') === 'active' && expiry > Date.now());
                 document.getElementById('btnCreate').className = canCreate ? 'btn-create' : 'btn-create btn-locked';
                 document.getElementById('userExpiryText').innerText = `HẠN: ${new Date(expiry).toLocaleDateString('vi-VN')}`;
                 
-                // AI CHÀO THEO TÊN + TIẾNG
+                // AI CHÀO THEO TÊN + TIẾNG TING
                 const bubble = document.getElementById('chat-greeting-bubble');
                 bubble.innerText = `👋 Chào ${name.split(' ').pop()}, em giúp gì được ạ?`;
                 setTimeout(() => { bubble.classList.add('show'); playSound(); }, 3000);
             }
+        }
+
+        function checkAuthCallback() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('auth_status') === 'success') {
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', params.get('user_email'));
+                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name')));
+                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar')));
+                localStorage.setItem('admin_expiry', params.get('user_expiry'));
+                localStorage.setItem('admin_status', params.get('user_status'));
+                history.replaceState(null, null, window.location.pathname);
+            }
+            updateUI();
         }
 
         function toggleChat() { const box = document.getElementById('chat-box'); box.style.display = (box.style.display === 'flex') ? 'none' : 'flex'; document.getElementById('chat-greeting-bubble').classList.remove('show'); }
@@ -215,20 +231,7 @@
         }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
-        
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('auth_status') === 'success') {
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', params.get('user_email'));
-                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name')));
-                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar')));
-                localStorage.setItem('admin_expiry', params.get('user_expiry'));
-                localStorage.setItem('admin_status', params.get('user_status'));
-                history.replaceState(null, null, window.location.pathname);
-            }
-            updateUI();
-        };
+        window.onload = checkAuthCallback;
     </script>
 </body>
 </html>
