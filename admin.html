@@ -22,47 +22,65 @@
             color: #fff; min-height: 100vh; padding-top: 110px;
         }
 
-        /* HEADER & MARQUEE */
+        /* ================= HEADER & MARQUEE ================= */
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 50px; filter: drop-shadow(0 0 10px var(--primary)); }
         
-        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 42%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 10; display: block; }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 3px; animation: marquee-run 30s linear infinite; }
-        @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .marquee-wrapper { 
+            position: absolute; left: 50%; transform: translateX(-50%); 
+            width: 80%; overflow: hidden; white-space: nowrap; 
+            background: rgba(0, 235, 176, 0.05); padding: 12px 0; border-radius: 50px; 
+            border: 1px solid rgba(0, 235, 176, 0.15); z-index: 10; display: block; 
+        }
+        .marquee-text { 
+            display: inline-block; font-weight: 700; font-size: 0.85rem; 
+            text-transform: uppercase; color: var(--primary); letter-spacing: 3px; 
+            animation: marquee-run 25s linear infinite;
+        }
+        @keyframes marquee-run { 0% { transform: translateX(50%); } 100% { transform: translateX(-100%); } }
 
-        #adminNavLinks { display: none !important; }
+        #adminNavLinks { display: none !important; list-style: none; margin: 0; padding: 0; gap: 5px; }
         #adminNavLinks.show-tabs { display: flex !important; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 8px !important; cursor: pointer; transition: 0.3s; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; padding: 10px 10px !important; cursor: pointer; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
-        /* CARD STYLE */
+        /* ================= CARD STYLE ================= */
         .main-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .rainbow-border-wrapper { position: relative; padding: 3px; border-radius: 35px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; max-width: 620px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
         .create-card { background: #080d1a; border-radius: 32px; padding: 40px; }
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
-        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
+        .form-group { margin-bottom: 25px; }
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
-        
-        /* LOGIN & CURSOR */
-        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; cursor: pointer !important; display: inline-block; }
-        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; cursor: pointer !important; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
 
+        /* FIX BỐ CỤC 3 DÒNG */
+        .switch-container { margin-bottom: 25px; }
+        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
+        .toggle-switch { position: relative; width: 45px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(21px); }
+
+        /* BUTTONS & NOTICE */
+        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; cursor: pointer !important; display: inline-block; }
+        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; cursor: pointer !important; }
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-locked { background: #334155 !important; cursor: not-allowed !important; opacity: 0.6; color: #94a3b8 !important; }
 
-        /* PREVIEW BOX */
-        .preview-box { border: 2px dashed var(--primary); background: rgba(0, 235, 176, 0.05); padding: 20px; border-radius: 20px; margin-top: 25px; display: none; text-align: center; }
-        #finalLinkBox { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        #finalLinkBox a { color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1rem; }
+        .sync-highlight { color: var(--primary); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.7; transform: scale(1); } }
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        /* USER & NOTICE */
+        /* USER AREA */
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); }
         .status-tag { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
         .tag-active { background: var(--primary); color: #000; }
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
-        .notice-link { color: var(--primary) !important; text-decoration: none; font-weight: 900; border-bottom: 1px dashed var(--primary); }
 
         /* CHAT AI */
         .chat-support-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
@@ -77,19 +95,19 @@
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
             
-            <div id="marqueeContainer" class="marquee-wrapper d-none d-lg-block">
+            <div id="marqueeContainer" class="marquee-wrapper">
                 <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - Phát triển theo nhu cầu khách hàng</span>
             </div>
 
             <div id="adminNavLinks" class="mx-auto">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a href="admin.html" class="nav-link active">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li class="nav-item"><a href="feedback.html" class="nav-link">Góp Ý</a></li>
+                    <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
+                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li><a href="feedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
 
@@ -118,24 +136,19 @@
                 
                 <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.85rem; font-weight:700;"></div>
 
-                <div class="mb-4">
-                    <label class="label-white ms-2 text-uppercase fw-bold" style="font-size:0.75rem; color:#fff !important;">Link Thư Mục Google Drive</label>
+                <div class="form-group">
+                    <label class="label-white ms-2 text-uppercase fw-bold" style="font-size:0.75rem; color:var(--primary) !important; display:block; margin-bottom:10px;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây...">
                 </div>
 
-                <div id="previewBox" class="preview-box">
-                    <p style="margin-bottom: 8px; font-weight: bold; color:var(--primary)">Album: <span id="previewFolderName">...</span></p>
-                    <div id="finalLinkBox">
-                        <a href="#" id="previewClientLink" target="_blank">...</a>
-                        <button class="btn btn-sm btn-light fw-bold" onclick="copyFinalLink()">COPY</button>
-                    </div>
+                <div class="switch-container">
+                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
+                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
+                    <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 </div>
-
-                <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
-                <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
-                <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
+                
                 <button class="btn-create d-none" id="btnCreate" onclick="createAlbum()">KHỞI TẠO ALBUM NGAY</button>
                 
                 <div class="mt-4 text-center">
@@ -155,34 +168,32 @@
     <script>
         const PATHS = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
-            OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback',
-            CREATE: 'https://dichvufb.tino.page/webhook/create-album-auto',
-            INFO: 'https://dichvufb.tino.page/webhook/get-folder-info'
+            OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback'
         };
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const status = localStorage.getItem('admin_status');
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-            const name = localStorage.getItem('admin_name') || 'Khách';
-            const avatar = localStorage.getItem('admin_avatar');
+            const name = localStorage.getItem('admin_name') || 'bạn';
             
             const marquee = document.getElementById('marqueeContainer');
             const navLinks = document.getElementById('adminNavLinks');
             const loggedIn = document.getElementById('loggedInNav');
             const loggedOut = document.getElementById('loggedOutNav');
             const btn = document.getElementById('btnCreate');
+            const authRemind = document.getElementById('authReminder');
             const notice = document.getElementById('accountNotice');
 
             if (isLoggedIn) {
-                if(marquee) marquee.style.display = 'none'; // Ẩn marquee khi login
+                if(marquee) marquee.remove(); // XÓA HOÀN TOÀN KHI LOGIN
                 navLinks.classList.add('show-tabs');
                 loggedOut.style.display = 'none';
-                loggedIn.setAttribute('style', 'display: flex !important;');
+                loggedIn.style.display = 'flex';
                 btn.classList.remove('d-none');
-                document.getElementById('authReminder').style.display = 'none';
+                authRemind.style.display = 'none';
                 document.getElementById('userNameDisplay').innerText = name;
-                if(avatar) document.getElementById('avatarPlaceholder').innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+                document.getElementById('avatarPlaceholder').innerHTML = `<img src="${localStorage.getItem('admin_avatar')}" style="width:100%; height:100%; object-fit:cover;">`;
 
                 const now = Date.now();
                 if (status === 'active' && expiry > now) {
@@ -192,7 +203,7 @@
                     document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-new">Tài khoản mới</span>`;
                     btn.classList.add('btn-locked'); btn.disabled = true;
                     notice.style.display = 'block';
-                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="notice-link">Admin</a> để kích hoạt dùng thử hoặc <a href="payment.html" class="notice-link">gia hạn ngay</a>.`;
+                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="notice-link">Admin</a> để dùng thử hoặc <a href="payment.html" class="notice-link">gia hạn ngay</a>.`;
                 } else {
                     document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-expired">Hết hạn dùng</span>`;
                     btn.classList.add('btn-locked'); btn.disabled = true;
@@ -200,17 +211,14 @@
                     notice.innerHTML = `<a href="payment.html" class="notice-link">Gia hạn ngay</a> để tiếp tục sử dụng.`;
                 }
             } else {
-                // TRẠNG THÁI LOGOUT: Đảm bảo mọi thứ hiển thị lại đúng
                 if(marquee) marquee.style.display = 'block';
                 navLinks.classList.remove('show-tabs');
                 loggedOut.style.display = 'block';
                 loggedIn.style.display = 'none';
                 btn.classList.add('d-none');
-                document.getElementById('authReminder').style.display = 'block';
-                notice.style.display = 'none';
+                authRemind.style.display = 'block';
             }
 
-            // AI Suggestion Fix: Luôn chào đúng người
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble){
@@ -221,28 +229,6 @@
             }, 2000);
         }
 
-        async function createAlbum() {
-            const driveLink = document.getElementById('driveLink').value.trim();
-            if(!driveLink) return alert("Vui lòng dán link!");
-            const btn = document.getElementById('btnCreate');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG TẠO...'; btn.disabled = true;
-            try {
-                await fetch(PATHS.CREATE, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ folderId: driveLink, adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked }})
-                });
-                const res = await fetch(`${PATHS.INFO}?folderId=${driveLink}&adminEmail=${localStorage.getItem('admin_email')}`);
-                const data = await res.json();
-                if(data.clientLink) {
-                    document.getElementById('previewFolderName').innerText = data.folderName;
-                    document.getElementById('previewClientLink').href = data.clientLink;
-                    document.getElementById('previewClientLink').innerText = data.clientLink;
-                    document.getElementById('previewBox').style.display = 'block';
-                }
-            } catch(e) { alert("Lỗi n8n!"); } finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = false; }
-        }
-
-        function copyFinalLink() { navigator.clipboard.writeText(document.getElementById('previewClientLink').href).then(() => alert("Đã copy link!")); }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
 
