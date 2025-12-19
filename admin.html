@@ -11,25 +11,38 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 100px; }
         
-        /* NAVBAR OPTIMIZATION */
+        /* NAVBAR & LOGIN VIP */
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 80px; }
         .navbar-brand img { height: 45px; filter: drop-shadow(0 0 10px var(--primary)); }
         
-        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 50%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
+        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 45%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 30s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(50%); } 100% { transform: translateX(-100%); } }
 
-        /* TABS RESPONSIVE */
-        .navbar-toggler { border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; }
+        /* BUTTON LOGIN RAINBOW */
+        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; cursor: pointer !important; text-decoration: none; display: inline-block; }
+        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; text-transform: uppercase; }
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        /* MOBILE FIX */
+        .navbar-toggler { border: 1px solid var(--primary); color: var(--primary); }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
-        /* CARD STYLE */
+        @media (max-width: 991px) {
+            .marquee-wrapper { display: none !important; }
+            .navbar-collapse { background: #080d1a; padding: 20px; border-radius: 20px; margin-top: 15px; border: 1px solid var(--primary); }
+            .logged-out-mobile-fix { display: flex; justify-content: center; width: 100%; margin-top: 10px; }
+        }
+
+        /* CARD LUXURY */
         .main-container { padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .rainbow-border-wrapper { position: relative; padding: 3px; border-radius: 35px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; max-width: 600px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,0.7); }
         .create-card { background: #080d1a; border-radius: 32px; padding: 30px 20px; }
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 25px; text-transform: uppercase; }
+        @keyframes shine { to { background-position: 200% center; } }
 
+        /* FORM */
         input[type="text"] { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; }
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
         .toggle-switch { position: relative; width: 45px; height: 24px; }
@@ -39,8 +52,8 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(21px); }
 
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 15px; font-size: 16px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 10px; }
-        .preview-box { border: 2px dashed var(--primary); background: rgba(0, 235, 176, 0.05); padding: 15px; border-radius: 20px; margin-top: 20px; display: none; }
+        .btn-create { background: var(--primary); color: #000; border: none; padding: 15px; font-size: 16px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
+        .btn-locked { background: #334155 !important; cursor: not-allowed !important; opacity: 0.5; color: #fff !important; }
         
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 50px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--primary); }
         .status-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
@@ -48,13 +61,6 @@
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
 
-        @media (max-width: 991px) {
-            .marquee-wrapper { display: none !important; }
-            .navbar-collapse { background: #080d1a; padding: 20px; border-radius: 20px; margin-top: 15px; border: 1px solid var(--primary); }
-            .luxury-title { font-size: 1.5rem; }
-            .user-info-wrapper { margin-top: 15px; justify-content: flex-start !important; }
-        }
-        
         .chat-trigger { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: fixed; bottom: 20px; right: 20px; box-shadow: 0 0 20px var(--primary); z-index: 1000; }
         .ai-suggestion-bubble { position: fixed; bottom: 90px; right: 20px; background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 800; font-size: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 240px; z-index: 1001; }
     </style>
@@ -84,9 +90,9 @@
                     <li><a href="feedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
 
-                <div class="ms-auto d-flex align-items-center user-info-wrapper">
-                    <div id="loggedOutNav">
-                        <div class="btn-login-rainbow" onclick="startGoogleLogin()" style="cursor:pointer">
+                <div class="ms-auto">
+                    <div id="loggedOutNav" class="logged-out-mobile-fix">
+                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
                             <span class="btn-login-inner">LOGIN VIP</span>
                         </div>
                     </div>
@@ -111,7 +117,7 @@
                     <label style="font-size:0.7rem; color:var(--primary); font-weight:900; margin-bottom:8px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây...">
                 </div>
-                <div id="previewBox" class="preview-box">
+                <div id="previewBox" class="preview-box" style="display:none; border: 2px dashed var(--primary); background: rgba(0, 235, 176, 0.05); padding: 15px; border-radius: 20px; margin-bottom: 20px;">
                     <p style="margin-bottom: 5px; font-weight: bold; color:var(--primary); font-size:0.9rem;">Album: <span id="previewFolderName"></span></p>
                     <div class="d-flex align-items-center gap-2 bg-dark p-2 rounded border border-secondary">
                         <a href="#" id="previewClientLink" target="_blank" class="text-truncate text-info flex-grow-1" style="font-size:0.8rem;"></a>
@@ -177,31 +183,32 @@
                 const now = Date.now();
                 if (status === 'active' && expiry > now) {
                     statusEl.innerHTML = `<span class="status-tag tag-active">Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btn.disabled = false; notice.style.display = 'none';
+                    btn.classList.remove('btn-locked'); btn.disabled = false; notice.style.display = 'none';
                 } else if (status === 'new') {
                     statusEl.innerHTML = `<span class="status-tag tag-new">Mới</span>`;
-                    btn.disabled = true; btn.style.opacity = "0.5";
+                    btn.classList.add('btn-locked'); btn.innerHTML = "TÀI KHOẢN CHƯA KÍCH HOẠT";
                     notice.style.display = 'block';
-                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:underline;">Admin</a> để dùng thử hoặc <a href="payment.html" style="color:var(--primary); text-decoration:underline;">gia hạn</a>.`;
+                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:underline;">Admin</a> để kích hoạt hoặc <a href="payment.html" style="color:var(--primary); text-decoration:underline;">gia hạn</a>.`;
                 } else {
                     statusEl.innerHTML = `<span class="status-tag tag-expired">Hết hạn</span>`;
-                    btn.disabled = true; btn.style.opacity = "0.5";
+                    btn.classList.add('btn-locked'); btn.innerHTML = "HẾT HẠN SỬ DỤNG";
                     notice.style.display = 'block';
                     notice.innerHTML = `<a href="payment.html" style="color:#ff4757; text-decoration:underline;">Gia hạn ngay</a> để tiếp tục sử dụng.`;
                 }
             } else {
                 if(marquee) marquee.style.display = 'block';
                 navLinks.style.display = 'none';
-                loggedOut.style.display = 'block';
+                loggedOut.style.display = 'flex';
                 loggedIn.style.display = 'none';
                 btn.classList.add('d-none');
                 authRemind.style.display = 'block';
+                notice.style.display = 'none';
             }
 
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble){
-                    bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Em là Trợ lý <strong>chonanhnhanh.vn</strong>. Cần hỗ trợ gì không?`;
+                    bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Em là Trợ lý <strong>chonanhnhanh.vn</strong>. Cần hỗ trợ gì không ạ?`;
                     bubble.style.display = 'block';
                 }
             }, 2000);
@@ -210,7 +217,7 @@
         async function createAlbum() {
             const driveLink = document.getElementById('driveLink').value.trim();
             const fId = extractFolderId(driveLink);
-            if(!fId) return alert("Dán link Folder Drive hợp lệ!");
+            if(!fId) return alert("Vui lòng dán link Folder Drive hợp lệ!");
             const btn = document.getElementById('btnCreate');
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i>ĐANG TẠO...'; btn.disabled = true;
             try {
@@ -230,7 +237,7 @@
             finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = false; }
         }
 
-        function copyFinalLink() { navigator.clipboard.writeText(document.getElementById('previewClientLink').href).then(() => alert("Đã copy!")); }
+        function copyFinalLink() { navigator.clipboard.writeText(document.getElementById('previewClientLink').href).then(() => alert("Đã copy link!")); }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
 
