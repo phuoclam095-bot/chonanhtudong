@@ -7,22 +7,52 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a; --text-color: #f0f0f0; --card-bg: rgba(255, 255, 255, 0.98); --accent-color: #51ff7d; }
-        body { background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 25px 25px; color: var(--text-color); font-family: 'Nunito', sans-serif; min-height: 100vh; padding-top: 80px; }
+        :root {
+            --primary-green: #147a30; --dark-green: #0e5a22; --bg-color: #1a1a1a;
+            --text-color: #f0f0f0; --card-bg: rgba(255, 255, 255, 0.98); --accent-color: #51ff7d;
+        }
+
+        body {
+            background-color: var(--bg-color); background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
+            background-size: 60px 60px; background-position: 0 0, 25px 25px; color: var(--text-color);
+            font-family: 'Nunito', sans-serif; min-height: 100vh; padding-top: 80px;
+        }
+        
+        /* NAVBAR */
         .navbar { background: var(--primary-green); box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; color: white !important; text-transform: uppercase; letter-spacing: 1px; }
         .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 600; transition: all 0.3s; border-radius: 8px; }
-        .user-status-box { background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
-        .user-avatar-circle { width: 32px; height: 32px; background: #333; color: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid var(--accent-color); text-transform: uppercase; overflow: hidden; }
+        
+        /* ⭐ GIAO DIỆN USER INFO ĐỒNG BỘ COPY_LOCAL */
+        .user-status-box {
+            background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+        }
+        .user-avatar-circle {
+            width: 32px; height: 32px; background: #333; color: var(--accent-color);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; border: 2px solid var(--accent-color); text-transform: uppercase; overflow: hidden;
+        }
         .user-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
         .status-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; }
         .bg-active { background-color: #198754; } .bg-new { background-color: #ff9800; } .bg-expired { background-color: #dc3545; }
+
+        /* DASHBOARD CONTENT */
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
         h2 { color: var(--accent-color); text-align: center; margin-bottom: 30px; font-weight: 800; text-shadow: 0 0 20px rgba(81, 255, 125, 0.5); font-size: 2.2rem; }
+
+        /* ⭐ THANH TÌM KIẾM */
         .search-wrapper { max-width: 500px; margin: 0 auto 40px auto; position: relative; }
-        .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 50px; border: 2px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: white; font-weight: 600; outline: none; transition: 0.3s; }
+        .search-input {
+            width: 100%; padding: 12px 20px 12px 45px; border-radius: 50px; border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05); color: white; font-weight: 600; outline: none; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--accent-color); background: rgba(255, 255, 255, 0.1); }
         .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.5); }
+
+        /* ALBUM GRID (GIỮ NGUYÊN GIAO DIỆN CỦA BẠN) */
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 35px; padding-bottom: 50px; }
         .album-card { background: var(--card-bg); color: #333; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); transition: all 0.3s; display: flex; flex-direction: column; }
         .album-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4); }
@@ -36,6 +66,14 @@
         .btn-view { background: linear-gradient(135deg, #007bff, #0056b3); }
         .btn-export { background: linear-gradient(135deg, #ffc107, #ff9800); color: #212529 !important; }
         .btn-delete { background: linear-gradient(135deg, #dc3545, #c82333); }
+
+        /* ⭐ THÔNG BÁO DƯỚI MÀN HÌNH */
+        #toastNotice {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9); color: white; padding: 12px 25px;
+            border-radius: 50px; z-index: 9999; display: none; font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -47,8 +85,10 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li> 
                     <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
                 </ul>
+
                 <div id="authControl" style="display: none;" class="align-items-center gap-3">
                     <div class="user-status-box">
                         <div class="user-avatar-circle" id="userAvatarPlaceholder"></div>
@@ -60,20 +100,28 @@
                             </div>
                         </div>
                     </div>
-                    <button onclick="logoutAdmin()" class="btn btn-danger rounded-pill px-3 py-1"><i class="fas fa-sign-out-alt"></i></button>
+                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold rounded-pill px-3"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="dashboard-container">
-        <h2>Danh Sách Album (<span id="albumCount">0</span>)</h2>
+        <h2><i class="fas fa-layer-group me-3"></i>Danh Sách Album (<span id="albumCount">0</span>)</h2>
+        
         <div class="search-wrapper">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="albumSearch" class="search-input" placeholder="Tìm kiếm tên album..." oninput="filterAlbums()">
         </div>
-        <div id="albumGrid"></div>
+
+        <div id="albumGrid">
+            <div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
+                <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
+            </div>
+        </div>
     </div>
+
+    <div id="toastNotice"></div>
 
     <div class="modal fade" id="exportModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -83,10 +131,10 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body bg-light">
-                    <textarea id="fileNamesOutput" class="form-control" rows="10" readonly style="font-family: monospace; font-size: 14px;"></textarea>
+                    <textarea id="fileNamesOutput" class="form-control shadow-sm" rows="10" readonly style="font-family: monospace;"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="copyFileNames()">Sao Chép Tất Cả</button>
+                    <button type="button" class="btn btn-primary fw-bold" onclick="copyFileNames()">Sao Chép</button>
                 </div>
             </div>
         </div>
@@ -98,21 +146,74 @@
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
+        const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
 
         let adminEmail = localStorage.getItem('admin_email');
+        let isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+        let isPremiumUser = false;
         let allAlbums = [];
 
+        // ⭐ HÀM HIỆN THÔNG BÁO TỰ ẨN
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotice');
+            toast.innerText = msg; toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
         function filterAlbums() {
-            const keyword = document.getElementById('albumSearch').value.toLowerCase();
-            const filtered = allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(keyword));
+            const keyword = document.getElementById('albumSearch').value.toLowerCase().trim();
+            const filtered = allAlbums.filter(album => (album.folderName || album.name || '').toLowerCase().includes(keyword));
             renderAlbums(filtered);
         }
 
         function renderAlbums(albums) {
-            const grid = document.getElementById('albumGrid');
-            grid.innerHTML = albums.length ? '' : '<div class="text-center w-100">Không tìm thấy album.</div>';
-            albums.forEach(a => grid.appendChild(createAlbumCard(a)));
+            const albumGrid = document.getElementById('albumGrid');
+            albumGrid.innerHTML = albums.length === 0 ? '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Không tìm thấy album.</div>' : '';
+            albums.forEach(album => albumGrid.appendChild(createAlbumCard(album)));
             document.getElementById('albumCount').innerText = albums.length;
+        }
+
+        function checkLicense() {
+            const status = localStorage.getItem('admin_status') || 'new'; 
+            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0; 
+            if (!isLoggedIn) return false;
+            if (status !== 'active' || (expiry > 0 && expiry <= Date.now())) return false;
+            isPremiumUser = true; return true;
+        }
+
+        function updateHeaderUI() {
+            if (isLoggedIn) {
+                const name = localStorage.getItem('admin_name') || 'Admin';
+                const avatar = localStorage.getItem('admin_avatar');
+                const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const status = localStorage.getItem('admin_status') || 'new';
+
+                document.getElementById('userNameDisplay').innerText = name;
+                const avtPlc = document.getElementById('userAvatarPlaceholder');
+                avtPlc.innerHTML = (avatar && avatar !== 'undefined' && avatar !== 'null') ? `<img src="${avatar}">` : name.charAt(0).toUpperCase();
+
+                const badge = document.getElementById('badgeStatus');
+                const expiryText = document.getElementById('userExpiryText');
+                
+                if (status === 'active' && expiry > Date.now()) {
+                    badge.innerText = "ACTIVE"; badge.className = "status-badge bg-active";
+                    expiryText.innerText = `(Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')})`;
+                } else {
+                    badge.innerText = status === 'new' ? "TÀI KHOẢN MỚI" : "HẾT HẠN";
+                    badge.className = status === 'new' ? "status-badge bg-new" : "status-badge bg-expired";
+                    expiryText.innerText = status === 'new' ? "" : "(Gia hạn ngay)";
+                }
+                document.getElementById('authControl').style.display = 'flex'; 
+            }
+        }
+
+        async function loadAlbums() {
+            try {
+                const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`);
+                allAlbums = await response.json();
+                renderAlbums(allAlbums);
+            } catch (error) { showToast("Lỗi tải dữ liệu!"); }
+            finally { document.getElementById('loadingMessage').style.display = 'none'; }
         }
 
         function createAlbumCard(album) {
@@ -120,89 +221,74 @@
             const id = album.folder_id || album.folderId;
             card.id = `card-${id}`; card.className = 'album-card';
             const rawName = album.folderName || album.name || 'Album';
-            const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+            const previewUrl = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : DEFAULT_THUMBNAIL_URL;
 
             card.innerHTML = `
-                <div class="album-card-header" style="background-image: url('${img}');">
-                    <div class="album-title-overlay">${rawName}</div>
+                <div class="album-card-header" style="background-image: url('${previewUrl}');">
+                    <div class="album-title-overlay" title="${rawName}">${rawName}</div>
                 </div>
                 <div class="card-body-custom">
                     <div class="stats-grid">
                         <div class="stats-item"><i class="fas fa-check-circle text-success"></i> Chọn: ${album.selected_photos || 0}</div>
                         <div class="stats-item"><i class="fas fa-images text-primary"></i> Tổng: ${album.total_photos || 0}</div>
+                        <div class="stats-item" style="grid-column: span 2;"><i class="fas fa-comment-dots text-info"></i> Bình luận: ${album.comments || 0}</div>
                     </div>
                     <div class="action-btns">
-                        <button class="btn-view" onclick="window.open('${DOMAIN_CLIENT}client.html?id=${id}', '_blank')">Xem</button>
-                        <button class="btn-export" onclick="handleExportClick('${id}', '${rawName.replace(/'/g, "\\'")}')">Xuất</button> 
-                        <button class="btn-delete" onclick="deleteAlbum('${id}', '${rawName.replace(/'/g, "\\'")}')">Xóa</button>
+                        <button class="btn-view" onclick="window.open('${DOMAIN_CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye"></i> Xem</button>
+                        <button class="btn-export" onclick="handleExportClick('${id}', '${rawName.replace(/'/g, "\\'")}')"><i class="fas fa-file-export"></i> Xuất</button> 
+                        <button class="btn-delete" onclick="deleteAlbum('${id}', '${rawName.replace(/'/g, "\\'")}')"><i class="fas fa-trash-alt"></i> Xóa</button>
                     </div>
                 </div>`;
             return card;
         }
 
-        // ⭐ LOGIC XUẤT FILE ĐÃ SỬA LỖI
         async function handleExportClick(albumId, albumName) {
-            const btn = event.currentTarget;
-            btn.disabled = true; btn.innerText = "...";
+            showToast(`Đang xuất file album: ${albumName}...`);
             try {
-                const res = await fetch(URL_EXPORT_FILENAMES, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const response = await fetch(URL_EXPORT_FILENAMES, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ folderId: albumId, adminEmail: adminEmail, action: 'export_filenames_request' })
                 });
-                const result = await res.json();
-                // Xử lý dữ liệu linh hoạt (Nếu n8n trả về Array hoặc Object đơn lẻ)
+                const result = await response.json();
                 const data = Array.isArray(result) ? result[0] : result;
-                
                 if (data && data.fileNamesForCopy) {
-                    const output = document.getElementById('fileNamesOutput');
-                    // Tách bằng dấu phẩy và chuyển thành xuống dòng để dễ nhìn
-                    output.value = data.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
+                    document.getElementById('fileNamesOutput').value = data.fileNamesForCopy.split(',').join('\n');
                     new bootstrap.Modal(document.getElementById('exportModal')).show();
-                } else {
-                    alert("Album này chưa có ảnh nào được chọn!");
-                }
-            } catch (e) { alert("Lỗi kết nối Webhook!"); }
-            finally { btn.disabled = false; btn.innerText = "Xuất"; }
+                    showToast("Xuất file thành công!");
+                } else { showToast("Album chưa có ảnh chọn!"); }
+            } catch (e) { showToast("Lỗi xuất file!"); }
         }
 
-        async function deleteAlbum(id, name) {
-            if (!confirm(`Xóa album "${name}"?`)) return;
-            const res = await fetch(URL_DELETE_ALBUM, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ folderId: id, adminEmail: adminEmail })
-            });
-            const result = await res.json();
-            if (result.success) { document.getElementById(`card-${id}`).remove(); filterAlbums(); }
+        async function deleteAlbum(albumId, albumName) {
+            if (!confirm(`XÓA VĨNH VIỄN album "${albumName}"?`)) return;
+            try {
+                const response = await fetch(URL_DELETE_ALBUM, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folderId: albumId, adminEmail: adminEmail })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById(`card-${albumId}`).remove();
+                    showToast(`Đã xóa album ${albumName}`);
+                    allAlbums = allAlbums.filter(a => (a.folder_id || a.folderId) !== albumId);
+                    document.getElementById('albumCount').innerText = document.querySelectorAll('.album-card').length;
+                }
+            } catch (e) { showToast("Lỗi xóa album!"); }
         }
 
         function copyFileNames() {
-            const txt = document.getElementById('fileNamesOutput').value;
-            // Sao chép dạng dấu phẩy để dán vào trang Sao Chép
-            navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => alert('Đã sao chép danh sách file!'));
+            const textarea = document.getElementById('fileNamesOutput');
+            navigator.clipboard.writeText(textarea.value.split('\n').join(',')).then(() => {
+                showToast("Đã sao chép danh sách file!");
+                bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+            });
         }
 
-        function updateHeaderUI() {
-            const auth = document.getElementById('authControl');
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                document.getElementById('userNameDisplay').innerText = localStorage.getItem('admin_name');
-                const avatar = localStorage.getItem('admin_avatar');
-                document.getElementById('userAvatarPlaceholder').innerHTML = avatar ? `<img src="${avatar}">` : localStorage.getItem('admin_name').charAt(0);
-                const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-                document.getElementById('userExpiryText').innerText = `(Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')})`;
-                auth.style.display = 'flex';
-            } else { window.location.href = 'admin.html'; }
-        }
-
-        async function init() {
-            updateHeaderUI();
-            const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`);
-            allAlbums = await response.json();
-            renderAlbums(allAlbums);
-        }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
-        document.addEventListener('DOMContentLoaded', init);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLicense(); updateHeaderUI(); loadAlbums();
+        });
     </script>
 </body>
 </html>
