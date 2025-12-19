@@ -50,12 +50,9 @@
         .create-card { background: #080d1a; border-radius: 32px; padding: 40px; }
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
 
-        .form-group { margin-bottom: 25px; }
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
 
-        /* FIX BỐ CỤC 3 DÒNG */
-        .switch-container { margin-bottom: 25px; }
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
         .toggle-switch { position: relative; width: 45px; height: 24px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -64,11 +61,15 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(21px); }
 
-        /* BUTTONS & NOTICE */
-        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; cursor: pointer !important; display: inline-block; }
+        /* BUTTONS & PREVIEW */
+        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; cursor: pointer !important; display: inline-block; }
         .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; cursor: pointer !important; }
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-locked { background: #334155 !important; cursor: not-allowed !important; opacity: 0.6; color: #94a3b8 !important; }
+
+        .preview-box { border: 2px dashed var(--primary); background: rgba(0, 235, 176, 0.05); padding: 20px; border-radius: 20px; margin-top: 25px; display: none; text-align: center; }
+        #finalLinkBox { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        #finalLinkBox a { color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1rem; }
         .sync-highlight { color: var(--primary); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; animation: pulse-glow 2s infinite; }
@@ -81,6 +82,7 @@
         .tag-active { background: var(--primary); color: #000; }
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
+        .notice-link { color: var(--primary) !important; text-decoration: none; font-weight: 900; border-bottom: 1px dashed var(--primary); }
 
         /* CHAT AI */
         .chat-support-container { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
@@ -136,9 +138,17 @@
                 
                 <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.85rem; font-weight:700;"></div>
 
-                <div class="form-group">
+                <div class="mb-4">
                     <label class="label-white ms-2 text-uppercase fw-bold" style="font-size:0.75rem; color:var(--primary) !important; display:block; margin-bottom:10px;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây...">
+                </div>
+
+                <div id="previewBox" class="preview-box">
+                    <p style="margin-bottom: 8px; font-weight: bold; color:var(--primary)">Album: <span id="previewFolderName">...</span></p>
+                    <div id="finalLinkBox">
+                        <a href="#" id="previewClientLink" target="_blank">...</a>
+                        <button class="btn btn-sm btn-light fw-bold" onclick="copyFinalLink()">COPY</button>
+                    </div>
                 </div>
 
                 <div class="switch-container">
@@ -148,7 +158,6 @@
                 </div>
                 
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
-                
                 <button class="btn-create d-none" id="btnCreate" onclick="createAlbum()">KHỞI TẠO ALBUM NGAY</button>
                 
                 <div class="mt-4 text-center">
@@ -166,9 +175,12 @@
     <audio id="tingSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
+        // PHỤC HỒI CÁC PATH WEBHOOK MẤU CHỐT
         const PATHS = {
             CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
-            OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback'
+            OAUTH_WEBHOOK: 'https://dichvufb.tino.page/webhook/google-oauth-callback',
+            CREATE_ALBUM_WEBHOOK: 'https://dichvufb.tino.page/webhook/create-album-auto',
+            GET_FOLDER_WEBHOOK: 'https://dichvufb.tino.page/webhook/get-folder-info'
         };
 
         function updateUI() {
@@ -176,6 +188,7 @@
             const status = localStorage.getItem('admin_status');
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
             const name = localStorage.getItem('admin_name') || 'bạn';
+            const avatar = localStorage.getItem('admin_avatar');
             
             const marquee = document.getElementById('marqueeContainer');
             const navLinks = document.getElementById('adminNavLinks');
@@ -186,26 +199,27 @@
             const notice = document.getElementById('accountNotice');
 
             if (isLoggedIn) {
-                if(marquee) marquee.remove(); // XÓA HOÀN TOÀN KHI LOGIN
+                if(marquee) marquee.remove();
                 navLinks.classList.add('show-tabs');
                 loggedOut.style.display = 'none';
-                loggedIn.style.display = 'flex';
+                loggedIn.setAttribute('style', 'display: flex !important;');
                 btn.classList.remove('d-none');
                 authRemind.style.display = 'none';
                 document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = `<img src="${localStorage.getItem('admin_avatar')}" style="width:100%; height:100%; object-fit:cover;">`;
+                if(avatar) document.getElementById('avatarPlaceholder').innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
 
                 const now = Date.now();
+                const statusEl = document.getElementById('userStatusDisplay');
                 if (status === 'active' && expiry > now) {
-                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
                     btn.classList.remove('btn-locked'); btn.disabled = false; notice.style.display = 'none';
                 } else if (status === 'new') {
-                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-new">Tài khoản mới</span>`;
+                    statusEl.innerHTML = `<span class="status-tag tag-new">Tài khoản mới</span>`;
                     btn.classList.add('btn-locked'); btn.disabled = true;
                     notice.style.display = 'block';
                     notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="notice-link">Admin</a> để dùng thử hoặc <a href="payment.html" class="notice-link">gia hạn ngay</a>.`;
                 } else {
-                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-expired">Hết hạn dùng</span>`;
+                    statusEl.innerHTML = `<span class="status-tag tag-expired">Hết hạn dùng</span>`;
                     btn.classList.add('btn-locked'); btn.disabled = true;
                     notice.style.display = 'block';
                     notice.innerHTML = `<a href="payment.html" class="notice-link">Gia hạn ngay</a> để tiếp tục sử dụng.`;
@@ -217,6 +231,7 @@
                 loggedIn.style.display = 'none';
                 btn.classList.add('d-none');
                 authRemind.style.display = 'block';
+                notice.style.display = 'none';
             }
 
             setTimeout(() => {
@@ -229,7 +244,60 @@
             }, 2000);
         }
 
-        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
+        // HÀM TẠO ALBUM GỌI WEBHOOK N8N
+        async function createAlbum() {
+            const driveLink = document.getElementById('driveLink').value.trim();
+            if(!driveLink) return alert("Vui lòng dán link Google Drive!");
+            
+            const btn = document.getElementById('btnCreate');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> ĐANG XỬ LÝ...'; 
+            btn.disabled = true;
+            document.getElementById('previewBox').style.display = 'none';
+
+            try {
+                // 1. Gửi lệnh tạo đến n8n
+                await fetch(PATHS.CREATE_ALBUM_WEBHOOK, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        driveLink: driveLink,
+                        adminEmail: localStorage.getItem('admin_email'),
+                        settings: {
+                            download: document.getElementById('allowDownload').checked,
+                            comment: document.getElementById('allowComment').checked,
+                            limitPhotos: document.getElementById('limitPhotos').checked
+                        }
+                    })
+                });
+
+                // 2. Lấy thông tin Album vừa tạo từ n8n
+                const res = await fetch(`${PATHS.GET_FOLDER_WEBHOOK}?driveLink=${encodeURIComponent(driveLink)}&adminEmail=${localStorage.getItem('admin_email')}`);
+                const data = await res.json();
+                
+                if(data.clientLink) {
+                    document.getElementById('previewFolderName').innerText = data.folderName || "Album mới";
+                    const linkA = document.getElementById('previewClientLink');
+                    linkA.href = data.clientLink;
+                    linkA.innerText = data.clientLink;
+                    document.getElementById('previewBox').style.display = 'block';
+                }
+            } catch(e) {
+                alert("Lỗi kết nối n8n! Vui lòng kiểm tra lại link hoặc quyền truy cập.");
+            } finally {
+                btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
+                btn.disabled = false;
+            }
+        }
+
+        function copyFinalLink() {
+            const link = document.getElementById('previewClientLink').href;
+            navigator.clipboard.writeText(link).then(() => alert("✅ Đã copy link Album!"));
+        }
+
+        function startGoogleLogin() { 
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; 
+        }
+
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
 
         window.onload = () => {
