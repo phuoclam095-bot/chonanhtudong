@@ -166,9 +166,9 @@
     <div class="chat-panel" id="chatPanel">
         <div class="chat-header"><span>HỖ TRỢ VIP</span><i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i></div>
         <div class="chat-body" id="chatBody">
-            <div class="chat-row">
+            <div class="chat-row" style="display:flex; gap:10px; align-items:flex-end;">
                 <div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" style="width:100%"></div>
-                <div class="msg-bubble">Dạ, chonanhnhanh.vn xin chào Anh/Chị ạ! Em có thể hỗ trợ gì cho mình hôm nay không ạ?</div>
+                <div class="msg-bubble">Dạ, chonanhnhanh.vn xin chào Anh/Chị ạ! Em hỗ trợ được gì cho mình hôm nay không ạ?</div>
             </div>
         </div>
         <div id="typingIndicator">Trợ lý ảo đang soạn tin...</div>
@@ -190,55 +190,52 @@
             const name = localStorage.getItem('admin_name') || 'Anh/Chị';
             const avatar = localStorage.getItem('admin_avatar');
             
-            const navLinks = document.getElementById('adminNavLinks');
             const notice = document.getElementById('accountNotice');
             const btnCreate = document.getElementById('btnCreate');
-            const authRemind = document.getElementById('authReminder');
-            const tabManage = document.getElementById('navManage');
-            const tabCopy = document.getElementById('navCopy');
 
             if (isLoggedIn) {
                 document.getElementById('marqueeContainer').style.display = 'none';
-                navLinks.style.setProperty('display', 'flex', 'important');
+                document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedOutNav').style.display = 'none';
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
                 btnCreate.classList.remove('d-none');
-                authRemind.style.display = 'none';
+                document.getElementById('authReminder').style.display = 'none';
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('avatarPlaceholder').innerHTML = avatar && avatar !== 'null' ? `<img src="${avatar}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
                 
-                const statusEl = document.getElementById('userStatusDisplay');
                 const isStillActive = (status === 'active' && expiry > Date.now());
                 const expiryStr = (expiry > 0) ? new Date(expiry).toLocaleDateString('vi-VN') : '';
 
                 if (isStillActive) {
-                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${expiryStr}</span>`;
-                    btnCreate.disabled = false; notice.style.display = 'none';
+                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${expiryStr}</span>`;
+                    notice.style.display = 'none';
+                    btnCreate.disabled = false;
                 } else if (status === 'new') {
-                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-                    btnCreate.disabled = true; notice.style.display = 'block';
-                    notice.innerHTML = `Dạ chào Anh/Chị, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để dùng thử hoặc <a href="payment.html" class="text-accent">Gia Hạn Ngay</a> ạ.`;
+                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                    notice.style.display = 'block';
+                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info fw-bold">ADMIN</a> kích hoạt hoặc <a href="payment.html" class="text-accent">Gia Hạn</a>.`;
+                    btnCreate.disabled = true;
                 } else {
-                    statusEl.innerHTML = `<span class="status-tag tag-expired">HẾT HẠN - ${expiryStr}</span>`;
-                    btnCreate.disabled = true; notice.style.display = 'block';
-                    notice.innerHTML = `Dịch vụ đã hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng dịch vụ</a> ạ.`;
+                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-expired">HẾT HẠN - ${expiryStr}</span>`;
+                    notice.style.display = 'block';
+                    notice.innerHTML = `Hết hạn, vui lòng <a href="payment.html" class="text-danger fw-bold">Gia hạn ngay</a>.`;
+                    btnCreate.disabled = true;
                 }
 
-                [tabManage, tabCopy].forEach(el => {
-                    el.onclick = null;
+                ['navManage', 'navCopy'].forEach(id => {
+                    const el = document.getElementById(id);
+                    el.onclick = (e) => { if (!isStillActive) { e.preventDefault(); window.location.href = "payment.html"; } };
                     if (!isStillActive) el.style.opacity = "0.6";
                 });
-
             } else {
                 document.getElementById('marqueeContainer').style.display = 'block';
-                navLinks.style.display = 'none';
+                document.getElementById('adminNavLinks').style.display = 'none';
                 document.getElementById('loggedOutNav').style.display = 'block';
                 document.getElementById('loggedInNav').style.display = 'none';
                 btnCreate.classList.add('d-none');
-                authRemind.style.display = 'block';
+                document.getElementById('authReminder').style.display = 'block';
             }
 
-            // AI TỰ CHÀO
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
@@ -253,11 +250,12 @@
             const errBox = document.getElementById('inlineError');
             errBox.style.display = 'none'; 
             
+            // LOGIC KIỂM TRA MẪU LINK DRIVE CHUẨN
             const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 && !driveLink.includes(" ") ? driveLink : null);
             
             if(!fId) { 
-                errBox.style.display = 'block'; // HIỆN LỖI KHÔNG POPUP
+                errBox.style.display = 'block'; 
                 return;
             }
 
@@ -267,7 +265,7 @@
                 const res = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
                 const data = await res.json();
                 if(data.clientLink) {
-                    document.getElementById('resFolderName').innerText = data.folderName || "XONG!";
+                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới";
                     document.getElementById('resClientLink').href = data.clientLink;
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('resultBox').style.display = 'block';
@@ -279,20 +277,21 @@
             const input = document.getElementById('chatInput'); if(!input.value) return;
             const msg = input.value;
             const userAvatar = localStorage.getItem('admin_avatar') && localStorage.getItem('admin_avatar') !== 'null' ? localStorage.getItem('admin_avatar') : 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
-            document.getElementById('chatBody').innerHTML += `<div class="chat-row user-row"><div class="chat-avatar"><img src="${userAvatar}"></div><div class="msg-bubble" style="background:var(--primary); color:#000; font-weight:700;">${msg}</div></div>`;
+            document.getElementById('chatBody').innerHTML += `<div class="chat-row user-row" style="flex-direction:row-reverse; display:flex; gap:10px;"><div class="chat-avatar"><img src="${userAvatar}"></div><div class="msg-bubble" style="background:var(--primary); color:#000; font-weight:700;">${msg}</div></div>`;
             input.value = ''; document.getElementById('typingIndicator').style.display = 'block';
             try {
                 const res = await fetch(PATHS.CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ message: msg, sessionId: chatSessionId, user_name: localStorage.getItem('admin_name') || 'Khách' }) });
                 const data = await res.json();
-                if(data.output) document.getElementById('chatBody').innerHTML += `<div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble">${data.output}</div></div>`;
+                if(data.output) document.getElementById('chatBody').innerHTML += `<div class="chat-row" style="display:flex; gap:10px;"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble">${data.output}</div></div>`;
                 document.getElementById('chatBody').scrollTop = document.getElementById('chatBody').scrollHeight;
-            } catch(e) {} finally { indicator.style.display = 'none'; }
+            } catch(e) {} finally { document.getElementById('typingIndicator').style.display = 'none'; }
         }
 
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
         
+        // SAO CHÉP KHÔNG POPUP
         function copyFinalLink() { 
             const link = document.getElementById('resClientLink').href;
             const btn = document.getElementById('btnCopyMain');
@@ -303,6 +302,19 @@
         }
 
         updateUI();
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('auth_status') === 'success') {
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', params.get('user_email') || '');
+                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
+                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+                localStorage.setItem('admin_status', params.get('user_status') || 'new');
+                localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                window.history.replaceState({}, document.title, window.location.pathname);
+                updateUI();
+            }
+        };
     </script>
 </body>
 </html>
