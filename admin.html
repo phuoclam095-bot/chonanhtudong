@@ -56,6 +56,15 @@
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-create:disabled { background: #334155; opacity: 0.5; cursor: not-allowed; }
 
+        /* KHUNG KẾT QUẢ FIXED TRÀN LINK & HIỆU ỨNG XỊN */
+        #resultBox { display: none; margin-top: 25px; padding: 20px; border: 2px solid var(--primary); border-radius: 25px; background: rgba(0, 235, 176, 0.05); box-shadow: 0 0 15px rgba(0, 235, 176, 0.2); position: relative; animation: neonPulse 2s infinite alternate; }
+        @keyframes neonPulse { from { box-shadow: 0 0 10px rgba(0, 235, 176, 0.1); } to { box-shadow: 0 0 25px rgba(0, 235, 176, 0.4); } }
+        
+        .copy-link-flex { display: flex; gap: 12px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 18px; align-items: center; border: 1px solid rgba(0, 235, 176, 0.3); }
+        #resClientLink { flex: 1; color: var(--accent); font-weight: 700; font-size: 0.85rem; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .btn-copy-vip { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 10px 20px; border-radius: 12px; font-size: 0.75rem; cursor: pointer; transition: 0.3s; white-space: nowrap; box-shadow: 0 5px 15px rgba(0, 235, 176, 0.3); }
+        .btn-copy-vip:hover { background: #fff; transform: translateY(-2px); }
+
         /* CHAT AI */
         .chat-support-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
         .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 280px; text-align: right; }
@@ -130,9 +139,12 @@
 
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
 
-                <div id="resultBox" style="display:none; margin-top:25px; padding:20px; border:2px dashed var(--primary); border-radius:20px; background:rgba(0, 235, 176, 0.03);">
-                    <span id="resFolderName" style="font-weight:800; color:#fff; display:block; margin-bottom:10px; text-align:center;"></span>
-                    <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank" class="text-info flex-grow-1 overflow-hidden" style="font-size:0.8rem; text-overflow:ellipsis; white-space:nowrap;">...</a><button class="btn-copy-vip" onclick="copyFinalLink()">COPY LINK</button></div>
+                <div id="resultBox">
+                    <span id="resFolderName" style="font-weight:800; color:#fff; display:block; margin-bottom:12px; text-align:center;"></span>
+                    <div class="copy-link-flex">
+                        <a href="#" id="resClientLink" target="_blank">...</a>
+                        <button class="btn-copy-vip" onclick="copyFinalLink()"><i class="fas fa-copy me-1"></i>COPY LINK</button>
+                    </div>
                 </div>
                 
                 <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
@@ -207,10 +219,9 @@
                     notice.innerHTML = `Dịch vụ đã hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng dịch vụ</a> ạ.`;
                 }
 
-                // KHÔNG ẨN TAB - CHỈ KHÓA THEO YÊU CẦU
                 [tabManage, tabCopy].forEach(el => {
-                    el.onclick = null; // Luôn cho phép chuyển trang để xem "giao diện mờ mờ" ở trang đích xử lý
-                    if (!isStillActive) el.style.opacity = "0.6"; // Hiển thị tab nhưng mờ hơn bình thường
+                    el.onclick = null; 
+                    if (!isStillActive) el.style.opacity = "0.6";
                 });
 
             } else {
@@ -222,7 +233,6 @@
                 authRemind.style.display = 'block';
             }
 
-            // AI TỰ CHÀO
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
@@ -255,18 +265,14 @@
             const msg = input.value;
             const userAvatar = localStorage.getItem('admin_avatar') && localStorage.getItem('admin_avatar') !== 'null' ? localStorage.getItem('admin_avatar') : 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
             document.getElementById('chatBody').innerHTML += `<div class="chat-row user-row"><div class="chat-avatar"><img src="${userAvatar}"></div><div class="msg-bubble">${msg}</div></div>`;
-            input.value = ''; 
-            
-            const indicator = document.getElementById('typingIndicator');
-            indicator.style.display = 'block'; // Hiện trạng thái soạn tin
-
+            input.value = ''; document.getElementById('typingIndicator').style.display = 'block';
             try {
                 const res = await fetch(PATHS.CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ message: msg, sessionId: chatSessionId, user_name: localStorage.getItem('admin_name') || 'Khách' }) });
                 const data = await res.json();
                 if(data.output) document.getElementById('chatBody').innerHTML += `<div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble">${data.output}</div></div>`;
                 const body = document.getElementById('chatBody'); body.scrollTop = body.scrollHeight;
             } catch(e) {} finally {
-                indicator.style.display = 'none'; // Ẩn khi xong
+                document.getElementById('typingIndicator').style.display = 'none';
             }
         }
 
