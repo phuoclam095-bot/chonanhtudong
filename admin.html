@@ -11,15 +11,17 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* NAVBAR & MARQUEE */
+        /* NAVBAR & LOGO FIXED - Tải cực nhanh */
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
-        .navbar-brand img { height: 50px; filter: drop-shadow(0 0 10px var(--primary)); cursor: pointer; }
+        .navbar-brand img { height: 42px; width: auto; cursor: pointer; filter: none !important; }
+        
         .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 75%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 35s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         #adminNavLinks { list-style: none; margin: 0; padding: 0; display: none; gap: 8px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover { color: var(--accent) !important; }
 
         /* USER PROFILE */
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
@@ -37,7 +39,7 @@
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
 
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; cursor: text; transition: 0.4s; }
-        input[type="text"]:focus { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
+        input[type="text"]:focus { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
         /* SWITCHES */
         .switch-container { margin-top: 25px; margin-bottom: 20px; }
@@ -205,10 +207,10 @@
                     notice.innerHTML = `Dịch vụ đã hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng dịch vụ</a> ạ.`;
                 }
 
-                // Gỡ bỏ alert, cho phép click chuyển trang bình thường
+                // KHÔNG ẨN TAB - CHỈ KHÓA THEO YÊU CẦU
                 [tabManage, tabCopy].forEach(el => {
-                    el.onclick = null; 
-                    if (!isStillActive) el.style.opacity = "0.5";
+                    el.onclick = null; // Luôn cho phép chuyển trang để xem "giao diện mờ mờ" ở trang đích xử lý
+                    if (!isStillActive) el.style.opacity = "0.6"; // Hiển thị tab nhưng mờ hơn bình thường
                 });
 
             } else {
@@ -220,6 +222,7 @@
                 authRemind.style.display = 'block';
             }
 
+            // AI TỰ CHÀO
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
                 if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
@@ -252,10 +255,10 @@
             const msg = input.value;
             const userAvatar = localStorage.getItem('admin_avatar') && localStorage.getItem('admin_avatar') !== 'null' ? localStorage.getItem('admin_avatar') : 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png';
             document.getElementById('chatBody').innerHTML += `<div class="chat-row user-row"><div class="chat-avatar"><img src="${userAvatar}"></div><div class="msg-bubble">${msg}</div></div>`;
-            input.value = '';
+            input.value = ''; 
             
             const indicator = document.getElementById('typingIndicator');
-            indicator.style.display = 'block'; // Hiện "Trợ lý ảo đang soạn tin..."
+            indicator.style.display = 'block'; // Hiện trạng thái soạn tin
 
             try {
                 const res = await fetch(PATHS.CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ message: msg, sessionId: chatSessionId, user_name: localStorage.getItem('admin_name') || 'Khách' }) });
