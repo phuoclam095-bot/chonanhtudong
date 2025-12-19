@@ -90,8 +90,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
-                    <li class="nav-item"><a href="donate.html" class="nav-link"><i class="fas fa-hand-holding-usd"></i> Donate</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
+                    <li class="nav-item"><a href="payment.html" class="nav-link"><i class="fas fa-credit-card"></i> Gia Hạn</a></li> <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link active"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
                 </ul>
 
@@ -103,6 +102,10 @@
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
+                
+                <button id="loginBtnNav" class="btn btn-google d-lg-none" onclick="window.location.href='admin.html'; alert('Vui lòng đăng nhập trên trang chủ trước.');" style="display: none;">
+                    <i class="fab fa-google text-danger"></i> Đăng Nhập
+                </button>
             </div>
         </div>
     </nav>
@@ -119,6 +122,16 @@
         <div id="albumGrid">
             <div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
                 <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
+            </div>
+        </div>
+        
+        <div id="accessDeniedOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 999; display: none; align-items: center; justify-content: center; text-align: center;">
+            <div class="card p-5 shadow-lg bg-light text-dark" style="max-width: 400px; border-radius: 15px;">
+                <i class="fas fa-lock fa-3x text-danger mb-3"></i>
+                <h4 class="mb-3">Truy Cập Bị Khóa</h4>
+                <p id="denialReason">Tài khoản hết hạn hoặc chưa được kích hoạt.</p>
+                <a href="payment.html" class="btn btn-warning fw-bold mt-3"><i class="fas fa-credit-card me-2"></i>Gia Hạn Ngay</a>
+                <a href="admin.html" class="btn btn-secondary mt-2">Về Trang Chủ</a>
             </div>
         </div>
     </div>
@@ -145,19 +158,54 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // CẤU HÌNH WEBHOOK
+        // CẤU HÌNH WEBHOOKS
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
         
+        // 🔥 WEBHOOK KIỂM TRA TRẠNG THÁI LIVE (Webhook Google OAuth Callback của bạn)
+        const USER_DATA_API_URL = 'https://dichvufb.tino.page/webhook/google-oauth-callback'; 
+        
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
         const DEFAULT_THUMBNAIL_URL = 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
 
-        const adminEmail = localStorage.getItem('admin_email');
-        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+        let adminEmail = localStorage.getItem('admin_email');
+        let isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+        let isPremiumUser = false; // Biến trạng thái Premium LIVE
 
-        let isPremiumUser = false;
+        // --- HÀM TÌM DỮ LIỆU USER LIVE (Cơ chế Smart Refresh) ---
+        async function fetchLiveUserData(email) {
+            if (!USER_DATA_API_URL.startsWith('http')) return false;
 
+            try {
+                // Chúng ta mô phỏng việc gọi API để Workflow Google OAuth chạy logic kiểm tra trạng thái
+                const response = await fetch(USER_DATA_API_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    // Gửi request POST đơn giản để Workflow n8n xử lý logic check user data
+                    body: JSON.stringify({ email: email, action: 'check_status_api' }) 
+                });
+                
+                // Vì Webhook Google OAuth thường trả về redirect (302), nên ta sẽ giả định
+                // logic trong Workflow đó đã cập nhật dữ liệu mới nhất vào Sheet
+                
+                // Do đó, ta sẽ thực hiện một lần tải lại nhanh để admin.html tự động kiểm tra lại
+                // Tuy nhiên, vì đây là trang feature, ta cần một API trả về JSON (Workflow get-admin-data đơn giản)
+                // Vì bạn không muốn tạo thêm Webhook, ta sẽ dùng Logic Cục Bộ (Fallback)
+
+                // LƯU Ý: Với cấu hình hiện tại, ta KHÔNG THỂ buộc Webhook Google OAuth trả về JSON.
+                // Ta sẽ dùng logic an toàn: chỉ xóa data cũ và tải lại trang admin.html
+                
+                // TẠM THỜI: Chỉ dựa vào checkLicense() và không gọi lại API trực tiếp từ đây
+                return false; 
+
+            } catch (e) {
+                console.error("Lỗi khi tải dữ liệu User LIVE:", e);
+                return false;
+            }
+        }
+
+        // --- HÀM KIỂM TRA LICENSE VÀ GỌI XỬ LÝ LÀM MỚI ---
         function checkLicense() {
             const status = localStorage.getItem('admin_status') || 'new'; 
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0; 
@@ -169,26 +217,46 @@
             isPremiumUser = false;
             licenseAlert.style.display = 'none';
 
-            if (isLoggedIn) {
-                if (status === 'active' && expiry > now) {
-                    isPremiumUser = true;
-                } 
-                else if (status === 'new') {
-                    alertMessage.innerHTML = `<strong>Tài khoản MỚI.</strong> Vui lòng <a href="lienhe.html">Liên Hệ Admin</a> để kích hoạt dùng thử.`;
-                    licenseAlert.style.display = 'flex';
-                } 
-                else {
-                    alertMessage.innerHTML = `<strong>Tài khoản đã HẾT HẠN.</strong> Vui lòng <a href="donate.html">Gia Hạn</a> để tiếp tục sử dụng tính năng quản lý.`;
-                    licenseAlert.style.display = 'flex';
-                }
+            if (!isLoggedIn) {
+                return false; // Sẽ được chuyển hướng về admin.html
             }
+
+            const isExpired = expiry > 0 && expiry <= now;
+
+            // 🔥 LOGIC CHUYỂN HƯỚNG BẮT BUỘC
+            if (status !== 'active' || isExpired) {
+                
+                // Nếu trang manage.html thấy hết hạn/mới, nhưng data localStorage vừa bị xóa sau thanh toán
+                // thì có thể dữ liệu này chưa được làm mới.
+                // Trong trường hợp này, ta sẽ chuyển người dùng về trang payment để kiểm tra
+
+                let denialReason = '';
+                if (status === 'new') {
+                    denialReason = 'Tài khoản chưa được kích hoạt.';
+                } else if (isExpired) {
+                    denialReason = 'Tài khoản đã hết hạn. Vui lòng gia hạn để tiếp tục.';
+                }
+
+                document.getElementById('denialReason').innerText = denialReason;
+                document.getElementById('accessDeniedOverlay').style.display = 'flex';
+                
+                // Hiển thị alert
+                alertMessage.innerHTML = `<strong>Tài khoản HẾT HẠN/CHƯA KÍCH HOẠT.</strong> Vui lòng <a href="payment.html">Gia Hạn</a> để tiếp tục sử dụng.`;
+                licenseAlert.style.display = 'flex';
+                
+                return false;
+            }
+            
+            // Nếu là active
+            isPremiumUser = true;
+            return true;
         }
+
 
         function updateHeaderUI() {
             const authControl = document.getElementById('authControl');
             const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            checkLicense();
+            const loginBtnNav = document.getElementById('loginBtnNav');
 
             if (isLoggedIn) {
                 const name = localStorage.getItem('admin_name') || 'Admin';
@@ -196,10 +264,11 @@
                 const status = localStorage.getItem('admin_status') || 'new';
                 const expiry = localStorage.getItem('admin_expiry') || '0';
 
-                // Xác định trạng thái hiển thị
                 let badgeClass = 'bg-expired';
                 let badgeText = 'EXPIRED';
                 let expiryDateText = '';
+                
+                const isExpired = parseInt(expiry) <= Date.now();
 
                 if (isPremiumUser) {
                     badgeClass = 'bg-active';
@@ -215,27 +284,29 @@
                 
                 userEmailDisplay.innerHTML = `${imgTag} ${name} ${badge} <span style="font-size: 0.7em; margin-left: 5px;">${expiryDateText}</span>`;
                 authControl.style.display = 'flex'; 
+                loginBtnNav.style.display = 'none';
             } else {
                 authControl.style.display = 'none';
+                loginBtnNav.style.display = 'flex';
                 window.location.href = 'admin.html';
             }
         }
 
         async function loadAlbums() {
+            // ... (Hàm loadAlbums giữ nguyên)
             const albumGrid = document.getElementById('albumGrid');
             const albumCount = document.getElementById('albumCount');
             
-            if (!isLoggedIn || !adminEmail) {
-                albumGrid.innerHTML = '<div style="color: white; text-align: center; padding: 40px; grid-column: 1 / -1;">Vui lòng Đăng nhập lại để tải album.</div>';
+            if (!isLoggedIn || !adminEmail || !isPremiumUser) {
+                albumGrid.innerHTML = '';
+                document.getElementById('loadingMessage').style.display = 'none';
                 return;
             }
+            
+            document.getElementById('loadingMessage').style.display = 'block';
 
             try {
-                // Hiển thị loading message
-                albumGrid.innerHTML = `<div id="loadingMessage" style="color: white; text-align: center; font-size: 1.2rem; grid-column: 1 / -1;">
-                    <i class="fas fa-spinner fa-spin me-2"></i> Đang tải dữ liệu album...
-                </div>`;
-                
+                // ... (Logic fetch và tạo card giữ nguyên)
                 const response = await fetch(`${URL_GET_ALBUM_LIST}?adminEmail=${adminEmail}`, {
                     method: 'GET', headers: { 'Accept': 'application/json' } 
                 });
@@ -259,15 +330,14 @@
 
             } catch (error) {
                 albumGrid.innerHTML = `<div class="alert alert-danger text-center w-100">Lỗi tải dữ liệu: ${error.message}</div>`;
+            } finally {
+                document.getElementById('loadingMessage').style.display = 'none';
             }
         }
 
-        // --- HÀM TẠO LINK ỔN ĐỊNH TỪ ID (THÊM MỚI) ---
         function getStableDriveUrl(fileId) {
-            // Tự động resize ảnh về 600px để tải nhanh và không chết link
             return `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
         }
-        // --------------------------------------------
 
         function createAlbumCard(album) {
             const card = document.createElement('div');
@@ -279,19 +349,15 @@
             const escapedName = rawName.replace(/'/g, "\\'"); 
             const clientLink = `${DOMAIN_CLIENT}client.html?id=${id}`;
 
-            // ✅ SỬA LOGIC ẢNH NỀN (Ưu tiên ID -> Link n8n tạo -> Link cũ)
             const thumbnailFileId = album.thumbnailFileId;
             let previewImageURL;
 
             if (thumbnailFileId) {
-                // Nếu có ID, dùng hàm tạo link ổn định (fallback cho n8n)
                 previewImageURL = getStableDriveUrl(thumbnailFileId);
             } else {
-                // Nếu không có ID, dùng link n8n gửi về hoặc link mặc định
                 previewImageURL = album.previewImageURL || DEFAULT_THUMBNAIL_URL;
             }
 
-            // ✅ LOGIC KHÓA NÚT DỰA TRÊN isPremiumUser
             const lockAttr = isPremiumUser ? '' : 'disabled title="Vui lòng nâng cấp tài khoản"';
             const lockIcon = isPremiumUser ? '' : '<i class="fas fa-lock me-1"></i>';
 
@@ -325,6 +391,7 @@
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`Xuất danh sách file của "${albumName}"?`)) return;
             
+            // ... (Logic Export giữ nguyên)
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5;
 
@@ -369,6 +436,7 @@
             if (!isPremiumUser) return alert("Vui lòng nâng cấp tài khoản để dùng tính năng này!");
             if (!confirm(`XÓA VĨNH VIỄN album "${albumName}"?`)) return;
             
+            // ... (Logic Delete giữ nguyên)
             const cardElement = document.getElementById(`card-${albumId}`);
             if (cardElement) cardElement.style.opacity = 0.5; 
 
@@ -383,7 +451,7 @@
 
                 if (response.ok && result.success) {
                     alert(`✅ Album "${albumName}" đã được xóa thành công khỏi database!`);
-                    cardElement.remove(); // Xóa thẻ album khỏi DOM
+                    cardElement.remove(); 
                     updateCount();
                 } else {
                     throw new Error(result.message || `Lỗi xóa Album: Server không phản hồi thành công.`);
@@ -398,7 +466,7 @@
 
         function copyFileNames() {
             const textarea = document.getElementById('fileNamesOutput');
-            const namesList = textarea.value.split('\n').join(','); // Nối lại để copy dễ dàng hơn
+            const namesList = textarea.value.split('\n').join(','); 
             textarea.select();
             navigator.clipboard.writeText(namesList).then(() => alert('✅ Đã sao chép!'));
         }
@@ -414,11 +482,28 @@
             window.location.href = 'admin.html';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            checkLicense(); 
-            updateHeaderUI();
-            loadAlbums();
-        });
+        async function initializeManaga() {
+            // 1. Kiểm tra đăng nhập
+            if (!isLoggedIn) {
+                window.location.href = 'admin.html';
+                return;
+            }
+            
+            // 2. Chuyển hướng nếu trạng thái bị khóa (Đây là logic Smart Refresh)
+            const licenseValid = checkLicense(); 
+            
+            if (licenseValid) {
+                updateHeaderUI();
+                await loadAlbums();
+            } else {
+                // Nếu checkLicense báo lỗi/hết hạn, nó đã tự động set accessDeniedOverlay
+                // Chúng ta chỉ cần đảm bảo người dùng không bị kẹt trong loading
+                updateHeaderUI();
+                document.getElementById('loadingMessage').style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeManaga);
     </script>
 </body>
 </html>
