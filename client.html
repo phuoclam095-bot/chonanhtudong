@@ -159,40 +159,61 @@
         }
 
         // ⭐ HÀM INIT ĐÃ SỬA ĐỂ TƯƠNG THÍCH SQL TRUE/1
-        async function init() {
+   async function init() {
             try {
-                cvs = document.getElementById('drawCanvas'); img = document.getElementById('mainImg');
-                if(!fid) throw new Error("Link lỗi.");
+                localStorage.setItem('layout_version', 'V18.6');
+                cvs = document.getElementById('drawCanvas');
+                img = document.getElementById('mainImg');
+        
+                if(!fid) throw new Error("Link thiếu mã Album (id)");
+                
+                // Bước 1: Tải dữ liệu từ Server
                 let data = await fetchData(`${URL_GET}?id=${fid}`);
+                if (!data) throw new Error("Server không trả về dữ liệu.");
+                
                 let allPhotos = data.photos || data;
                 const mode = urlParams.get('mode');
-
-                // Lọc danh sách từ DB (Chấp nhận TRUE, "true", hoặc 1)
-                const dbSelectedIds = allPhotos.filter(p => p.selected === true || p.selected === "true" || p.selected === 1 || p.selected === "1").map(p => p.id);
-
+        
+                // ⭐ ĐỒNG BỘ VỚI SQL CỦA BẠN (TRUE/1)
+                const dbSelectedIds = allPhotos.filter(p => 
+                    p.selected === true || p.selected === "true" || p.selected === 1 || p.selected === "1"
+                ).map(p => p.id);
+        
                 if (mode === 'selected') {
+                    // Admin xem: Lấy thẳng từ Database
                     photos = allPhotos.filter(p => dbSelectedIds.includes(p.id));
-                    selectedPhotoIds = dbSelectedIds;
-                    document.querySelector('.album-title').innerText = `Ảnh Đã Chọn (${photos.length})`;
+                    selectedPhotoIds = dbSelectedIds; // Hiện số thứ tự (Badge) chính xác
+                    document.querySelector('.album-title').innerText = "Ảnh Khách Đã Chọn (" + photos.length + ")";
                 } else if (mode === 'notes') {
+                    // Xem ảnh có ghi chú/vẽ
                     photos = allPhotos.filter(p => p.has_note === true || p.has_note === 1 || (p.comment_count && p.comment_count > 0));
                     selectedPhotoIds = dbSelectedIds;
                     document.querySelector('.album-title').innerText = "Ảnh Có Ghi Chú";
                 } else {
-                    const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
-                    selectedPhotoIds = local ? JSON.parse(local) : dbSelectedIds;
+                    // Khách hàng xem: Ưu tiên bộ nhớ máy khách
+                    const key = 'anh_da_chon_cua_khach_' + fid;
+                    const localData = localStorage.getItem(key);
+                    selectedPhotoIds = localData ? JSON.parse(localData) : dbSelectedIds;
                     photos = allPhotos;
                 }
-
-                if (!photos.length) throw new Error("Không có ảnh để hiển thị.");
+        
+                if (!Array.isArray(photos) || photos.length === 0) {
+                    throw new Error(mode === 'selected' ? "Khách hàng chưa nhấn nút Gửi." : "Album trống.");
+                }
+        
                 document.getElementById('loadOverlay').style.display='none';
-                capNhatSoThuTuVaTổngSố(); setView('grid');
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw));
-            } catch(e) { document.getElementById('loadOverlay').innerHTML = `<div class="text-danger">${e.message}</div>`; }
+                capNhatSoThuTuVaTổngSố();
+                setView('grid'); 
+                
+                // Gán sự kiện vẽ (giữ nguyên code cũ của bạn)
+                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start, {passive:false}));
+                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end, {passive:false}));
+                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw, {passive:false}));
+                
+            } catch(e) {
+                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
+            }
         }
-
         function show(i) {
             if (i < 0 || i >= photos.length) return; cur = i;
             img.src = getLink(photos[i].id, 's100');
@@ -218,3 +239,4 @@
     </script>
 </body>
 </html>
+
