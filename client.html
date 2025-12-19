@@ -159,60 +159,42 @@
         }
 
         // ⭐ HÀM INIT ĐÃ SỬA ĐỂ TƯƠNG THÍCH SQL TRUE/1
-   async function init() {
+          async function init() {
             try {
-                localStorage.setItem('layout_version', 'V18.6');
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
+                if(!fid) throw new Error("Link thiếu mã Album.");
         
-                if(!fid) throw new Error("Link thiếu mã Album (id)");
-                
-                // Bước 1: Tải dữ liệu từ Server
+                // 1. Tải toàn bộ dữ liệu từ Server
                 let data = await fetchData(`${URL_GET}?id=${fid}`);
-                if (!data) throw new Error("Server không trả về dữ liệu.");
-                
                 let allPhotos = data.photos || data;
                 const mode = urlParams.get('mode');
         
-                // ⭐ ĐỒNG BỘ VỚI SQL CỦA BẠN (TRUE/1)
-                const dbSelectedIds = allPhotos.filter(p => 
-                    p.selected === true || p.selected === "true" || p.selected === 1 || p.selected === "1"
-                ).map(p => p.id);
+                // 2. Lọc danh sách ID đã chọn từ Database (Nhận diện TRUE/FALSE)
+                const dbSelectedIds = allPhotos.filter(p => p.selected === true || p.selected === "TRUE" || p.selected === 1).map(p => p.id);
         
                 if (mode === 'selected') {
-                    // Admin xem: Lấy thẳng từ Database
+                    // Chế độ xem lọc: Chỉ hiện ảnh đã chọn trong Database
                     photos = allPhotos.filter(p => dbSelectedIds.includes(p.id));
-                    selectedPhotoIds = dbSelectedIds; // Hiện số thứ tự (Badge) chính xác
-                    document.querySelector('.album-title').innerText = "Ảnh Khách Đã Chọn (" + photos.length + ")";
-                } else if (mode === 'notes') {
-                    // Xem ảnh có ghi chú/vẽ
-                    photos = allPhotos.filter(p => p.has_note === true || p.has_note === 1 || (p.comment_count && p.comment_count > 0));
-                    selectedPhotoIds = dbSelectedIds;
-                    document.querySelector('.album-title').innerText = "Ảnh Có Ghi Chú";
+                    selectedPhotoIds = dbSelectedIds; // Đồng bộ để hiện dấu tích xanh
+                    document.querySelector('.album-title').innerText = "Ảnh Đã Chọn (" + photos.length + ")";
                 } else {
-                    // Khách hàng xem: Ưu tiên bộ nhớ máy khách
-                    const key = 'anh_da_chon_cua_khach_' + fid;
-                    const localData = localStorage.getItem(key);
+                    // Chế độ xem đầy đủ cho khách
+                    const localData = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
+                    // Nếu khách đã chọn trên máy này thì ưu tiên máy khách, nếu chưa thì lấy từ DB
                     selectedPhotoIds = localData ? JSON.parse(localData) : dbSelectedIds;
                     photos = allPhotos;
                 }
         
-                if (!Array.isArray(photos) || photos.length === 0) {
-                    throw new Error(mode === 'selected' ? "Khách hàng chưa nhấn nút Gửi." : "Album trống.");
-                }
+                if (photos.length === 0) throw new Error("Không có ảnh nào để hiển thị.");
         
                 document.getElementById('loadOverlay').style.display='none';
                 capNhatSoThuTuVaTổngSố();
                 setView('grid'); 
-                
-                // Gán sự kiện vẽ (giữ nguyên code cũ của bạn)
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start, {passive:false}));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end, {passive:false}));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw, {passive:false}));
-                
             } catch(e) {
-                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
+                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger">${e.message}</div>`;
             }
+        }
         }
         function show(i) {
             if (i < 0 || i >= photos.length) return; cur = i;
@@ -239,4 +221,5 @@
     </script>
 </body>
 </html>
+
 
