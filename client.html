@@ -466,32 +466,45 @@
         
                 if(!fid) throw new Error("Link thiếu mã Album (id)");
                 
-                // Bước 1: Tải toàn bộ dữ liệu ảnh từ Server
+                // Bước 1: Tải dữ liệu từ Server
                 let data = await fetchData(`${URL_GET}?id=${fid}`);
                 if (!data) throw new Error("Server không trả về dữ liệu.");
                 
                 let allPhotos = data.photos || data;
                 const mode = urlParams.get('mode');
         
-                // ⭐ LOGIC QUAN TRỌNG: ĐỒNG BỘ DỮ LIỆU CHỌN TỪ SERVER
-                // Tạo danh sách ID đã chọn dựa trên thuộc tính 'selected' từ Database
-                const dbSelectedIds = allPhotos.filter(p => p.selected === true || p.selected === "true").map(p => p.id);
+                // ⭐ LOGIC SỬA LỖI: CHẤP NHẬN CẢ GIÁ TRỊ TRUE, "TRUE", HOẶC SỐ 1
+                const dbSelectedIds = allPhotos.filter(p => 
+                    p.selected === true || 
+                    p.selected === "true" || 
+                    p.selected === 1 || 
+                    p.selected === "1"
+                ).map(p => p.id);
         
                 if (mode === 'selected') {
-                    // Admin xem: Lấy danh sách từ Database
+                    // Chế độ Admin xem ảnh đã chọn từ Database
                     photos = allPhotos.filter(p => dbSelectedIds.includes(p.id));
-                    selectedPhotoIds = dbSelectedIds; // Cập nhật để hiển thị số thứ tự đúng
-                    document.querySelector('.album-title').innerText = "Ảnh Khách Đã Chọn";
+                    selectedPhotoIds = dbSelectedIds; // Đồng bộ số thứ tự để hiện Badge
+                    document.querySelector('.album-title').innerText = "Ảnh Khách Đã Chọn (" + photos.length + ")";
+                } else if (mode === 'notes') {
+                    // Chế độ xem ảnh có ghi chú/vẽ
+                    photos = allPhotos.filter(p => p.has_note === true || p.has_note === 1 || p.comment_count > 0);
+                    selectedPhotoIds = dbSelectedIds; // Vẫn giữ highlight cho ảnh đã chọn
+                    document.querySelector('.album-title').innerText = "Ảnh Có Ghi Chú";
                 } else {
-                    // Khách xem: Vẫn ưu tiên localStorage để giữ trải nghiệm mượt mà
+                    // Chế độ mặc định cho khách hàng
                     const key = 'anh_da_chon_cua_khach_' + fid;
                     const localData = localStorage.getItem(key);
+                    // Ưu tiên localStorage của khách, nếu không có mới lấy từ DB
                     selectedPhotoIds = localData ? JSON.parse(localData) : dbSelectedIds;
                     photos = allPhotos;
                 }
         
                 if (!Array.isArray(photos) || photos.length === 0) {
-                    throw new Error(mode === 'selected' ? "Chưa có ảnh nào được chọn trên hệ thống." : "Album trống.");
+                    let errorMsg = "Album này chưa có ảnh.";
+                    if (mode === 'selected') errorMsg = "Khách hàng chưa nhấn 'Gửi' hoặc chưa chọn ảnh nào.";
+                    if (mode === 'notes') errorMsg = "Không tìm thấy ảnh nào có ghi chú.";
+                    throw new Error(errorMsg);
                 }
         
                 document.getElementById('loadOverlay').style.display='none';
@@ -598,6 +611,7 @@
     </script>
 </body>
 </html>
+
 
 
 
