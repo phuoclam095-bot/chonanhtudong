@@ -159,42 +159,63 @@
         }
 
         // ⭐ HÀM INIT ĐÃ SỬA ĐỂ TƯƠNG THÍCH SQL TRUE/1
-          async function init() {
+         async function init() {
             try {
                 cvs = document.getElementById('drawCanvas');
                 img = document.getElementById('mainImg');
+                const loadOverlay = document.getElementById('loadOverlay');
+        
                 if(!fid) throw new Error("Link thiếu mã Album.");
         
-                // 1. Tải toàn bộ dữ liệu từ Server
+                // 1. Tải dữ liệu từ Server
                 let data = await fetchData(`${URL_GET}?id=${fid}`);
-                let allPhotos = data.photos || data;
+                
+                // Kiểm tra cấu trúc dữ liệu trả về từ n8n
+                let allPhotos = Array.isArray(data) ? data : (data && data.photos ? data.photos : []);
+                
+                if (allPhotos.length === 0) throw new Error("Không có ảnh trong album này.");
+        
                 const mode = urlParams.get('mode');
         
-                // 2. Lọc danh sách ID đã chọn từ Database (Nhận diện TRUE/FALSE)
-                const dbSelectedIds = allPhotos.filter(p => p.selected === true || p.selected === "TRUE" || p.selected === 1).map(p => p.id);
+                // 2. Lọc danh sách ID đã chọn từ Database
+                // Chấp nhận mọi biến thể của TRUE: kiểu bool, chuỗi "TRUE", chuỗi "1" hoặc số 1
+                const dbSelectedIds = allPhotos.filter(p => 
+                    p.selected === true || 
+                    String(p.selected).toUpperCase() === "TRUE" || 
+                    p.selected == 1
+                ).map(p => p.id);
         
                 if (mode === 'selected') {
-                    // Chế độ xem lọc: Chỉ hiện ảnh đã chọn trong Database
+                    // Chế độ Admin xem ảnh đã chọn
                     photos = allPhotos.filter(p => dbSelectedIds.includes(p.id));
-                    selectedPhotoIds = dbSelectedIds; // Đồng bộ để hiện dấu tích xanh
-                    document.querySelector('.album-title').innerText = "Ảnh Đã Chọn (" + photos.length + ")";
+                    selectedPhotoIds = dbSelectedIds; // Để hiện Badge và Highlight
+                    document.querySelector('.album-title').innerText = `Đã Chọn (${photos.length})`;
                 } else {
-                    // Chế độ xem đầy đủ cho khách
+                    // Chế độ khách xem
                     const localData = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
-                    // Nếu khách đã chọn trên máy này thì ưu tiên máy khách, nếu chưa thì lấy từ DB
                     selectedPhotoIds = localData ? JSON.parse(localData) : dbSelectedIds;
                     photos = allPhotos;
                 }
         
-                if (photos.length === 0) throw new Error("Không có ảnh nào để hiển thị.");
+                // Kiểm tra lần cuối trước khi tắt màn hình Load
+                if (photos.length === 0 && mode === 'selected') {
+                    throw new Error("Hệ thống chưa ghi nhận ảnh nào được chọn.");
+                }
         
-                document.getElementById('loadOverlay').style.display='none';
+                loadOverlay.style.display = 'none';
                 capNhatSoThuTuVaTổngSố();
                 setView('grid'); 
+        
             } catch(e) {
-                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger">${e.message}</div>`;
+                console.error("Lỗi Init:", e);
+                document.getElementById('loadOverlay').innerHTML = `
+                    <div class="text-danger text-center px-3">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>
+                        <b>LỖI TẢI DỮ LIỆU</b><br>
+                        <small>${e.message}</small><br>
+                        <button onclick="location.reload()" class="btn btn-sm btn-warning mt-3">Thử lại</button>
+                    </div>`;
             }
-        }
         }
         function show(i) {
             if (i < 0 || i >= photos.length) return; cur = i;
@@ -221,5 +242,6 @@
     </script>
 </body>
 </html>
+
 
 
