@@ -20,21 +20,18 @@
         .create-card { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 550px; border-radius: 30px; padding: 45px 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.4); text-align: center; position: relative; }
         
         h2 { font-weight: 900; color: var(--primary-green); font-size: 2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
-        
-        /* HIỆU ỨNG NHỊP TIM */
-        .heartbeat-effect { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; letter-spacing: 1px; }
+        .heartbeat-effect { color: #d63031; font-weight: 900; display: inline-block; animation: heartbeat 1.2s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
         
         .premium-input-group label { display: block; margin-bottom: 12px; font-weight: 900; color: var(--primary-green); font-size: 1.1rem; text-transform: uppercase; }
         input[type="text"] { width: 100%; padding: 18px 22px; border: 2.5px solid #f1f5f9; border-radius: 18px; outline: none; background: #fcfdfe; font-weight: 700; color: #334155; text-align: center; transition: 0.3s; }
-        input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 10px 20px -5px rgba(20, 122, 48, 0.15); }
+        input[type="text"]:hover { border-color: var(--primary-green); }
         input[type="text"]:focus::placeholder { color: transparent; }
+        input[type="text"]:focus { border-color: var(--primary-green); background: #fff; box-shadow: 0 10px 20px -5px rgba(20, 122, 48, 0.15); }
 
-        /* PREVIEW BOX SAU KHI TẠO */
-        .preview-box { border: 2.5px dashed var(--primary-green); background-color: #f0fff4; padding: 20px; border-radius: 20px; margin: 20px 0; display: none; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .preview-box { border: 2.5px dashed var(--primary-green); background-color: #f0fff4; padding: 20px; border-radius: 20px; margin-bottom: 25px; display: none; animation: slideUp 0.4s ease-out; }
         #finalLinkBox { background: #000; color: var(--accent-color); padding: 12px; border-radius: 12px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid #333; }
-        #finalLinkBox span { font-family: monospace; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #finalLinkBox a { color: var(--accent-color); font-family: monospace; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: underline; }
         .btn-copy-link { background: var(--primary-green); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.75rem; }
 
         .switch-group { display: flex; align-items: center; margin-bottom: 15px; justify-content: space-between; font-weight: 800; color: #4a5568; }
@@ -45,26 +42,25 @@
         input:checked + .slider { background-color: var(--primary-green); }
         input:checked + .slider:before { transform: translateX(24px); }
         
-        .btn-create { background: var(--primary-green); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-top: 10px; transition: 0.3s; }
+        .btn-create { background: var(--primary-green); color: white; border: none; padding: 18px; font-size: 18px; border-radius: 18px; width: 100%; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(20, 122, 48, 0.25); margin-bottom: 15px; transition: 0.3s; }
         .btn-locked { background: #94a3b8 !important; cursor: not-allowed; }
 
-        /* USER PROFILE */
         .user-info-container { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.15); padding: 4px 14px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.2); }
         .user-avatar-circle { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--accent-color); overflow: hidden; background: #333; display: flex; align-items: center; justify-content: center; }
         .status-badge-active { background: #147a30; color: #fff; padding: 1px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; margin-right: 6px; }
 
         /* CHAT AI WIDGET */
         #chat-widget-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; }
-        #chat-toggle-btn { width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #147a30, #51ff7d); color: white; border: none; box-shadow: 0 4px 20px rgba(81, 255, 125, 0.4); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10001; }
+        #chat-toggle-btn { width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #147a30, #51ff7d); color: white; border: none; box-shadow: 0 4px 20px rgba(81, 255, 125, 0.4); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; z-index: 10001; }
         .pulse-green { animation: pulse-green-anim 2s infinite; }
         @keyframes pulse-green-anim { 0% { box-shadow: 0 0 0 0 rgba(81, 255, 125, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(81, 255, 125, 0); } 100% { box-shadow: 0 0 0 0 rgba(81, 255, 125, 0); } }
-        #chat-greeting-bubble { visibility: hidden; opacity: 0; position: absolute; bottom: 20px; right: 80px; background: white; padding: 12px 20px; border-radius: 20px; border-bottom-right-radius: 5px; box-shadow: 0 5px 25px rgba(0,0,0,0.25); font-size: 0.9rem; font-weight: 800; color: #333; z-index: 10000; border: 2px solid var(--accent-color); transition: 0.5s; white-space: nowrap; }
-        #chat-greeting-bubble.show { visibility: visible; opacity: 1; transform: translateX(0); }
         #chat-box { display: none; position: absolute; bottom: 85px; right: 0; width: 360px; height: 480px; background: white; border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; flex-direction: column; z-index: 10002; border: 1px solid #eee; }
         #chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 0.9rem; font-weight: 600; line-height: 1.5; }
-        .bot-msg { background: white; border: 1px solid #e2e8f0; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user-msg { background: var(--primary-green); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message { max-width: 85%; padding: 10px 15px; border-radius: 18px; font-size: 0.9rem; font-weight: 600; }
+        .bot-msg { background: white; border: 1px solid #e2e8f0; align-self: flex-start; }
+        .user-msg { background: var(--primary-green); color: white; align-self: flex-end; }
+        
+        #copyToast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 10px 25px; border-radius: 50px; font-weight: 800; z-index: 10000; display: none; }
     </style>
 </head>
 <body>
@@ -77,16 +73,19 @@
                     <li class="nav-item"><a href="admin.html" class="nav-link active">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li> 
                 </ul>
-                <div class="ms-auto" id="userControl" style="display: none !important;">
-                    <div class="user-info-container">
-                        <div id="avatarPlaceholder" class="user-avatar-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="color:white; font-weight:900; font-size:0.95rem;">Admin</span>
-                            <div id="expiryDisplay" style="line-height: 1.1; font-size: 0.75rem;"></div>
+                <div class="ms-auto">
+                    <div id="userControl" style="display: none !important;" class="align-items-center gap-3">
+                        <div class="user-info-container">
+                            <div class="user-avatar-circle" id="avatarPlaceholder"></div>
+                            <div class="d-flex flex-column">
+                                <span id="userNameDisplay" style="color:white; font-weight:900; font-size:0.95rem;"></span>
+                                <div id="expiryDisplay" style="line-height: 1.1; font-size: 0.75rem;"></div>
+                            </div>
                         </div>
+                        <button class="btn btn-danger rounded-pill px-3 py-1 ms-2" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
-                    <button class="btn btn-danger rounded-pill px-3 ms-2" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
         </div>
@@ -96,22 +95,22 @@
         <div class="create-card">
             <h2>Tạo Album Ảnh Mới</h2>
             
-            <div id="welcomeArea" class="welcome-msg" style="display: none;">
+            <div id="welcomeArea" class="welcome-msg" style="display: none; font-size: 0.9rem; color: #666; margin-bottom: 20px;">
                 Chào mừng <span style="color:var(--primary-green)" id="welcomeUserName"></span>! 
-                <div class="heartbeat-effect mt-1">NHANH - GỌN - CHÍNH XÁC</div>
+                <div class="heartbeat-effect mt-1" style="font-weight: 900;">NHANH - GỌN - CHÍNH XÁC</div>
             </div>
             
             <div class="premium-input-group">
                 <label>Dán Link Thư mục Google Drive</label>
-                <input type="text" id="driveLink" placeholder="Nhấp vào đây để dán link thư mục...">
+                <input type="text" id="driveLink" placeholder="Dán link hoặc ID thư mục vào đây...">
             </div>
 
             <div id="previewBox" class="preview-box">
-                <div class="fw-bold text-dark mb-1">ALBUM ĐÃ SẴN SÀNG!</div>
+                <div class="fw-bold text-dark mb-1">TẠO ALBUM THÀNH CÔNG!</div>
                 <div class="small text-secondary mb-2">Tên: <strong id="resFolderName" class="text-success">...</strong></div>
                 <div id="finalLinkBox">
-                    <span id="resClientLink">...</span>
-                    <button class="btn-copy-link" onclick="copyResultLink()">COPY LINK</button>
+                    <a href="#" id="resClientLink" target="_blank">...</a>
+                    <button class="btn-copy-link" onclick="copyResultLink()">COPY</button>
                 </div>
             </div>
 
@@ -130,53 +129,64 @@
     </div>
 
     <div id="chat-widget-container">
-        <div id="chat-greeting-bubble">👋 Em giúp gì được cho Admin ạ?</div>
         <button id="chat-toggle-btn" class="pulse-green" onclick="toggleChat()"><i class="fas fa-robot fa-2x"></i></button>
         <div id="chat-box">
-            <div class="p-3 bg-success text-white fw-bold">Trợ Lý AI Studio LNP</div>
+            <div class="chat-header d-flex justify-content-between align-items-center">
+                <span>TRỢ LÝ AI STUDIO LNP</span>
+                <button class="btn-close btn-close-white" onclick="toggleChat()"></button>
+            </div>
             <div id="chat-messages"></div>
             <div class="p-3 border-top"><input type="text" id="chat-input" class="form-control" placeholder="Hỏi AI..." onkeypress="if(event.key==='Enter') sendMessage()"></div>
         </div>
     </div>
 
+    <div id="copyToast">✅ Đã copy link thành công!</div>
+
     <script>
         const GOOGLE_CONFIG = { CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', N8N_WEBHOOK: 'https://dichvufb.tino.page/webhook/google-oauth-callback' };
-        const API_CREATE = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        const URL_CREATE_SAVE = 'https://dichvufb.tino.page/webhook/create-album-auto';
+        const URL_GET_INFO = 'https://dichvufb.tino.page/webhook/get-folder-info';
         const API_CHAT = 'https://dichvufb.tino.page/webhook/chat-admin';
 
-        // ⭐ LOGIC TẠO ALBUM & NHẬN PHẢN HỒI JSON
+        // ⭐ QUAN TRỌNG: LOGIC 2 BƯỚC ĐỂ LẤY LINK CHUẨN
         async function handleCreateAlbum() {
-            const input = document.getElementById('driveLink').value.trim();
+            const driveLink = document.getElementById('driveLink').value.trim();
             const btn = document.getElementById('btnCreate');
-            if (!input) return alert("Hãy dán link Drive!");
+            if (!driveLink) return alert("Hãy dán link!");
 
-            const folderRegex = /folders\/([a-zA-Z0-9_-]{20,})|id=([a-zA-Z0-9_-]{20,})/;
-            const match = input.match(folderRegex);
-            const folderId = match ? (match[1] || match[2]) : (input.length > 20 ? input : null);
-
+            // Tách ID từ link
+            const folderIdMatch = driveLink.match(/folders\/([a-zA-Z0-9_-]{20,})|id=([a-zA-Z0-9_-]{20,})/);
+            const folderId = folderIdMatch ? (folderIdMatch[1] || folderIdMatch[2]) : (driveLink.length > 20 ? driveLink : null);
             if (!folderId) return alert("Link không hợp lệ!");
 
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG TẠO...';
             btn.disabled = true;
+            document.getElementById('previewBox').style.display = 'none';
 
             try {
-                const res = await fetch(API_CREATE, {
+                // BƯỚC 1: Gửi lệnh tạo album
+                await fetch(URL_CREATE_SAVE, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ folderId, adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, limit: document.getElementById('limitPhotos').checked } })
+                    body: JSON.stringify({
+                        folderId,
+                        adminEmail: localStorage.getItem('admin_email'),
+                        settings: { download: document.getElementById('allowDownload').checked, limit: document.getElementById('limitPhotos').checked }
+                    })
                 });
-                
-                const text = await res.text();
-                if (text === "Workflow was started") throw new Error("n8n chưa chỉnh 'When Last Node Finishes'.");
 
-                const data = JSON.parse(text);
-                if (data.success || data.clientLink) {
+                // BƯỚC 2: Gọi Path getinfo để lấy link thật
+                const resInfo = await fetch(`${URL_GET_INFO}?folderId=${folderId}&adminEmail=${localStorage.getItem('admin_email')}`);
+                const data = await resInfo.json();
+
+                if (data.clientLink) {
                     document.getElementById('resFolderName').innerText = data.folderName || "Album Mới";
+                    document.getElementById('resClientLink').href = data.clientLink;
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('previewBox').style.display = 'block';
-                    alert("✅ Thành công!");
+                    alert("✅ Tạo Album thành công!");
                 }
-            } catch (e) { alert("Lỗi: " + e.message); }
+            } catch (e) { alert("Lỗi hệ thống!"); }
             finally { btn.innerHTML = 'Tạo Album Ngay'; btn.disabled = false; }
         }
 
@@ -196,26 +206,34 @@
 
         function updateUI() {
             const logged = localStorage.getItem('admin_is_logged_in') === 'true';
+            const name = localStorage.getItem('admin_name') || 'Admin';
+            const avatar = localStorage.getItem('admin_avatar');
+            const status = localStorage.getItem('admin_status');
+            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+
             document.getElementById('adminNavLinks').style.display = logged ? 'flex' : 'none';
             document.getElementById('userControl').setAttribute('style', logged ? 'display: flex !important;' : 'display: none !important;');
             document.getElementById('centralLoginArea').style.display = logged ? 'none' : 'block';
-            
+
             if (logged) {
-                document.getElementById('userNameDisplay').innerText = localStorage.getItem('admin_name');
-                const avatar = localStorage.getItem('admin_avatar');
-                document.getElementById('avatarPlaceholder').innerHTML = (avatar && avatar !== 'null') ? `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">` : 'A';
+                document.getElementById('userNameDisplay').innerText = name;
+                document.getElementById('avatarPlaceholder').innerHTML = (avatar && avatar !== 'null') ? `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="color:var(--accent-color); font-weight:900;">${name.charAt(0)}</span>`;
                 
-                const expiry = parseInt(localStorage.getItem('admin_expiry'));
                 const isExpired = expiry <= Date.now();
-                const canCreate = (localStorage.getItem('admin_status') === 'active' && !isExpired);
-                
+                const canCreate = (status === 'active' && !isExpired);
                 const btn = document.getElementById('btnCreate');
                 btn.className = canCreate ? 'btn-create' : 'btn-create btn-locked';
                 btn.disabled = !canCreate;
 
-                if (!canCreate) {
+                const expiryEl = document.getElementById('expiryDisplay');
+                if (canCreate) {
+                    const d = new Date(expiry);
+                    expiryEl.innerHTML = `<div><span class="status-badge-active">ACTIVE</span> <small class="text-white-50">${d.toLocaleDateString()}</small></div>`;
+                    document.getElementById('welcomeArea').style.display = 'none';
+                } else {
+                    expiryEl.innerHTML = `<span class="text-warning fw-bold small">CHƯA KÍCH HOẠT</span>`;
                     document.getElementById('welcomeArea').style.display = 'block';
-                    document.getElementById('welcomeUserName').innerText = localStorage.getItem('admin_name');
+                    document.getElementById('welcomeUserName').innerText = name;
                 }
             }
         }
@@ -223,7 +241,6 @@
         function toggleChat() { 
             const box = document.getElementById('chat-box');
             box.style.display = (box.style.display === 'flex') ? 'none' : 'flex'; 
-            document.getElementById('chat-greeting-bubble').classList.remove('show');
         }
 
         async function sendMessage() {
@@ -236,7 +253,7 @@
                 const res = await fetch(API_CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ message: msg, email: localStorage.getItem('admin_email') }) });
                 const data = await res.json();
                 appendMsg(data.output || "AI đang bận rồi!", 'bot');
-            } catch (e) { appendMsg("Lỗi kết nối AI!", 'bot'); }
+            } catch (e) { appendMsg("Lỗi AI!", 'bot'); }
         }
 
         function appendMsg(t, s) {
@@ -248,13 +265,15 @@
         }
 
         function copyResultLink() {
-            navigator.clipboard.writeText(document.getElementById('resClientLink').innerText).then(() => alert("✅ Đã copy link!"));
+            navigator.clipboard.writeText(document.getElementById('resClientLink').innerText).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 2000);
+            });
         }
 
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CONFIG.CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_CONFIG.N8N_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
-        
-        window.onload = () => { checkAuthCallback(); setTimeout(() => document.getElementById('chat-greeting-bubble').classList.add('show'), 3000); };
+        window.onload = checkAuthCallback;
     </script>
 </body>
 </html>
