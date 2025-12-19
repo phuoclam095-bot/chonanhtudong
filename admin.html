@@ -9,60 +9,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 100px; }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* NAVBAR & LOGIN VIP */
-        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 80px; }
-        .navbar-brand img { height: 45px; filter: drop-shadow(0 0 10px var(--primary)); }
-        
-        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 45%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 30s linear infinite; }
-        @keyframes marquee-run { 0% { transform: translateX(50%); } 100% { transform: translateX(-100%); } }
+        /* HEADER & MARQUEE */
+        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
+        .navbar-brand img { height: 50px; filter: drop-shadow(0 0 10px var(--primary)); }
+        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 75%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
+        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 35s linear infinite; }
+        @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* BUTTON LOGIN RAINBOW */
-        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; cursor: pointer !important; text-decoration: none; display: inline-block; }
-        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 8px 25px; display: block; font-size: 0.85rem; text-transform: uppercase; }
-        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        /* MOBILE FIX */
-        .navbar-toggler { border: 1px solid var(--primary); color: var(--primary); }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; }
+        /* TABS */
+        #adminNavLinks { display: none !important; list-style: none; margin: 0; padding: 0; display: flex; gap: 5px; }
+        #adminNavLinks.show-tabs { display: flex !important; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
-        @media (max-width: 991px) {
-            .marquee-wrapper { display: none !important; }
-            .navbar-collapse { background: #080d1a; padding: 20px; border-radius: 20px; margin-top: 15px; border: 1px solid var(--primary); }
-            .logged-out-mobile-fix { display: flex; justify-content: center; width: 100%; margin-top: 10px; }
-        }
-
-        /* CARD LUXURY */
-        .main-container { padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .rainbow-border-wrapper { position: relative; padding: 3px; border-radius: 35px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; max-width: 600px; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,0.7); }
-        .create-card { background: #080d1a; border-radius: 32px; padding: 30px 20px; }
-        .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 25px; text-transform: uppercase; }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* FORM */
-        input[type="text"] { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; }
-        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
-        .toggle-switch { position: relative; width: 45px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: var(--primary); }
-        input:checked + .slider:before { transform: translateX(21px); }
-
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 15px; font-size: 16px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
-        .btn-locked { background: #334155 !important; cursor: not-allowed !important; opacity: 0.5; color: #fff !important; }
-        
-        .user-pill { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 50px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--primary); }
-        .status-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
+        /* USER CONTROL */
+        .user-pill { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 50px; min-width: 200px; }
+        #avatarPlaceholder { width: 36px; height: 36px; flex-shrink: 0; border: 1.5px solid var(--primary); border-radius: 50%; overflow: hidden; }
+        .status-tag { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; min-width: 70px; text-align: center; }
         .tag-active { background: var(--primary); color: #000; }
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
 
-        .chat-trigger { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: fixed; bottom: 20px; right: 20px; box-shadow: 0 0 20px var(--primary); z-index: 1000; }
-        .ai-suggestion-bubble { position: fixed; bottom: 90px; right: 20px; background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 800; font-size: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 240px; z-index: 1001; }
+        /* CARD & INPUT */
+        .main-container { padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .rainbow-border-wrapper { position: relative; padding: 3px; border-radius: 35px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; max-width: 650px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
+        .create-card { background: #080d1a; border-radius: 32px; padding: 45px 40px; }
+        .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 35px; text-transform: uppercase; }
+
+        input[type="text"] { width: 100%; padding: 20px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 18px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; margin-bottom: 25px; }
+        input[type="text"]:focus { border-color: var(--primary); box-shadow: 0 0 25px rgba(0, 235, 176, 0.4); }
+        
+        /* FIX LỖI VIỀN NÚT GẠT */
+        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 12px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
+        .toggle-switch { position: relative; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; border: none; outline: none; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* BUTTONS */
+        .btn-login-rainbow { position: relative; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 3s linear infinite; cursor: pointer !important; display: inline-block; }
+        .btn-login-inner { background: #fff; color: #000; font-weight: 900; border-radius: 50px; padding: 10px 30px; display: block; font-size: 0.9rem; }
+        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 15px; }
+
+        /* AI CHAT */
+        .chat-support-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
+        .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 800; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 260px; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); text-align: right; }
+        .chat-trigger { width: 65px; height: 65px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 20px var(--primary); }
+        .chat-trigger i { font-size: 1.8rem; color: #000; }
+        .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 460px; background: rgba(10, 20, 40, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); z-index: 10001; }
+        .chat-header { background: var(--primary); padding: 12px 18px; font-weight: 800; color: #000; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { background: rgba(255,255,255,0.06); padding: 10px; border-radius: 12px 12px 12px 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
+
+        @media (max-width: 991px) {
+            .marquee-wrapper { display: none !important; }
+            .navbar-collapse { background: #080d1a; padding: 25px; border-radius: 25px; margin-top: 15px; border: 1px solid var(--primary); }
+            .user-pill { width: 100%; justify-content: center; margin-bottom: 15px; }
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
     </style>
 </head>
 <body>
@@ -70,17 +79,10 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-            
-            <div id="marqueeContainer" class="marquee-wrapper">
-                <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động</span>
-            </div>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-                <i class="fas fa-bars"></i>
-            </button>
-
+            <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><i class="fas fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav mx-auto" id="adminNavLinks" style="display: none;">
+                <ul class="navbar-nav mx-auto" id="adminNavLinks">
                     <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
                     <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
@@ -89,19 +91,14 @@
                     <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                     <li><a href="feedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
-
                 <div class="ms-auto">
-                    <div id="loggedOutNav" class="logged-out-mobile-fix">
-                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                            <span class="btn-login-inner">LOGIN VIP</span>
-                        </div>
-                    </div>
+                    <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()"><span class="btn-login-inner">LOGIN VIP</span></div></div>
                     <div id="loggedInNav" style="display: none !important;" class="align-items-center gap-2">
                         <div class="user-pill">
-                            <div id="avatarPlaceholder" class="overflow-hidden rounded-circle" style="width:30px; height:30px; border:1px solid var(--primary)"></div>
-                            <div class="d-flex flex-column"><span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span><div id="userStatusDisplay"></div></div>
+                            <div id="avatarPlaceholder"></div>
+                            <div class="d-flex flex-column overflow-hidden"><span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; line-height:1; white-space:nowrap; text-overflow:ellipsis;"></span><div id="userStatusDisplay" class="mt-1"></div></div>
                         </div>
-                        <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
                     </div>
                 </div>
             </div>
@@ -112,47 +109,40 @@
         <div class="rainbow-border-wrapper">
             <div class="create-card">
                 <h1 class="luxury-title">Thiết Lập Album VIP</h1>
-                <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.8rem; font-weight:700;"></div>
+                <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.85rem; font-weight:700;"></div>
                 <div class="mb-4">
-                    <label style="font-size:0.7rem; color:var(--primary); font-weight:900; margin-bottom:8px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
+                    <label style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây...">
                 </div>
-                <div id="previewBox" class="preview-box" style="display:none; border: 2px dashed var(--primary); background: rgba(0, 235, 176, 0.05); padding: 15px; border-radius: 20px; margin-bottom: 20px;">
-                    <p style="margin-bottom: 5px; font-weight: bold; color:var(--primary); font-size:0.9rem;">Album: <span id="previewFolderName"></span></p>
-                    <div class="d-flex align-items-center gap-2 bg-dark p-2 rounded border border-secondary">
-                        <a href="#" id="previewClientLink" target="_blank" class="text-truncate text-info flex-grow-1" style="font-size:0.8rem;"></a>
-                        <button class="btn btn-sm btn-light py-0 px-2 fw-bold" onclick="copyFinalLink()">COPY</button>
-                    </div>
-                </div>
-                <div class="switch-container mt-3">
-                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" checked><span class="slider"></span></label></div>
-                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
+                <div class="switch-container">
+                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
+                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 </div>
-                <div id="authReminder" style="background:var(--rainbow); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; text-align:center; padding:15px 0; font-size:0.9rem;">VUI LÒNG ĐĂNG NHẬP ĐỂ SỬ DỤNG</div>
+                <div id="authReminder" style="background:var(--rainbow); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; text-align:center; padding:20px 0; font-size:1.1rem;">Vui lòng đăng nhập để sử dụng</div>
                 <button class="btn-create d-none" id="btnCreate" onclick="createAlbum()">KHỞI TẠO ALBUM NGAY</button>
-                <div class="mt-3 text-center" style="color:var(--primary); font-weight:900; font-size:0.8rem; letter-spacing:1px;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
+                <div class="mt-4 text-center" style="color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
             </div>
         </div>
     </div>
 
-    <div class="ai-suggestion-bubble" id="aiSuggestion"></div>
-    <div class="chat-trigger" onclick="alert('Đang kết nối chonanhnhanh.vn...')"><i class="fas fa-comment-dots"></i></div>
+    <div class="chat-support-wrapper">
+        <div class="ai-suggestion-bubble" id="aiSuggestion"></div>
+        <div class="chat-trigger" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></div>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header"><span>HỖ TRỢ TRỰC TUYẾN</span><i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i></div>
+        <div class="chat-body" id="chatBody"><div class="msg-bubble">Chào bạn! Tôi là trợ lý ảo của chonanhnhanh.vn. Tôi có thể giúp gì cho bạn?</div></div>
+        <form onsubmit="sendChat(event)" style="padding:10px; display:flex; gap:5px; background:rgba(0,0,0,0.2)">
+            <input type="text" id="chatInput" placeholder="Nhập nội dung..." style="flex:1; background:#1e293b; border:none; border-radius:8px; padding:8px 12px; color:#fff; outline:none; font-size:0.8rem">
+            <button type="submit" style="background:var(--primary); border:none; border-radius:50%; width:32px; height:32px; color:#000; cursor:pointer"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = {
-            CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com',
-            OAUTH_WEBHOOK: 'https://dichvufb.tino.page/webhook/google-oauth-callback',
-            CREATE_ALBUM_WEBHOOK: 'https://dichvufb.tino.page/webhook/create-album-auto',
-            GET_FOLDER_WEBHOOK: 'https://dichvufb.tino.page/webhook/get-folder-info'
-        };
-
-        function extractFolderId(link) {
-            if (!link) return null;
-            const match = link.match(/folders\/([^/?]+)/) || link.match(/id=([^&]+)/);
-            return match ? match[1] : link.trim();
-        }
+        const PATHS = { CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback', CREATE: 'https://dichvufb.tino.page/webhook/create-album-auto', INFO: 'https://dichvufb.tino.page/webhook/get-folder-info', CHAT: 'https://dichvufb.tino.page/webhook/chat-admin' };
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
@@ -160,7 +150,6 @@
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
             const name = localStorage.getItem('admin_name') || 'bạn';
             const avatar = localStorage.getItem('admin_avatar');
-            
             const marquee = document.getElementById('marqueeContainer');
             const navLinks = document.getElementById('adminNavLinks');
             const loggedIn = document.getElementById('loggedInNav');
@@ -168,36 +157,34 @@
             const btn = document.getElementById('btnCreate');
             const authRemind = document.getElementById('authReminder');
             const notice = document.getElementById('accountNotice');
-            const statusEl = document.getElementById('userStatusDisplay');
 
             if (isLoggedIn) {
                 if(marquee) marquee.style.display = 'none';
-                navLinks.style.display = 'flex';
+                navLinks.classList.add('show-tabs');
                 loggedOut.style.display = 'none';
                 loggedIn.setAttribute('style', 'display: flex !important;');
                 btn.classList.remove('d-none');
                 authRemind.style.display = 'none';
                 document.getElementById('userNameDisplay').innerText = name;
-                if(avatar) document.getElementById('avatarPlaceholder').innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+                if(avatar && avatar !== 'null') document.getElementById('avatarPlaceholder').innerHTML = `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+                else document.getElementById('avatarPlaceholder').innerHTML = `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
 
-                const now = Date.now();
-                if (status === 'active' && expiry > now) {
-                    statusEl.innerHTML = `<span class="status-tag tag-active">Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btn.classList.remove('btn-locked'); btn.disabled = false; notice.style.display = 'none';
+                const statusEl = document.getElementById('userStatusDisplay');
+                if (status === 'active' && expiry > Date.now()) {
+                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                    btn.disabled = false; btn.style.opacity = "1";
                 } else if (status === 'new') {
-                    statusEl.innerHTML = `<span class="status-tag tag-new">Mới</span>`;
-                    btn.classList.add('btn-locked'); btn.innerHTML = "TÀI KHOẢN CHƯA KÍCH HOẠT";
-                    notice.style.display = 'block';
-                    notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:underline;">Admin</a> để kích hoạt hoặc <a href="payment.html" style="color:var(--primary); text-decoration:underline;">gia hạn</a>.`;
+                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                    btn.disabled = true; btn.style.opacity = "0.5";
+                    notice.style.display = 'block'; notice.innerHTML = `Liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="notice-link">Admin</a> để dùng thử hoặc <a href="payment.html" class="notice-link">gia hạn</a>.`;
                 } else {
-                    statusEl.innerHTML = `<span class="status-tag tag-expired">Hết hạn</span>`;
-                    btn.classList.add('btn-locked'); btn.innerHTML = "HẾT HẠN SỬ DỤNG";
-                    notice.style.display = 'block';
-                    notice.innerHTML = `<a href="payment.html" style="color:#ff4757; text-decoration:underline;">Gia hạn ngay</a> để tiếp tục sử dụng.`;
+                    statusEl.innerHTML = `<span class="status-tag tag-expired">HẾT HẠN</span>`;
+                    btn.disabled = true; btn.style.opacity = "0.5";
+                    notice.style.display = 'block'; notice.innerHTML = `<a href="payment.html" class="notice-link">Gia hạn ngay</a> để tiếp tục sử dụng.`;
                 }
             } else {
                 if(marquee) marquee.style.display = 'block';
-                navLinks.style.display = 'none';
+                navLinks.classList.remove('show-tabs');
                 loggedOut.style.display = 'flex';
                 loggedIn.style.display = 'none';
                 btn.classList.add('d-none');
@@ -207,39 +194,35 @@
 
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
-                if(bubble){
-                    bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Em là Trợ lý <strong>chonanhnhanh.vn</strong>. Cần hỗ trợ gì không ạ?`;
+                if(bubble) {
+                    bubble.innerHTML = `Chào <strong>${name}</strong>! 👋 Em là Trợ lý <strong>chonanhnhanh.vn</strong>. Cần hỗ trợ gì không?`;
                     bubble.style.display = 'block';
                 }
-            }, 2000);
+            }, 1000);
         }
 
-        async function createAlbum() {
-            const driveLink = document.getElementById('driveLink').value.trim();
-            const fId = extractFolderId(driveLink);
-            if(!fId) return alert("Vui lòng dán link Folder Drive hợp lệ!");
-            const btn = document.getElementById('btnCreate');
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i>ĐANG TẠO...'; btn.disabled = true;
+        async function sendChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            if(!input.value) return;
+            const msg = input.value;
+            document.getElementById('chatBody').innerHTML += `<div class="text-end mb-2"><span style="background:var(--primary); color:#000; padding:5px 10px; border-radius:10px; font-size:0.8rem; font-weight:700;">${msg}</span></div>`;
+            input.value = '';
             try {
-                await fetch(`${PATHS.CREATE_ALBUM_WEBHOOK}?folderId=${fId}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }})
-                });
-                const res = await fetch(`${PATHS.GET_FOLDER_WEBHOOK}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
+                const res = await fetch(PATHS.CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ message: msg, user_name: localStorage.getItem('admin_name') || 'bạn' }) });
                 const data = await res.json();
-                if(data.clientLink) {
-                    document.getElementById('previewFolderName').innerText = data.folderName || "Album mới";
-                    const linkA = document.getElementById('previewClientLink');
-                    linkA.href = data.clientLink; linkA.innerText = data.clientLink;
-                    document.getElementById('previewBox').style.display = 'block';
-                }
-            } catch(e) { alert("Lỗi kết nối n8n!"); } 
-            finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = false; }
+                if(data.output) document.getElementById('chatBody').innerHTML += `<div class="msg-bubble">${data.output}</div>`;
+                const body = document.getElementById('chatBody'); body.scrollTop = body.scrollHeight;
+            } catch(e) {}
         }
 
-        function copyFinalLink() { navigator.clipboard.writeText(document.getElementById('previewClientLink').href).then(() => alert("Đã copy link!")); }
-        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH_WEBHOOK)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
-        function logoutAdmin() { localStorage.clear(); window.location.reload(); }
+        function toggleChat() {
+            const panel = document.getElementById('chatPanel');
+            panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
+            document.getElementById('aiSuggestion').style.display = 'none';
+        }
+
+        updateUI();
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
@@ -251,9 +234,23 @@
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 window.history.replaceState({}, document.title, window.location.pathname);
+                updateUI();
             }
-            updateUI();
         };
+
+        async function createAlbum() {
+            const driveLink = document.getElementById('driveLink').value.trim();
+            const fId = driveLink.match(/folders\/([^/?]+)/)?.[1] || driveLink;
+            if(!fId) return alert("Link không hợp lệ!");
+            const btn = document.getElementById('btnCreate');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG TẠO...'; btn.disabled = true;
+            try {
+                await fetch(`${PATHS.CREATE}?folderId=${fId}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }}) });
+                alert("Đang khởi tạo album...");
+            } catch(e) { alert("Lỗi n8n!"); } finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = false; }
+        }
+        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
+        function logoutAdmin() { localStorage.clear(); window.location.reload(); }
     </script>
 </body>
 </html>
