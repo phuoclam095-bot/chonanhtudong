@@ -3,587 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chọn Ảnh - V18.6</title>
+    <title>Chonanhnhanh.vn - VIP Client Experience</title>
     
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-green: #147a30;
-            --accent-gold: #f0c300;
-            --bg-dark: #121212;
-            --text-light: #f0f0f0;
-            --selected-border: #0d6efd;
-            --header-height: 60px;
-            --footer-height: 75px;
+            --primary: #00ebb0;
+            --accent: #51ff7d;
+            --bg-deep: #050a14;
+            --glass: rgba(255, 255, 255, 0.05);
+            --neon-shadow: 0 0 15px rgba(0, 235, 176, 0.4);
+            --header-h: 70px;
+            --footer-h: 85px;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(circle at 50% 50%, #0a1f3d 0%, #050a14 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
             height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            user-select: none;
             margin: 0;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER LUXURY --- */
         .navbar {
-            height: var(--header-height);
-            background: var(--primary-green);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            flex-shrink: 0;
+            height: var(--header-h);
+            background: rgba(5, 10, 20, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0 20px;
             z-index: 3000;
-            padding: 0 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
-        .album-title {
-            font-weight: 800;
-            font-size: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 140px;
-            color: white;
+        .album-info-vip { display: flex; align-items: center; gap: 12px; }
+        .album-icon { 
+            width: 40px; height: 40px; background: var(--primary); 
+            border-radius: 12px; display: flex; align-items: center; 
+            justify-content: center; color: #000; font-size: 1.2rem;
+            box-shadow: var(--neon-shadow);
         }
+
+        .album-title-text { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.5px; }
 
         .view-switcher {
-            background: rgba(0,0,0,0.2);
-            border-radius: 50px;
-            padding: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 4px;
             display: flex;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .view-btn {
-            border: none; background: transparent; color: rgba(255,255,255,0.7);
-            padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
-            transition: all 0.2s;
+            border: none; background: transparent; color: #aaa;
+            padding: 8px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 800;
+            transition: 0.3s; text-transform: uppercase;
         }
-        .view-btn.active {
-            background: var(--accent-gold); color: #000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        .view-btn.active { background: var(--primary); color: #000; box-shadow: var(--neon-shadow); }
 
-        /* --- MAIN CONTAINER --- */
-        .main-container {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            background-image: radial-gradient(#222 15%, transparent 16%), radial-gradient(#222 15%, transparent 16%);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-        }
-
-        /* === GRID MODE === */
+        /* --- GRID CONTAINER --- */
         #photoGrid {
-            height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 10px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px; 
-            align-content: start;
-            padding-bottom: 90px;
+            flex: 1; overflow-y: auto; padding: 20px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            padding-bottom: 100px;
         }
-        @media (min-width: 576px) { #photoGrid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
-        @media (min-width: 992px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 15px; } }
+        @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+        @media (min-width: 1200px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 25px; } }
 
         .grid-item {
-            position: relative; width: 100%; padding-bottom: 100%; height: 0;
-            background: #2a2a2a; border-radius: 8px; overflow: hidden; cursor: pointer;
-            border: 3px solid transparent; transition: transform 0.1s;
+            position: relative; border-radius: 20px; overflow: hidden;
+            aspect-ratio: 1/1; cursor: pointer; border: 2px solid transparent;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #111;
         }
-        .grid-item img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; display: block;
-        }
-        .grid-item.focused { border-color: var(--accent-gold); transform: scale(0.96); z-index: 2; }
-        .grid-item.selected { border-color: var(--selected-border); }
-        .grid-item.selected img { opacity: 0.7; }
-        
-        /* CHẤM TRÒN SỐ THỨ TỰ (Dùng chung cho Grid và Strip) */
-        .grid-dot {
-            position: absolute; top: 5px; right: 5px; width: 26px; height: 26px;
-            background: var(--accent-gold); color: #000; border-radius: 50%;
-            font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .grid-item:hover img { transform: scale(1.1); }
+        .grid-item.selected { border-color: var(--primary); box-shadow: var(--neon-shadow); }
+        .grid-item.selected::after {
+            content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; inset: 0; background: rgba(0, 235, 176, 0.2);
+            display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--primary);
         }
 
-        /* === VIEWER MODE === */
-        #photoViewer {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            display: none; flex-direction: column; background: #000; z-index: 100;
-        }
-
-        .btn-close-viewer {
-            position: absolute; top: 15px; right: 15px; z-index: 3000;
-            width: 45px; height: 45px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.3); color: white;
+        .vip-dot {
+            position: absolute; top: 12px; left: 12px; width: 30px; height: 30px;
+            background: #000; color: var(--primary); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.4rem;
+            font-weight: 900; font-size: 14px; border: 2px solid var(--primary); z-index: 10;
         }
 
-        .stage {
-            flex: 1; position: relative; display: flex;
-            align-items: center; justify-content: center; overflow: hidden;
+        /* --- VIEWER FULLSCREEN --- */
+        #photoViewer {
+            position: absolute; inset: 0; background: #000;
+            z-index: 5000; display: none; flex-direction: column;
         }
-        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
-        #drawCanvas {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            touch-action: none; z-index: 10; pointer-events: none;
-        }
-        #drawCanvas.drawing { pointer-events: auto; cursor: crosshair; }
 
-        /* Badge số thứ tự TRÊN ẢNH LỚN */
+        .close-vip {
+            position: absolute; top: 20px; right: 20px; width: 50px; height: 50px;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s;
+        }
+        .close-vip:hover { background: #ff4757; border-color: #ff4757; }
+
         #viewerBadge {
-            position: absolute;
-            top: 20px; left: 20px; /* Góc trái trên của ảnh */
-            background: var(--selected-border);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 1rem;
-            z-index: 20;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            display: none; /* Mặc định ẩn */
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-
-        .strip {
-            height: 90px; background: rgba(20, 20, 20, 0.95);
-            display: flex; align-items: center; padding: 0 10px; gap: 8px;
-            overflow-x: auto; flex-shrink: 0; border-top: 1px solid #333;
-            padding-bottom: 10px; 
-        }
-        .th {
-            height: 70px; width: 70px; border-radius: 8px; opacity: 0.4;
-            border: 2px solid transparent; flex-shrink: 0; overflow: hidden; cursor: pointer; 
-            position: relative; /* Để chứa grid-dot */
-        }
-        .th img { width: 100%; height: 100%; object-fit: cover; }
-        .th.act { opacity: 1; border-color: var(--accent-gold); transform: scale(1.1); }
-        .th.sel { opacity: 1; border-color: var(--selected-border); }
-        
-        /* Chỉnh lại dot cho thumbnail strip (nhỏ hơn chút) */
-        .th .grid-dot {
-            width: 20px; height: 20px; font-size: 10px; top: 3px; right: 3px;
+            position: absolute; top: 20px; left: 20px;
+            background: var(--primary); color: #000;
+            padding: 8px 20px; border-radius: 30px; font-weight: 900;
+            box-shadow: var(--neon-shadow); display: none;
         }
 
-        .tools {
-            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            background: rgba(40, 40, 40, 0.9); padding: 5px 15px;
-            border-radius: 30px; display: none; gap: 15px; z-index: 100;
-            border: 1px solid #555;
+        .strip-luxury {
+            height: 100px; background: rgba(0,0,0,0.8);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 12px; padding: 0 15px;
+            overflow-x: auto; scrollbar-width: none;
         }
-        .tools.active { display: flex; }
-        .t-btn {
-            width: 40px; height: 40px; border-radius: 50%; border: 1px solid #666;
-            background: #333; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        }
-        .t-btn.act { background: var(--accent-gold); color: #000; }
-
-        /* --- BOTTOM BAR --- */
-        .bottom-bar {
-            height: var(--footer-height);
-            background: rgba(30, 30, 30, 0.98);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid #444;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            z-index: 4000; 
+        .th-vip {
+            height: 75px; width: 75px; border-radius: 12px; flex-shrink: 0;
+            overflow: hidden; border: 2px solid transparent; opacity: 0.5; transition: 0.3s;
             position: relative;
         }
+        .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.1); }
+        .th-vip.sel { border-color: var(--accent); opacity: 1; }
 
-        .info-area { display: flex; flex-direction: column; justify-content: center; font-size: 0.9rem; max-width: 45%; }
-        .info-name { font-weight: bold; color: var(--accent-gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .info-count { color: #aaa; font-size: 0.8rem; }
+        /* --- BOTTOM BAR MASTER --- */
+        .bottom-bar {
+            height: var(--footer-h);
+            background: rgba(10, 20, 30, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 0 25px; display: flex; align-items: center; justify-content: space-between;
+            position: fixed; bottom: 0; width: 100%; z-index: 4000;
+        }
 
-        .action-area { display: flex; gap: 10px; align-items: center; }
-        .btn-action { border-radius: 12px; font-weight: 700; padding: 10px 20px; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; border: none; }
+        .btn-vip-action {
+            padding: 12px 28px; border-radius: 50px; font-weight: 900;
+            text-transform: uppercase; border: none; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .btn-select-vip { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-select-vip.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon-shadow); }
         
-        .btn-select { background: #333; border: 1px solid #555; color: #ccc; }
-        .btn-select.active { background: var(--selected-border); border-color: var(--selected-border); color: white; box-shadow: 0 0 15px rgba(13, 110, 253, 0.4); }
-        
-        .btn-save { background: linear-gradient(135deg, #198754, #147a30); color: white; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4); }
-        .btn-draw { width: 45px; height: 45px; border-radius: 50%; padding: 0; justify-content: center; background: #444; color: white; }
+        .btn-send-vip { 
+            background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000;
+            box-shadow: 0 10px 20px rgba(0, 235, 176, 0.3);
+        }
 
-        #loadOverlay { position: fixed; inset: 0; background: #121212; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent-gold); }
+        #loadOverlay {
+            position: fixed; inset: 0; background: var(--bg-deep);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader-neon {
+            width: 50px; height: 50px; border: 5px solid #111;
+            border-top: 5px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; box-shadow: var(--neon-shadow);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="loadOverlay">
-        <div class="spinner-border text-warning mb-3" role="status"></div>
-        <div class="fw-bold">Đang tải dữ liệu...</div>
+        <div class="loader-neon mb-3"></div>
+        <div style="font-weight: 900; color: var(--primary); letter-spacing: 2px;">DÉCOR VIP...</div>
     </div>
 
     <nav class="navbar">
-        <div class="d-flex align-items-center gap-2">
-            <i class="fas fa-images text-warning"></i>
-            <span class="album-title">Thư Viện (<span id="totalPhotos">0</span>)</span>
+        <div class="album-info-vip">
+            <div class="album-icon"><i class="fas fa-gem"></i></div>
+            <div class="d-flex flex-column">
+                <span class="album-title-text" id="albumTitle">ALBUM CỦA BẠN</span>
+                <small style="color: #666; font-size: 0.7rem; font-weight: 800;">TOTAL: <span id="totalPhotos">0</span> PICS</small>
+            </div>
         </div>
         
         <div class="view-switcher">
-            <button class="view-btn active" id="btnGrid" onclick="setView('grid')"><i class="fas fa-th-large"></i> Lưới</button>
-            <button class="view-btn" id="btnViewer" onclick="setView('viewer')"><i class="fas fa-square"></i> Chi Tiết</button>
+            <button class="view-btn active" id="btnGrid" onclick="setView('grid')"><i class="fas fa-th"></i> Lưới</button>
+            <button class="view-btn" id="btnViewer" onclick="setView('viewer')"><i class="fas fa-expand"></i> Xem</button>
         </div>
     </nav>
 
-    <div class="main-container">
-        
+    <div class="main-container" style="flex: 1; position: relative;">
         <div id="photoGrid"></div>
 
         <div id="photoViewer">
-            <div class="btn-close-viewer" onclick="setView('grid')">
-                <i class="fas fa-times"></i>
+            <div class="close-vip" onclick="setView('grid')"><i class="fas fa-times"></i></div>
+            <div id="viewerBadge">ẢNH SỐ 1</div>
+
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px;">
+                <img id="mainImg" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 0 30px rgba(0,0,0,0.8));">
             </div>
 
-            <div class="tools" id="tools">
-                <button class="t-btn act" onclick="setPen()"><i class="fas fa-pencil-alt"></i></button>
-                <button class="t-btn" onclick="cls()"><i class="fas fa-eraser"></i></button>
-                <button class="t-btn bg-success border-success" onclick="saveDraw()"><i class="fas fa-save"></i></button>
-                <button class="t-btn bg-danger border-danger" onclick="togDraw(false)"><i class="fas fa-times"></i></button>
-            </div>
-
-            <div class="stage">
-                <div style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                    <img id="mainImg" src="">
-                    <canvas id="drawCanvas"></canvas>
-                    <div id="viewerBadge"><i class="fas fa-check-circle me-1"></i><span id="badgeNum"></span></div>
-                </div>
-            </div>
-
-            <div class="strip" id="strip"></div>
+            <div class="strip-luxury" id="strip"></div>
         </div>
     </div>
 
     <div class="bottom-bar">
-        <div class="info-area">
-            <div class="info-name" id="pName">...</div>
-            <div class="info-count" id="pCount">0 / 0</div>
+        <div class="d-flex flex-column" style="max-width: 40%;">
+            <span id="pName" style="font-weight: 900; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">...</span>
+            <span id="pCount" style="font-size: 0.75rem; color: #666; font-weight: 800;">0 / 0</span>
         </div>
-        <div class="action-area">
-            <button class="btn-action btn-draw" id="btnDraw" onclick="togDraw(true)" style="display: none;">
-                <i class="fas fa-pen"></i>
+
+        <div class="d-flex gap-3">
+            <button class="btn-vip-action btn-select-vip" id="btnSel" onclick="togSel()">
+                <i class="far fa-heart"></i> <span>CHỌN</span>
             </button>
             
-            <button class="btn-action btn-select" id="btnSel" onclick="togSel()">
-                <i class="far fa-circle"></i> Chọn
-            </button>
-            
-            <button class="btn-action btn-save" onclick="finalCommit()">
-                <i class="fas fa-paper-plane"></i> Gửi
+            <button class="btn-vip-action btn-send-vip" onclick="finalCommit()">
+                <i class="fas fa-paper-plane"></i> <span>GỬI NGAY</span>
             </button>
         </div>
     </div>
 
     <script>
-        if (localStorage.getItem('layout_version') !== 'V18.6') {
-            console.log('Update to V18.6');
-        }
-
         const URL_GET = 'https://dichvufb.tino.page/webhook/get-photos'; 
         const URL_SAVE = 'https://dichvufb.tino.page/webhook/save-selection'; 
-        const URL_DRAW = 'https://dichvufb.tino.page/webhook/upload-drawing';
         const URL_DONE = 'https://dichvufb.tino.page/webhook/finish-selection';
 
-        let photos=[], cur=0, isDraw=false, ctx=null, currentView='grid'; 
-        let cvs, img; 
-        
+        let photos=[], cur=0, currentView='grid', selectedPhotoIds = [];
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');
-        let selectedPhotoIds = []; 
-        
-        async function fetchData(url, options = {}) {
-            try {
-                const res = await fetch(url, options);
-                if (!res.ok) throw new Error(`Server Error: ${res.status}`);
-                const text = await res.text();
-                if (!text || text.trim() === "") return null; 
-                try { return JSON.parse(text); } 
-                catch (e) { console.error("Raw:", text); throw new Error("Dữ liệu lỗi."); }
-            } catch (err) { throw err; }
-        }
 
-        function getLink(id, size) {
-            return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
-        }
+        function getLink(id, size) { return `https://drive.google.com/thumbnail?id=${id}&sz=${size}`; }
 
         function setView(view) {
             currentView = view;
-            const gridEl = document.getElementById('photoGrid');
-            const viewerEl = document.getElementById('photoViewer');
-            const btnGrid = document.getElementById('btnGrid');
-            const btnViewer = document.getElementById('btnViewer');
-            const btnDraw = document.getElementById('btnDraw');
-            const bottomBar = document.querySelector('.bottom-bar');
-
-            if (view === 'grid') {
-                gridEl.style.display = 'grid';
-                viewerEl.style.display = 'none';
-                btnGrid.classList.add('active');
-                btnViewer.classList.remove('active');
-                btnDraw.style.display = 'none';
-                bottomBar.style.display = 'flex'; 
-                capNhatSoThuTuVaTổngSố(); 
-                setTimeout(() => {
-                    const el = document.querySelector(`.grid-item[data-index="${cur}"]`);
-                    if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
-                }, 100);
-            } else {
-                gridEl.style.display = 'none';
-                viewerEl.style.display = 'flex';
-                btnGrid.classList.remove('active');
-                btnViewer.classList.add('active');
-                btnDraw.style.display = 'flex';
-                show(cur); 
-            }
+            document.getElementById('photoGrid').style.display = (view === 'grid') ? 'grid' : 'none';
+            document.getElementById('photoViewer').style.display = (view === 'viewer') ? 'flex' : 'none';
+            document.getElementById('btnGrid').classList.toggle('active', view === 'grid');
+            document.getElementById('btnViewer').classList.toggle('active', view === 'viewer');
+            if(view === 'viewer') show(cur);
+            else renderGrid();
         }
 
-        function capNhatSoThuTuVaTổngSố() {
-            let count = selectedPhotoIds.length;
-            document.getElementById('totalPhotos').innerText = count;
-            
-            // 1. GRID RENDER
+        function renderGrid() {
             const grid = document.getElementById('photoGrid');
-            if (grid.children.length === 0) {
-                photos.forEach((p, i) => {
-                    let d = document.createElement('div');
-                    d.className = 'grid-item';
-                    d.setAttribute('data-index', i);
-                    
-                    let thumb = getLink(p.id, 's500'); 
-                    d.innerHTML = `<img src="${thumb}" loading="lazy">`;
-                    
-                    d.onclick = () => { 
-                        document.querySelectorAll('.grid-item').forEach(x => x.classList.remove('focused'));
-                        d.classList.add('focused');
-                        cur = i; 
-                        updateBottomInfo(); 
-                    };
-                    d.ondblclick = () => { cur = i; setView('viewer'); };
-                    grid.appendChild(d);
-                });
-            }
-            
-            Array.from(grid.children).forEach((d, i) => {
-                let p = photos[i];
-                let isSel = selectedPhotoIds.includes(p.id);
-                d.classList.toggle('selected', isSel);
-                let dot = d.querySelector('.grid-dot');
-                if (isSel) {
-                    if (!dot) d.insertAdjacentHTML('beforeend', `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>`);
-                    else dot.innerText = selectedPhotoIds.indexOf(p.id) + 1;
-                } else { if (dot) dot.remove(); }
-                
-                if (i === cur) d.classList.add('focused'); else d.classList.remove('focused');
+            grid.innerHTML = '';
+            photos.forEach((p, i) => {
+                const isSel = selectedPhotoIds.includes(p.id);
+                const item = document.createElement('div');
+                item.className = `grid-item ${isSel ? 'selected' : ''}`;
+                const num = selectedPhotoIds.indexOf(p.id) + 1;
+                item.innerHTML = `
+                    <img src="${getLink(p.id, 's500')}" loading="lazy">
+                    ${isSel ? `<div class="vip-dot">${num}</div>` : ''}
+                `;
+                item.onclick = () => { cur = i; setView('viewer'); };
+                grid.appendChild(item);
             });
-
-            // 2. STRIP RENDER (ĐÃ CẬP NHẬT: HIỆN SỐ TRÊN THUMBNAIL)
-            if (currentView === 'viewer') {
-                const strip = document.getElementById('strip');
-                strip.innerHTML = '';
-                photos.forEach((p, i) => {
-                    let d = document.createElement('div');
-                    d.className = 'th';
-                    
-                    let dotContent = '';
-                    if (selectedPhotoIds.includes(p.id)) {
-                        d.classList.add('sel');
-                        dotContent = `<div class="grid-dot">${selectedPhotoIds.indexOf(p.id) + 1}</div>`;
-                    }
-                    if (i === cur) d.classList.add('act');
-                    
-                    d.innerHTML = `<img src="${getLink(p.id, 's100')}">${dotContent}`;
-                    d.onclick = () => show(i);
-                    strip.appendChild(d);
-                });
-                setTimeout(() => {
-                    if(strip.children[cur]) strip.children[cur].scrollIntoView({behavior:'smooth', inline:'center'});
-                }, 50);
-            }
-            
-            updateBottomInfo();
         }
 
-        // ⭐ HÀM CẬP NHẬT INFO VÀ BADGE ẢNH LỚN ⭐
-        function updateBottomInfo() {
-            const pName = document.getElementById('pName');
-            const pCount = document.getElementById('pCount');
-            const btnSel = document.getElementById('btnSel');
-            const btnSave = document.querySelector('.btn-save');
-            const viewerBadge = document.getElementById('viewerBadge');
-            const badgeNum = document.getElementById('badgeNum');
+        function show(i) {
+            if (i < 0 || i >= photos.length) return;
+            cur = i;
+            const p = photos[i];
+            const mainImg = document.getElementById('mainImg');
+            mainImg.src = getLink(p.id, 's2000');
+            
+            // Render Strip
+            const strip = document.getElementById('strip');
+            strip.innerHTML = '';
+            photos.forEach((thumb, idx) => {
+                const isSel = selectedPhotoIds.includes(thumb.id);
+                const th = document.createElement('div');
+                th.className = `th-vip ${idx === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
+                th.innerHTML = `<img src="${getLink(thumb.id, 's100')}">`;
+                th.onclick = () => show(idx);
+                strip.appendChild(th);
+            });
+            
+            if(strip.children[cur]) strip.children[cur].scrollIntoView({behavior:'smooth', inline:'center'});
+            updateInfo();
+        }
 
-            if (cur >= 0 && cur < photos.length) {
-                let p = photos[cur];
-                let isSel = selectedPhotoIds.includes(p.id);
-                
-                let safeName = p.name || p.fileName || `Ảnh #${cur + 1}`;
-                pName.innerText = safeName;
-                pName.style.color = "var(--accent-gold)";
-                pCount.innerText = `${cur + 1} / ${photos.length}`;
-                
-                if (isSel) {
-                    btnSel.classList.add('active');
-                    btnSel.innerHTML = `<i class="fas fa-check-circle"></i> Đã Chọn`;
-                    
-                    // HIỆN SỐ TRÊN ẢNH LỚN
-                    if(currentView === 'viewer') {
-                        viewerBadge.style.display = 'block';
-                        badgeNum.innerText = `Ảnh số ${selectedPhotoIds.indexOf(p.id) + 1}`;
-                    } else {
-                        viewerBadge.style.display = 'none';
-                    }
-                } else {
-                    btnSel.classList.remove('active');
-                    btnSel.innerHTML = `<i class="far fa-circle"></i> Chọn`;
-                    viewerBadge.style.display = 'none';
-                }
+        function updateInfo() {
+            const p = photos[cur];
+            const isSel = selectedPhotoIds.includes(p.id);
+            document.getElementById('pName').innerText = p.name || `IMAGE_${cur+1}`;
+            document.getElementById('pCount').innerText = `${cur + 1} / ${photos.length}`;
+            
+            const btnSel = document.getElementById('btnSel');
+            const badge = document.getElementById('viewerBadge');
+            
+            if(isSel) {
+                btnSel.classList.add('active');
+                btnSel.innerHTML = `<i class="fas fa-check"></i> ĐÃ CHỌN`;
+                badge.style.display = 'block';
+                badge.innerText = `ẢNH SỐ ${selectedPhotoIds.indexOf(p.id) + 1}`;
+            } else {
+                btnSel.classList.remove('active');
+                btnSel.innerHTML = `<i class="far fa-heart"></i> CHỌN`;
+                badge.style.display = 'none';
             }
-            btnSave.innerHTML = `<i class="fas fa-paper-plane"></i> Gửi (${selectedPhotoIds.length})`;
+            document.getElementById('totalPhotos').innerText = selectedPhotoIds.length;
+        }
+
+        function togSel() {
+            const p = photos[cur];
+            const idx = selectedPhotoIds.indexOf(p.id);
+            if (idx === -1) selectedPhotoIds.push(p.id);
+            else selectedPhotoIds.splice(idx, 1);
+            
+            localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedPhotoIds));
+            updateInfo();
+            if(currentView === 'viewer') show(cur);
+
+            fetch(URL_SAVE, {
+                method:'POST', headers:{'Content-Type':'application/json'}, 
+                body:JSON.stringify({id:p.id, selected: idx === -1})
+            }).catch(e => console.warn(e));
+        }
+
+        async function finalCommit(){
+            if(selectedPhotoIds.length === 0) return alert("Dạ, mình chưa chọn ảnh nào ạ!");
+            if(confirm(`Gửi ${selectedPhotoIds.length} ảnh đã chọn cho chuyên viên?`)) {
+                try {
+                    await fetch(URL_DONE, {
+                        method:'POST', headers:{'Content-Type':'application/json'}, 
+                        body:JSON.stringify({ id: fid, selected_ids: selectedPhotoIds, count: selectedPhotoIds.length })
+                    });
+                    alert("✅ Tuyệt vời! Yêu cầu của bạn đã được gửi thành công.");
+                } catch(e) { alert("Lỗi kết nối: "+e.message); }
+            }
         }
 
         async function init() {
             try {
-                localStorage.setItem('layout_version', 'V18.6');
-                cvs = document.getElementById('drawCanvas');
-                img = document.getElementById('mainImg');
+                if(!fid) throw new Error("ID Album không hợp lệ");
+                const localData = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
+                if (localData) selectedPhotoIds = JSON.parse(localData);
 
-                if(!fid) throw new Error("Link thiếu mã Album (id)");
-                const key = 'anh_da_chon_cua_khach_' + fid;
-                const localData = localStorage.getItem(key);
-                if (localData) { try { selectedPhotoIds = JSON.parse(localData) || []; } catch(e){} }
-                
-                let data = await fetchData(`${URL_GET}?id=${fid}`);
-                if (!data) throw new Error("Server không trả về dữ liệu.");
+                const res = await fetch(`${URL_GET}?id=${fid}`);
+                const data = await res.json();
                 photos = data.photos || data;
-                if (!Array.isArray(photos) || photos.length === 0) throw new Error("Album này chưa có ảnh.");
-
+                
                 document.getElementById('loadOverlay').style.display='none';
-                capNhatSoThuTuVaTổngSố();
-                setView('grid'); 
-                
-                ['mousedown','touchstart'].forEach(e=>cvs.addEventListener(e,start, {passive:false}));
-                ['mouseup','touchend'].forEach(e=>cvs.addEventListener(e,end, {passive:false}));
-                ['mousemove','touchmove'].forEach(e=>cvs.addEventListener(e,draw, {passive:false}));
-                
-                document.onkeydown=e=>{
-                    if(currentView==='viewer' && !isDraw){
-                        if(e.key=='ArrowRight') mov(1);
-                        if(e.key=='ArrowLeft') mov(-1);
-                        if(e.key==' ') togSel();
-                        if(e.key=='Escape') setView('grid');
-                    }
-                };
+                renderGrid();
+                updateInfo();
             } catch(e) {
-                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-3"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>${e.message}</div>`;
-            }
-        }
-
-        function show(i) {
-            if (isDraw) togDraw(false);
-            if (i < 0 || i >= photos.length) return;
-            cur = i;
-            
-            img.src = getLink(photos[i].id, 's100'); 
-            let hd = getLink(photos[i].id, 's2000');
-            let hdImg = new Image();
-            hdImg.src = hd;
-            hdImg.onload = () => {
-                img.src = hd;
-                cvs.width = img.offsetWidth;
-                cvs.height = img.offsetHeight;
-                if(isDraw) ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            };
-            capNhatSoThuTuVaTổngSố();
-        }
-
-        function togSel() {
-            if (!photos.length) return;
-            let p = photos[cur];
-            let isSel = selectedPhotoIds.includes(p.id);
-            if (!isSel) selectedPhotoIds.push(p.id);
-            else selectedPhotoIds = selectedPhotoIds.filter(id => id !== p.id);
-            
-            capNhatSoThuTuVaTổngSố();
-            localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedPhotoIds));
-            fetchData(URL_SAVE, {
-                method:'POST', headers:{'Content-Type':'application/json'}, 
-                body:JSON.stringify({id:p.id, selected:!isSel})
-            }).catch(e => console.warn(e));
-        }
-
-        function mov(d) { show(cur + d); }
-
-        function togDraw(en) {
-            isDraw = en;
-            document.getElementById('tools').classList.toggle('active', en);
-            cvs.style.pointerEvents = en ? 'auto' : 'none';
-            document.getElementById('drawCanvas').classList.toggle('drawing', en);
-            const bottomBar = document.querySelector('.bottom-bar');
-            bottomBar.style.display = en ? 'none' : 'flex'; 
-
-            if(en) {
-                if(!ctx) ctx=cvs.getContext('2d');
-                ctx.strokeStyle='red'; ctx.lineWidth=5; ctx.lineCap='round';
-                ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-            } else { if(ctx) { ctx.clearRect(0,0,cvs.width,cvs.height); } }
-        }
-        
-        let paint=false;
-        function start(e){paint=true;draw(e);}
-        function end(){paint=false;if(ctx) ctx.beginPath();}
-        function draw(e){
-            if(!paint||!isDraw||!ctx)return;
-            e.preventDefault();
-            const r=cvs.getBoundingClientRect();
-            const cx = e.clientX || e.touches[0].clientX;
-            const cy = e.clientY || e.touches[0].clientY;
-            const x=(cx-r.left)*(cvs.width/r.width);
-            const y=(cy-r.top)*(cvs.height/r.height);
-            ctx.lineTo(x,y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x,y);
-        }
-        function setPen(){if(ctx){ctx.globalCompositeOperation='source-over';ctx.strokeStyle='red';}}
-        function cls(){if(ctx){ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0,cvs.width,cvs.height);}}
-        
-        function saveDraw() {
-            if(!confirm("Lưu ghi chú?")) return;
-            cvs.toBlob(async function(blob) {
-                let fd=new FormData();
-                let fileName = photos[cur].name || `Photo_${photos[cur].id}`; 
-                fd.append('file', blob, `Ve_${fid}_${fileName}.png`);
-                fd.append('photoId', photos[cur].id);
-                try {
-                    await fetchData(URL_DRAW, {method:'POST', body:fd});
-                    alert("✅ Đã lưu!"); togDraw(false);
-                } catch(e) { alert("Lỗi tải lên: "+e.message); }
-            }, 'image/png');
-        }
-
-        async function finalCommit(){
-            if(confirm(`Gửi ${selectedPhotoIds.length} ảnh đã chọn?`)) {
-                try {
-                    await fetchData(URL_DONE, {
-                        method:'POST', headers:{'Content-Type':'application/json'}, 
-                        body:JSON.stringify({ id: fid, selected_ids: selectedPhotoIds, count: selectedPhotoIds.length })
-                    });
-                    alert("✅ Đã gửi thành công!");
-                } catch(e) { alert("Lỗi gửi dữ liệu: "+e.message); }
+                document.getElementById('loadOverlay').innerHTML = `<div class="text-danger text-center px-4"><b>LỖI:</b><br>${e.message}</div>`;
             }
         }
 
