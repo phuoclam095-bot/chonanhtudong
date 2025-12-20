@@ -3,81 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chọn Ảnh VIP - V18.8 MASTER</title>
+    <title>VIP Experience - V19.0 MASTER</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --header-h: 55px; --footer-h: 80px; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
-        body { background-color: var(--bg-deep); background-image: radial-gradient(circle at 50% 50%, #0a1f3d 0%, #050a14 100%); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; user-select: none; }
+        :root { --primary: #00ebb0; --bg: #050a14; --header-h: 55px; --footer-h: 80px; --strip-h: 90px; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; user-select: none; }
         
-        /* DỒN HEADER VỀ 1 THANH DUY NHẤT */
-        .navbar { height: var(--header-h); background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 12px; z-index: 3000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-        .album-info-mini { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-        .album-title-text { font-weight: 900; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; color: var(--primary); }
-        .picked-count { background: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.65rem; font-weight: 900; color: #fff; border: 1px solid var(--primary); }
-
+        /* HEADER 1 THANH DUY NHẤT */
+        .navbar { height: var(--header-h); background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 10px; z-index: 3000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+        .album-title { font-weight: 900; font-size: 0.85rem; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
         .view-switcher { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 3px; display: flex; scale: 0.9; }
-        .view-btn { border: none; background: transparent; color: #aaa; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; transition: 0.3s; }
-        .view-btn.active { background: var(--primary); color: #000; box-shadow: var(--neon); }
+        .view-btn { border: none; background: transparent; color: #aaa; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; transition: 0.3s; }
+        .view-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(0, 235, 176, 0.4); }
 
         .content-area { flex: 1; position: relative; overflow: hidden; }
-        #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: min-content; gap: 10px; align-items: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
-        @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
-        @media (min-width: 1200px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 20px; } }
+        
+        /* GRID LAYOUT - CHỐNG LỆCH ẢNH */
+        #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 8px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+        @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 12px; } }
 
-        .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; cursor: pointer; border: 3px solid transparent; background: #111; width: 100%; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; display: block; }
-        .grid-item.focused { border-color: var(--primary); box-shadow: var(--neon); }
+        .grid-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .grid-item.focused { border-color: #fff; transform: scale(0.96); z-index: 10; }
         .grid-item.selected { border-color: var(--primary); }
-        .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 9px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid #000; }
+        .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
-        /* CHI TIẾT ẢNH TO VÀ LÊN TRÊN */
+        /* CHI TIẾT - ẢNH LỚN VÀ THUMBNAIL */
         #photoViewer { position: absolute; inset: 0; background: #000; z-index: 2500; display: none; flex-direction: column; }
-        .close-vip { position: absolute; top: 10px; right: 10px; width: 38px; height: 38px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 6000; }
-        #viewerBadge { position: absolute; top: 10px; left: 10px; background: var(--primary); color: #000; padding: 5px 12px; border-radius: 15px; font-weight: 900; font-size: 0.7rem; z-index: 10; }
+        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding-bottom: 10px; }
+        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding-top: 5px; } /* Đẩy ảnh lên trên tý */
-        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(1.05); } /* Làm ảnh to ra tý */
-        
-        .strip-luxury { height: 75px; background: rgba(5, 10, 20, 0.95); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; padding: 0 8px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
-        .th-vip { height: 55px; width: 55px; border-radius: 8px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; transition: 0.2s; position: relative; }
-        .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.05); }
-        .th-vip.sel { border-color: var(--accent); opacity: 0.8; }
+        .strip-luxury { height: var(--strip-h); background: rgba(5, 10, 20, 0.98); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; padding: 0 10px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; z-index: 3000; }
+        .th-vip { height: 65px; width: 65px; border-radius: 8px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; position: relative; transition: 0.2s; }
+        .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.1); }
+        .th-vip.sel { opacity: 1; border-color: var(--primary); }
 
-        .bottom-bar { height: var(--footer-h); background: rgba(5, 10, 20, 0.98); backdrop-filter: blur(25px); border-top: 1px solid rgba(255,255,255,0.1); padding: 0 12px; display: flex; align-items: center; justify-content: space-between; position: fixed; bottom: 0; width: 100%; z-index: 4000; flex-shrink: 0; }
-        .btn-vip-action { height: 40px; border-radius: 10px; font-weight: 900; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-icon { width: 40px; font-size: 1rem; }
-        .btn-label { width: auto; padding: 0 15px; font-size: 0.75rem; text-transform: uppercase; gap: 6px; }
+        /* FOOTER ĐỒNG BỘ NÚT BẤM */
+        .bottom-bar { height: var(--footer-h); background: rgba(5, 10, 20, 0.98); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); padding: 0 15px; display: flex; align-items: center; justify-content: space-between; position: fixed; bottom: 0; width: 100%; z-index: 4000; }
+        .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-circle { width: 42px; font-size: 1.1rem; }
+        .btn-wide { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; gap: 8px; }
+        
         .bg-gray { background: rgba(255,255,255,0.1); color: #fff; }
-        .bg-danger-vip { background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid #ff4757; }
+        .bg-primary { background: var(--primary); color: #000; }
+        .bg-danger-vip { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
         .bg-gradient-vip { background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000; box-shadow: 0 5px 15px rgba(0, 235, 176, 0.3); }
 
-        #loadOverlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .loader-neon { width: 40px; height: 40px; border: 4px solid #111; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #loadOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="loadOverlay"><div class="loader-neon mb-3"></div><div style="font-weight: 900; color: var(--primary); letter-spacing: 2px; font-size: 0.7rem;">DECORING V18.8...</div></div>
+    <div id="loadOverlay">
+        <div class="spinner-border text-success mb-2"></div>
+        <div style="font-size: 0.7rem; letter-spacing: 2px; font-weight: 900; color: var(--primary);">V19.0 MASTER</div>
+    </div>
 
     <nav class="navbar">
-        <div class="album-info-mini">
-            <span class="album-title-text" id="albumTitle">...</span>
-            <span class="picked-count"><span id="totalPhotos">0</span> CHỌN</span>
-        </div>
+        <div class="album-title" id="albumTitle">VIP ALBUM</div>
         <div class="view-switcher">
             <button class="view-btn active" id="btnGrid" onclick="setView('grid')">LƯỚI</button>
-            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">CHI TIẾT</button>
+            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">XEM</button>
         </div>
     </nav>
 
     <div class="content-area">
         <div id="photoGrid"></div>
         <div id="photoViewer">
-            <div class="close-vip" onclick="setView('grid')"><i class="fas fa-times"></i></div>
-            <div id="viewerBadge">ẢNH SỐ 1</div>
+            <div id="viewerBadge" style="position:absolute; top:10px; left:10px; background:var(--primary); color:#000; padding:4px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
             <div class="stage"><img id="mainImg" src=""></div>
             <div class="strip-luxury" id="strip"></div>
         </div>
@@ -85,16 +80,17 @@
 
     <div class="bottom-bar">
         <div class="d-flex gap-2">
-            <button class="btn-vip-action btn-icon bg-danger-vip" onclick="clearAll()" title="Reset chọn"><i class="fas fa-undo-alt"></i></button>
-            <button class="btn-vip-action btn-icon bg-gray" id="btnFilter" onclick="toggleFilter()" title="Ảnh đã chọn"><i class="fas fa-eye"></i></button>
+            <button class="btn-action btn-circle bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
+            <button class="btn-action btn-circle bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn-vip-action btn-label bg-gray" id="btnSel" onclick="togSel()"><i class="far fa-circle"></i> <span>CHỌN</span></button>
-            <button class="btn-vip-action btn-label bg-gradient-vip" onclick="finalCommit()"><i class="fas fa-save"></i> <span>LƯU CHỌN</span></button>
+            <button class="btn-action btn-wide bg-gray" id="btnSel" onclick="togSel()">CHỌN</button>
+            <button class="btn-action btn-wide bg-gradient-vip" onclick="finalCommit()">LƯU (<span id="totalPhotos">0</span>)</button>
         </div>
     </div>
 
     <script>
+        // GIỮ NGUYÊN TẤT CẢ TÊN WEBHOOK ĐẦU NÃO
         const PATHS = { GET: 'https://dichvufb.tino.page/webhook/get-photos', SAVE: 'https://dichvufb.tino.page/webhook/save-selection', DONE: 'https://dichvufb.tino.page/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         const fid = new URLSearchParams(window.location.search).get('id');
@@ -107,93 +103,57 @@
             document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
             document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
             document.getElementById('btnViewer').classList.toggle('active', v === 'viewer');
-            if(v === 'grid') renderGrid(); else showViewer(cur);
+            refreshUI();
         }
 
-        function renderGrid() {
-            const grid = document.getElementById('photoGrid');
+        function refreshUI() {
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
-            grid.innerHTML = '';
-            displayPhotos.forEach((p) => {
-                const originalIndex = photos.indexOf(p);
-                const isSel = selectedIds.includes(p.id);
-                const item = document.createElement('div');
-                item.className = `grid-item ${isSel ? 'selected' : ''} ${originalIndex === cur ? 'focused' : ''}`;
-                item.id = `grid-p-${originalIndex}`;
-                const num = selectedIds.indexOf(p.id) + 1;
-                // Sửa link thumbnail chuẩn để hiện ảnh
-                item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">${isSel ? `<div class="vip-dot">${num}</div>` : ''}`;
-                item.onclick = () => { cur = originalIndex; syncUINoLags(); };
-                item.ondblclick = () => { cur = originalIndex; setView('viewer'); };
-                grid.appendChild(item);
-            });
+            if (currentView === 'grid') {
+                const grid = document.getElementById('photoGrid');
+                grid.innerHTML = '';
+                displayPhotos.forEach((p) => {
+                    const originIdx = photos.indexOf(p);
+                    const isSel = selectedIds.includes(p.id);
+                    const item = document.createElement('div');
+                    item.className = `grid-item ${isSel ? 'selected' : ''} ${originIdx === cur ? 'focused' : ''}`;
+                    item.id = `item-${originIdx}`;
+                    const num = selectedIds.indexOf(p.id) + 1;
+                    item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">${isSel ? `<div class="vip-dot">${num}</div>` : ''}`;
+                    item.onclick = () => { cur = originIdx; syncFocus(); };
+                    item.ondblclick = () => { cur = originIdx; setView('viewer'); };
+                    grid.appendChild(item);
+                });
+            } else {
+                showViewer();
+            }
             updateInfo();
         }
 
-        function syncUINoLags() {
-            document.querySelectorAll('.grid-item').forEach(item => item.classList.remove('focused'));
-            const activeItem = document.getElementById(`grid-p-${cur}`);
-            if(activeItem) activeItem.classList.add('focused');
+        function syncFocus() {
+            document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('focused'));
+            const active = document.getElementById(`item-${cur}`);
+            if(active) active.classList.add('focused');
             updateInfo();
         }
 
-        function showViewer(i) {
-            cur = i;
-            const mainImg = document.getElementById('mainImg');
-            // Sửa link ảnh lớn chuẩn sz
-            mainImg.src = getLink(photos[cur].id, 's2000'); 
-
+        function showViewer() {
+            const p = photos[cur];
+            if(!p) return;
+            document.getElementById('mainImg').src = getLink(p.id, 's2000');
             const strip = document.getElementById('strip');
             strip.innerHTML = '';
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
             displayPhotos.forEach((p) => {
-                const originalIndex = photos.indexOf(p);
+                const originIdx = photos.indexOf(p);
                 const isSel = selectedIds.includes(p.id);
                 const th = document.createElement('div');
-                th.className = `th-vip ${originalIndex === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                const num = selectedIds.indexOf(p.id) + 1;
-                th.innerHTML = `<img src="${getLink(p.id, 's100')}">${isSel ? `<div class="vip-dot" style="width:14px;height:14px;font-size:7px;top:2px;right:2px;">${num}</div>` : ''}`;
-                th.onclick = () => showViewer(originalIndex);
+                th.className = `th-vip ${originIdx === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
+                th.innerHTML = `<img src="${getLink(p.id, 's100')}">`;
+                th.onclick = () => { cur = originIdx; showViewer(); };
                 strip.appendChild(th);
-                if(originalIndex === cur) setTimeout(() => th.scrollIntoView({ behavior: 'smooth', inline: 'center' }), 50);
+                if(originIdx === cur) setTimeout(() => th.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             });
             updateInfo();
-        }
-
-        function toggleFilter() {
-            if(selectedIds.length === 0 && !isFiltering) return alert("Bạn chưa chọn ảnh nào!");
-            isFiltering = !isFiltering;
-            const btn = document.getElementById('btnFilter');
-            btn.classList.toggle('bg-primary', isFiltering);
-            if(isFiltering) {
-                const firstPicked = photos.find(p => selectedIds.includes(p.id));
-                if(firstPicked) cur = photos.indexOf(firstPicked);
-                setView('grid'); 
-            } else { renderGrid(); }
-        }
-
-        function clearAll() {
-            if(confirm("Xóa toàn bộ chọn?")) {
-                selectedIds = [];
-                localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-                isFiltering = false;
-                document.getElementById('btnFilter').classList.remove('bg-primary');
-                renderGrid();
-            }
-        }
-
-        function updateInfo() {
-            const p = photos[cur]; if(!p) return;
-            const isSel = selectedIds.includes(p.id);
-            document.getElementById('totalPhotos').innerText = selectedIds.length;
-            const btnSel = document.getElementById('btnSel');
-            const badge = document.getElementById('viewerBadge');
-            btnSel.classList.toggle('bg-primary', isSel);
-            btnSel.innerHTML = isSel ? `<i class="fas fa-check-circle"></i> <span>ĐÃ CHỌN</span>` : `<i class="far fa-circle"></i> <span>CHỌN</span>`;
-            if(currentView === 'viewer') {
-                badge.style.display = isSel ? 'block' : 'none';
-                badge.innerText = `ẢNH SỐ ${selectedIds.indexOf(p.id) + 1}`;
-            }
         }
 
         function togSel() {
@@ -201,9 +161,45 @@
             const idx = selectedIds.indexOf(p.id);
             if (idx === -1) selectedIds.push(p.id);
             else selectedIds.splice(idx, 1);
+            
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-            if(currentView === 'grid') renderGrid(); else showViewer(cur);
-            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) }).catch(e => console.warn(e));
+            currentView === 'grid' ? refreshUI() : showViewer();
+            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
+        }
+
+        function toggleFilter() {
+            if(selectedIds.length === 0 && !isFiltering) return alert("Bạn chưa chọn ảnh nào!");
+            isFiltering = !isFiltering;
+            document.getElementById('btnFilter').classList.toggle('bg-primary', isFiltering);
+            if(isFiltering) {
+                const first = photos.find(p => selectedIds.includes(p.id));
+                if(first) cur = photos.indexOf(first);
+            }
+            refreshUI();
+        }
+
+        function clearAll() {
+            if(confirm("Bỏ chọn toàn bộ danh sách?")) {
+                selectedIds = [];
+                localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
+                isFiltering = false;
+                refreshUI();
+            }
+        }
+
+        function updateInfo() {
+            const p = photos[cur]; if(!p) return;
+            const isSel = selectedIds.includes(p.id);
+            document.getElementById('totalPhotos').innerText = selectedIds.length;
+            const btn = document.getElementById('btnSel');
+            btn.className = isSel ? 'btn-action btn-wide bg-primary' : 'btn-action btn-wide bg-gray';
+            btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
+            
+            const badge = document.getElementById('viewerBadge');
+            if(currentView === 'viewer' && isSel) {
+                badge.style.display = 'block';
+                badge.innerText = `ẢNH #${selectedIds.indexOf(p.id) + 1}`;
+            } else badge.style.display = 'none';
         }
 
         async function finalCommit(){
@@ -212,22 +208,21 @@
                 try {
                     await fetch(PATHS.DONE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ id: fid, selected_ids: selectedIds, count: selectedIds.length }) });
                     alert("✅ Thành công!");
-                } catch(e) { alert("Lỗi: "+e.message); }
+                } catch(e) { alert("Lỗi gửi dữ liệu!"); }
             }
         }
 
         async function init() {
             try {
-                if(!fid) throw new Error("Link lỗi");
-                const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
-                if (local) selectedIds = JSON.parse(local);
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json();
                 photos = data.photos || data;
                 document.getElementById('albumTitle').innerText = data.folderName || "VIP ALBUM";
+                const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
+                if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 setView('grid');
-            } catch(e) { document.getElementById('loadOverlay').innerHTML = `<div class="text-danger">LỖI: ${e.message}</div>`; }
+            } catch(e) { alert("Lỗi tải Album!"); }
         }
         init();
     </script>
