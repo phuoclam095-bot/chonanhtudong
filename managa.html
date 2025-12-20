@@ -3,234 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Master Dashboard - VIP 10 STAR</title>
+    <title>chonanhnhanh.vn - Quản Lý Album VIP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #00ebb0; 
-            --accent: #51ff7d; 
-            --bg-deep: #050a14; 
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --neon-glow: 0 0 15px rgba(0, 235, 176, 0.3);
+            --bg-blur: rgba(5, 10, 20, 0.4); /* Làm trong suốt nền để thấy ảnh nền */
             --glass: rgba(255, 255, 255, 0.05);
-            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            --neon: 0 0 15px rgba(0, 235, 176, 0.5);
         }
         
         body { 
-            background-color: var(--bg-deep); 
-            background-image: radial-gradient(circle at 50% 50%, #0a1f3d 0%, #050a14 100%);
+            background-color: #050a14;
+            /* Cấu hình ảnh nền ưu tiên hiển thị */
+            background-image: linear-gradient(to bottom, rgba(5,10,20,0.4) 0%, rgba(5,10,20,0.6) 100%), 
+                              url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #fff; 
             font-family: 'Montserrat', sans-serif; 
             min-height: 100vh; 
-            padding-top: 90px; 
+            padding-top: 100px; 
             overflow-x: hidden;
         }
 
-        /* --- NAVBAR LUXURY --- */
+        /* --- NAVBAR: ƯU TIÊN THƯƠNG HIỆU chonanhnhanh.vn --- */
         .navbar { 
-            background: rgba(5, 10, 20, 0.85); 
-            backdrop-filter: blur(25px); 
+            background: rgba(5, 10, 20, 0.7); 
+            backdrop-filter: blur(15px); 
             border-bottom: 1px solid rgba(255,255,255,0.05); 
-            height: 80px;
+            height: 85px;
         }
-        .navbar-brand { font-weight: 900; font-size: 1.4rem; color: var(--primary) !important; letter-spacing: 2px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 10px 15px !important; transition: 0.3s; }
-        .nav-link.active { color: var(--primary) !important; text-shadow: var(--neon-glow); }
+        .navbar-brand { 
+            font-weight: 900; 
+            font-size: 1.6rem; 
+            color: var(--primary) !important; 
+            letter-spacing: -1px;
+            text-shadow: var(--neon);
+        }
+        .brand-dot { color: #fff; }
 
-        /* USER STATUS PILL */
+        .nav-link { color: #94a3b8 !important; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; padding: 10px 15px !important; }
+        .nav-link.active { color: #fff !important; background: rgba(0, 235, 176, 0.1); border-radius: 10px; }
+
+        /* USER STATUS */
         .user-status-vip { 
-            background: var(--glass); 
-            border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.08); 
+            border: 1px solid var(--primary); 
             border-radius: 50px; 
             padding: 5px 15px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
-            transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
         }
-        .user-status-vip:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
-        .avatar-box { 
-            width: 38px; height: 38px; border-radius: 50%; 
-            background: #111; border: 2px solid var(--primary); 
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--neon-glow);
-        }
+        .avatar-box { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); }
         .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .status-badge { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
-        .bg-active { background: var(--primary); color: #000; }
-        .bg-new { background: #ff9f43; color: #000; }
-        .bg-expired { background: #ff4757; color: #fff; }
 
-        /* --- DASHBOARD HEADER --- */
-        .dash-header { text-align: center; margin-bottom: 50px; }
-        .dash-header h2 { 
-            font-weight: 900; font-size: 2.8rem; 
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
+        /* SEARCH TRONG SUỐT */
+        .search-wrapper-vip { 
+            max-width: 550px; margin: 0 auto 50px; 
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0, 235, 176, 0.3);
+            border-radius: 50px;
+            display: flex; align-items: center; padding: 5px 25px;
+            backdrop-filter: blur(10px);
         }
-        
-        .search-container-vip { 
-            max-width: 600px; margin: 0 auto; position: relative; 
-            padding: 3px; border-radius: 50px; background: var(--rainbow);
-            background-size: 200% auto; animation: rainbow-move 4s linear infinite;
-        }
-        .search-inner { 
-            background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 5px 20px;
-        }
-        .search-inner input { 
-            background: transparent; border: none; color: white; width: 100%; 
-            padding: 10px; font-weight: 700; outline: none; 
-        }
-        .search-inner i { color: var(--primary); font-size: 1.2rem; }
+        .search-wrapper-vip input { background: transparent; border: none; color: #fff; width: 100%; padding: 12px; font-weight: 700; outline: none; }
+        .search-wrapper-vip i { color: var(--primary); font-size: 1.2rem; }
 
-        /* --- ALBUM GRID LUXURY --- */
-        #albumGrid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 30px; padding: 20px;
-        }
+        /* --- GRID ALBUM TRONG SUỐT --- */
+        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 25px; padding: 0 20px; }
         
         .album-card-vip { 
-            background: #0a1428; border-radius: 25px; overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.05); 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(10, 20, 40, 0.5); /* Trong suốt hơn để thấy background */
+            backdrop-filter: blur(10px);
+            border-radius: 24px; overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column;
         }
-        .album-card-vip:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
+        .album-card-vip:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: var(--neon); }
 
-        .card-img-header { 
-            height: 180px; position: relative; overflow: hidden;
-            background-size: cover; background-position: center;
-        }
-        .card-img-header::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to top, #0a1428, transparent);
-        }
-        .album-vip-title { 
-            position: absolute; bottom: 15px; left: 20px; right: 20px; z-index: 2;
-            font-weight: 900; font-size: 1.1rem; color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
+        .card-img-header { height: 170px; position: relative; background-size: cover; background-position: center; }
+        .album-vip-title { position: absolute; bottom: 12px; left: 20px; font-weight: 900; font-size: 1.1rem; color: #fff; text-shadow: 0 2px 10px #000; }
 
-        .card-body-vip { padding: 25px; flex-grow: 1; }
+        .card-body-vip { padding: 20px; flex-grow: 1; }
         
-        .stats-vip-row { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px;
-        }
-        .stat-pill { 
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            padding: 10px; border-radius: 15px; text-align: center;
-            transition: 0.3s; cursor: pointer;
-        }
-        .stat-pill:hover { background: rgba(0, 235, 176, 0.1); border-color: var(--primary); }
-        .stat-val { display: block; font-weight: 900; font-size: 1.2rem; color: var(--primary); }
-        .stat-lab { display: block; font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .stats-vip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-pill { background: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
+        .stat-lab { display: block; font-size: 0.6rem; font-weight: 800; color: #aaa; text-transform: uppercase; }
 
-        .vip-actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .vip-actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn-vip { 
-            height: 45px; border: none; border-radius: 12px; font-weight: 900; font-size: 0.7rem;
-            text-transform: uppercase; transition: 0.2s; color: white;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 42px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.65rem;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; justify-content: center; 
         }
-        .btn-vip:active { transform: scale(0.95); }
-        
-        .v-view { background: #3b82f6; }
-        .v-drive { background: #10b981; }
-        .v-export { background: #f59e0b; color: #000; }
-        .v-delete { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1.5px solid #ef4444; grid-column: span 3; margin-top: 5px; height: 38px; }
-        .v-delete:hover { background: #ef4444; color: #fff; }
+        .v-view { background: #3b82f6; } .v-drive { background: #10b981; } .v-export { background: #f59e0b; color: #000; }
+        .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 5px; height: 35px; }
 
-        /* MODAL LUXURY */
-        .modal-content { background: #080d1a; border: 1px solid var(--primary); border-radius: 30px; overflow: hidden; }
-        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 25px; }
-        .modal-body { padding: 25px; }
-        textarea { background: rgba(0,0,0,0.3) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: var(--accent) !important; border-radius: 15px !important; }
-
-        #toastNotice { 
-            position: fixed; top: 100px; right: 30px; background: var(--primary); 
-            color: #000; padding: 15px 30px; border-radius: 15px; z-index: 10000; 
-            font-weight: 900; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none;
-            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-text { font-weight: 900; color: var(--primary); letter-spacing: 5px; margin-top: 15px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
+    <div id="loadOverlay">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+        <div class="loading-text">CHONANHNHANH.VN</div>
+    </div>
+
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="#"><i class="fas fa-gem me-2"></i>MASTER DASH</a>
+            <a class="navbar-brand" href="#">chonanhnhanh<span class="brand-dot">.vn</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><i class="fas fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navMain">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle me-1"></i>Tạo Album</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy me-1"></i>Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link"><i class="fas fa-rss me-1"></i>Blog</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link active"><i class="fas fa-tasks me-1"></i>Quản Lý</a></li>
+                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
                 </ul>
                 <div id="authControl" style="display: none;" class="align-items-center gap-3">
                     <div class="user-status-vip">
                         <div class="avatar-box" id="userAvatarPlaceholder"></div>
-                        <div class="d-flex flex-column">
-                            <span class="fw-bolder text-white" style="font-size: 0.8rem; line-height: 1" id="userNameDisplay">...</span>
-                            <div class="mt-1 d-flex align-items-center gap-1">
-                                <span id="badgeStatus" class="status-badge">...</span>
-                                <span class="text-secondary" style="font-size: 0.6rem;" id="userExpiryText"></span>
-                            </div>
-                        </div>
+                        <span class="fw-bold text-white small" id="userNameDisplay">...</span>
+                        <span id="badgeStatus" class="status-badge bg-active">...</span>
                     </div>
-                    <button onclick="logoutAdmin()" class="btn btn-outline-danger border-0 rounded-circle" style="width: 40px; height: 40px;"><i class="fas fa-power-off"></i></button>
+                    <button onclick="logoutAdmin()" class="btn btn-link text-danger p-0"><i class="fas fa-power-off"></i></button>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="container-fluid px-lg-5">
-        <div class="dash-header">
-            <h2>Hệ Thống Quản Lý <span style="color: var(--primary);">Album VIP</span></h2>
-            <div class="search-container-vip">
-                <div class="search-inner">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="albumSearch" placeholder="Nhập tên album cần tìm..." oninput="filterAlbums()">
-                    <span class="badge bg-dark text-primary rounded-pill px-3" id="albumCount">0</span>
-                </div>
-            </div>
+        <div class="text-center mb-5">
+            <h2 class="fw-900" style="font-size: 2.5rem; letter-spacing: -1px;">Dashboard <span style="color: var(--primary);">Manager</span></h2>
+        </div>
+
+        <div class="search-wrapper-vip">
+            <i class="fas fa-search"></i>
+            <input type="text" id="albumSearch" placeholder="Tìm kiếm album của bạn..." oninput="filterAlbums()">
+            <span class="badge bg-primary text-dark rounded-pill px-3" id="albumCount">0</span>
         </div>
 
         <div id="albumGrid"></div>
     </div>
 
-    <div id="toastNotice"></div>
-
     <div class="modal fade" id="exportModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title font-black text-white"><i class="fas fa-file-export me-2 text-primary"></i> KẾT QUẢ TRÍCH XUẤT</h5>
+                    <h5 class="modal-title fw-900"><i class="fas fa-file-export me-2 text-primary"></i> DANH SÁCH FILE</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert bg-primary text-black fw-bold mb-4 rounded-4" id="modalInfo"></div>
+                    <div class="alert bg-primary text-dark fw-bold rounded-3 mb-3" id="modalInfo"></div>
                     <textarea id="fileNamesOutput" class="form-control" rows="12" readonly></textarea>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-primary w-100 py-3 rounded-4 fw-black text-black shadow-lg" onclick="copyFileNames()">
-                        <i class="fas fa-copy me-2"></i>SAO CHÉP TẤT CẢ TÊN FILE
-                    </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100 py-3 rounded-3 fw-bold text-dark" onclick="copyFileNames()">SAO CHÉP TẤT CẢ</button>
                 </div>
             </div>
         </div>
@@ -238,19 +170,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // GIỮ NGUYÊN WEBHOOK VÀ DOMAIN ĐẦU NÃO
         const URL_GET_ALBUM_LIST = 'https://dichvufb.tino.page/webhook/get-album-list';
         const URL_DELETE_ALBUM = 'https://dichvufb.tino.page/webhook/delete-album'; 
         const URL_EXPORT_FILENAMES = 'https://dichvufb.tino.page/webhook/export_filenames'; 
         const DOMAIN_CLIENT = 'https://phuoclam095-bot.github.io/chonanhtudong/'; 
 
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
-
-        function showToast(msg) {
-            const t = document.getElementById('toastNotice');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
 
         function filterAlbums() {
             const kw = document.getElementById('albumSearch').value.toLowerCase();
@@ -259,7 +184,7 @@
 
         function renderAlbums(albums) {
             const grid = document.getElementById('albumGrid');
-            grid.innerHTML = albums.length ? '' : '<div class="text-center w-100 py-5 opacity-50">Dữ liệu trống...</div>';
+            grid.innerHTML = albums.length ? '' : '<div class="text-center w-100 py-5 opacity-50">Không có dữ liệu...</div>';
             albums.forEach(a => grid.appendChild(createAlbumCard(a)));
             document.getElementById('albumCount').innerText = albums.length;
         }
@@ -268,7 +193,7 @@
             const card = document.createElement('div');
             const id = album.folder_id || album.folderId;
             card.id = `card-${id}`; card.className = 'album-card-vip';
-            const rawName = album.folderName || album.name || 'VIP Album';
+            const rawName = album.folderName || album.name || 'Album VIP';
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
             
             card.innerHTML = `
@@ -282,26 +207,21 @@
                             <span class="stat-lab">Đã chọn</span>
                         </div>
                         <div class="stat-pill">
-                            <span class="stat-val text-white">${album.total_photos || 0}</span>
+                            <span class="stat-val">${album.total_photos || 0}</span>
                             <span class="stat-lab">Tổng ảnh</span>
-                        </div>
-                        <div class="stat-pill" style="grid-column: span 2;" onclick="window.open('${DOMAIN_CLIENT}client.html?id=${id}&mode=notes', '_blank')">
-                            <span class="stat-val text-info"><i class="fas fa-comment-alt me-2"></i>${album.comments || 0}</span>
-                            <span class="stat-lab">Ghi chú từ khách</span>
                         </div>
                     </div>
                     <div class="vip-actions-grid">
-                        <button class="btn-vip v-view" onclick="window.open('${DOMAIN_CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye mb-1"></i>Xem</button>
-                        <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive mb-1"></i>Drive</button>
-                        <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${rawName.replace(/'/g, "\\'")}')"><i class="fas fa-file-csv mb-1"></i>Xuất</button> 
-                        <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${rawName.replace(/'/g, "\\'")}')"><i class="fas fa-trash-alt me-1"></i> Xóa Album Vĩnh Viễn</button>
+                        <button class="btn-vip v-view" onclick="window.open('${DOMAIN_CLIENT}client.html?id=${id}', '_blank')">XEM</button>
+                        <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')">DRIVE</button>
+                        <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${rawName.replace(/'/g, "\\'")}')">XUẤT</button> 
+                        <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${rawName.replace(/'/g, "\\'")}')">XÓA VĨNH VIỄN</button>
                     </div>
                 </div>`;
             return card;
         }
 
         async function handleExportClick(albumId, albumName) {
-            showToast(`Đang trích xuất album...`);
             try {
                 const res = await fetch(URL_EXPORT_FILENAMES, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -310,28 +230,25 @@
                 const result = await res.json();
                 const data = Array.isArray(result) ? result[0] : result;
                 if (data && data.fileNamesForCopy) {
-                    document.getElementById('modalInfo').innerHTML = `Album: ${albumName} | Tổng: ${data.selectedPhotos || 0} ảnh được chọn`;
+                    document.getElementById('modalInfo').innerHTML = `Album: ${albumName} | ${data.selectedPhotos || 0} ảnh`;
                     document.getElementById('fileNamesOutput').value = data.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
                     new bootstrap.Modal(document.getElementById('exportModal')).show();
-                    showToast("Xử lý hoàn tất!");
-                } else { showToast("Khách chưa chọn ảnh nào!"); }
-            } catch (e) { showToast("Lỗi kết nối Webhook!"); }
+                }
+            } catch (e) { alert("Lỗi trích xuất!"); }
         }
 
         function copyFileNames() {
             const txt = document.getElementById('fileNamesOutput').value;
-            navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => {
-                showToast("✅ Đã copy vào bộ nhớ tạm!");
-            });
+            navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => alert("✅ Đã copy!"));
         }
 
         async function deleteAlbum(id, name) {
-            if (!confirm(`Hệ thống sẽ xóa vĩnh viễn album: ${name}. Bạn chắc chắn chứ?`)) return;
+            if (!confirm(`Xóa album: ${name}?`)) return;
             try {
                 const res = await fetch(URL_DELETE_ALBUM, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
                 const r = await res.json();
-                if (r.success) { document.getElementById(`card-${id}`).remove(); showToast("Đã xóa vĩnh viễn."); }
-            } catch (e) { showToast("Lỗi khi gọi Webhook xóa!"); }
+                if (r.success) { document.getElementById(`card-${id}`).remove(); }
+            } catch (e) { alert("Lỗi xóa!"); }
         }
 
         function updateHeaderUI() {
@@ -339,23 +256,9 @@
                 const name = localStorage.getItem('admin_name');
                 const avatar = localStorage.getItem('admin_avatar');
                 const status = localStorage.getItem('admin_status') || 'new';
-                const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-                
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('userAvatarPlaceholder').innerHTML = (avatar && avatar !== 'null') ? `<img src="${avatar}">` : name.charAt(0).toUpperCase();
-                
-                const badge = document.getElementById('badgeStatus');
-                const expText = document.getElementById('userExpiryText');
-
-                if (status === 'active' && expiry > Date.now()) {
-                    badge.innerText = "Active VIP"; badge.className = "status-badge bg-active";
-                    expText.innerText = `Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}`;
-                } else if (status === 'new') {
-                    badge.innerText = "New Member"; badge.className = "status-badge bg-new";
-                } else {
-                    badge.innerText = "Expired"; badge.className = "status-badge bg-expired";
-                    expText.innerText = "Cần gia hạn";
-                }
+                document.getElementById('badgeStatus').innerText = status.toUpperCase();
                 document.getElementById('authControl').style.display = 'flex';
             } else { window.location.href = 'admin.html'; }
         }
@@ -367,15 +270,10 @@
                 allAlbums = await res.json();
                 renderAlbums(allAlbums);
                 document.getElementById('loadOverlay').style.display = 'none';
-            } catch (e) { console.error("Fetch Error"); }
+            } catch (e) { }
         }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
-
-    <div id="loadOverlay" style="position:fixed; inset:0; background:#050a14; z-index:20000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div class="spinner-grow text-primary mb-3"></div>
-        <div class="fw-black text-white small" style="letter-spacing:3px">LOADING VIP SYSTEM</div>
-    </div>
 </body>
 </html>
