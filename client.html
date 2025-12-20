@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP Experience - V19.0 MASTER</title>
+    <title>VIP Album Master - V19.2 ANTI-LAG</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ebb0; --bg: #050a14; --header-h: 55px; --footer-h: 80px; --strip-h: 90px; }
+        :root { --primary: #00ebb0; --bg: #050a14; --header-h: 55px; --footer-h: 75px; --strip-h: 90px; }
         body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; user-select: none; }
         
-        /* HEADER 1 THANH DUY NHẤT */
-        .navbar { height: var(--header-h); background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 10px; z-index: 3000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+        .navbar { height: var(--header-h); background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 10px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
         .album-title { font-weight: 900; font-size: 0.85rem; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
         .view-switcher { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 3px; display: flex; scale: 0.9; }
         .view-btn { border: none; background: transparent; color: #aaa; padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; transition: 0.3s; }
@@ -20,32 +19,31 @@
 
         .content-area { flex: 1; position: relative; overflow: hidden; }
         
-        /* GRID LAYOUT - CHỐNG LỆCH ẢNH */
+        /* FIXED GRID - KHÓA CỨNG BỐ CỤC CHỐNG LỆCH */
         #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 8px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
         @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); gap: 12px; } }
 
-        .grid-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item.focused { border-color: #fff; transform: scale(0.96); z-index: 10; }
+        .grid-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: border-color 0.2s; }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+        .grid-item:hover img { transform: scale(1.08); }
+        .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .grid-item.selected { border-color: var(--primary); }
-        .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-
-        /* CHI TIẾT - ẢNH LỚN VÀ THUMBNAIL */
-        #photoViewer { position: absolute; inset: 0; background: #000; z-index: 2500; display: none; flex-direction: column; }
-        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding-bottom: 10px; }
-        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        .strip-luxury { height: var(--strip-h); background: rgba(5, 10, 20, 0.98); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; padding: 0 10px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; z-index: 3000; }
+        .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
+
+        /* VIEWER AREA */
+        #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4500; display: none; flex-direction: column; }
+        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .strip-luxury { height: var(--strip-h); background: rgba(5, 10, 20, 0.98); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; padding: 0 10px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; z-index: 4600; }
         .th-vip { height: 65px; width: 65px; border-radius: 8px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; position: relative; transition: 0.2s; }
         .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.1); }
-        .th-vip.sel { opacity: 1; border-color: var(--primary); }
+        .th-vip.sel { border-color: var(--primary); opacity: 1; }
 
-        /* FOOTER ĐỒNG BỘ NÚT BẤM */
-        .bottom-bar { height: var(--footer-h); background: rgba(5, 10, 20, 0.98); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); padding: 0 15px; display: flex; align-items: center; justify-content: space-between; position: fixed; bottom: 0; width: 100%; z-index: 4000; }
+        .bottom-bar { height: var(--footer-h); background: rgba(5, 10, 20, 0.98); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); padding: 0 15px; display: flex; align-items: center; justify-content: space-between; position: fixed; bottom: 0; width: 100%; z-index: 6000; }
         .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .btn-circle { width: 42px; font-size: 1.1rem; }
         .btn-wide { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; gap: 8px; }
-        
         .bg-gray { background: rgba(255,255,255,0.1); color: #fff; }
         .bg-primary { background: var(--primary); color: #000; }
         .bg-danger-vip { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
@@ -56,16 +54,13 @@
 </head>
 <body>
 
-    <div id="loadOverlay">
-        <div class="spinner-border text-success mb-2"></div>
-        <div style="font-size: 0.7rem; letter-spacing: 2px; font-weight: 900; color: var(--primary);">V19.0 MASTER</div>
-    </div>
+    <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-size: 0.7rem; letter-spacing: 2px; font-weight: 900; color: var(--primary);">ANTI-LAG V19.2...</div></div>
 
     <nav class="navbar">
-        <div class="album-title" id="albumTitle">VIP ALBUM</div>
+        <div class="album-title" id="albumTitle">ALBUM CỦA BẠN</div>
         <div class="view-switcher">
             <button class="view-btn active" id="btnGrid" onclick="setView('grid')">LƯỚI</button>
-            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">XEM</button>
+            <button class="view-btn" id="btnViewer" onclick="setView('viewer')">CHI TIẾT</button>
         </div>
     </nav>
 
@@ -73,6 +68,7 @@
         <div id="photoGrid"></div>
         <div id="photoViewer">
             <div id="viewerBadge" style="position:absolute; top:10px; left:10px; background:var(--primary); color:#000; padding:4px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
+            <div class="close-vip" onclick="setView('grid')"><i class="fas fa-times"></i></div>
             <div class="stage"><img id="mainImg" src=""></div>
             <div class="strip-luxury" id="strip"></div>
         </div>
@@ -90,7 +86,6 @@
     </div>
 
     <script>
-        // GIỮ NGUYÊN TẤT CẢ TÊN WEBHOOK ĐẦU NÃO
         const PATHS = { GET: 'https://dichvufb.tino.page/webhook/get-photos', SAVE: 'https://dichvufb.tino.page/webhook/save-selection', DONE: 'https://dichvufb.tino.page/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         const fid = new URLSearchParams(window.location.search).get('id');
@@ -103,12 +98,34 @@
             document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
             document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
             document.getElementById('btnViewer').classList.toggle('active', v === 'viewer');
-            refreshUI();
+            
+            // CHỈ render lại khi thay đổi bộ lọc hoặc xem chi tiết
+            if(v === 'viewer') showViewer(); else syncGridUI();
         }
 
-        function refreshUI() {
+        // ⭐ QUAN TRỌNG: CHỈ VẼ LƯỚI 1 LẦN DUY NHẤT KHI INIT
+        function initGrid() {
+            const grid = document.getElementById('photoGrid');
+            grid.innerHTML = '';
+            photos.forEach((p, i) => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.id = `item-${i}`;
+                item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">`;
+                item.onclick = () => { cur = i; syncGridUI(); };
+                item.ondblclick = () => { cur = i; setView('viewer'); };
+                grid.appendChild(item);
+            });
+            syncGridUI();
+        }
+
+        // ⭐ UPDATE TRẠNG THÁI CHỌN MÀ KHÔNG LÀM NHẢY ẢNH
+        function syncGridUI() {
+            if(currentView !== 'grid') return;
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
-            if (currentView === 'grid') {
+            
+            // Nếu đang lọc thì buộc phải vẽ lại vì số lượng ảnh thay đổi
+            if(isFiltering) {
                 const grid = document.getElementById('photoGrid');
                 grid.innerHTML = '';
                 displayPhotos.forEach((p) => {
@@ -116,23 +133,27 @@
                     const isSel = selectedIds.includes(p.id);
                     const item = document.createElement('div');
                     item.className = `grid-item ${isSel ? 'selected' : ''} ${originIdx === cur ? 'focused' : ''}`;
-                    item.id = `item-${originIdx}`;
                     const num = selectedIds.indexOf(p.id) + 1;
                     item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">${isSel ? `<div class="vip-dot">${num}</div>` : ''}`;
-                    item.onclick = () => { cur = originIdx; syncFocus(); };
-                    item.ondblclick = () => { cur = originIdx; setView('viewer'); };
+                    item.onclick = () => { cur = originIdx; syncGridUI(); };
                     grid.appendChild(item);
                 });
             } else {
-                showViewer();
+                // CHẾ ĐỘ THƯỜNG: CHỈ CẬP NHẬT CLASS (CHỐNG NHẢY ẢNH)
+                photos.forEach((p, i) => {
+                    const el = document.getElementById(`item-${i}`);
+                    if(!el) return;
+                    const isSel = selectedIds.includes(p.id);
+                    el.classList.toggle('focused', i === cur);
+                    el.classList.toggle('selected', isSel);
+                    let dot = el.querySelector('.vip-dot');
+                    if(isSel) {
+                        const num = selectedIds.indexOf(p.id) + 1;
+                        if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
+                        else dot.innerText = num;
+                    } else if(dot) dot.remove();
+                });
             }
-            updateInfo();
-        }
-
-        function syncFocus() {
-            document.querySelectorAll('.grid-item').forEach(el => el.classList.remove('focused'));
-            const active = document.getElementById(`item-${cur}`);
-            if(active) active.classList.add('focused');
             updateInfo();
         }
 
@@ -163,7 +184,7 @@
             else selectedIds.splice(idx, 1);
             
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-            currentView === 'grid' ? refreshUI() : showViewer();
+            currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
         }
 
@@ -175,15 +196,17 @@
                 const first = photos.find(p => selectedIds.includes(p.id));
                 if(first) cur = photos.indexOf(first);
             }
-            refreshUI();
+            // Chế độ lọc luôn vẽ lại vì số lượng item thay đổi
+            currentView === 'grid' ? initGrid() : showViewer();
         }
 
         function clearAll() {
-            if(confirm("Bỏ chọn toàn bộ danh sách?")) {
+            if(confirm("Bỏ chọn toàn bộ?")) {
                 selectedIds = [];
                 localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
                 isFiltering = false;
-                refreshUI();
+                document.getElementById('btnFilter').classList.remove('bg-primary');
+                initGrid();
             }
         }
 
@@ -192,10 +215,9 @@
             const isSel = selectedIds.includes(p.id);
             document.getElementById('totalPhotos').innerText = selectedIds.length;
             const btn = document.getElementById('btnSel');
+            const badge = document.getElementById('viewerBadge');
             btn.className = isSel ? 'btn-action btn-wide bg-primary' : 'btn-action btn-wide bg-gray';
             btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
-            
-            const badge = document.getElementById('viewerBadge');
             if(currentView === 'viewer' && isSel) {
                 badge.style.display = 'block';
                 badge.innerText = `ẢNH #${selectedIds.indexOf(p.id) + 1}`;
@@ -221,8 +243,8 @@
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
-                setView('grid');
-            } catch(e) { alert("Lỗi tải Album!"); }
+                initGrid(); 
+            } catch(e) { document.getElementById('loadOverlay').innerHTML = `<div class="text-danger">LỖI TẢI ẢNH!</div>`; }
         }
         init();
     </script>
