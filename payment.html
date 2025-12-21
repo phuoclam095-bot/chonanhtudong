@@ -11,12 +11,10 @@
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); }
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 105px; overflow-x: hidden; }
         
-        /* --- LOADING --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* --- NAVBAR & TABS --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
@@ -28,45 +26,41 @@
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
         .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
-        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; margin-left: 5px; }
 
-        /* --- TYPOGRAPHY --- */
-        .supreme-title { 
-            font-weight: 900; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 8px; text-align: center; margin-bottom: 30px;
-            background: linear-gradient(90deg, #fff, var(--primary), #fff);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: text-shine 4s linear infinite;
-        }
+        .supreme-title { font-weight: 900; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 8px; text-align: center; margin-bottom: 40px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* --- PACKAGE GRID --- */
-        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto 40px; padding: 0 15px; }
-        .package-card { background: #080d1a; border-radius: 25px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
-        .package-card:hover { transform: translateY(-10px); }
-        .package-card.selected { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); box-shadow: var(--neon); }
+        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1400px; margin: 0 auto 50px; padding: 0 15px; }
+        .package-card { background: #0a1124; border-radius: 30px; padding: 40px 25px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
+        .package-card:hover { transform: translateY(-15px); border-color: var(--primary); box-shadow: var(--neon); }
+        .package-card.selected { border-width: 2px; border-color: var(--primary); background: rgba(0, 235, 176, 0.08); box-shadow: 0 0 40px rgba(0, 235, 176, 0.2); }
 
-        /* VIP LUXURY EFFECT (GÓI 750) */
-        .vip-gold-wrap { position: relative; padding: 2.5px; border-radius: 27px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
+        .vip-gold-wrap { position: relative; padding: 3px; border-radius: 33px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
         @keyframes shine-gold { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-        .package-card.luxury { border: none !important; }
+        .package-card.luxury { background: #000 !important; border: none !important; }
 
-        .pkg-name { font-weight: 900; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; margin-bottom: 10px; }
-        .pkg-price { font-size: 2.3rem; font-weight: 900; margin: 10px 0; line-height: 1; }
-        .pkg-price small { font-size: 0.9rem; color: #94a3b8; }
+        .pkg-name { font-weight: 900; font-size: 1.2rem; color: var(--primary); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px; }
+        .luxury .pkg-name { color: var(--gold-vip); }
+        .pkg-price { font-size: 2.8rem; font-weight: 900; margin: 10px 0; line-height: 1; color: #fff; }
+        .pkg-price small { font-size: 1rem; color: #94a3b8; font-weight: 700; }
 
-        .feature-list { list-style: none; padding: 0; margin: 20px 0; text-align: left; flex-grow: 1; }
-        .feature-list li { font-size: 0.8rem; color: #e2e8f0; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
-        .feature-list i { color: var(--primary); margin-top: 3px; font-size: 0.9rem; }
+        .feature-list { list-style: none; padding: 0; margin: 25px 0; text-align: left; flex-grow: 1; }
+        .feature-list li { font-size: 0.85rem; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; font-weight: 500; }
+        .feature-list i { color: var(--primary); margin-top: 4px; font-size: 1rem; flex-shrink: 0; }
         .luxury .feature-list i { color: var(--gold-vip); }
 
-        .btn-continue { background: var(--primary); color: #000; border: none; padding: 18px 80px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); }
-        .btn-continue:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .btn-continue { background: var(--primary); color: #000; border: none; padding: 20px 100px; font-size: 1.2rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); letter-spacing: 1px; }
+        .btn-continue:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 235, 176, 0.5); }
 
-        /* PAYMENT MODE */
+        /* PAYMENT MODE FIX */
         #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; }
         .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
         #qrCodeImg { width: 280px; height: 280px; border-radius: 10px; }
         .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* NÚT BACK CẦN THIẾT */
+        .btn-back-selection { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); padding: 10px 30px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; margin-top: 25px; transition: 0.3s; }
+        .btn-back-selection:hover { color: var(--primary); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
         #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; }
     </style>
@@ -93,10 +87,7 @@
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
-                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
-                                <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryDisplay"></span>
-                            </div>
+                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;"><span id="badgeStatus" class="status-tag">...</span><span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span></div>
                         </div>
                     </div>
                     <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
@@ -108,71 +99,61 @@
     <div class="container py-4">
         <div id="selectionMode">
             <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
-            
             <div class="package-grid">
                 <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói Dùng Thử'})">
                     <div class="pkg-name">Gói Dùng Thử</div>
                     <div class="pkg-price">90.000<small> / 1 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 1 tháng</li>
-                        <li><i class="fas fa-check-circle"></i>Cho phép tải ảnh gốc</li>
-                        <li><i class="fas fa-check-circle"></i>Thumbnail chuẩn chất lượng</li>
-                        <li><i class="fas fa-check-circle"></i>Hỗ trợ qua Zalo/Email</li>
+                        <li><i class="fas fa-check-circle"></i>Hỗ trợ lọc ảnh AI siêu tốc</li>
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 30 ngày</li>
+                        <li><i class="fas fa-check-circle"></i>Hỗ trợ kỹ thuật qua Zalo</li>
                     </ul>
                 </div>
-
                 <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
                     <div class="pkg-name">Gói Cơ Bản</div>
                     <div class="pkg-price">250.000<small> / 3 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ 3 tháng (Ổn định)</li>
-                        <li><i class="fas fa-check-circle"></i>Tốc độ Thumbnail nhanh hơn</li>
-                        <li><i class="fas fa-check-circle"></i>Hỗ trợ ưu tiên giờ hành chính</li>
-                        <li><i class="fas fa-check-circle"></i>Cho phép gắn Watermark</li>
+                        <li><i class="fas fa-bolt"></i>Tăng 200% tốc độ Thumbnail</li>
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ ổn định trong 90 ngày</li>
+                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Watermark cơ bản</li>
                     </ul>
                 </div>
-
-                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Chuyên Nghiệp'})">
+                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Pro'})">
                     <div class="pkg-name">Gói Pro</div>
                     <div class="pkg-price">450.000<small> / 6 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ 6 tháng (Rất ổn định)</li>
-                        <li><i class="fas fa-bolt"></i>Tốc độ tải ảnh tức thì</li>
-                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Logo Studio</li>
-                        <li><i class="fas fa-check-circle"></i>Ưu tiên hỗ trợ (Nhận ticket sớm)</li>
+                        <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh tức thì (No Lag)</li>
+                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Logo Studio riêng</li>
+                        <li><i class="fas fa-star"></i>Ưu tiên xử lý Ticket cực nhanh</li>
                     </ul>
                 </div>
-
                 <div class="vip-gold-wrap">
                     <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'Gói UNLIMITED'})">
-                        <div class="pkg-name" style="color:var(--gold-vip)">UNLIMITED VIP</div>
-                        <div class="pkg-price" style="color:#fff">750.000<small style="color:var(--gold-vip)"> / Năm</small></div>
+                        <div class="pkg-name">UNLIMITED VIP</div>
+                        <div class="pkg-price">750.000<small> / Năm</small></div>
                         <ul class="feature-list">
-                            <li><i class="fas fa-crown"></i>Lưu trữ 12 tháng (Trọn gói)</li>
-                            <li><i class="fas fa-star"></i>Ưu tiên hỗ trợ 24/7 & Hàng đầu</li>
-                            <li><i class="fas fa-sync"></i>Hỗ trợ chuyển đổi tài khoản</li>
-                            <li><i class="fas fa-magic"></i>Phát triển dịch vụ riêng (Yêu cầu)</li>
+                            <li><i class="fas fa-crown"></i>Giải phóng hoàn toàn sức lao động</li>
+                            <li><i class="fas fa-check-circle"></i>Hệ thống AI lọc ảnh tự động 100%</li>
+                            <li><i class="fas fa-headset"></i>Support VIP 24/7 trực tiếp ADMIN</li>
                         </ul>
-                        <div style="position:absolute; top:10px; right:10px; background:var(--gold-vip); color:#000; font-size:0.6rem; font-weight:900; padding:3px 12px; border-radius:50px;">BEST VALUE</div>
+                        <div style="position:absolute; top:15px; right:15px; background:var(--gold-vip); color:#000; font-size:0.65rem; font-weight:900; padding:5px 15px; border-radius:50px;">⭐ TỐT NHẤT</div>
                     </div>
                 </div>
             </div>
-
-            <div class="text-center mt-4">
-                <button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán</button>
-            </div>
+            <div class="text-center mt-5"><button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán VIP</button></div>
         </div>
 
         <div id="paymentPollingMode" style="display: none;">
-            <h3 style="color:var(--primary); font-weight:900; margin-bottom:25px;">QUÉT MÃ ĐỂ KÍCH HOẠT VIP</h3>
-            <div id="qrLoading"><i class="fas fa-spinner fa-spin fa-3x text-success"></i><p class="mt-2">Đang tạo mã giao dịch...</p></div>
+            <h3 style="color:var(--primary); font-weight:900; margin-bottom:25px; text-transform:uppercase;">Quét mã kích hoạt dịch vụ</h3>
+            <div id="qrLoading"><i class="fas fa-spinner fa-spin fa-3x text-success"></i></div>
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame"><img id="qrCodeImg" src=""></div>
                 <div class="payment-info-box">
                     <div class="mb-3">Số tiền: <strong id="displayAmount" class="text-danger fs-3"></strong></div>
-                    <div>Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong><span class="ms-2 badge bg-primary" style="cursor:pointer" onclick="copyCode()">COPY</span></div>
+                    <div style="color:#fff">Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" style="cursor:pointer" onclick="copyCode()">COPY</span></div>
                 </div>
-                <div class="alert alert-success mt-4"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt tự động sau khi chuyển khoản...</div>
+                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt tự động sau chuyển khoản...</div>
+                <button class="btn-back-selection" onclick="backToSelection()"><i class="fas fa-arrow-left me-2"></i> TRỞ VỀ CHỌN GÓI KHÁC</button>
             </div>
         </div>
     </div>
@@ -180,10 +161,12 @@
     <script>
         let selectedPkgData = {months: 12, price: 750000, name: 'Gói UNLIMITED'};
         let userEmail = localStorage.getItem('admin_email');
+        let pollingInterval = null;
 
         function selectPkg(el, data) {
             document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
-            el.closest('.package-card') ? el.classList.add('selected') : el.querySelector('.package-card').classList.add('selected');
+            const card = el.classList.contains('package-card') ? el : el.querySelector('.package-card');
+            card.classList.add('selected');
             selectedPkgData = data;
             document.getElementById('btnContinue').innerText = `Thanh Toán ${data.price.toLocaleString('vi-VN')} VNĐ`;
         }
@@ -208,7 +191,7 @@
         }
 
         function startPolling(code) {
-            const interval = setInterval(async () => {
+            pollingInterval = setInterval(async () => {
                 try {
                     const res = await fetch('https://dichvufb.tino.page/webhook/google-oauth-callback', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -216,13 +199,22 @@
                     });
                     const data = await res.json();
                     if (data.status === 'active') {
-                        clearInterval(interval);
+                        clearInterval(pollingInterval);
                         localStorage.setItem('admin_status', 'active');
                         localStorage.setItem('admin_expiry', data.expiry_timestamp);
                         window.location.href = `admin.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
                     }
                 } catch (e) {}
             }, 3000);
+        }
+
+        // HÀM QUAY LẠI CHỌN GÓI
+        function backToSelection() {
+            if(pollingInterval) clearInterval(pollingInterval);
+            document.getElementById('paymentPollingMode').style.display = 'none';
+            document.getElementById('selectionMode').style.display = 'block';
+            document.getElementById('qrContent').style.display = 'none';
+            document.getElementById('qrLoading').style.display = 'block';
         }
 
         function copyCode() {
@@ -240,9 +232,7 @@
                 badge.innerText = isVIP ? "ACTIVE" : (status === 'new' ? "MỚI" : "EXPIRED");
                 badge.style.background = isVIP ? "var(--primary)" : "#ff4757";
                 badge.style.color = isVIP ? "#000" : "#fff";
-                badge.className = "status-tag";
-                expText.innerText = expiry > 0 ? " (Hạn: " + new Date(expiry).toLocaleDateString('vi-VN') + ")" : "";
-                expText.style.cssText = "font-size: 0.75rem; font-weight: 800; color: #fff; margin-left: 5px;";
+                expText.innerText = expiry > 0 ? " (" + new Date(expiry).toLocaleDateString('vi-VN') + ")" : "";
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { window.location.href = 'admin.html'; }
         }
@@ -251,7 +241,7 @@
             updateHeaderUI();
             if(!userEmail) { window.location.href = "admin.html"; return; }
             document.getElementById('btnContinue').innerText = `Thanh Toán ${selectedPkgData.price.toLocaleString('vi-VN')} VNĐ`;
-            setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1200);
+            setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1000);
         };
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
     </script>
