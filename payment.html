@@ -8,17 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ebb0; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
+        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); }
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 105px; overflow-x: hidden; }
         
-        /* --- LOADING FLOATING --- */
+        /* --- LOADING --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
-        @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
 
-        /* --- NAVBAR --- */
+        /* --- NAVBAR & TABS --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
@@ -41,40 +39,41 @@
         }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* --- PACKAGE SELECTION --- */
-        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1300px; margin: 0 auto 40px; padding: 0 15px; }
-        .package-wrapper { position: relative; padding: 2px; border-radius: 25px; transition: 0.4s; height: 100%; }
-        .package-wrapper.vip-special { background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; }
-        @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        /* --- PACKAGE GRID --- */
+        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto 40px; padding: 0 15px; }
+        .package-card { background: #080d1a; border-radius: 25px; padding: 30px 20px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
+        .package-card:hover { transform: translateY(-10px); }
+        .package-card.selected { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); box-shadow: var(--neon); }
 
-        .package-card { background: #080d1a; border-radius: 23px; padding: 35px 25px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; height: 100%; display: flex; flex-direction: column; position: relative; }
-        .package-card:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-10px); }
-        .package-card.selected { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
+        /* VIP LUXURY EFFECT (GÓI 750) */
+        .vip-gold-wrap { position: relative; padding: 2.5px; border-radius: 27px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
+        @keyframes shine-gold { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        .package-card.luxury { border: none !important; }
 
         .pkg-name { font-weight: 900; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; margin-bottom: 10px; }
-        .pkg-price { font-size: 2.5rem; font-weight: 900; margin: 15px 0; line-height: 1; }
-        .pkg-price small { font-size: 1rem; color: #94a3b8; }
+        .pkg-price { font-size: 2.3rem; font-weight: 900; margin: 10px 0; line-height: 1; }
+        .pkg-price small { font-size: 0.9rem; color: #94a3b8; }
 
         .feature-list { list-style: none; padding: 0; margin: 20px 0; text-align: left; flex-grow: 1; }
-        .feature-list li { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px; }
-        .feature-list i { color: var(--primary); margin-top: 3px; }
+        .feature-list li { font-size: 0.8rem; color: #e2e8f0; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+        .feature-list i { color: var(--primary); margin-top: 3px; font-size: 0.9rem; }
+        .luxury .feature-list i { color: var(--gold-vip); }
 
-        /* --- PAYMENT POLLING --- */
-        #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.8); backdrop-filter: blur(20px); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; box-shadow: var(--neon); }
-        .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
-        #qrCodeImg { width: 280px; height: 280px; border-radius: 10px; }
-        .payment-info-box { background: rgba(0,0,0,0.4); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .copy-tag { background: var(--primary); color: #000; font-weight: 900; font-size: 0.6rem; padding: 2px 8px; border-radius: 5px; vertical-align: middle; margin-left: 10px; cursor: pointer; }
-
-        .btn-continue { background: var(--primary); color: #000; border: none; padding: 18px 60px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); }
+        .btn-continue { background: var(--primary); color: #000; border: none; padding: 18px 80px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); }
         .btn-continue:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        /* PAYMENT MODE */
+        #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; }
+        .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+        #qrCodeImg { width: 280px; height: 280px; border-radius: 10px; }
+        .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
 
         #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; }
     </style>
 </head>
 <body>
 
-    <div id="loadOverlay"><div class="load-logo">CHONANHNHANH.VN</div><div class="pulse-shadow"></div></div>
+    <div id="loadOverlay"><div class="load-logo">CHONANHNHANH.VN</div></div>
     <div id="toastNotice">Đã sao chép nội dung chuyển khoản!</div>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
@@ -89,7 +88,7 @@
                     <li class="nav-item"><a href="payment.html" class="nav-link active">Gia Hạn</a></li>
                     <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                 </ul>
-                <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
+                <div id="authControl" style="display: none !important;">
                     <div class="user-status-box">
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
@@ -108,103 +107,95 @@
 
     <div class="container py-4">
         <div id="selectionMode">
-            <h1 class="supreme-title">Nâng Cấp Dịch Vụ VIP</h1>
+            <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
             
-            <div class="package-grid" id="packageSelection">
-                <div class="package-wrapper">
-                    <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Dùng Thử'})">
-                        <div class="pkg-name">Gói Dùng Thử</div>
-                        <div class="pkg-price">90.000<small>đ/tháng</small></div>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i>Lưu trữ 30 ngày</li>
-                            <li><i class="fas fa-check-circle"></i>Tải ảnh chất lượng cao</li>
-                            <li><i class="fas fa-check-circle"></i>Hỗ trợ qua Zalo/Mail</li>
-                        </ul>
-                    </div>
+            <div class="package-grid">
+                <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói Dùng Thử'})">
+                    <div class="pkg-name">Gói Dùng Thử</div>
+                    <div class="pkg-price">90.000<small> / 1 tháng</small></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 1 tháng</li>
+                        <li><i class="fas fa-check-circle"></i>Cho phép tải ảnh gốc</li>
+                        <li><i class="fas fa-check-circle"></i>Thumbnail chuẩn chất lượng</li>
+                        <li><i class="fas fa-check-circle"></i>Hỗ trợ qua Zalo/Email</li>
+                    </ul>
                 </div>
-                <div class="package-wrapper">
-                    <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Cơ Bản'})">
-                        <div class="pkg-name">Gói Cơ Bản</div>
-                        <div class="pkg-price">250.000<small>đ/3 tháng</small></div>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i>Lưu trữ 90 ngày</li>
-                            <li><i class="fas fa-check-circle"></i>Tải ảnh tốc độ cao</li>
-                            <li><i class="fas fa-check-circle"></i>Hỗ trợ ưu tiên</li>
-                        </ul>
-                    </div>
+
+                <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
+                    <div class="pkg-name">Gói Cơ Bản</div>
+                    <div class="pkg-price">250.000<small> / 3 tháng</small></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ 3 tháng (Ổn định)</li>
+                        <li><i class="fas fa-check-circle"></i>Tốc độ Thumbnail nhanh hơn</li>
+                        <li><i class="fas fa-check-circle"></i>Hỗ trợ ưu tiên giờ hành chính</li>
+                        <li><i class="fas fa-check-circle"></i>Cho phép gắn Watermark</li>
+                    </ul>
                 </div>
-                <div class="package-wrapper">
-                    <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Pro'})">
-                        <div class="pkg-name">Gói Chuyên Nghiệp</div>
-                        <div class="pkg-price">450.000<small>đ/6 tháng</small></div>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i>Lưu trữ 180 ngày</li>
-                            <li><i class="fas fa-check-circle"></i>Tải ảnh không chờ đợi</li>
-                            <li><i class="fas fa-check-circle"></i>Full tính năng VIP</li>
-                        </ul>
-                    </div>
+
+                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Chuyên Nghiệp'})">
+                    <div class="pkg-name">Gói Pro</div>
+                    <div class="pkg-price">450.000<small> / 6 tháng</small></div>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ 6 tháng (Rất ổn định)</li>
+                        <li><i class="fas fa-bolt"></i>Tốc độ tải ảnh tức thì</li>
+                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Logo Studio</li>
+                        <li><i class="fas fa-check-circle"></i>Ưu tiên hỗ trợ (Nhận ticket sớm)</li>
+                    </ul>
                 </div>
-                <div class="package-wrapper vip-special">
-                    <div class="package-card selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'UNLIMITED'})">
-                        <div class="pkg-name" style="color:#fff">Gói UNLIMITED</div>
-                        <div class="pkg-price" style="color:var(--primary)">750.000<small style="color:#fff">đ/Năm</small></div>
+
+                <div class="vip-gold-wrap">
+                    <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'Gói UNLIMITED'})">
+                        <div class="pkg-name" style="color:var(--gold-vip)">UNLIMITED VIP</div>
+                        <div class="pkg-price" style="color:#fff">750.000<small style="color:var(--gold-vip)"> / Năm</small></div>
                         <ul class="feature-list">
-                            <li><i class="fas fa-star" style="color:var(--primary)"></i>Tốt nhất cho Studio</li>
-                            <li><i class="fas fa-check-circle"></i>Lưu trữ trọn năm</li>
-                            <li><i class="fas fa-check-circle"></i>Hỗ trợ kỹ thuật 24/7</li>
+                            <li><i class="fas fa-crown"></i>Lưu trữ 12 tháng (Trọn gói)</li>
+                            <li><i class="fas fa-star"></i>Ưu tiên hỗ trợ 24/7 & Hàng đầu</li>
+                            <li><i class="fas fa-sync"></i>Hỗ trợ chuyển đổi tài khoản</li>
+                            <li><i class="fas fa-magic"></i>Phát triển dịch vụ riêng (Yêu cầu)</li>
                         </ul>
-                        <div style="position:absolute; top:10px; right:10px; background:var(--primary); color:#000; font-size:0.6rem; font-weight:900; padding:3px 10px; border-radius:50px;">BEST VALUE</div>
+                        <div style="position:absolute; top:10px; right:10px; background:var(--gold-vip); color:#000; font-size:0.6rem; font-weight:900; padding:3px 12px; border-radius:50px;">BEST VALUE</div>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center">
+            <div class="text-center mt-4">
                 <button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán</button>
             </div>
         </div>
 
-        <div id="paymentPollingMode" style="display: none;" class="text-center">
-            <h3 style="color:var(--primary); font-weight:900; margin-bottom:20px;">QUÉT MÃ ĐỂ THANH TOÁN</h3>
-            <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-3x text-success"></i></div>
+        <div id="paymentPollingMode" style="display: none;">
+            <h3 style="color:var(--primary); font-weight:900; margin-bottom:25px;">QUÉT MÃ ĐỂ KÍCH HOẠT VIP</h3>
+            <div id="qrLoading"><i class="fas fa-spinner fa-spin fa-3x text-success"></i><p class="mt-2">Đang tạo mã giao dịch...</p></div>
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame"><img id="qrCodeImg" src=""></div>
                 <div class="payment-info-box">
                     <div class="mb-3">Số tiền: <strong id="displayAmount" class="text-danger fs-3"></strong></div>
-                    <div class="mb-0">Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong><span class="copy-tag" onclick="copyCode()">COPY</span></div>
+                    <div>Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong><span class="ms-2 badge bg-primary" style="cursor:pointer" onclick="copyCode()">COPY</span></div>
                 </div>
-                <div class="mt-4" style="font-weight:700; color:#94a3b8;"><i class="fas fa-sync fa-spin me-2"></i>Hệ thống đang chờ thanh toán tự động...</div>
+                <div class="alert alert-success mt-4"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt tự động sau khi chuyển khoản...</div>
             </div>
         </div>
     </div>
 
     <script>
-        let selectedPkgData = {months: 12, price: 750000, name: 'UNLIMITED'};
+        let selectedPkgData = {months: 12, price: 750000, name: 'Gói UNLIMITED'};
         let userEmail = localStorage.getItem('admin_email');
 
         function selectPkg(el, data) {
             document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
-            el.classList.add('selected');
+            el.closest('.package-card') ? el.classList.add('selected') : el.querySelector('.package-card').classList.add('selected');
             selectedPkgData = data;
-            document.getElementById('btnContinue').innerText = `Thanh Toán ${data.price.toLocaleString('vi-VN')} đ`;
+            document.getElementById('btnContinue').innerText = `Thanh Toán ${data.price.toLocaleString('vi-VN')} VNĐ`;
         }
 
         async function processPayment() {
             const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
-            
             try {
-                // GIỮ NGUYÊN THAM SỐ GỐC n8n
                 const res = await fetch('https://dichvufb.tino.page/webhook/save-pending', {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        email: userEmail, 
-                        paymentCode: code, 
-                        amount: selectedPkgData.price,
-                        months: selectedPkgData.months,
-                        timestamp: Date.now() 
-                    })
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email: userEmail, paymentCode: code, amount: selectedPkgData.price, months: selectedPkgData.months, timestamp: Date.now() })
                 });
                 const data = await res.json();
                 document.getElementById('qrCodeImg').src = data.qrDataURL;
@@ -220,8 +211,7 @@
             const interval = setInterval(async () => {
                 try {
                     const res = await fetch('https://dichvufb.tino.page/webhook/google-oauth-callback', {
-                        method: 'POST', 
-                        headers: {'Content-Type': 'application/json'},
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
                     });
                     const data = await res.json();
@@ -261,9 +251,8 @@
             updateHeaderUI();
             if(!userEmail) { window.location.href = "admin.html"; return; }
             document.getElementById('btnContinue').innerText = `Thanh Toán ${selectedPkgData.price.toLocaleString('vi-VN')} VNĐ`;
-            setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1500);
+            setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1200);
         };
-
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
     </script>
 </body>
