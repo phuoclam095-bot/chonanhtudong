@@ -32,7 +32,7 @@
         .post-content { line-height: 1.8; font-size: 1.1rem; color: #f1f5f9; white-space: pre-wrap; text-align: justify; }
         #readMoreBtn { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 12px 30px; border-radius: 50px; cursor: pointer; margin: 20px 0; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; display: none; width: fit-content; box-shadow: var(--neon); }
         
-        /* COMMENT & INTERACTIVE STYLES */
+        /* COMMENT & INTERACTIVE */
         #commentSectionContainer { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-glass); }
         .comment-header-title { font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); margin-bottom: 25px; }
         .user-avatar-comment { width: 42px; height: 42px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
@@ -44,16 +44,12 @@
         .comment-date-text { color: #94a3b8 !important; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; display: block; }
         .comment-content-text { color: #ffffff !important; font-size: 0.95rem; line-height: 1.6; }
 
-        /* REPLY BUTTON */
-        .btn-reply-action { background: none; border: none; color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0; margin-top: 8px; cursor: pointer; transition: 0.2s; }
-        .btn-reply-action:hover { color: #fff; text-shadow: var(--neon); }
+        .btn-reply-action { background: none; border: none; color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0; margin-top: 8px; cursor: pointer; }
         
         .form-control { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border-glass) !important; color: #fff !important; border-radius: 15px; padding: 15px; }
         .form-control::placeholder { color: #a5f3e0 !important; font-weight: 600; }
 
         #btnSubmitComment { background: var(--primary) !important; color: #000 !important; font-weight: 900; padding: 12px 35px; border-radius: 50px; text-transform: uppercase; border: none; }
-
-        @media (max-width: 768px) { .comment-item .comment-item { margin-left: 20px; } }
     </style>
 </head>
 <body>
@@ -86,9 +82,15 @@
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
-        const POST_CACHE_PREFIX = 'post_detail_';
         const MAX_CONTENT_HEIGHT = 450; 
         
+        // HÀM LẤY GIỜ VIỆT NAM CHUẨN (+7)
+        function getVietnamTime() {
+            const now = new Date();
+            const vnTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+            return vnTime.toISOString().replace('T', ' ').substring(0, 19);
+        }
+
         function getLoggedInUser() {
             return { name: localStorage.getItem('admin_name'), email: localStorage.getItem('admin_email'), isLoggedIn: !!localStorage.getItem('admin_email') };
         }
@@ -120,20 +122,17 @@
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 const data = await response.json();
                 const blog = (Array.isArray(data) ? data : (data.data || []))[0];
-                if (blog) {
-                    document.getElementById('pageTitle').innerText = blog.title;
-                    renderPost(blog);
-                    loadComments(postId);
-                }
+                if (blog) { renderPost(blog); loadComments(postId); }
             } catch (e) { console.error(e); }
         }
         
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
-            const user = getLoggedInUser();
             const imageUrl = driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800` : 'https://via.placeholder.com/1000x450';
             const wrappedContent = `<p>${(blog.content || '').replace(/\n/g, '</p><p>')}</p>`; 
-            const requiresCollapse = blog.content && (blog.content.length > 550 || blog.content.split('\n').length > 8); 
+            
+            // FIX LOGIC XEM THÊM: Chỉ hiện khi nội dung > 600 ký tự
+            const requiresCollapse = blog.content && blog.content.length > 600; 
 
             document.getElementById('postContainer').innerHTML = `
                 <h1 class="post-title">${blog.title}</h1>
@@ -147,7 +146,7 @@
                     <div id="postAuthorAvatar">${(blog.author || 'A').charAt(0).toUpperCase()}</div>
                     <div class="d-flex flex-column">
                         <span class="author-info-name">${blog.author || 'Thành viên'}</span>
-                        <span style="color:#cbd5e1; font-size:0.8rem;">Biên tập viên • CHONANHNHANH.VN</span>
+                        <span style="color:#cbd5e1; font-size:0.8rem; font-weight:600;">Biên tập viên • CHONANHNHANH.VN</span>
                     </div>
                 </div>
                 <div id="commentSectionContainer"></div>
@@ -164,12 +163,12 @@
                     <div id="commentsList" class="mb-4"></div>
                     <div id="commentFormContainer">
                         <h6 class="fw-bold mb-3" id="commentAsUser" style="color:#cbd5e1; font-size: 0.9rem;">
-                            ${user.isLoggedIn ? `<i class="fas fa-user-check me-2 text-primary"></i>Đang sử dụng: <span class="text-primary fw-bold">${user.name}</span>` : `<i class="fas fa-lock me-2 text-warning"></i>Đăng nhập để bình luận.`}
+                            ${user.isLoggedIn ? `<i class="fas fa-user-check me-2 text-primary"></i>Đang bình luận: <span class="text-primary fw-bold">${user.name}</span>` : `<i class="fas fa-lock me-2 text-warning"></i>Đăng nhập Admin để thảo luận.`}
                         </h6>
                         <form id="commentForm" onsubmit="submitComment(event)">
                             <input type="hidden" id="commentPostId" value="${postId}">
                             <input type="hidden" id="commentParentId" value="">
-                            <div class="mb-3"><textarea id="commentContent" class="form-control" rows="4" placeholder="Ý kiến của bạn là gì?..." required ${isDisabled ? 'disabled' : ''}></textarea></div>
+                            <div class="mb-3"><textarea id="commentContent" class="form-control" rows="4" placeholder="Viết ý kiến của bạn tại đây..." required ${isDisabled ? 'disabled' : ''}></textarea></div>
                             <div class="text-end"><button type="submit" id="btnSubmitComment" class="btn" ${isDisabled ? 'disabled' : ''}>Gửi bình luận</button></div>
                         </form>
                     </div>
@@ -177,7 +176,6 @@
             `;
         }
 
-        // LOGIC TRẢ LỜI BÌNH LUẬN
         function handleReply(commentId, authorName) {
             const form = document.getElementById('commentFormContainer');
             const placeholder = document.getElementById(`reply-placeholder-${commentId}`);
@@ -193,7 +191,7 @@
             document.getElementById('commentParentId').value = '';
             document.getElementById('commentContent').value = '';
             const user = getLoggedInUser();
-            document.getElementById('commentAsUser').innerHTML = `<i class="fas fa-user-check me-2 text-primary"></i>Đang sử dụng: <span class="text-primary fw-bold">${user.name}</span>`;
+            document.getElementById('commentAsUser').innerHTML = user.isLoggedIn ? `<i class="fas fa-user-check me-2 text-primary"></i>Đang sử dụng: <span class="text-primary fw-bold">${user.name}</span>` : `<i class="fas fa-lock me-2 text-warning"></i>Đăng nhập để bình luận.`;
         }
 
         function nestComments(comments) {
@@ -209,9 +207,9 @@
         function renderComments(data) {
             const list = document.getElementById('commentsList');
             const nested = nestComments(Array.isArray(data) ? data : (data.data || []));
-            if (nested.length === 0) { list.innerHTML = '<p class="text-muted">Chưa có bình luận nào.</p>'; return; }
+            if (nested.length === 0) { list.innerHTML = '<p class="text-muted">Hãy là người đầu tiên bình luận!</p>'; return; }
             
-            function getHtml(c, depth = 0) {
+            function getHtml(c) {
                 return `
                 <div class="comment-item">
                     <div class="d-flex align-items-start gap-3">
@@ -219,14 +217,14 @@
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="comment-author-name">${c.author}</span>
-                                <span class="comment-date-text">${c.date || 'Gần đây'}</span>
+                                <span class="comment-date-text">${c.date || 'Vừa xong'}</span>
                             </div>
                             <div class="comment-content-text">${c.content}</div>
-                            ${localStorage.getItem('admin_email') ? `<button class="btn-reply-action" onclick="handleReply('${c.id}', '${c.author}')"><i class="fas fa-reply me-1"></i> Trả lời</button>` : ''}
+                            ${localStorage.getItem('admin_email') ? `<button class="btn-reply-action" onclick="handleReply('${c.id}', '${c.author}')">Trả lời</button>` : ''}
                             <div id="reply-placeholder-${c.id}" class="mt-2"></div>
                         </div>
                     </div>
-                    ${c.children.map(child => getHtml(child, depth + 1)).join('')}
+                    ${c.children.map(child => getHtml(child)).join('')}
                 </div>`;
             }
             list.innerHTML = nested.map(c => getHtml(c)).join('');
@@ -251,7 +249,7 @@
                         author: localStorage.getItem('admin_name'),
                         email: localStorage.getItem('admin_email'),
                         content: document.getElementById('commentContent').value,
-                        date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                        date: getVietnamTime(), // GỬI GIỜ VIỆT NAM CHUẨN
                         parent_comment_id: document.getElementById('commentParentId').value || null
                     })
                 });
