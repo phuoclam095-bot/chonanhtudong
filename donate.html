@@ -11,63 +11,62 @@
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
         
-        /* FIX BACKGROUND HIỆN RÕ HƠN */
+        /* HIỆN RÕ NỀN PHÍA SAU */
         body { 
             margin: 0; padding-top: 85px; font-family: 'Montserrat', sans-serif; 
             background-color: var(--bg-deep); 
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.7) 0%, rgba(5, 10, 20, 0.7) 100%), url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-image: url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
             color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
         }
 
         /* NAVBAR ĐỒNG BỘ */
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 75px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 75px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 8px 12px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 
-        /* --- LARGE GLASS CONTAINER (GẦN FULL MÀN HÌNH) --- */
+        /* CRYSTAL GLASS CONTAINER (XUYÊN THẤU NỀN) */
         .donate-container { 
-            max-width: 1150px; width: 95%; margin: auto; padding: 35px 50px; 
-            background: rgba(10, 17, 36, 0.75); /* ĐỘ TRONG SUỐT CAO */
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); 
-            border: 1px solid rgba(255,255,255,0.1); 
+            max-width: 1150px; width: 95%; margin: auto; padding: 40px 60px; 
+            background: rgba(10, 17, 36, 0.6); /* ĐỘ TRONG SUỐT CỰC CAO ĐỂ THẤY NỀN */
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
+            border: 1.5px solid rgba(255,255,255,0.15); 
+            animation: fadeIn 0.8s ease-out;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #f1f5f9; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; font-weight: 500; }
+        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .subtitle { text-align: center; color: #fff; font-size: 1rem; line-height: 1.6; margin-bottom: 35px; max-width: 900px; margin-left: auto; margin-right: auto; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
-        /* --- PAYMENT GRID LARGE --- */
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
         .payment-method { 
-            background: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 30px; padding: 30px; text-align: center; transition: 0.4s;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 35px; padding: 35px; text-align: center; transition: 0.4s;
+            backdrop-filter: blur(5px);
         }
-        .payment-method:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
+        .payment-method:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
 
-        /* QR BOX LARGE */
-        .qr-box { width: 220px; height: 220px; background: #fff; margin: 20px auto; padding: 10px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .qr-box { width: 210px; height: 210px; background: #fff; margin: 20px auto; padding: 10px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .qr-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* SIÊU SÁNG TEXT THÔNG TIN */
-        .bank-title { font-weight: 900; font-size: 1.4rem; margin-bottom: 5px; letter-spacing: 1px; }
-        .acc-name { color: #fff; font-weight: 800; font-size: 1.2rem; margin-top: 15px; display: block; text-transform: uppercase; }
-        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.7rem; margin-top: 5px; display: block; text-shadow: 0 0 15px rgba(240, 195, 0, 0.4); }
-        .call-action-text { color: #00ebb0 !important; font-weight: 900; font-size: 1rem; margin-top: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        /* LÀM SÁNG THÔNG TIN TÀI KHOẢN */
+        .bank-title { font-weight: 900; font-size: 1.5rem; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .acc-name { color: #fff; font-weight: 900; font-size: 1.25rem; margin-top: 15px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.9rem; margin-top: 5px; display: block; text-shadow: 0 0 20px rgba(240, 195, 0, 0.6); }
+        .call-action-text { color: var(--primary) !important; font-weight: 900; font-size: 1rem; margin-top: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
 
-        .thank-you { text-align: center; margin-top: 35px; padding: 15px; border-radius: 20px; background: rgba(0, 235, 176, 0.1); border: 1.5px dashed var(--primary); color: #fff; font-weight: 900; font-size: 1rem; letter-spacing: 1px; }
+        .thank-you { text-align: center; margin-top: 40px; padding: 18px; border-radius: 20px; background: rgba(0, 235, 176, 0.15); border: 2px dashed var(--primary); color: #fff; font-weight: 900; font-size: 1.1rem; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* MOBILE OPTIMIZATION */
         @media (max-width: 992px) {
             body { height: auto; overflow: visible; padding-top: 100px; padding-bottom: 40px; }
             .donate-container { width: 92%; padding: 30px 20px; border-radius: 30px; }
             .payment-grid { grid-template-columns: 1fr; gap: 20px; }
-            .qr-box { width: 180px; height: 180px; }
-            h1 { font-size: 1.5rem; }
-            .acc-number { font-size: 1.4rem; }
-            .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+            h1 { font-size: 1.6rem; }
+            .acc-number { font-size: 1.5rem; }
+            .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
@@ -97,16 +96,16 @@
             
             <div class="payment-grid">
                 <div class="payment-method">
-                    <div class="bank-title" style="color: #007bff;"><i class="fas fa-university me-2"></i>VIETCOMBANK</div>
-                    <div class="qr-box" style="border: 2px solid #007bff;"><img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="VCB"></div>
+                    <div class="bank-title" style="color: #007bff;">VIETCOMBANK</div>
+                    <div class="qr-box"><img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="VCB"></div>
                     <span class="acc-name">LÂM NAM PHƯỚC</span>
                     <span class="acc-number">9444999999</span>
                     <span class="call-action-text">CHUYỂN KHOẢN NHANH VCB</span>
                 </div>
 
                 <div class="payment-method">
-                    <div class="bank-title" style="color: #ff337e;"><i class="fas fa-wallet me-2"></i>VÍ MOMO</div>
-                    <div class="qr-box" style="border: 2px solid #ff337e;"><img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Momo"></div>
+                    <div class="bank-title" style="color: #ff337e;">VÍ MOMO</div>
+                    <div class="qr-box"><img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Momo"></div>
                     <span class="acc-name">LÂM NAM PHƯỚC</span>
                     <span class="acc-number">0836.4848.21</span>
                     <span class="call-action-text">ỦNG HỘ QUA VÍ MOMO</span>
