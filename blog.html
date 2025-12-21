@@ -12,20 +12,15 @@
         html { scroll-behavior: smooth; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 115px; }
 
-        /* --- NAVBAR VIP --- */
+        /* --- NAVBAR --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; letter-spacing: 1px; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 12px 15px !important; transition: 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 8px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
 
-        /* --- MARQUEE --- */
-        .marquee-container-bottom { width: 65%; margin: 30px auto 0; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.08); padding: 10px 0; border-radius: 50px; border: 1.5px solid rgba(0, 235, 176, 0.2); position: relative; box-shadow: inset 0 0 15px rgba(0,235,176,0.1); }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
-        @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* --- HERO & BTN --- */
+        /* --- HERO --- */
         .hero-section { text-align: center; padding: 40px 20px 20px; }
         .hero-title { font-weight: 900; font-size: 3.2rem; text-transform: uppercase; letter-spacing: 12px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; margin-bottom: 15px; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
@@ -34,31 +29,33 @@
         .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 16px 45px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1.5px; }
         @keyframes breathing { 0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 235, 176, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 235, 176, 0.5); } }
 
-        /* --- BLOG CARDS LUXURY --- */
-        .blog-card { background: rgba(10, 17, 36, 0.95); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 28px; overflow: hidden; transition: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; cursor: pointer; }
+        /* --- BLOG CARDS --- */
+        .blog-card { background: rgba(10, 17, 36, 0.95); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 28px; overflow: hidden; transition: 0.45s; height: 100%; display: flex; flex-direction: column; cursor: pointer; }
         .blog-card:hover { transform: translateY(-15px); border-color: var(--primary); box-shadow: 0 20px 50px rgba(0, 235, 176, 0.25); }
-        .blog-img { height: 230px; object-fit: cover; width: 100%; border-bottom: 2px solid rgba(0, 235, 176, 0.3); transition: 0.5s; }
-        .blog-card:hover .blog-img { filter: brightness(1.1); }
+        .blog-img { height: 230px; object-fit: cover; width: 100%; border-bottom: 2px solid rgba(0, 235, 176, 0.3); }
         .blog-body { padding: 28px; flex: 1; display: flex; flex-direction: column; }
-        .blog-title { font-weight: 900; font-size: 1.25rem; color: #fff; margin-bottom: 15px; line-height: 1.4; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .blog-title { font-weight: 900; font-size: 1.25rem; color: #fff; margin-bottom: 15px; }
         .blog-desc { font-size: 0.88rem; color: #cbd5e1; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 20px; }
-        .btn-read { background: rgba(0, 235, 176, 0.1); border: 1.5px solid var(--primary); color: var(--primary); font-weight: 900; padding: 10px 22px; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 0.72rem; width: fit-content; margin-top: auto; letter-spacing: 1px; }
-        .blog-card:hover .btn-read { background: var(--primary); color: #000; box-shadow: var(--neon); }
+        .btn-read { background: rgba(0, 235, 176, 0.1); border: 1.5px solid var(--primary); color: var(--primary); font-weight: 900; padding: 10px 22px; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 0.72rem; width: fit-content; margin-top: auto; }
 
         /* --- REVIEWS --- */
         .section-header { font-weight: 900; font-size: 2.3rem; text-transform: uppercase; color: var(--primary); text-align: center; margin: 80px 0 50px; letter-spacing: 8px; text-shadow: var(--neon); }
-        .review-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 30px; padding: 40px; border: 1.5px solid rgba(255,255,255,0.08); border-left: 6px solid var(--gold-vip); height: 100%; transition: 0.4s; position: relative; }
-        .review-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.08); border-color: var(--gold-vip); }
-        .user-avatar { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.5rem; box-shadow: var(--neon); border: 2px solid #fff; }
-        .stars { color: var(--gold-vip); font-size: 1rem; margin-top: 8px; text-shadow: 0 0 10px rgba(240, 195, 0, 0.3); }
-        .review-text { font-style: italic; color: #f8fafc; line-height: 1.9; font-size: 1rem; font-weight: 500; margin-top: 20px; }
+        .review-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 30px; padding: 40px; border: 1.5px solid rgba(255,255,255,0.08); border-left: 6px solid var(--gold-vip); height: 100%; }
+        .user-avatar { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.5rem; }
+        .stars { color: var(--gold-vip); font-size: 1rem; }
+        .review-text { font-style: italic; color: #f8fafc; line-height: 1.9; font-size: 1rem; }
 
-        .carousel-control-prev, .carousel-control-next { width: 6%; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+        /* --- NÚT GÓP Ý DƯỚI REVIEW --- */
+        .btn-fedback-link { background: var(--gold-vip); color: #000; font-weight: 900; padding: 18px 50px; border-radius: 50px; text-transform: uppercase; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 0 20px rgba(240, 195, 0, 0.3); border: none; font-size: 1rem; letter-spacing: 1.5px; }
+        .btn-fedback-link:hover { transform: scale(1.05); background: #fff; box-shadow: 0 0 30px rgba(255,255,255,0.4); }
+
         .footer { text-align: center; color: rgba(255,255,255,0.3); padding: 50px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; }
         
-        /* --- MODAL --- */
-        .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; color: #fff; box-shadow: 0 0 50px rgba(0, 235, 176, 0.3); }
-        .form-control { background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 18px; padding: 15px; font-weight: 500; }
+        /* --- MODAL REFINED --- */
+        .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; color: #fff; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4); position: relative; }
+        .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(2); opacity: 1; position: absolute; right: 25px; top: 25px; z-index: 10; }
+        .form-control { background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 18px; padding: 15px; }
+        .form-control::placeholder { color: #94a3b8 !important; opacity: 0.8; }
         .form-control:focus { background: rgba(0,0,0,0.8); border-color: var(--primary); color: #fff; box-shadow: var(--neon); }
     </style>
 </head>
@@ -90,9 +87,6 @@
                     <span><i class="fas fa-magic me-2"></i>Đăng Bài Chia Sẻ</span>
                 </button>
             </div>
-            <div class="marquee-container-bottom">
-                <span class="marquee-text">🎉 ƯU ĐÃI: Chia sẻ bài viết ngay hôm nay để nhận Voucher giảm giá VIP 50% - Hệ thống lọc ảnh chuyên nghiệp CHONANHNHANH.VN 🚀</span>
-            </div>
         </div>
     </div>
 
@@ -111,22 +105,29 @@
             <h2 class="section-header">Khách Hàng Nói Gì?</h2>
             <div class="row g-4" id="reviewGrid"></div>
         </div>
+
+        <div class="text-center mt-5">
+            <a href="fedback.html" class="btn-fedback-link">
+                <i class="fas fa-comment-dots me-2"></i> Gửi Góp Ý & Báo Lỗi Ngay
+            </a>
+            <p class="mt-3 text-muted" style="font-size: 0.8rem;">Ý kiến của bạn giúp CHONANHNHANH.VN hoàn thiện hơn mỗi ngày!</p>
+        </div>
     </div>
 
     <div class="footer">© 2025 CHONANHNHANH.VN - TRẢI NGHIỆM ĐẲNG CẤP STUDIO 4.0</div>
 
     <div class="modal fade" id="writePostModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 p-4 pb-0">
                     <h5 class="modal-title fw-bold text-primary"><i class="fas fa-feather-alt me-2"></i>CHIA SẺ CÂU CHUYỆN CỦA BẠN</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4 pt-3">
+                <div class="modal-body p-4 pt-4">
                     <form id="postForm" onsubmit="submitPost(event)">
                         <div class="row mb-3">
                             <div class="col-md-6"><label class="fw-bold mb-2">Họ & Tên</label><input type="text" id="postAuthor" class="form-control" placeholder="Tên hiển thị..." required></div>
-                            <div class="col-md-6"><label class="fw-bold mb-2">Email</label><input type="email" id="postEmail" class="form-control" placeholder="Để nhận quà tặng..." required></div>
+                            <div class="col-md-6"><label class="fw-bold mb-2">Email</label><input type="email" id="postEmail" class="form-control" placeholder="Để nhận quà tặng ưu đãi..." required></div>
                         </div>
                         <div class="mb-3">
                             <label class="fw-bold mb-2">Hình ảnh khoảnh khắc</label>
@@ -134,8 +135,8 @@
                             <div id="imagePreviewContainer" class="mt-3" style="display:none; border-radius: 20px; overflow: hidden; border: 2px solid var(--primary);"><img id="imgPreview" style="width: 100%; height: 250px; object-fit: cover;"></div>
                             <input type="hidden" id="postImageBase64"><input type="hidden" id="postImageName">
                         </div>
-                        <div class="mb-3"><label class="fw-bold mb-2">Tiêu đề bài viết</label><input type="text" id="postTitle" class="form-control" placeholder="Tiêu đề ấn tượng..." required></div>
-                        <div class="mb-3"><label class="fw-bold mb-2">Nội dung chia sẻ</label><textarea id="postContent" class="form-control" rows="5" placeholder="Câu chuyện của bạn là gì?" required></textarea></div>
+                        <div class="mb-3"><label class="fw-bold mb-2">Tiêu đề bài viết</label><input type="text" id="postTitle" class="form-control" placeholder="Nhập tiêu đề ấn tượng nhất..." required></div>
+                        <div class="mb-3"><label class="fw-bold mb-2">Nội dung chia sẻ</label><textarea id="postContent" class="form-control" rows="5" placeholder="Câu chuyện của bạn là gì? (Tối thiểu 20 chữ)" required></textarea></div>
                         <div class="text-end"><button type="submit" id="btnSubmitPost" class="btn btn-primary fw-900 px-5 py-3 rounded-pill text-black">GỬI DUYỆT NGAY</button></div>
                     </form>
                 </div>
