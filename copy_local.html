@@ -18,22 +18,26 @@
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
 
-        /* --- NAVBAR ĐỦ TAB --- */
+        /* --- NAVBAR & TABS CHUẨN HOVER --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; position: relative; }
+        
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
+        .nav-link:hover { color: #fff !important; }
         .nav-link.active { color: var(--primary) !important; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s; transform: translateX(-50%); }
-        .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
+        .nav-link:hover::after, .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
 
-        /* USER STATUS ĐỒNG BỘ */
+        /* --- USER STATUS NỚI RỘNG KHOẢNG CÁCH --- */
         .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+        
         .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
-        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; }
+        /* Thêm margin để không bị sát tên */
+        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; margin-left: 5px; }
 
-        /* --- TYPOGRAPHY --- */
+        /* --- TYPOGRAPHY ĐỘNG --- */
         .supreme-title { 
             font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 20px;
             background: linear-gradient(90deg, #fff, var(--primary), #fff);
@@ -101,10 +105,10 @@
                 </ul>
                 <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
-                        <div id="avatarPlaceholder"></div>
+                        <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
                                 <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
                                 <span id="userExpiryText"></span>
                             </div>
@@ -117,13 +121,13 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="text-center"><h1 class="supreme-title">Sao Chép Ảnh Nội Bộ</h1></div>
+        <div class="text-center"><h1 class="supreme-title">Sao Chép Ảnh</h1></div>
 
         <div class="main-grid">
             <div class="rainbow-wrap">
                 <div class="copy-card">
                     <div class="alert-mini">
-                        <div class="mb-1"><i class="fab fa-chrome me-2"></i>Tính năng chỉ hỗ trợ <strong>Google Chrome</strong> hoặc <strong>Edge</strong> trên máy tính.</div>
+                        <div class="mb-1"><i class="fab fa-chrome me-2"></i>Tính năng chỉ hoạt động trên <strong>Google Chrome</strong> hoặc <strong>Edge</strong>.</div>
                         <div><i class="fas fa-bolt me-2"></i>Dữ liệu xử lý cục bộ - Tốc độ cực nhanh - Chính xác 100%.</div>
                     </div>
 
