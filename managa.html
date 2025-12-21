@@ -23,72 +23,86 @@
             color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 105px; overflow-x: hidden;
         }
 
-        /* --- LOADING OVERLAY SUPREME --- */
+        /* --- LOADING NẢY NẢY (BOUNCE & PULSE) --- */
         #loadOverlay { 
             position: fixed; inset: 0; background: #050a14; z-index: 20000; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
         }
         .load-logo { 
-            font-weight: 900; font-size: 1.8rem; color: var(--primary); 
-            text-shadow: var(--neon); letter-spacing: 2px; position: relative; z-index: 2;
+            font-weight: 900; font-size: 2.2rem; color: var(--primary); 
+            text-shadow: var(--neon); letter-spacing: 3px; position: relative; z-index: 2;
+            animation: bounce-logo 1s infinite alternate; /* Hiệu ứng nảy */
+        }
+        @keyframes bounce-logo {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
         }
         .pulse-ring {
-            position: absolute; width: 120px; height: 120px; border: 2px solid var(--primary);
-            border-radius: 50%; animation: pulse-ring 2s infinite; opacity: 0;
+            position: absolute; width: 160px; height: 160px; border: 3px solid var(--primary);
+            border-radius: 50%; animation: pulse-ring 1.5s infinite;
         }
         @keyframes pulse-ring {
-            0% { transform: scale(0.5); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
+            0% { transform: scale(0.4); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
         }
 
-        /* --- NAVBAR & USER PILL (ĐỒNG BỘ LIÊN HỆ) --- */
+        /* --- NAVBAR --- */
         .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
         .navbar-brand { font-weight: 900; font-size: 1.4rem; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: -1px; }
-        .navbar-toggler { border: none; color: var(--primary) !important; font-size: 1.5rem; }
         
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
-        .nav-link:hover { color: #fff !important; }
         .nav-link.active { color: var(--primary) !important; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
-        .nav-link:hover::after, .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
+        .nav-link.active::after, .nav-link:hover::after { width: 60%; box-shadow: var(--neon); }
 
-        .user-pill { 
-            background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; 
-            display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); height: 50px;
+        .user-status-box { 
+            background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; 
+            display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); min-height: 55px;
         }
-        .avt-circle { 
-            width: 34px; height: 34px; border-radius: 50%; overflow: hidden; 
-            border: 1.2px solid var(--primary); background: #000; flex-shrink: 0; 
-        }
+        .avt-circle { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; }
         .avt-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.55rem; padding: 1px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
-        .tag-active { background: var(--primary); color: #000; }
+        #userExpiryText { font-size: 0.85rem !important; color: #fff !important; font-weight: 900 !important; }
 
-        /* --- CÁC PHẦN CÒN LẠI GIỮ NGUYÊN --- */
-        .supreme-title { font-weight: 900; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 8px; background: linear-gradient(to bottom, #fff 20%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 10px 30px rgba(0, 235, 176, 0.2); margin-bottom: 35px; text-align: center; }
-        .search-wrapper { max-width: 500px; margin: 0 auto 40px; padding: 2.5px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; }
-        @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        .search-inner { background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 2px 20px; }
-        .search-inner input { background: transparent; border: none; color: white; width: 100%; padding: 8px; font-weight: 700; outline: none; }
+        /* --- MODAL XUẤT FILE NỔI BẬT --- */
+        .modal-content { 
+            background: #0f172a !important; /* Màu nền modal sáng hơn để không bị chìm */
+            border: 2px solid var(--primary) !important; 
+            box-shadow: 0 0 40px rgba(0, 235, 176, 0.2);
+            border-radius: 30px !important;
+        }
+        .modal-title { color: #fff !important; font-weight: 900 !important; letter-spacing: 1px; }
+        .alert-info-supreme { 
+            background: var(--primary) !important; color: #000 !important; 
+            font-weight: 900 !important; font-size: 1.1rem; border-radius: 15px;
+        }
+        #fileNamesOutput { 
+            background: #020617 !important; color: var(--primary) !important; 
+            font-weight: 700 !important; font-family: monospace; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-copy-supreme { 
+            background: var(--primary) !important; color: #000 !important; 
+            font-weight: 900 !important; padding: 15px !important; transition: 0.3s;
+        }
+        .btn-copy-supreme:hover { transform: scale(1.02); box-shadow: var(--neon); }
 
+        /* --- ALBUM CARD --- */
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 0 20px; }
-        .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
+        .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
         .album-card-vip:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-5px); }
-        .card-img-header { height: 210px; background-size: cover; background-position: center; position: relative; }
-        .album-vip-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-weight: 900; font-size: 0.95rem; color: #fff; text-align: center; }
+        .card-img-header { height: 210px; background-size: cover; background-position: center; position: relative; border-radius: 20px 20px 0 0; }
+        .album-vip-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-weight: 900; font-size: 0.95rem; text-align: center; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 15px 0 15px; }
-        .stat-pill { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 5px; border-radius: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
-        .stat-pill:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
+        .stat-pill { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 5px; border-radius: 10px; text-align: center; transition: 0.3s; }
         .stat-val { display: block; font-weight: 900; font-size: 0.9rem; color: var(--primary); }
         .stat-lab { display: block; font-size: 0.5rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
 
         .vip-actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 15px 15px 15px; }
         .btn-vip { height: 38px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; color: #fff; transition: 0.2s; }
         .v-view { background: #3b82f6; } .v-drive { background: #10b981; } .v-export { background: #f59e0b; color: #000; }
-        .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 4px; height: 32px; font-size: 0.6rem; }
+        .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 4px; height: 32px; }
 
-        #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid #fff; }
+        #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -103,9 +117,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#supremeNav">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#supremeNav"><i class="fas fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="supremeNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
@@ -113,13 +125,13 @@
                     <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
                 </ul>
                 <div id="authControl" style="display: none !important;" class="align-items-center gap-3">
-                    <div class="user-pill">
+                    <div class="user-status-box">
                         <div class="avt-circle" id="userAvatarPlaceholder"></div>
-                        <div class="d-flex flex-column overflow-hidden">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1; color:#fff;">...</span>
+                        <div class="d-flex flex-column">
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; color:#fff;">...</span>
                             <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryText" style="font-size:0.5rem; color:#94a3b8;"></span>
+                                <span id="badgeStatus" class="status-badge" style="background:var(--primary); color:#000; padding:1px 6px; border-radius:4px; font-size:0.5rem; font-weight:900;">...</span>
+                                <span id="userExpiryText"></span>
                             </div>
                         </div>
                     </div>
@@ -130,7 +142,8 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
+        <div class="mt-5 text-center"><h1 style="font-weight:900; font-size:2.5rem; text-transform:uppercase; letter-spacing:10px; color:#fff; text-shadow: var(--neon);">Quản Lý Album</h1></div>
+        
         <div class="search-wrapper">
             <div class="search-inner">
                 <i class="fas fa-search me-2" style="color:var(--primary)"></i>
@@ -143,10 +156,16 @@
 
     <div class="modal fade" id="exportModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="background:#080d1a; border:1px solid var(--primary); border-radius:25px;">
-                <div class="modal-header border-0"><h5 class="modal-title fw-900 text-white">DANH SÁCH FILE ĐÃ LỌC</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body"><div class="alert bg-primary text-dark fw-900 rounded-3 mb-4 text-center" id="modalInfo"></div><textarea id="fileNamesOutput" class="form-control" rows="10" readonly style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:var(--primary); font-family:monospace; border-radius:12px;"></textarea></div>
-                <div class="modal-footer border-0 p-4"><button type="button" class="btn btn-primary w-100 py-3 rounded-3 fw-900 text-dark" onclick="copyFileNames()">SAO CHÉP DANH SÁCH</button></div>
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">DANH SÁCH FILE ĐÃ LỌC</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info-supreme text-center mb-4" id="modalInfo"></div>
+                    <textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea>
+                    <button type="button" class="btn btn-copy-supreme w-100 rounded-4" onclick="copyFileNames()">SAO CHÉP DANH SÁCH</button>
+                </div>
             </div>
         </div>
     </div>
@@ -176,9 +195,7 @@
             const card = document.createElement('div');
             const id = album.folder_id || album.folderId; card.className = 'album-card-vip'; card.id = `card-${id}`;
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
-            
-            card.innerHTML = `
-                <div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
+            card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
                     <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
@@ -221,18 +238,12 @@
 
         function updateHeaderUI() {
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar');
-                const status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-                
+                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('userAvatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                
-                const badge = document.getElementById('badgeStatus');
-                const expText = document.getElementById('userExpiryText');
-                if (status === 'active' && expiry > Date.now()) {
-                    badge.innerText = "ACTIVE"; badge.className = "status-tag tag-active";
-                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
-                } else { badge.innerText = "EXPIRED"; badge.className = "status-tag bg-danger"; }
+                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
+                if (status === 'active' && expiry > Date.now()) { badge.innerText = "ACTIVE"; expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); } 
+                else { badge.innerText = "MỚI"; }
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { window.location.href = 'admin.html'; }
         }
@@ -242,7 +253,7 @@
             try { 
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); renderAlbums(allAlbums); 
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 800); 
+                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1500); 
             } catch (e) { document.getElementById('loadOverlay').style.display = 'none'; } 
         }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
