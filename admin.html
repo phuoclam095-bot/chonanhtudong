@@ -11,6 +11,7 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
+        /* NAVBAR FIX */
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
@@ -45,8 +46,6 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; }
-
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
 
@@ -61,10 +60,7 @@
         .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 480px; background: rgba(10, 20, 30, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; z-index: 10001; }
         .chat-header { background: var(--primary); padding: 15px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg-bubble { max-width: 75%; background: rgba(255,255,255,0.08); padding: 10px; border-radius: 12px; font-size: 0.8rem; color: #e2e8f0; }
-        .user-row .msg-bubble { background: var(--primary); color: #000; font-weight: 700; }
         #typingIndicator { font-size: 0.7rem; color: var(--primary); padding-left: 55px; margin-bottom: 5px; font-weight: 700; display: none; }
-        .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
 
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
@@ -130,6 +126,7 @@
                     </div>
                 </div>
                 <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
+                <div class="mt-4 text-center" style="color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
             </div>
         </div>
     </div>
@@ -178,21 +175,16 @@
                     document.getElementById('btnCreate').disabled = true; notice.style.display = 'block';
                     notice.innerHTML = status === 'new' ? `Chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="payment.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
                 }
-            } else {
-                document.getElementById('marqueeContainer').style.display = 'block';
-                document.getElementById('adminNavLinks').style.display = 'none';
-                document.getElementById('loggedOutNav').style.display = 'block';
-                document.getElementById('loggedInNav').style.display = 'none';
+                
+                // Khôi phục gợi ý AI
+                setTimeout(() => {
+                    const bubble = document.getElementById('aiSuggestion');
+                    if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                        bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                        bubble.style.display = 'block';
+                    }
+                }, 1500);
             }
-
-            // Khôi phục gợi ý AI
-            setTimeout(() => {
-                const bubble = document.getElementById('aiSuggestion');
-                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-                    bubble.style.display = 'block';
-                }
-            }, 1500);
         }
 
         async function handleCreateAlbum() {
@@ -207,7 +199,7 @@
                 const res = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
                 const data = await res.json();
                 if(data.clientLink) {
-                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới"; // Xóa 1 icon thừa
+                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới";
                     document.getElementById('resClientLink').href = data.clientLink;
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('resultBox').style.display = 'block';
