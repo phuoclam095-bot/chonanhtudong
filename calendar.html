@@ -13,60 +13,63 @@
             background-color: var(--bg-deep); 
             background-image: linear-gradient(rgba(5, 10, 20, 0.4), rgba(5, 10, 20, 0.6)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
-            color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 90px; height: 100vh; overflow: hidden;
+            color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; height: 100vh; overflow: hidden;
         }
 
-        /* --- NAVBAR --- */
-        .navbar { background: rgba(5, 10, 20, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 75px; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: 1px; }
+        /* --- NAVBAR ĐỒNG BỘ TABS --- */
+        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.15rem; letter-spacing: 1px; }
+        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; position: relative; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: 5px; left: 25%; width: 50%; height: 2px; background: var(--primary); box-shadow: var(--neon); }
 
-        .main-wrapper { max-width: 1300px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 400px; gap: 25px; height: calc(100vh - 120px); }
+        .main-wrapper { max-width: 1350px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 400px; gap: 20px; height: calc(100vh - 130px); }
 
         /* --- CALENDAR CRYSTAL GLASS --- */
         .calendar-container { 
-            background: rgba(10, 17, 36, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 35px; padding: 25px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column;
+            background: rgba(10, 17, 36, 0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 25px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative;
         }
 
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 10px; }
-        .month-year-display { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; cursor: pointer; user-select: none; letter-spacing: 2px; }
-        .month-year-display span:hover { color: var(--primary); text-shadow: var(--neon); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .month-year-display { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 15px; letter-spacing: 2px; }
+        .month-year-display span { cursor: pointer; transition: 0.3s; padding: 5px 10px; border-radius: 10px; }
+        .month-year-display span:hover { background: rgba(0, 235, 176, 0.15); color: var(--primary); }
         
-        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 45px; height: 45px; border-radius: 50%; transition: 0.3s; }
+        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 45px; height: 45px; border-radius: 50%; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
         .btn-nav:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
 
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 15px; font-size: 0.85rem; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; flex: 1; }
-        
-        .day { 
-            aspect-ratio: 1.3/1; background: rgba(255,255,255,0.03); border-radius: 15px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); 
+        /* --- QUICK SELECTOR GRID --- */
+        .quick-selector {
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+            width: 90%; background: #080d1a; border: 1px solid var(--primary);
+            border-radius: 25px; padding: 20px; display: none; z-index: 100;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
-        .day:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); transform: translateY(-3px); }
+        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .selector-item { padding: 10px; text-align: center; font-weight: 700; border-radius: 10px; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.05); }
+        .selector-item:hover { background: var(--primary); color: #000; }
+
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 10px; font-size: 0.85rem; }
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; flex: 1; }
+        .day { aspect-ratio: 1.4/1; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .day:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
         .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.05); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        .day.prev-date, .day.next-date { opacity: 0 !important; pointer-events: none; } /* GIẢM DƯ THỪA */
+        .day.empty { opacity: 0; pointer-events: none; }
 
-        /* --- SIDEBAR --- */
-        .sidebar { background: rgba(10, 17, 36, 0.7); backdrop-filter: blur(15px); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
-        .event-list { overflow-y: auto; flex: 1; padding-right: 8px; }
-        .event-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 18px; margin-bottom: 12px; border-radius: 20px; position: relative; border-left: 4px solid var(--primary); }
-        
-        /* HI-VISIBILITY INPUTS */
-        .form-control, .form-select { 
-            background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; 
-            border-radius: 15px; padding: 12px 15px; font-weight: 700; font-size: 0.95rem;
-        }
-        .form-control::placeholder { color: #a5f3e0 !important; opacity: 1; }
-        
-        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 15px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); transition: 0.3s; }
-        
-        .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; box-shadow: 0 0 40px rgba(0, 235, 176, 0.4); }
-        .modal-header .btn-close { filter: invert(1) brightness(2); }
+        .sidebar { background: rgba(10, 17, 36, 0.75); backdrop-filter: blur(15px); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+        .event-list { overflow-y: auto; flex: 1; padding-right: 5px; }
+        .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 12px; border-radius: 18px; border-left: 4px solid var(--primary); position: relative; }
 
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; overflow: visible; } body { height: auto; overflow: auto; } }
+        /* FORM VISIBILITY */
+        .form-control, .form-select { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-weight: 700; }
+        .form-control::placeholder { color: #a5f3e0 !important; }
+        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 15px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); transition: 0.3s; margin-top: auto; }
+
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin-top: 10px; } }
     </style>
 </head>
 <body>
@@ -74,7 +77,17 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <div class="ms-auto"><a href="managa.html" class="nav-link text-white small"><i class="fas fa-arrow-left me-1"></i> Dashboard</a></div>
+            <div class="collapse navbar-collapse d-block">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="donate.html" class="nav-link">Donate</a></li>
+                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="fedback.html" class="nav-link">Góp Ý</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -83,17 +96,24 @@
             <div class="calendar-header">
                 <button class="btn-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
                 <div class="month-year-display">
-                    <span id="monthDisplay" onclick="changeMonthDirectly()">THÁNG</span>
-                    <span id="yearDisplay" onclick="changeYearDirectly()">NĂM</span>
+                    <span id="monthDisplay" onclick="toggleSelector('month')">THÁNG</span>
+                    <span id="yearDisplay" onclick="toggleSelector('year')">NĂM</span>
                 </div>
                 <button class="btn-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
             </div>
+
+            <div id="quickSelector" class="quick-selector">
+                <div id="selectorTitle" class="text-center fw-900 text-primary mb-3 uppercase">CHỌN NHANH</div>
+                <div id="selectorGrid" class="selector-grid"></div>
+                <button class="btn btn-sm btn-outline-danger w-100 mt-3 rounded-pill" onclick="toggleSelector()">ĐÓNG</button>
+            </div>
+
             <div class="weekdays"><div>CN</div><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div></div>
             <div id="daysGrid" class="days"></div>
         </div>
 
         <div class="sidebar">
-            <h4 class="fw-900 text-primary mb-1">LỊCH TRÌNH STUDIO</h4>
+            <h5 class="fw-900 text-primary mb-1">LỊCH TRÌNH STUDIO</h5>
             <p id="selectedDateDisplay" class="text-white fw-bold small mb-4 opacity-75"></p>
             <div id="eventList" class="event-list"></div>
             <button class="btn-action-main mt-3" onclick="openAddModal()"><i class="fas fa-plus-circle me-2"></i> ĐẶT LỊCH SHOW</button>
@@ -104,14 +124,18 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 px-4 pt-4">
-                    <h5 class="fw-900 text-primary uppercase mb-0"><i class="fas fa-calendar-plus me-2"></i>THÔNG TIN SHOW CHỤP</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="fw-900 text-primary uppercase mb-0"><i class="fas fa-camera-retro me-2"></i>THIẾT LẬP SHOW CHỤP</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="addEventForm">
                         <div class="mb-3">
-                            <label class="small fw-bold text-primary mb-2">TÊN KHÁCH HÀNG / SHOW</label>
-                            <input type="text" class="form-control" id="clientName" placeholder="Nhập tên khách hàng..." required>
+                            <label class="small fw-bold text-primary mb-2">KHÁCH HÀNG / SHOW</label>
+                            <input type="text" class="form-control" id="clientName" placeholder="Tên khách hàng show chụp..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small fw-bold text-primary mb-2">SỐ ĐIỆN THOẠI</label>
+                            <input type="text" class="form-control" id="clientPhone" placeholder="Nhập số điện thoại liên hệ...">
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
@@ -121,11 +145,11 @@
                                     <option value="Party">🎆 Gói Chụp Tiệc</option>
                                     <option value="Portrait">📸 Gói Chân Dung</option>
                                     <option value="Family">👪 Gói Gia Đình</option>
-                                    <option value="Other">🌀 GÓI CHỤP KHÁC</option>
+                                    <option value="Other">🌀 GÓI KHÁC</option>
                                 </select>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-2">GIỜ BẮT ĐẦU (24H)</label>
+                                <label class="small fw-bold text-primary mb-2">GIỜ (24H)</label>
                                 <input type="time" class="form-control" id="eventTime" required>
                             </div>
                         </div>
@@ -139,14 +163,10 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <label class="small fw-bold text-primary mb-2">TIỀN CỌC (VNĐ)</label>
-                                <input type="text" class="form-control" id="depositAmount" placeholder="VD: 500.000">
+                                <input type="text" class="form-control" id="depositAmount" placeholder="VD: 1,000,000">
                             </div>
                         </div>
-                        <div class="mb-4">
-                            <label class="small fw-bold text-primary mb-2">ĐỊA CHỈ VÀ GHI CHÚ</label>
-                            <textarea class="form-control" id="eventNote" rows="2" placeholder="Ghi chú Show..."></textarea>
-                        </div>
-                        <button type="button" class="btn-action-main" onclick="saveEvent()">XÁC NHẬN LƯU SHOW</button>
+                        <button type="button" class="btn-action-main" onclick="saveEvent()">LƯU LỊCH TRÌNH</button>
                     </form>
                 </div>
             </div>
@@ -161,90 +181,71 @@
         let selectedDate = new Date();
         let events = JSON.parse(localStorage.getItem('photo_pro_planner_v3')) || {};
 
-        const monthsArr = ["Tháng Một", "Tháng Hai", "Tháng Ba", "Tháng Tư", "Tháng Năm", "Tháng Sáu", "Tháng Bảy", "Tháng Tám", "Tháng Chín", "Tháng Mười", "Tháng Mười Một", "Tháng Mười Hai"];
+        const monthsArr = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
 
         function renderCalendar() {
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const prevLastDay = new Date(currentYear, currentMonth, 0).getDate();
-            
             document.getElementById('monthDisplay').innerText = monthsArr[currentMonth];
             document.getElementById('yearDisplay').innerText = currentYear;
-
             let days = "";
-            // NGÀY THÁNG TRƯỚC (ẨN)
-            for (let x = firstDay; x > 0; x--) days += `<div class="day prev-date"></div>`;
-
+            for (let x = firstDay; x > 0; x--) days += `<div class="day empty"></div>`;
             for (let i = 1; i <= lastDay; i++) {
                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const hasEvent = events[dateKey] && events[dateKey].length > 0;
                 const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                 const isSelected = i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-                
-                days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">
-                            ${i}
-                            ${hasEvent ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:5px;box-shadow:var(--neon)"></div>' : ''}
-                         </div>`;
+                days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">${i}${hasEvent ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:4px;box-shadow:var(--neon)"></div>' : ''}</div>`;
             }
-
-            // CHỈ HIỆN ĐỦ NGÀY
-            const remaining = 35 - (firstDay + lastDay);
-            if (remaining > 0) {
-                for (let j = 1; j <= remaining; j++) days += `<div class="day next-date"></div>`;
-            }
-            
             document.getElementById('daysGrid').innerHTML = days;
             renderEventList();
         }
 
-        function selectDate(day) { selectedDate = new Date(currentYear, currentMonth, day); renderCalendar(); }
+        // QUICK SELECTOR LOGIC
+        function toggleSelector(type) {
+            const box = document.getElementById('quickSelector');
+            const grid = document.getElementById('selectorGrid');
+            const title = document.getElementById('selectorTitle');
+            if (!type) { box.style.display = 'none'; return; }
+            box.style.display = 'block';
+            grid.innerHTML = '';
+            if (type === 'month') {
+                title.innerText = "CHỌN THÁNG";
+                monthsArr.forEach((m, idx) => { grid.innerHTML += `<div class="selector-item" onclick="setMonth(${idx})">${m}</div>`; });
+            } else {
+                title.innerText = "CHỌN NĂM";
+                for (let y = 2025; y <= 2035; y++) { grid.innerHTML += `<div class="selector-item" onclick="setYear(${y})">${y}</div>`; }
+            }
+        }
+        function setMonth(m) { currentMonth = m; toggleSelector(); renderCalendar(); }
+        function setYear(y) { currentYear = y; toggleSelector(); renderCalendar(); }
 
+        function selectDate(day) { selectedDate = new Date(currentYear, currentMonth, day); renderCalendar(); }
         function renderEventList() {
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
             const dayEvents = events[dateKey] || [];
-            document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' });
-
-            if (dayEvents.length === 0) {
-                document.getElementById('eventList').innerHTML = `<div class="text-center text-white mt-5 opacity-75"><b>TRỐNG LỊCH TRÌNH</b></div>`;
-            } else {
-                document.getElementById('eventList').innerHTML = dayEvents.map((ev, idx) => `
-                    <div class="event-item">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span>
-                            <span class="text-warning fw-bold small">${ev.deposit || ''}</span>
-                        </div>
-                        <h5 class="mb-1 fw-800">${ev.client}</h5>
-                        <p class="small mb-0 opacity-75">${ev.type}</p>
-                        <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button>
-                    </div>`).join('');
-            }
+            document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('eventList').innerHTML = dayEvents.length === 0 ? `<div class="text-center text-white mt-5 opacity-75">TRỐNG LỊCH</div>` : dayEvents.map((ev, idx) => `
+                <div class="event-item">
+                    <div class="d-flex justify-content-between mb-2"><span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span><span class="text-warning fw-bold small">${ev.deposit || ''}</span></div>
+                    <h6 class="mb-1 fw-900">${ev.client}</h6>
+                    <p class="small mb-1 text-primary fw-bold">${ev.phone || ''}</p>
+                    <p class="small mb-0 opacity-75">${ev.type}</p>
+                    <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button>
+                </div>`).join('');
         }
 
-        // ĐIỀU HƯỚNG KHÔNG POPUP
-        function changeMonthDirectly() { currentMonth = (currentMonth + 1) % 12; renderCalendar(); }
-        function changeYearDirectly() { currentYear++; renderCalendar(); }
-
         function openAddModal() { document.getElementById('addEventForm').reset(); new bootstrap.Modal(document.getElementById('addEventModal')).show(); }
-
         function saveEvent() {
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
             if (!events[dateKey]) events[dateKey] = [];
-            events[dateKey].push({ 
-                client: document.getElementById('clientName').value, 
-                type: document.getElementById('shootType').value, 
-                status: document.getElementById('eventStatus').value, 
-                time: document.getElementById('eventTime').value, 
-                deposit: document.getElementById('depositAmount').value, 
-                note: document.getElementById('eventNote').value 
-            });
+            events[dateKey].push({ client: document.getElementById('clientName').value, phone: document.getElementById('clientPhone').value, type: document.getElementById('shootType').value, status: document.getElementById('eventStatus').value, time: document.getElementById('eventTime').value, deposit: document.getElementById('depositAmount').value });
             localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events));
             location.reload();
         }
-
-        function deleteEvent(key, idx) { if (confirm("Xóa lịch?")) { events[key].splice(idx, 1); if (events[key].length === 0) delete events[key]; localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events)); renderCalendar(); } }
+        function deleteEvent(key, idx) { if (confirm("Xóa?")) { events[key].splice(idx, 1); localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events)); renderCalendar(); } }
         function prevMonth() { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); }
         function nextMonth() { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); }
-
         document.addEventListener('DOMContentLoaded', renderCalendar);
     </script>
 </body>
