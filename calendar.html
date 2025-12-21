@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>STUDIO MANAGER PRO - CHONANHNHANH.VN</title>
+    <title>STUDIO PLANNER PRO V24.1 - CHONANHNHANH.VN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); --gold-muted: #b89b00; }
-        body { background-color: var(--bg-deep); background-image: linear-gradient(rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.8)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; height: 100vh; overflow: hidden; }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(rgba(5, 10, 20, 0.85), rgba(5, 10, 20, 0.85)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; height: 100vh; overflow: hidden; }
         
+        /* --- NAVBAR VIP --- */
         .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 12px 18px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; text-shadow: var(--neon); }
 
-        .main-wrapper { max-width: 1400px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 400px; gap: 25px; height: calc(100vh - 130px); overflow: hidden; }
+        .main-wrapper { max-width: 1400px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 420px; gap: 25px; height: calc(100vh - 130px); overflow: hidden; }
+        
+        /* --- CALENDAR --- */
         .calendar-container { background: rgba(10, 17, 36, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .btn-nav { background: rgba(0, 235, 176, 0.2); border: 2px solid var(--primary); color: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: var(--neon); }
@@ -33,16 +36,22 @@
         .day.other-month { opacity: 0.2; cursor: default; }
         .lunar-day { font-size: 0.7rem; opacity: 0.7; font-weight: 600; margin-top: 2px; }
 
-        .sidebar { background: rgba(10, 17, 36, 0.8); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        /* --- SIDEBAR & NOTIFICATION BADGE --- */
+        .sidebar { background: rgba(10, 17, 36, 0.85); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .event-list { overflow-y: auto; flex: 1; margin-bottom: 15px; padding-right: 5px; }
-        .event-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 18px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; cursor: pointer; transition: 0.2s; }
+        .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 18px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; cursor: pointer; transition: 0.2s; }
         .event-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        
+        .status-badge { font-size: 0.65rem; font-weight: 900; padding: 4px 10px; border-radius: 30px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-wait { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid #ffc107; }
+        .badge-done { background: rgba(0, 235, 176, 0.15); color: var(--primary); border: 1px solid var(--primary); }
 
         .form-control, .form-select { background: rgba(0,0,0,0.6) !important; border: 1.5px solid rgba(255,255,255,0.15) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-weight: 700; }
         .form-control::placeholder { color: rgba(165, 243, 224, 0.3) !important; }
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.8) sepia(100%) saturate(1000%) hue-rotate(100deg); cursor: pointer; scale: 1.2; }
         .btn-action { background: linear-gradient(45deg, #00ebb0, #00a87e); color: #000; font-weight: 900; padding: 16px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); transition: 0.2s; }
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { display: none; } }
+
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } }
     </style>
 </head>
 <body>
@@ -99,8 +108,10 @@
                             <div class="col-6 mb-3">
                                 <select class="form-select" id="sType">
                                     <option value="Wedding">💍 Gói Chụp Cưới</option>
-                                    <option value="Event">🎉 Gói Chụp Tiệc</option>
-                                    <option value="Portrait">📸 Chân Dung</option>
+                                    <option value="Party">🎉 Gói Chụp Tiệc</option>
+                                    <option value="Portrait">📸 Gói Chân Dung</option>
+                                    <option value="Family">👨‍👩‍👧 Gói Gia Đình</option>
+                                    <option value="Other">🌀 Gói Chụp Khác</option>
                                 </select>
                             </div>
                             <div class="col-6 mb-3"><input type="time" class="form-control" id="sTime" required></div>
@@ -124,72 +135,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Lịch âm chuẩn 2025
-        function getLunar(d, m, y) {
-            const base = new Date(2025, 11, 22);
-            const target = new Date(y, m, d);
-            const diff = Math.floor((target - base) / 86400000);
-            let l = 3 + diff;
-            while(l <= 0) l += 30;
-            return l > 30 ? l % 30 || 30 : l;
-        }
-
-        let curr = new Date();
-        let sel = new Date();
-        let store = JSON.parse(localStorage.getItem('studio_pro_v23')) || {};
-
+        function getLunar(d, m, y) { const base = new Date(2025, 11, 22); const target = new Date(y, m, d); const diff = Math.floor((target - base) / 86400000); let l = 3 + diff; while(l <= 0) l += 30; return l > 30 ? l % 30 || 30 : l; }
+        let curr = new Date(); let sel = new Date(); let store = JSON.parse(localStorage.getItem('studio_pro_v24')) || {};
+        
         function render() {
             const y = curr.getFullYear(), m = curr.getMonth();
-            document.getElementById('monthTitle').innerText = "Tháng " + (m + 1);
-            document.getElementById('yearTitle').innerText = y;
-
-            let first = new Date(y, m, 1).getDay();
-            first = (first === 0) ? 6 : first - 1;
-            const last = new Date(y, m + 1, 0).getDate();
-            const prevLast = new Date(y, m, 0).getDate();
-
+            document.getElementById('monthTitle').innerText = "Tháng " + (m + 1); document.getElementById('yearTitle').innerText = y;
+            let first = new Date(y, m, 1).getDay(); first = (first === 0) ? 6 : first - 1;
+            const last = new Date(y, m + 1, 0).getDate(); const prevLast = new Date(y, m, 0).getDate();
             let html = "";
-            for(let i = first; i > 0; i--) {
-                const d = prevLast - i + 1;
-                html += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`;
-            }
-            
+            for(let i = first; i > 0; i--) { const d = prevLast - i + 1; html += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`; }
             for(let i = 1; i <= last; i++) {
                 const isToday = i === new Date().getDate() && m === new Date().getMonth() && y === new Date().getFullYear();
                 const isSel = i === sel.getDate() && m === sel.getMonth() && y === sel.getFullYear();
                 const key = `${y}-${m+1}-${i}`;
-                html += `<div class="day ${isToday?'today':''} ${isSel?'selected':''}" onclick="selectDay(${i})">
-                            <span>${i}</span>
-                            <span class="lunar-day">${getLunar(i, m, y)}</span>
-                            ${store[key] ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:2px;box-shadow:var(--neon)"></div>' : ''}
-                         </div>`;
+                html += `<div class="day ${isToday?'today':''} ${isSel?'selected':''}" onclick="selectDay(${i})"><span>${i}</span><span class="lunar-day">${getLunar(i, m, y)}</span>${store[key] ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}</div>`;
             }
-
-            const remaining = 42 - (first + last);
-            for(let j = 1; j <= remaining; j++) {
-                html += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`;
-            }
-            document.getElementById('daysGrid').innerHTML = html;
-            updateList();
+            const remaining = 42 - (first + last); for(let j = 1; j <= remaining; j++) { html += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`; }
+            document.getElementById('daysGrid').innerHTML = html; updateList();
         }
 
         function selectDay(d) { sel = new Date(curr.getFullYear(), curr.getMonth(), d); render(); }
+        function changeMonth(v) { curr.setMonth(curr.setMonth() + v); render(); }
         
-        // FIX LỖI N/A CHUYỂN NĂM
-        function changeMonth(v) {
-            curr.setMonth(curr.getMonth() + v);
-            render();
-        }
-
         function showModal(index = null) { 
             document.getElementById('showForm').reset();
-            const title = document.getElementById('modalTitle');
-            const editIdx = document.getElementById('editIndex');
             if (index !== null) {
                 const key = `${sel.getFullYear()}-${sel.getMonth()+1}-${sel.getDate()}`;
                 const it = store[key][index];
-                title.innerText = "CHỈNH SỬA LỊCH TRÌNH";
-                editIdx.value = index;
+                document.getElementById('modalTitle').innerText = "CHỈNH SỬA LỊCH TRÌNH";
+                document.getElementById('editIndex').value = index;
                 document.getElementById('cName').value = it.name;
                 document.getElementById('cPhone').value = it.phone;
                 document.getElementById('sType').value = it.type;
@@ -198,8 +173,8 @@
                 document.getElementById('sDeposit').value = it.deposit;
                 document.getElementById('sNote').value = it.note;
             } else {
-                title.innerText = "THIẾT LẬP LỊCH TRÌNH";
-                editIdx.value = "";
+                document.getElementById('modalTitle').innerText = "THIẾT LẬP LỊCH TRÌNH";
+                document.getElementById('editIndex').value = "";
             }
             new bootstrap.Modal(document.getElementById('eventModal')).show(); 
         }
@@ -210,13 +185,19 @@
             const items = store[key] || [];
             document.getElementById('eventList').innerHTML = items.length ? items.map((it, idx) => `
                 <div class="event-item" onclick="showModal(${idx})">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="fw-900 text-primary small">${it.time}</span>
-                        <button class="btn btn-sm text-danger p-0" onclick="event.stopPropagation(); deleteShow('${key}', ${idx})"><i class="fas fa-trash"></i></button>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-900 text-primary small"><i class="far fa-clock me-2"></i>${it.time}</span>
+                        <span class="status-badge ${it.status === 'wait' ? 'badge-wait' : 'badge-done'}">${it.status === 'wait' ? '🟡 Chờ xác nhận' : '🟢 Đã cọc'}</span>
                     </div>
                     <div class="fw-900 mt-1">${it.name}</div>
-                    <div class="small opacity-75 text-info mt-1"><i class="fas fa-map-marker-alt me-1"></i>${it.note || 'Không có ghi chú'}</div>
-                    <div class="d-flex justify-content-between mt-2"><span class="small opacity-50">${it.type} | ${it.phone}</span><span style="color:var(--gold-muted);font-size:0.75rem;font-weight:700;">${it.deposit || '0'}đ</span></div>
+                    <div class="small opacity-75 text-info mt-1"><i class="fas fa-sticky-note me-1"></i>${it.note || 'Không có ghi chú'}</div>
+                    <div class="d-flex justify-content-between mt-2 align-items-end">
+                        <span class="small opacity-50">${it.type} | ${it.phone}</span>
+                        <div class="d-flex align-items-center gap-3">
+                            <span style="color:var(--gold-muted);font-size:0.75rem;font-weight:700;">${it.deposit || '0'}đ</span>
+                            <button class="btn btn-sm text-danger p-0" onclick="event.stopPropagation(); deleteShow('${key}', ${idx})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
                 </div>
             `).join('') : '<div class="text-center mt-5 opacity-25">KHÔNG CÓ LỊCH TRÌNH</div>';
         }
@@ -227,12 +208,12 @@
             const data = { name: document.getElementById('cName').value, phone: document.getElementById('cPhone').value, type: document.getElementById('sType').value, time: document.getElementById('sTime').value, status: document.getElementById('sStatus').value, deposit: document.getElementById('sDeposit').value, note: document.getElementById('sNote').value };
             if(!store[key]) store[key] = [];
             if (editIdx !== "") store[key][editIdx] = data; else store[key].push(data);
-            localStorage.setItem('studio_pro_v23', JSON.stringify(store));
+            localStorage.setItem('studio_pro_v24', JSON.stringify(store));
             bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
             render();
         }
 
-        function deleteShow(key, idx) { if(confirm("Xóa lịch trình này?")) { store[key].splice(idx, 1); if(store[key].length === 0) delete store[key]; localStorage.setItem('studio_pro_v23', JSON.stringify(store)); render(); } }
+        function deleteShow(key, idx) { if(confirm("Xóa lịch trình này?")) { store[key].splice(idx, 1); if(store[key].length === 0) delete store[key]; localStorage.setItem('studio_pro_v24', JSON.stringify(store)); render(); } }
         document.addEventListener('DOMContentLoaded', render);
     </script>
 </body>
