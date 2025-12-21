@@ -9,67 +9,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); }
-        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 95px; }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 90px; }
         
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2rem; color: var(--primary); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 85px; }
+        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 80px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; position: relative; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; padding: 8px 12px !important; transition: 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
-        .nav-link:hover::after, .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 2px; left: 50%; background: var(--primary); transition: 0.3s transform; transform: translateX(-50%); }
+        .nav-link:hover::after, .nav-link.active::after { width: 60%; }
 
-        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 50px; min-width: 240px; }
-        #avatarPlaceholder { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .user-status-box { background: rgba(255,255,255,0.05); padding: 4px 15px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); height: 45px; }
+        #avatarPlaceholder { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1px solid var(--primary); background: #000; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
-        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; margin-left: 5px; }
+        .status-tag { font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
 
-        .supreme-title { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 25px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
+        .supreme-title { font-weight: 900; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 15px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* PACKAGE GRID OPTIMIZED */
-        .package-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1550px; margin: 0 auto 30px; padding: 0 20px; align-items: stretch; }
+        /* PACKAGE GRID FULL CONTENT */
+        .package-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1550px; margin: 0 auto 20px; padding: 0 15px; align-items: stretch; height: 68vh; }
         
-        .package-card { background: rgba(10, 17, 36, 0.9); border-radius: 30px; padding: 35px 20px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
-        .package-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: var(--neon); }
-        .package-card.selected { border-width: 2px; border-color: var(--primary); background: rgba(0, 235, 176, 0.08); box-shadow: 0 0 40px rgba(0, 235, 176, 0.2); }
+        .package-card { background: rgba(10, 17, 36, 0.9); border-radius: 30px; padding: 25px 15px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; height: 100%; display: flex; flex-direction: column; position: relative; }
+        .package-card:hover { border-color: var(--primary); box-shadow: var(--neon); }
+        .package-card.selected { border-width: 2px; border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
-        /* TÊN GÓI TO SÁNG CỐ ĐỊNH */
-        .pkg-name { font-weight: 900; font-size: 1.4rem; color: var(--primary); text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px rgba(0, 235, 176, 0.6); letter-spacing: 1px; }
+        .pkg-name { font-weight: 900; font-size: 1.3rem; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; text-shadow: 0 0 10px rgba(0, 235, 176, 0.6); }
         .luxury .pkg-name { color: var(--gold-vip); text-shadow: 0 0 10px rgba(240, 195, 0, 0.6); }
         
-        /* CÂN BẰNG /THÁNG /NĂM */
-        .pkg-price { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 20px; }
-        .price-val { font-size: 2.6rem; font-weight: 900; color: #fff; line-height: 1; }
-        .price-unit { font-size: 0.85rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
+        .pkg-price { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .price-val { font-size: 2.2rem; font-weight: 900; color: #fff; line-height: 1; }
+        .price-unit { font-size: 0.8rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
 
         .feature-list { list-style: none; padding: 0; margin: 0; text-align: left; flex-grow: 1; }
-        .feature-list li { font-size: 0.82rem; color: #f1f5f9; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
-        .feature-list i { color: var(--primary); margin-top: 4px; font-size: 0.9rem; flex-shrink: 0; }
+        .feature-list li { font-size: 0.8rem; color: #f1f5f9; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+        .feature-list i { color: var(--primary); margin-top: 3px; font-size: 0.9rem; flex-shrink: 0; }
         .luxury .feature-list i { color: var(--gold-vip); }
 
-        /* LUXURY UNLIMITED */
-        .vip-gold-wrap { position: relative; padding: 3px; border-radius: 33px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
+        .vip-gold-wrap { position: relative; padding: 2px; border-radius: 32px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
         @keyframes shine-gold { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .package-card.luxury { background: #000 !important; border: none !important; }
 
-        .btn-continue { background: var(--primary); color: #000; border: none; padding: 18px 100px; font-size: 1.2rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); margin-top: 10px; }
+        .btn-continue { background: var(--primary); color: #000; border: none; padding: 12px 80px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); margin-top: 5px; }
         .btn-continue:hover { transform: scale(1.05); filter: brightness(1.1); }
 
-        #paymentPollingMode { max-width: 580px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 40px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; box-shadow: var(--neon); }
-        .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
-        #qrCodeImg { width: 260px; height: 260px; border-radius: 10px; }
-        .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 25px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        #paymentPollingMode { max-width: 550px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 30px; text-align: center; }
+        .qr-frame { background: #fff; padding: 10px; border-radius: 20px; display: inline-block; margin-bottom: 20px; }
+        #qrCodeImg { width: 240px; height: 240px; }
+        .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
 
-        /* HỦY & CHỌN LẠI HIỆU ỨNG */
-        .btn-back-cancel { background: transparent; color: #94a3b8; border: 1.5px solid rgba(255,255,255,0.1); padding: 12px 40px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; margin-top: 30px; transition: 0.3s; text-transform: uppercase; cursor: pointer; }
-        .btn-back-cancel:hover { color: var(--primary); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); box-shadow: var(--neon); }
+        .btn-back-cancel { background: transparent; color: #94a3b8; border: 1.5px solid rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; margin-top: 15px; transition: 0.3s; text-transform: uppercase; cursor: pointer; }
+        .btn-back-cancel:hover { color: var(--primary); border-color: var(--primary); box-shadow: var(--neon); background: rgba(0, 235, 176, 0.05); }
 
-        #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; }
+        #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 10px 25px; border-radius: 10px; z-index: 10000; font-weight: 900; display: none; }
     </style>
 </head>
 <body>
@@ -93,27 +88,27 @@
                     <div class="user-status-box">
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
-                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; color:#fff; line-height: 1;">...</span>
+                            <div class="d-flex align-items-center gap-1" style="margin-top: 1px;">
                                 <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span>
+                                <span id="userExpiryDisplay" style="font-size:0.65rem; font-weight:800; color:#fff;"></span>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                    <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-3">
         <div id="selectionMode">
             <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
             
             <div class="package-grid">
                 <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói Dùng Thử'})">
                     <div class="pkg-name">Gói Dùng Thử</div>
-                    <div class="pkg-price"><span class="price-val">90.000</span><span class="price-unit"> / 1 tháng</span></div>
+                    <div class="pkg-price"><span class="price-val">90.000</span><span class="price-unit">/1 tháng</span></div>
                     <ul class="feature-list">
                         <li><i class="fas fa-check-circle"></i>Giải pháp lọc ảnh studio Nhanh chóng</li>
                         <li><i class="fas fa-check-circle"></i>Độ chính xác tuyệt đối 100% khi lọc</li>
@@ -126,7 +121,7 @@
 
                 <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
                     <div class="pkg-name">Gói Cơ Bản</div>
-                    <div class="pkg-price"><span class="price-val">250.000</span><span class="price-unit"> / 3 tháng</span></div>
+                    <div class="pkg-price"><span class="price-val">250.000</span><span class="price-unit">/3 tháng</span></div>
                     <ul class="feature-list">
                         <li><i class="fas fa-rocket"></i>Tối ưu hiệu suất làm việc cho Studio</li>
                         <li><i class="fas fa-bolt"></i>Ưu tiên xử lý Thumbnail nhanh hơn</li>
@@ -139,7 +134,7 @@
 
                 <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Pro'})">
                     <div class="pkg-name">Gói Pro</div>
-                    <div class="pkg-price"><span class="price-val">450.000</span><span class="price-unit"> / 6 tháng</span></div>
+                    <div class="pkg-price"><span class="price-val">450.000</span><span class="price-unit">/6 tháng</span></div>
                     <ul class="feature-list">
                         <li><i class="fas fa-crown"></i>Đẳng cấp quy trình chuyên nghiệp</li>
                         <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh tức thì không chờ đợi</li>
@@ -153,7 +148,7 @@
                 <div class="vip-gold-wrap">
                     <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'Gói UNLIMITED'})">
                         <div class="pkg-name">UNLIMITED VIP</div>
-                        <div class="pkg-price"><span class="price-val">750.000</span><span class="price-unit"> / Năm</span></div>
+                        <div class="pkg-price"><span class="price-val">750.000</span><span class="price-unit">/Năm</span></div>
                         <ul class="feature-list">
                             <li><i class="fas fa-magic"></i>Giải phóng hoàn toàn sức lao động</li>
                             <li><i class="fas fa-history"></i>Lưu trữ album trọn gói 1 năm (Vĩnh viễn)</li>
@@ -162,7 +157,7 @@
                             <li><i class="fas fa-shield-check"></i>Bảo mật & Riêng tư cấp độ Studio VIP</li>
                             <li><i class="fas fa-gem"></i>Support VIP 24/7 trực tiếp ADMIN</li>
                         </ul>
-                        <div style="position:absolute; top:12px; right:12px; background:var(--gold-vip); color:#000; font-size:0.6rem; font-weight:900; padding:4px 14px; border-radius:50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">⭐ TỐT NHẤT</div>
+                        <div style="position:absolute; top:10px; right:10px; background:var(--gold-vip); color:#000; font-size:0.55rem; font-weight:900; padding:2px 10px; border-radius:50px;">BEST VALUE</div>
                     </div>
                 </div>
             </div>
@@ -171,15 +166,15 @@
         </div>
 
         <div id="paymentPollingMode" style="display: none;">
-            <h3 id="paymentTitle" style="color:var(--primary); font-weight:900; margin-bottom:20px; text-transform:uppercase;">Đang tạo mã giao dịch...</h3>
-            <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-3x text-success"></i></div>
+            <h3 id="paymentTitle" style="color:var(--primary); font-weight:900; margin-bottom:15px; text-transform:uppercase;">Đang tạo mã giao dịch...</h3>
+            <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-2x text-success"></i></div>
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame"><img id="qrCodeImg" src=""></div>
                 <div class="payment-info-box">
                     <div class="mb-2">Số tiền: <strong id="displayAmount" class="text-danger fs-3"></strong></div>
-                    <div>Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" onclick="copyCode()" style="cursor:pointer">COPY</span></div>
+                    <div>Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" onclick="copyCode()" style="cursor:pointer; font-size:0.6rem;">COPY</span></div>
                 </div>
-                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff; font-size:0.9rem;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt VIP tự động sau khi chuyển khoản...</div>
+                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff; font-size:0.85rem;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt VIP tự động sau khi chuyển khoản...</div>
                 <button class="btn-back-cancel" onclick="cancelPayment()"><i class="fas fa-undo me-2"></i> Hủy & Chọn Lại Gói Khác</button>
             </div>
         </div>
@@ -202,7 +197,6 @@
             const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
-            document.getElementById('paymentTitle').innerText = "Đang tạo mã giao dịch...";
             try {
                 const res = await fetch('https://dichvufb.tino.page/webhook/save-pending', {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
