@@ -9,66 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); --gold-muted: #b89b00; }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.8)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; height: 100vh; overflow: hidden; }
         
-        body { 
-            background-color: var(--bg-deep); 
-            background-image: linear-gradient(rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.8)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
-            background-size: cover; background-position: center; background-attachment: fixed; 
-            color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; height: 100vh; overflow: hidden;
-        }
-
-        /* --- NAVBAR ĐỒNG BỘ KÍCH THƯỚC --- */
         .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 12px 18px !important; transition: 0.3s; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; text-shadow: var(--neon); }
 
         .main-wrapper { max-width: 1400px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 400px; gap: 25px; height: calc(100vh - 130px); overflow: hidden; }
-
-        /* --- CALENDAR CRYSTAL FIXED --- */
-        .calendar-container { 
-            background: rgba(10, 17, 36, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); 
-            border-radius: 35px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-            display: flex; flex-direction: column; position: relative;
-        }
+        .calendar-container { background: rgba(10, 17, 36, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .btn-nav { background: rgba(0, 235, 176, 0.2); border: 2px solid var(--primary); color: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: var(--neon); }
         .btn-nav:hover { background: var(--primary); color: #000; transform: scale(1.1); }
-        
         .month-year-display { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 15px; letter-spacing: 1px; }
 
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 12px; font-size: 0.9rem; }
         .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; flex: 1; }
-        
-        .day { 
-            min-height: 70px; background: rgba(255,255,255,0.03); border-radius: 15px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.1s;
-        }
+        .day { min-height: 70px; background: rgba(255,255,255,0.03); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.1s; }
         .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
         .day.today { border: 2px solid var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.1); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        
-        /* KHÔI PHỤC NGÀY ẨN */
         .day.other-month { opacity: 0.2; cursor: default; }
-        .solar-num { font-size: 1.1rem; }
         .lunar-day { font-size: 0.7rem; opacity: 0.7; font-weight: 600; margin-top: 2px; }
 
-        /* --- SIDEBAR & LIST --- */
         .sidebar { background: rgba(10, 17, 36, 0.8); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .event-list { overflow-y: auto; flex: 1; margin-bottom: 15px; padding-right: 5px; }
-        .event-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 18px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; }
-        
-        /* --- FORM --- */
+        .event-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 18px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; cursor: pointer; transition: 0.2s; }
+        .event-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+
         .form-control, .form-select { background: rgba(0,0,0,0.6) !important; border: 1.5px solid rgba(255,255,255,0.15) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-weight: 700; }
         .form-control::placeholder { color: rgba(165, 243, 224, 0.3) !important; }
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.8) sepia(100%) saturate(1000%) hue-rotate(100deg); cursor: pointer; scale: 1.2; }
-
         .btn-action { background: linear-gradient(45deg, #00ebb0, #00a87e); color: #000; font-weight: 900; padding: 16px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); transition: 0.2s; }
-        .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } }
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { display: none; } }
     </style>
 </head>
 <body>
@@ -94,10 +68,7 @@
         <div class="calendar-container">
             <div class="calendar-header">
                 <button class="btn btn-nav" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
-                <div class="month-year-display">
-                    <span id="monthTitle">THÁNG</span>
-                    <span id="yearTitle">2025</span>
-                </div>
+                <div class="month-year-display"><span id="monthTitle">THÁNG</span>&nbsp;<span id="yearTitle">2025</span></div>
                 <button class="btn btn-nav" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="weekdays"><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div>CN</div></div>
@@ -116,11 +87,12 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 30px;">
                 <div class="modal-header border-0 px-4 pt-4">
-                    <h5 class="fw-900 text-primary mb-0">THIẾT LẬP LỊCH TRÌNH</h5>
+                    <h5 class="fw-900 text-primary mb-0" id="modalTitle">THIẾT LẬP LỊCH TRÌNH</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="showForm">
+                        <input type="hidden" id="editIndex">
                         <input type="text" class="form-control mb-3" id="cName" placeholder="Tên khách hàng..." required>
                         <input type="text" class="form-control mb-3" id="cPhone" placeholder="Số điện thoại liên hệ...">
                         <div class="row">
@@ -131,9 +103,7 @@
                                     <option value="Portrait">📸 Chân Dung</option>
                                 </select>
                             </div>
-                            <div class="col-6 mb-3">
-                                <input type="time" class="form-control" id="sTime" required>
-                            </div>
+                            <div class="col-6 mb-3"><input type="time" class="form-control" id="sTime" required></div>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
@@ -142,11 +112,9 @@
                                     <option value="done">🟢 Đã đặt cọc</option>
                                 </select>
                             </div>
-                            <div class="col-6 mb-3">
-                                <input type="text" class="form-control" id="sDeposit" placeholder="Cọc: 1,000,000">
-                            </div>
+                            <div class="col-6 mb-3"><input type="text" class="form-control" id="sDeposit" placeholder="Cọc: 1,000,000"></div>
                         </div>
-                        <textarea class="form-control mb-4" id="sNote" rows="2" placeholder="Địa điểm, ghi chú quan trọng..."></textarea>
+                        <textarea class="form-control mb-4" id="sNote" rows="2" placeholder="Ghi chú địa điểm và yêu cầu khách..."></textarea>
                         <button type="button" class="btn-action" onclick="saveShow()">XÁC NHẬN LƯU</button>
                     </form>
                 </div>
@@ -156,7 +124,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Lịch âm khớp 12/2025: 22/12 Dương = 3/11 Âm
+        // Lịch âm chuẩn 2025
         function getLunar(d, m, y) {
             const base = new Date(2025, 11, 22);
             const target = new Date(y, m, d);
@@ -176,74 +144,95 @@
             document.getElementById('yearTitle').innerText = y;
 
             let first = new Date(y, m, 1).getDay();
-            first = first === 0 ? 6 : first - 1;
+            first = (first === 0) ? 6 : first - 1;
             const last = new Date(y, m + 1, 0).getDate();
             const prevLast = new Date(y, m, 0).getDate();
 
             let html = "";
-            // NGÀY THÁNG TRƯỚC (ẨN)
             for(let i = first; i > 0; i--) {
                 const d = prevLast - i + 1;
-                html += `<div class="day other-month"><span class="solar-num">${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`;
+                html += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`;
             }
             
-            // NGÀY TRONG THÁNG
             for(let i = 1; i <= last; i++) {
                 const isToday = i === new Date().getDate() && m === new Date().getMonth() && y === new Date().getFullYear();
                 const isSel = i === sel.getDate() && m === sel.getMonth() && y === sel.getFullYear();
                 const key = `${y}-${m+1}-${i}`;
                 html += `<div class="day ${isToday?'today':''} ${isSel?'selected':''}" onclick="selectDay(${i})">
-                            <span class="solar-num">${i}</span>
+                            <span>${i}</span>
                             <span class="lunar-day">${getLunar(i, m, y)}</span>
-                            ${store[key] ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}
+                            ${store[key] ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:2px;box-shadow:var(--neon)"></div>' : ''}
                          </div>`;
             }
 
-            // NGÀY THÁNG SAU (ẨN)
             const remaining = 42 - (first + last);
             for(let j = 1; j <= remaining; j++) {
-                html += `<div class="day other-month"><span class="solar-num">${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`;
+                html += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`;
             }
             document.getElementById('daysGrid').innerHTML = html;
             updateList();
         }
 
         function selectDay(d) { sel = new Date(curr.getFullYear(), curr.getMonth(), d); render(); }
-        function changeMonth(v) { curr.setMonth(curr.setMonth() + v); render(); }
-        function showModal() { new bootstrap.Modal(document.getElementById('eventModal')).show(); }
+        
+        // FIX LỖI N/A CHUYỂN NĂM
+        function changeMonth(v) {
+            curr.setMonth(curr.getMonth() + v);
+            render();
+        }
+
+        function showModal(index = null) { 
+            document.getElementById('showForm').reset();
+            const title = document.getElementById('modalTitle');
+            const editIdx = document.getElementById('editIndex');
+            if (index !== null) {
+                const key = `${sel.getFullYear()}-${sel.getMonth()+1}-${sel.getDate()}`;
+                const it = store[key][index];
+                title.innerText = "CHỈNH SỬA LỊCH TRÌNH";
+                editIdx.value = index;
+                document.getElementById('cName').value = it.name;
+                document.getElementById('cPhone').value = it.phone;
+                document.getElementById('sType').value = it.type;
+                document.getElementById('sTime').value = it.time;
+                document.getElementById('sStatus').value = it.status;
+                document.getElementById('sDeposit').value = it.deposit;
+                document.getElementById('sNote').value = it.note;
+            } else {
+                title.innerText = "THIẾT LẬP LỊCH TRÌNH";
+                editIdx.value = "";
+            }
+            new bootstrap.Modal(document.getElementById('eventModal')).show(); 
+        }
 
         function updateList() {
             const key = `${sel.getFullYear()}-${sel.getMonth()+1}-${sel.getDate()}`;
-            document.getElementById('dateInfo').innerText = sel.toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'long'});
+            document.getElementById('dateInfo').innerText = sel.toLocaleDateString('vi-VN', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
             const items = store[key] || [];
             document.getElementById('eventList').innerHTML = items.length ? items.map((it, idx) => `
-                <div class="event-item">
+                <div class="event-item" onclick="showModal(${idx})">
                     <div class="d-flex justify-content-between align-items-start">
                         <span class="fw-900 text-primary small">${it.time}</span>
-                        <span style="color:var(--gold-muted);font-size:0.75rem;font-weight:700;">${it.deposit || ''}</span>
+                        <button class="btn btn-sm text-danger p-0" onclick="event.stopPropagation(); deleteShow('${key}', ${idx})"><i class="fas fa-trash"></i></button>
                     </div>
                     <div class="fw-900 mt-1">${it.name}</div>
-                    <div class="small opacity-50">${it.type} | ${it.phone}</div>
+                    <div class="small opacity-75 text-info mt-1"><i class="fas fa-map-marker-alt me-1"></i>${it.note || 'Không có ghi chú'}</div>
+                    <div class="d-flex justify-content-between mt-2"><span class="small opacity-50">${it.type} | ${it.phone}</span><span style="color:var(--gold-muted);font-size:0.75rem;font-weight:700;">${it.deposit || '0'}đ</span></div>
                 </div>
-            `).join('') : '<div class="text-center mt-5 opacity-25">KHÔNG CÓ LỊCH</div>';
+            `).join('') : '<div class="text-center mt-5 opacity-25">KHÔNG CÓ LỊCH TRÌNH</div>';
         }
 
         function saveShow() {
             const key = `${sel.getFullYear()}-${sel.getMonth()+1}-${sel.getDate()}`;
+            const editIdx = document.getElementById('editIndex').value;
+            const data = { name: document.getElementById('cName').value, phone: document.getElementById('cPhone').value, type: document.getElementById('sType').value, time: document.getElementById('sTime').value, status: document.getElementById('sStatus').value, deposit: document.getElementById('sDeposit').value, note: document.getElementById('sNote').value };
             if(!store[key]) store[key] = [];
-            store[key].push({
-                name: document.getElementById('cName').value,
-                phone: document.getElementById('cPhone').value,
-                type: document.getElementById('sType').value,
-                time: document.getElementById('sTime').value,
-                deposit: document.getElementById('sDeposit').value,
-                note: document.getElementById('sNote').value
-            });
+            if (editIdx !== "") store[key][editIdx] = data; else store[key].push(data);
             localStorage.setItem('studio_pro_v23', JSON.stringify(store));
             bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
             render();
         }
 
+        function deleteShow(key, idx) { if(confirm("Xóa lịch trình này?")) { store[key].splice(idx, 1); if(store[key].length === 0) delete store[key]; localStorage.setItem('studio_pro_v23', JSON.stringify(store)); render(); } }
         document.addEventListener('DOMContentLoaded', render);
     </script>
 </body>
