@@ -9,202 +9,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --primary: #00ebb0; 
-            --gold-vip: #f0c300; 
-            --bg-deep: #050a14; 
-            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
-            --card-glass: rgba(10, 17, 36, 0.9);
-            --border-glass: rgba(255, 255, 255, 0.1);
-        }
+        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --card-glass: rgba(10, 17, 36, 0.95); --border-glass: rgba(255, 255, 255, 0.1); }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; padding-top: 100px; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; }
 
-        body { 
-            margin: 0; 
-            padding-top: 110px; 
-            font-family: 'Montserrat', sans-serif; 
-            background-color: var(--bg-deep); 
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #fff; 
-            min-height: 100vh; 
-        }
+        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 80px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; }
+        .nav-link-custom { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; transition: 0.3s; padding: 0.5rem 1rem; text-decoration: none; }
+        .nav-link-custom:hover { color: var(--primary) !important; }
+        
+        /* Main Content Compact */
+        .main-content { background: var(--card-glass); padding: 40px; border-radius: 30px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); border: 1px solid var(--border-glass); }
+        .post-title { font-weight: 900; color: #fff; margin-bottom: 10px; font-size: 2.6rem; line-height: 1.2; background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .post-meta { color: #94a3b8; font-size: 0.9rem; padding-bottom: 15px; margin-bottom: 25px; display: flex; align-items: center; border-bottom: 1px solid var(--border-glass); font-weight: 600; }
+        
+        .post-image { max-height: 550px; width: 100%; object-fit: cover; border-radius: 20px; margin: 10px 0 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid var(--border-glass); }
+        
+        /* AUTHOR UI BELOW IMAGE */
+        #postAuthorContainer { background: rgba(0, 235, 176, 0.05); border-radius: 20px; padding: 20px 25px; margin-bottom: 35px; border: 1px solid rgba(0, 235, 176, 0.2); display: flex; align-items: center; gap: 15px; width: fit-content; }
+        #postAuthorAvatar { width: 50px; height: 50px; line-height: 50px; text-align: center; background: var(--primary); color: #000; border-radius: 50%; font-weight: 900; font-size: 1.2rem; box-shadow: var(--neon); border: 2px solid #fff; }
+        
+        /* FIX READ MORE POSITION */
+        #postContentWrapper { margin-bottom: 10px; position: relative; overflow: hidden; transition: max-height 0.5s ease; }
+        .post-content { line-height: 1.8; font-size: 1.1rem; color: #e2e8f0; white-space: pre-wrap; text-align: justify; }
+        .post-content p { margin-bottom: 1.5em; }
 
-        /* Navbar đồng bộ Blog */
-        .navbar { 
-            background: rgba(5, 10, 20, 0.95); 
-            backdrop-filter: blur(30px); 
-            border-bottom: 1px solid rgba(255,255,255,0.08); 
-            min-height: 85px; 
-        }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.3rem; }
-        .nav-link-custom { 
-            color: #94a3b8 !important; 
-            font-weight: 700; 
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            transition: 0.3s; 
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-        }
-        .nav-link-custom:hover { color: var(--primary) !important; text-shadow: var(--neon); }
+        #readMoreBtn { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 12px 30px; border-radius: 50px; cursor: pointer; margin: 20px 0; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; display: block; width: fit-content; box-shadow: var(--neon); }
+        #readMoreBtn:hover { transform: scale(1.05); filter: brightness(1.1); }
         
-        /* Main Content - Card Design Luxury */
-        .main-content { 
-            background: var(--card-glass);
-            padding: 50px;
-            border-radius: 30px; 
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-glass);
-        }
-        .post-title { 
-            font-weight: 900; 
-            color: #fff; 
-            margin-bottom: 20px; 
-            font-size: 2.8rem;
-            line-height: 1.2;
-            background: linear-gradient(90deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .post-meta { 
-            color: #94a3b8; 
-            font-size: 0.95rem; 
-            padding-bottom: 25px; 
-            margin-bottom: 35px; 
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid var(--border-glass);
-            font-weight: 600;
-        }
-        .post-image { 
-            max-height: 550px;
-            width: 100%;
-            object-fit: cover; 
-            border-radius: 25px; 
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid var(--border-glass);
-        }
+        /* COMMENTS */
+        #commentSectionContainer { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-glass); }
+        .comment-header-title { font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); margin-bottom: 25px; }
+        .user-avatar-comment { width: 42px; height: 42px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+        .comment-item { padding: 18px 0; border-bottom: 1px solid var(--border-glass); }
         
-        /* Author UI */
-        #postAuthorContainer {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 40px;
-            border-left: 5px solid var(--primary);
-        }
-        #postAuthorAvatar {
-            width: 45px;
-            height: 45px;
-            line-height: 45px; 
-            text-align: center;
-            background: var(--primary);
-            color: #000; 
-            border-radius: 50%;
-            font-weight: 900;
-            margin-right: 15px;
-            box-shadow: var(--neon);
-        }
-        
-        /* Content Content */
-        .post-content { 
-            line-height: 1.9; 
-            font-size: 1.1rem; 
-            color: #e2e8f0; 
-            white-space: pre-wrap; 
-            text-align: justify; 
-        }
-        .post-content p { margin-bottom: 1.8em; }
-
-        #readMoreBtn {
-            background: rgba(0, 235, 176, 0.1);
-            border: 1px solid var(--primary);
-            color: var(--primary); 
-            font-weight: 800;
-            padding: 10px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-        #readMoreBtn:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
-        
-        /* Comment UI */
-        #commentSectionContainer {
-            margin-top: 50px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border-glass);
-        }
-        .comment-header-title {
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--primary);
-            margin-bottom: 30px;
-        }
-        .user-avatar-comment { 
-            width: 45px; height: 45px;
-            background: var(--primary); 
-            color: #000; 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; flex-shrink: 0; 
-        }
-        .comment-item {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-glass);
-        }
-        
-        /* Reply UI */
-        .comment-item .comment-item {
-            border-left: 2px solid var(--gold-vip);
-            padding-left: 20px;
-            margin-left: 45px;
-        }
-        .comment-item .comment-item .user-avatar-comment {
-            background: var(--gold-vip) !important;
-            width: 35px !important; height: 35px !important;
-        }
-
-        #commentFormContainer { 
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-glass); 
-            border-radius: 20px; 
-            padding: 25px; 
-            margin-top: 40px; 
-        }
-        .form-control {
-            background: rgba(0,0,0,0.5) !important;
-            border: 1px solid var(--border-glass) !important;
-            color: #fff !important;
-            border-radius: 15px;
-            padding: 15px;
-        }
+        .form-control { background: rgba(0,0,0,0.4) !important; border: 1px solid var(--border-glass) !important; color: #fff !important; border-radius: 15px; padding: 15px; }
         .form-control:focus { border-color: var(--primary) !important; box-shadow: var(--neon) !important; }
-        .form-control::placeholder { color: #4b5563; }
 
-        #btnSubmitComment {
-            background: var(--primary) !important;
-            border: none !important;
-            color: #000 !important;
-            font-weight: 900;
-            padding: 12px 35px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-        #btnSubmitComment:hover { transform: scale(1.05); box-shadow: var(--neon); }
+        #btnSubmitComment { background: var(--primary) !important; color: #000 !important; font-weight: 900; padding: 12px 35px; border-radius: 50px; text-transform: uppercase; border: none; }
 
-        @media (max-width: 768px) {
-            .main-content { padding: 25px; }
-            .post-title { font-size: 1.8rem; }
-            .post-content { font-size: 1rem; }
-        }
+        @media (max-width: 768px) { .main-content { padding: 25px; } .post-title { font-size: 1.8rem; } }
     </style>
 </head>
 <body>
@@ -212,14 +56,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="blog.html">CHONANHNHANH.VN</a>
-            
             <div class="ms-auto d-flex align-items-center">
-                <a class="nav-link-custom me-2" href="admin.html">
-                    <i class="fas fa-home me-1"></i> Trang chủ
-                </a>
-                <a class="nav-link-custom" href="blog.html">
-                    <i class="fas fa-arrow-left me-1"></i> Quay lại
-                </a>
+                <a class="nav-link-custom me-2" href="admin.html"><i class="fas fa-home me-1"></i> Trang chủ</a>
+                <a class="nav-link-custom" href="blog.html"><i class="fas fa-arrow-left me-1"></i> Quay lại</a>
             </div>
         </div>
     </nav>
@@ -239,81 +78,60 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- CẤU HÌNH WEBHOOK GIỮ NGUYÊN 100% ---
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
-        
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 400; 
+        const MAX_CONTENT_HEIGHT = 450; 
         
         function getLoggedInUser() {
-            return {
-                name: localStorage.getItem('admin_name'),
-                email: localStorage.getItem('admin_email'),
-                isLoggedIn: !!localStorage.getItem('admin_email')
-            };
+            return { name: localStorage.getItem('admin_name'), email: localStorage.getItem('admin_email'), isLoggedIn: !!localStorage.getItem('admin_email') };
         }
         
         function extractDriveFileId(urlOrId) {
-            if (urlOrId && urlOrId.includes('id=')) {
-                return urlOrId.split('id=')[1].split('&')[0];
-            }
+            if (urlOrId && urlOrId.includes('id=')) return urlOrId.split('id=')[1].split('&')[0];
             return urlOrId; 
         }
         
         function toggleReadMore() {
-            const contentWrapper = document.getElementById('postContentWrapper');
-            const readMoreBtn = document.getElementById('readMoreBtn');
-            const contentDiv = document.getElementById('postContentActual');
-            const actualHeight = contentDiv.scrollHeight; 
+            const wrapper = document.getElementById('postContentWrapper');
+            const btn = document.getElementById('readMoreBtn');
+            const actualHeight = document.getElementById('postContentActual').scrollHeight;
             
-            if (contentWrapper.classList.contains('collapsed')) {
-                contentWrapper.classList.remove('collapsed');
-                contentWrapper.style.maxHeight = (actualHeight + 50) + 'px'; 
-                readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up ms-2"></i>';
+            if (wrapper.classList.contains('collapsed')) {
+                wrapper.classList.remove('collapsed');
+                wrapper.style.maxHeight = (actualHeight + 50) + 'px'; 
+                btn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up ms-2"></i>';
             } else {
-                contentWrapper.classList.add('collapsed');
-                contentWrapper.style.maxHeight = MAX_CONTENT_HEIGHT + 'px'; 
-                readMoreBtn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down ms-2"></i>';
+                wrapper.classList.add('collapsed');
+                wrapper.style.maxHeight = MAX_CONTENT_HEIGHT + 'px'; 
+                btn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down ms-2"></i>';
             }
         }
 
         async function loadPostDetail(forceReload = false) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
+            const postId = new URLSearchParams(window.location.search).get('id');
             const postContainer = document.getElementById('postContainer');
+            if (!postId) { postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>'; return; }
+
             const cacheKey = POST_CACHE_PREFIX + postId;
-
-            if (!postId) {
-                postContainer.innerHTML = '<div class="alert alert-danger">Lỗi: Không tìm thấy ID bài viết.</div>';
-                return;
-            }
-
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
-                renderPost(cachedData.blog);
-                loadComments(postId); 
-                return;
+                renderPost(cachedData.blog); loadComments(postId); return;
             } 
 
             try {
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
                 const rawData = await response.json();
-                let results = Array.isArray(rawData) ? rawData : (rawData.data || []);
-                const blog = results[0];
-                
+                const blog = (Array.isArray(rawData) ? rawData : (rawData.data || []))[0];
                 if (blog) {
                     localStorage.setItem(cacheKey, JSON.stringify({ blog: blog, timestamp: Date.now() }));
                     document.getElementById('pageTitle').innerText = blog.title;
-                    renderPost(blog);
-                    loadComments(postId);
+                    renderPost(blog); loadComments(postId);
                 }
-            } catch (error) {
-                console.error("Lỗi:", error);
-            }
+            } catch (error) { console.error("Lỗi:", error); }
         }
         
         function renderPost(blog) {
@@ -322,31 +140,28 @@
             const imageUrl = driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800` : 'https://via.placeholder.com/1000x450';
             const fullContent = blog.content ? blog.content.replace(/\n/g, '</p><p>') : ''; 
             const wrappedContent = `<p>${fullContent}</p>`; 
-            const requiresCollapse = blog.content && (blog.content.length > 600 || blog.content.split('\n').length > 10); 
+            const requiresCollapse = blog.content && (blog.content.length > 700 || blog.content.split('\n').length > 12); 
             
-            const authorName = blog.author || user.name || 'Người ẩn danh';
+            const authorName = blog.author || user.name || 'Thành viên';
             const authorAvatarLetter = authorName.charAt(0).toUpperCase();
 
+            // RENDER ORDER: TITLE -> META -> CONTENT -> BUTTON -> IMAGE -> AUTHOR
             const contentHtml = `
                 <h1 class="post-title">${blog.title}</h1>
-                <div class="post-meta">
-                    <i class="far fa-calendar-alt me-2 text-primary"></i> ${blog.date} 
-                </div>
+                <div class="post-meta"><i class="far fa-calendar-alt me-2 text-primary"></i> ${blog.date} </div>
 
-                <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none; transition: 0.5s; overflow:hidden;'}">
-                    <div class="post-content" id="postContentActual">
-                        ${wrappedContent}
-                    </div>
+                <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none;'} transition: 0.5s; overflow:hidden;">
+                    <div class="post-content" id="postContentActual">${wrappedContent}</div>
                 </div>
                 ${requiresCollapse ? `<button id="readMoreBtn" onclick="toggleReadMore()">Xem thêm <i class="fas fa-chevron-down ms-1"></i></button>` : ''}
                 
                 <img src="${imageUrl}" alt="${blog.title}" class="post-image" onerror="this.src='https://via.placeholder.com/1000x450'">
 
-                <div id="postAuthorContainer" class="d-flex align-items-center">
+                <div id="postAuthorContainer">
                     <div id="postAuthorAvatar">${authorAvatarLetter}</div>
                     <div>
-                        <span class="fw-bold" style="color:var(--primary)">${authorName}</span>
-                        <p class="text-muted small m-0">Biên tập viên CHONANHNHANH.VN</p>
+                        <span class="fw-bold" style="color:var(--primary); font-size:1.1rem;">${authorName}</span>
+                        <p class="text-muted small m-0">Tác giả bài viết • CHONANHNHANH.VN</p>
                     </div>
                 </div>
                 <div id="commentSectionContainer"></div>
@@ -361,124 +176,70 @@
             const isDisabled = !user.isLoggedIn;
             const userStatusHtml = user.isLoggedIn 
                 ? `<i class="fas fa-user-check me-2 text-primary"></i>Đang bình luận: <span class="text-primary fw-bold">${user.name}</span>`
-                : `<i class="fas fa-lock me-2 text-warning"></i>Vui lòng đăng nhập Admin để gửi bình luận.`;
+                : `<i class="fas fa-lock me-2 text-warning"></i>Đăng nhập để gửi bình luận.`;
 
             commentSection.innerHTML = `
                 <div id="commentSection">
-                    <h4 class="comment-header-title"><i class="fas fa-comments me-2"></i>Cộng đồng thảo luận</h4>
+                    <h4 class="comment-header-title"><i class="fas fa-comments me-2"></i>Thảo luận cộng đồng</h4>
                     <div id="commentsList" class="mb-4"></div>
                     <div id="commentFormContainer">
-                        <h6 class="fw-bold mb-3" id="commentAsUser" style="color:#94a3b8; font-size: 0.9rem;">${userStatusHtml}</h6>
+                        <h6 class="fw-bold mb-3" style="color:#94a3b8; font-size: 0.9rem;">${userStatusHtml}</h6>
                         <form id="commentForm" onsubmit="submitComment(event)">
                             <input type="hidden" id="commentPostId" value="${postId}">
                             <input type="hidden" id="commentUserName" value="${user.name || ''}">
                             <input type="hidden" id="commentUserEmail" value="${user.email || ''}">
                             <input type="hidden" id="commentParentId" value="">
-                            <div class="mb-3">
-                                <textarea id="commentContent" class="form-control" rows="4" placeholder="Ý kiến của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" id="btnSubmitComment" class="btn" ${isDisabled ? 'disabled' : ''}>Gửi bình luận</button>
-                            </div>
+                            <div class="mb-3"><textarea id="commentContent" class="form-control" rows="4" placeholder="Ý kiến của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea></div>
+                            <div class="text-end"><button type="submit" id="btnSubmitComment" class="btn" ${isDisabled ? 'disabled' : ''}>Gửi bình luận</button></div>
                         </form>
                     </div>
                 </div>
             `;
         }
 
-        function nestComments(comments) { 
-            const commentMap = {};
-            const topLevelComments = [];
-            comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
-            Object.values(commentMap).forEach(comment => {
-                const parentId = comment.parent_comment_id;
-                if (parentId && commentMap[parentId]) { commentMap[parentId].replies.push(comment); } 
-                else { topLevelComments.push(comment); }
-            });
-            return topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
-        }
-
-        function renderComments(flatComments) { 
-            const commentsList = document.getElementById('commentsList');
-            if (flatComments.length === 0) { commentsList.innerHTML = '<div class="text-center text-muted py-4">Chưa có thảo luận nào. Hãy bắt đầu ngay!</div>'; return; }
-            const nestedComments = nestComments(flatComments);
-            let html = '';
+        function renderComments(data) {
+            const list = document.getElementById('commentsList');
+            const comments = Array.isArray(data) ? data : (data.data || []);
+            if (comments.length === 0) { list.innerHTML = '<p class="text-muted py-3">Chưa có bình luận. Hãy chia sẻ cảm nghĩ của bạn!</p>'; return; }
             
-            function buildCommentHtml(comment, depth = 0) {
-                const name = comment.author || 'Thành viên';
-                const avatarLetter = name.charAt(0).toUpperCase(); 
-                const isReply = depth > 0;
-                const commentId = comment.id;
-                const user = getLoggedInUser();
-                
-                let commentBlock = `
+            list.innerHTML = comments.map(c => `
                 <div class="comment-item">
-                    <div class="d-flex align-items-start">
-                        <div class="user-avatar-comment me-3">${avatarLetter}</div>
-                        <div class="flex-grow-1">
-                            <h6 class="m-0 fw-bold" style="color:${isReply ? 'var(--gold-vip)' : 'var(--primary)'}">${name}</h6>
-                            <p class="text-muted small mb-1">${comment.date || 'Gần đây'}</p>
-                            <div class="mb-2 text-light">${comment.content}</div>
-                            ${user.isLoggedIn ? `<button class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-bold" onclick="handleReply('${commentId}', '${name}')"><i class="fas fa-reply me-1"></i> Trả lời</button>` : ''}
-                            <div id="reply-form-placeholder-${commentId}" class="mt-2"></div>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="user-avatar-comment">${(c.author || '?').charAt(0).toUpperCase()}</div>
+                        <div>
+                            <h6 class="m-0 fw-bold text-primary">${c.author}</h6>
+                            <p class="text-muted small mb-1">${c.date || 'Vừa xong'}</p>
+                            <div class="text-light">${c.content}</div>
                         </div>
-                    </div>`;
-                if (comment.replies) { comment.replies.forEach(reply => { commentBlock += buildCommentHtml(reply, depth + 1); }); }
-                commentBlock += '</div>';
-                return commentBlock;
-            }
-            nestedComments.forEach(comment => { html += buildCommentHtml(comment); });
-            commentsList.innerHTML = html;
+                    </div>
+                </div>
+            `).join('');
         }
 
-        async function loadComments(postId, skipSpinner = false) {
-            if (!skipSpinner) document.getElementById('commentsList').innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin text-primary"></i></div>';
+        async function loadComments(postId) {
             try {
                 const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
-                const data = await response.json();
-                renderComments(Array.isArray(data) ? data : (data.data || []));
+                renderComments(await response.json());
             } catch (e) { console.error(e); }
         }
 
-        function handleReply(commentId, authorName) { 
-            const formContainer = document.getElementById('commentFormContainer');
-            const placeholder = document.getElementById(`reply-form-placeholder-${commentId}`);
-            document.getElementById('commentParentId').value = commentId; 
-            placeholder.appendChild(formContainer);
-            document.getElementById('commentAsUser').innerHTML = `<i class="fas fa-reply me-2 text-warning"></i>Đang trả lời <span class="text-warning fw-bold">${authorName}</span> <button class="btn btn-sm text-danger ms-2" onclick="resetCommentFormState()">Hủy</button>`;
-            document.getElementById('commentContent').focus();
-            document.getElementById('commentContent').value = `@${authorName} `;
-        }
-
-        function resetCommentFormState() { 
-            const user = getLoggedInUser();
-            document.getElementById('commentSection').appendChild(document.getElementById('commentFormContainer'));
-            document.getElementById('commentParentId').value = '';
-            document.getElementById('commentContent').value = '';
-            document.getElementById('commentAsUser').innerHTML = `<i class="fas fa-user-check me-2 text-primary"></i>Đang bình luận: <span class="text-primary fw-bold">${user.name}</span>`;
-        }
-        
         async function submitComment(e) { 
             e.preventDefault();
             const btn = document.getElementById('btnSubmitComment');
-            const postId = document.getElementById('commentPostId').value;
-            const content = document.getElementById('commentContent').value;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
             try {
                 const response = await fetch(N8N_SUBMIT_COMMENT, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        post_id: postId,
+                        post_id: document.getElementById('commentPostId').value,
                         author: document.getElementById('commentUserName').value,
                         email: document.getElementById('commentUserEmail').value,
-                        content: content,
-                        date: new Date().toISOString().replace('T', ' ').substring(0, 19), 
-                        parent_comment_id: document.getElementById('commentParentId').value || null
+                        content: document.getElementById('commentContent').value,
+                        date: new Date().toISOString().replace('T', ' ').substring(0, 19)
                     })
                 });
-                if (response.ok) { resetCommentFormState(); loadComments(postId, true); }
-            } catch (e) { alert("Lỗi kết nối."); } 
-            finally { btn.innerHTML = 'Gửi bình luận'; btn.disabled = false; }
+                if (response.ok) { document.getElementById('commentContent').value = ''; loadComments(document.getElementById('commentPostId').value); }
+            } catch (e) { alert("Lỗi!"); } finally { btn.innerHTML = 'Gửi bình luận'; btn.disabled = false; }
         }
 
         document.addEventListener('DOMContentLoaded', loadPostDetail);
