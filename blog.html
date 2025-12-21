@@ -9,23 +9,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 130px; }
 
         /* --- NAVBAR VIP SYSTEM --- */
-        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; padding-bottom: 30px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
-        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; top: 20px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 5px; left: 30%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* --- MARQUEE TRONG NAVBAR --- */
-        .marquee-wrapper { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); width: 60%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 5px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 1; }
+        /* --- FIX MARQUEE POSITION & OVERLAP --- */
+        .marquee-wrapper { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 65%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 6px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 10; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         /* --- HERO SECTION LUXURY --- */
-        .hero-section { text-align: center; padding: 60px 20px; position: relative; }
+        .hero-section { text-align: center; padding: 40px 20px 60px; position: relative; }
         .hero-title { font-weight: 900; font-size: 3rem; text-transform: uppercase; letter-spacing: 10px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .hero-subtitle { color: #94a3b8; font-weight: 700; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
@@ -48,7 +48,7 @@
         .review-text { font-style: italic; color: #e2e8f0; line-height: 1.8; font-weight: 500; font-size: 0.95rem; }
 
         /* --- BUTTONS --- */
-        .btn-write-post { background: var(--rainbow); padding: 2px; border-radius: 50px; border: none; transition: 0.3s; }
+        .btn-write-post { background: var(--rainbow); padding: 2px; border-radius: 50px; border: none; transition: 0.3s; margin: 0 auto; display: block; }
         .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 10px 30px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.85rem; }
         .btn-write-post:hover { transform: scale(1.05); }
 
@@ -68,6 +68,8 @@
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             <div class="collapse navbar-collapse">
+                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - Chonanhnhanh.vn vươn tới sự hoàn hảo!</span></div>
+
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
@@ -78,7 +80,6 @@
                     <li class="nav-item"><a href="fedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
-            <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - Chonanhnhanh.vn vươn tới sự hoàn hảo!</span></div>
         </div>
     </nav>
 
@@ -152,7 +153,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- LOGIC N8N & DATA ---
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
         const BLOG_CACHE_KEY = 'blog_list_cache';
@@ -208,7 +208,6 @@
                         </div>
                     </div>`;
                 }).join('');
-                
                 slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
             }
             carouselInner.innerHTML = slides.join('');
@@ -220,7 +219,6 @@
                 currentBlogs = cachedData.blogs;
                 renderMainCarousel(currentBlogs);
             }
-            
             try {
                 const response = await fetch(N8N_GET_BLOGS);
                 if(response.ok) {
@@ -257,19 +255,10 @@
             const imageBase64 = document.getElementById('postImageBase64').value;
             if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG GỬI...'; btn.disabled = true;
-
             try {
                 const response = await fetch(N8N_SUBMIT_BLOG, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        author: document.getElementById('postAuthor').value,
-                        email: document.getElementById('postEmail').value,
-                        title: document.getElementById('postTitle').value,
-                        content: document.getElementById('postContent').value,
-                        date: getFormattedDateTime(),
-                        image_data: imageBase64,
-                        image_name: document.getElementById('postImageName').value
-                    })
+                    body: JSON.stringify({ author: document.getElementById('postAuthor').value, email: document.getElementById('postEmail').value, title: document.getElementById('postTitle').value, content: document.getElementById('postContent').value, date: getFormattedDateTime(), image_data: imageBase64, image_name: document.getElementById('postImageName').value })
                 });
                 if (response.ok) {
                     alert("✅ Gửi bài thành công! Chờ ADMIN duyệt nhé.");
