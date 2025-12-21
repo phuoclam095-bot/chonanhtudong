@@ -41,16 +41,20 @@
 
         .pkg-name { font-weight: 900; font-size: 1.2rem; color: var(--primary); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px; }
         .luxury .pkg-name { color: var(--gold-vip); }
-        .pkg-price { font-size: 2.8rem; font-weight: 900; margin: 10px 0; line-height: 1; color: #fff; }
-        .pkg-price small { font-size: 1rem; color: #94a3b8; font-weight: 700; }
+        
+        /* FIX LỆCH DÒNG UNIT */
+        .pkg-price { display: flex; align-items: baseline; justify-content: center; gap: 5px; margin: 10px 0; }
+        .price-val { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; }
+        .price-unit { font-size: 0.9rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
 
         .feature-list { list-style: none; padding: 0; margin: 25px 0; text-align: left; flex-grow: 1; }
         .feature-list li { font-size: 0.85rem; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; font-weight: 500; }
         .feature-list i { color: var(--primary); margin-top: 4px; font-size: 1rem; flex-shrink: 0; }
         .luxury .feature-list i { color: var(--gold-vip); }
+        .luxury .feature-list li { color: #fff; font-weight: 600; }
 
         .btn-continue { background: var(--primary); color: #000; border: none; padding: 20px 100px; font-size: 1.2rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); letter-spacing: 1px; }
-        .btn-continue:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 235, 176, 0.5); }
+        .btn-continue:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 0 50px rgba(0, 235, 176, 0.5); }
 
         #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; }
         .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
@@ -96,52 +100,57 @@
     <div class="container py-4">
         <div id="selectionMode">
             <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
+            
             <div class="package-grid">
                 <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói Dùng Thử'})">
                     <div class="pkg-name">Gói Dùng Thử</div>
-                    <div class="pkg-price">90.000<small> / 1 tháng</small></div>
+                    <div class="pkg-price"><span class="price-val">90.000</span><span class="price-unit"> / 1 tháng</span></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-history"></i>Lưu trữ album 30 ngày</li>
-                        <li><i class="fas fa-check-circle"></i>Hỗ trợ lọc ảnh Nhanh chóng</li>
-                        <li><i class="fas fa-check-circle"></i>Độ chính xác tuyệt đối 100%</li>
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 30 ngày</li>
+                        <li><i class="fas fa-download"></i>Cho phép tải ảnh gốc</li>
+                        <li><i class="fas fa-copyright"></i>Tích hợp Gắn Logo/Watermark</li>
                         <li><i class="fas fa-headset"></i>Hỗ trợ Zalo (Giờ hành chính)</li>
                     </ul>
                 </div>
+
                 <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
                     <div class="pkg-name">Gói Cơ Bản</div>
-                    <div class="pkg-price">250.000<small> / 3 tháng</small></div>
+                    <div class="pkg-price"><span class="price-val">250.000</span><span class="price-unit"> / 3 tháng</span></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-history"></i>Lưu trữ album 90 ngày</li>
-                        <li><i class="fas fa-bolt"></i>Ưu tiên xử lý Thumbnail nhanh</li>
-                        <li><i class="fas fa-check-circle"></i>Gắn Watermark bảo mật Studio</li>
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 90 ngày</li>
+                        <li><i class="fas fa-download"></i>Cho phép tải ảnh gốc</li>
+                        <li><i class="fas fa-copyright"></i>Gắn Logo Studio bảo mật</li>
                         <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật ưu tiên (Zalo)</li>
                     </ul>
                 </div>
+
                 <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Pro'})">
                     <div class="pkg-name">Gói Pro</div>
-                    <div class="pkg-price">450.000<small> / 6 tháng</small></div>
+                    <div class="pkg-price"><span class="price-val">450.000</span><span class="price-unit"> / 6 tháng</span></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-history"></i>Lưu trữ album 180 ngày</li>
+                        <li><i class="fas fa-check-circle"></i>Lưu trữ dài hạn 180 ngày</li>
                         <li><i class="fas fa-user-edit"></i>Hỗ trợ Chuyển đổi tài khoản</li>
-                        <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh siêu tốc</li>
+                        <li><i class="fas fa-download"></i>Tải ảnh gốc & Gắn Logo Studio</li>
                         <li><i class="fas fa-headset"></i>Hỗ trợ đa kênh 24/7 (VIP)</li>
                     </ul>
                 </div>
+
                 <div class="vip-gold-wrap">
                     <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'Gói UNLIMITED'})">
                         <div class="pkg-name">UNLIMITED VIP</div>
-                        <div class="pkg-price">750.000<small> / Năm</small></div>
+                        <div class="pkg-price"><span class="price-val">750.000</span><span class="price-unit"> / Năm</span></div>
                         <ul class="feature-list">
                             <li><i class="fas fa-history"></i>Lưu trữ album trọn gói 1 năm</li>
-                            <li><i class="fas fa-magic"></i>Phát triển theo yêu cầu khách hàng</li>
-                            <li><i class="fas fa-sync"></i>Hỗ trợ Chuyển đổi tài khoản</li>
+                            <li><i class="fas fa-magic"></i>Phát triển theo yêu cầu riêng</li>
+                            <li><i class="fas fa-download"></i>Tải ảnh & Gắn Logo không giới hạn</li>
                             <li><i class="fas fa-shield-alt"></i>Bảo mật & Riêng tư tuyệt đối</li>
                             <li><i class="fas fa-star"></i>Support VIP 24/7 trực tiếp ADMIN</li>
                         </ul>
-                        <div style="position:absolute; top:15px; right:15px; background:var(--gold-vip); color:#000; font-size:0.65rem; font-weight:900; padding:5px 15px; border-radius:50px;">⭐ TỐT NHẤT</div>
+                        <div style="position:absolute; top:15px; right:15px; background:var(--gold-vip); color:#000; font-size:0.65rem; font-weight:900; padding:5px 15px; border-radius:50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">⭐ TỐT NHẤT</div>
                     </div>
                 </div>
             </div>
+
             <div class="text-center mt-5"><button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán VIP</button></div>
         </div>
 
