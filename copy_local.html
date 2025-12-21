@@ -11,14 +11,14 @@
         :root { --primary: #00ebb0; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 95px; }
         
-        /* LOADING FLOATING */
+        /* --- LOADING FLOATING --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
 
-        /* NAVBAR & USER PILL */
+        /* --- NAVBAR --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 85px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; position: relative; }
@@ -31,35 +31,37 @@
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
         .status-tag { font-size: 0.55rem; padding: 1px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
 
-        /* TITLE */
-        .supreme-title { 
-            font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; color: #fff; text-align: center; margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, var(--primary), #fff);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: text-shine 4s linear infinite;
-        }
-        @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-
-        /* COMPACT LAYOUT */
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: calc(100vh - 200px); max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .copy-card { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; height: 100%; }
+        /* --- COMPACT DASHBOARD LAYOUT --- */
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: calc(100vh - 180px); max-width: 1450px; margin: 0 auto; padding: 0 20px; }
         
-        .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .dir-box { background: rgba(0,0,0,0.3); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: 15px; padding: 12px; text-align: center; transition: 0.3s; }
-        .dir-box.success { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
-        .btn-select { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.75rem; margin-bottom: 5px; }
+        .copy-card { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; height: 100%; transition: 0.3s; }
+        .copy-card:hover { border-color: rgba(0, 235, 176, 0.2); }
 
-        textarea { flex: 1; width: 100%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; font-size: 0.85rem; font-family: monospace; outline: none; resize: none; }
-        .btn-action { background: var(--primary); color: #000; border: none; padding: 15px; font-size: 1rem; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 15px; box-shadow: var(--neon); transition: 0.3s; }
-        .btn-action:disabled { background: #334155 !important; opacity: 0.4 !important; box-shadow: none; }
+        /* GHI CHÚ CHUYÊN NGHIỆP */
+        .alert-mini { background: rgba(255, 243, 205, 0.05); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 12px; padding: 10px; margin-bottom: 15px; font-size: 0.75rem; color: #ffeeba; }
+
+        .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .dir-box { background: rgba(0,0,0,0.3); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: 15px; padding: 12px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .dir-box:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); transform: scale(1.02); }
+        .dir-box.success { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); border-style: solid; box-shadow: var(--neon); }
+
+        .btn-select { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.75rem; margin-bottom: 5px; transition: 0.3s; }
+        .btn-select:hover { background: var(--primary); color: #000; }
+
+        textarea { flex: 1; width: 100%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; font-size: 0.85rem; font-family: monospace; outline: none; resize: none; transition: 0.3s; }
+        textarea:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
+
+        .btn-action { background: var(--primary); color: #000; border: none; padding: 15px; font-size: 1.1rem; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; margin-top: 15px; box-shadow: var(--neon); transition: 0.3s; }
+        .btn-action:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-action:disabled { background: #334155 !important; opacity: 0.4 !important; box-shadow: none; cursor: not-allowed; }
 
         /* LOG PANEL */
-        .log-panel { background: #020617; border-radius: 25px; border: 1px solid rgba(255,255,255,0.08); padding: 20px; height: 100%; display: flex; flex-direction: column; }
+        .log-panel { background: #020617; border-radius: 30px; border: 1px solid rgba(255,255,255,0.08); padding: 25px; height: 100%; display: flex; flex-direction: column; }
         #statusLog { flex: 1; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 0.8rem; padding-right: 10px; }
         #statusLog::-webkit-scrollbar { width: 5px; }
         #statusLog::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        .log-success { color: var(--primary); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .log-error { color: #ff4757; padding: 3px 0; }
+        .log-success { color: var(--primary); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .log-error { color: #ff4757; padding: 4px 0; }
         .log-info { color: #3b82f6; font-weight: bold; margin-bottom: 10px; display: block; }
 
         #toastNotice { position: fixed; top: 100px; right: 30px; background: var(--primary); color: #000; padding: 10px 25px; border-radius: 10px; z-index: 10000; font-weight: 900; display: none; }
@@ -85,12 +87,12 @@
                 </ul>
                 <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
-                        <div id="avatarPlaceholder"></div>
+                        <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.7rem; color:#fff;">...</span>
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; color:#fff;">...</span>
                             <div class="d-flex align-items-center gap-2">
                                 <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                <span id="userExpiryText" style="font-size:0.7rem; font-weight:800;"></span>
+                                <span id="userExpiryText" style="font-size:0.75rem; font-weight:800; color:#fff;"></span>
                             </div>
                         </div>
                     </div>
@@ -101,37 +103,51 @@
     </nav>
 
     <div class="container-fluid">
-        <h1 class="supreme-title">Sao Chép Ảnh Nội Bộ</h1>
-
         <div class="main-grid">
             <div class="copy-card">
+                <div class="text-center mb-3">
+                    <h1 style="font-weight:900; font-size:1.6rem; text-transform:uppercase; letter-spacing:5px; color:var(--primary); text-shadow:var(--neon);">Sao Chép Ảnh</h1>
+                </div>
+
+                <div class="alert-mini">
+                    <div class="mb-1"><i class="fab fa-chrome me-2"></i>Chỉ hỗ trợ trình duyệt <strong>Google Chrome</strong> hoặc <strong>Edge</strong> trên máy tính.</div>
+                    <div><i class="fas fa-microchip me-2"></i>Dữ liệu được xử lý trực tiếp bởi phần cứng máy tính của bạn.</div>
+                </div>
+
                 <div class="dir-grid">
-                    <div class="dir-box" id="boxSource">
-                        <button class="btn-select" onclick="handleSelectSource()">CHỌN NGUỒN</button>
-                        <div id="lblSource" style="font-size:0.65rem; opacity:0.6;">Thư mục gốc</div>
+                    <div class="dir-box" id="boxSource" onclick="handleSelectSource()">
+                        <button class="btn-select">CHỌN NGUỒN</button>
+                        <div id="lblSource" style="font-size:0.65rem; opacity:0.6;">Thư mục chứa ảnh gốc</div>
                     </div>
-                    <div class="dir-box" id="boxDest">
-                        <button class="btn-select" onclick="handleSelectDest()">CHỌN ĐÍCH</button>
-                        <div id="lblDest" style="font-size:0.65rem; opacity:0.6;">Thư mục lưu</div>
+                    <div class="dir-box" id="boxDest" onclick="handleSelectDest()">
+                        <button class="btn-select">CHỌN ĐÍCH</button>
+                        <div id="lblDest" style="font-size:0.65rem; opacity:0.6;">Thư mục lưu ảnh mới</div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label style="margin:0"><i class="fas fa-list-ul me-2"></i>Tên file cần chép:</label>
-                    <input type="text" id="targetExt" style="width:60px; background:rgba(0,0,0,0.5); border:1px solid var(--primary); border-radius:8px; color:var(--primary); text-align:center; font-weight:900; font-size:0.7rem;" placeholder="JPG" oninput="applyExtension()">
+                    <label style="margin:0; font-size:0.7rem; font-weight:900; color:var(--primary);"><i class="fas fa-list-ul me-2"></i>Danh sách tên file:</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <span style="font-size:0.6rem; font-weight:900; opacity:0.5;">ĐUÔI:</span>
+                        <input type="text" id="targetExt" style="width:65px; background:rgba(0,0,0,0.6); border:1px solid var(--primary); border-radius:8px; color:var(--primary); text-align:center; font-weight:900; font-size:0.8rem; outline:none;" placeholder="JPG" oninput="applyExtension()">
+                    </div>
                 </div>
                 
                 <textarea id="txtFiles" placeholder="Dán danh sách tên file vào đây..." oninput="storeOriginal()"></textarea>
 
                 <button id="btnCopy" class="btn-action" onclick="runCopyProcess()" disabled>BẮT ĐẦU SAO CHÉP</button>
                 
-                <div id="noticeVIP" class="mt-3 text-center" style="display:none; font-weight:700; color:#ff4757; font-size: 0.75rem;">
-                    Tài khoản chưa Active, vui lòng <a href="payment.html" style="color:var(--primary);">Gia hạn VIP</a>
+                <div class="mt-3 text-center" style="color:var(--primary); font-weight:900; font-size:0.8rem; letter-spacing:1px;">
+                    <i class="fas fa-bolt me-2"></i>Chuyển dữ liệu siêu tốc - Chính xác 100%
+                </div>
+
+                <div id="noticeVIP" class="mt-2 text-center" style="display:none; font-weight:700; color:#ff4757; font-size: 0.75rem;">
+                    Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:underline;">Gia hạn VIP</a> để sử dụng.
                 </div>
             </div>
 
             <div class="log-panel">
-                <span style="font-size:0.7rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Tiến trình xử lý:</span>
+                <span style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:15px; display:block; text-transform:uppercase; letter-spacing:1px;">Nhật ký tiến trình:</span>
                 <div id="statusLog">
                     <div class="log-info">>> Hệ thống sẵn sàng. Vui lòng chọn thư mục và nhập danh sách.</div>
                 </div>
@@ -194,10 +210,10 @@
             const txtFiles = document.getElementById('txtFiles').value;
             if (!txtFiles.trim()) return;
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
-            const btn = document.getElementById('btnCopy'); btn.disabled = true; btn.innerHTML = 'ĐANG XỬ LÝ...';
+            const btn = document.getElementById('btnCopy'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG SAO CHÉP...';
             
             let success = 0;
-            log(`🚀 Khởi tạo sao chép ${fileList.length} file...`, 'info');
+            log(`🚀 Khởi tạo sao chép ${fileList.length} file ảnh...`, 'info');
             for (let i = 0; i < fileList.length; i++) {
                 try {
                     const fileHandle = await dirHandleSource.getFileHandle(fileList[i]);
@@ -218,7 +234,7 @@
         }
 
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
-        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 2000); });
+        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1500); });
     </script>
 </body>
 </html>
