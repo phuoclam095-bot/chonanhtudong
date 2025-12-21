@@ -9,58 +9,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 130px; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
 
-        /* --- NAVBAR VIP SYSTEM --- */
-        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; padding-bottom: 30px; }
+        /* --- NAVBAR --- */
+        .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
-        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; top: 20px; }
+        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 5px; left: 30%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* --- MARQUEE POSITION & OVERLAP FIX --- */
-        .marquee-wrapper { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 65%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 6px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 10; }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
+        /* --- MARQUEE DƯỚI NÚT ĐĂNG BÀI --- */
+        .marquee-container-bottom { width: 60%; margin: 25px auto 0; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
+        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 30s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- HERO SECTION LUXURY --- */
-        .hero-section { text-align: center; padding: 40px 20px 60px; position: relative; }
+        /* --- HERO --- */
+        .hero-section { text-align: center; padding: 60px 20px 20px; position: relative; }
         .hero-title { font-weight: 900; font-size: 3rem; text-transform: uppercase; letter-spacing: 10px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-        /* BRANDING FIX */
         .hero-subtitle { color: #94a3b8; font-weight: 700; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
         /* --- BLOG CARDS --- */
         .blog-card { background: rgba(10, 17, 36, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; overflow: hidden; transition: 0.4s; height: 100%; display: flex; flex-direction: column; cursor: pointer; }
-        .blog-card:hover { transform: translateY(-15px); border-color: var(--primary); box-shadow: var(--neon); }
+        .blog-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: var(--neon); }
         .blog-img { height: 220px; object-fit: cover; width: 100%; border-bottom: 2px solid rgba(0, 235, 176, 0.2); }
         .blog-body { padding: 25px; flex: 1; display: flex; flex-direction: column; }
-        .blog-title { font-weight: 900; font-size: 1.3rem; color: #fff; margin-bottom: 15px; line-height: 1.3; }
+        .blog-title { font-weight: 900; font-size: 1.2rem; color: #fff; margin-bottom: 12px; line-height: 1.3; }
         .blog-desc { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 20px; }
-        .btn-read { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); font-weight: 900; padding: 10px 25px; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 0.75rem; width: fit-content; margin-top: auto; }
+        .btn-read { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); font-weight: 900; padding: 8px 20px; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 0.7rem; width: fit-content; margin-top: auto; }
         .blog-card:hover .btn-read { background: var(--primary); color: #000; box-shadow: var(--neon); }
 
-        /* --- REVIEW SECTION --- */
+        /* --- REVIEWS --- */
         .section-header { font-weight: 900; font-size: 2rem; text-transform: uppercase; color: var(--primary); text-align: center; margin-bottom: 40px; letter-spacing: 5px; }
-        .review-card { background: #000; border-radius: 25px; padding: 30px; border-left: 5px solid var(--gold-vip); height: 100%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .user-avatar { width: 55px; height: 55px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.4rem; }
-        .stars { color: var(--gold-vip); font-size: 0.9rem; margin-top: 5px; }
-        .review-text { font-style: italic; color: #e2e8f0; line-height: 1.8; font-weight: 500; font-size: 0.95rem; }
+        .review-card { background: #000; border-radius: 25px; padding: 30px; border-left: 5px solid var(--gold-vip); height: 100%; position: relative; }
+        .user-avatar { width: 55px; height: 55px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+        .stars { color: var(--gold-vip); font-size: 0.9rem; }
+        .review-text { font-style: italic; color: #e2e8f0; line-height: 1.8; font-size: 0.95rem; }
 
         /* --- BUTTONS --- */
         .btn-write-post { background: var(--rainbow); padding: 2px; border-radius: 50px; border: none; transition: 0.3s; margin: 0 auto; display: block; }
-        .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 10px 30px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.85rem; }
+        .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 12px 35px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.85rem; }
         .btn-write-post:hover { transform: scale(1.05); }
 
+        .carousel-control-prev, .carousel-control-next { width: 5%; filter: invert(1); }
+        .footer { text-align: center; color: rgba(255,255,255,0.3); padding: 40px; font-size: 0.8rem; letter-spacing: 1px; }
+        
         /* --- MODAL --- */
         .modal-content { background: #080d1a; border: 1.5px solid var(--primary); border-radius: 30px; color: #fff; }
-        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 25px; }
-        .form-control { background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 15px; padding: 12px; }
-        .form-control:focus { background: rgba(0,0,0,0.7); border-color: var(--primary); color: #fff; box-shadow: none; }
-        
-        .carousel-control-prev, .carousel-control-next { width: 5%; }
-        .footer { text-align: center; color: rgba(255,255,255,0.3); padding: 40px; font-size: 0.8rem; letter-spacing: 1px; }
+        .form-control { background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 15px; }
     </style>
 </head>
 <body>
@@ -69,8 +66,6 @@
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             <div class="collapse navbar-collapse">
-                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - CHONANHNHANH.VN vươn tới sự hoàn hảo!</span></div>
-
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
@@ -87,17 +82,20 @@
     <div class="hero-section">
         <div class="container">
             <h1 class="hero-title">Blog & Cộng Đồng</h1>
-            <p class="hero-subtitle">Nơi lưu giữ những khoảnh khắc và câu chuyện đẹp nhất tại CHONANHNHANH.VN</p>
+            <p class="hero-subtitle">Nơi lưu giữ những khoảnh khắc đẹp nhất tại CHONANHNHANH.VN</p>
             <div class="mt-4">
                 <button class="btn-write-post" data-bs-toggle="modal" data-bs-target="#writePostModal">
                     <span><i class="fas fa-pen-fancy me-2"></i>Đăng Bài Chia Sẻ</span>
                 </button>
             </div>
+            <div class="marquee-container-bottom">
+                <span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - CHONANHNHANH.VN vươn tới sự hoàn hảo!</span>
+            </div>
         </div>
     </div>
 
     <div class="container py-5">
-        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner" id="carouselInner">
                 <div class="text-center w-100 carousel-item active" id="initialLoading" style="height: 300px; display: flex; align-items: center; justify-content: center;">
                     <div><i class="fas fa-circle-notch fa-spin fa-3x text-primary mb-3"></i><p class="fw-bold">Đang tải khoảnh khắc...</p></div>
@@ -111,10 +109,6 @@
             <h2 class="section-header">Khách Hàng Nói Gì?</h2>
             <div class="row g-4" id="reviewGrid"></div>
         </div>
-
-        <div class="text-center mt-5">
-            <a href="fedback.html" class="btn-read" style="padding: 15px 40px;">Gửi Góp Ý Của Bạn <i class="fas fa-comment-alt ms-2"></i></a>
-        </div>
     </div>
 
     <div class="footer">© 2025 CHONANHNHANH.VN. TRUY CẬP ĐẲNG CẤP - CHẤT LƯỢNG 100%</div>
@@ -122,30 +116,25 @@
     <div class="modal fade" id="writePostModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-primary"><i class="fas fa-edit me-2"></i>CHIA SẺ CÂU CHUYỆN CỦA BẠN</h5>
+                <div class="modal-header border-0 p-4">
+                    <h5 class="modal-title fw-bold text-primary"><i class="fas fa-edit me-2"></i>CHIA SẺ CÂU CHUYỆN</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4 pt-0">
                     <form id="postForm" onsubmit="submitPost(event)">
-                        <div class="row">
-                            <div class="col-md-6 mb-3"><label class="fw-bold mb-2">Tên tác giả</label><input type="text" id="postAuthor" class="form-control" required></div>
-                            <div class="col-md-6 mb-3"><label class="fw-bold mb-2">Email liên hệ</label><input type="email" id="postEmail" class="form-control" required></div>
+                        <div class="row mb-3">
+                            <div class="col-md-6"><label class="fw-bold mb-2">Tên tác giả</label><input type="text" id="postAuthor" class="form-control" required></div>
+                            <div class="col-md-6"><label class="fw-bold mb-2">Email</label><input type="email" id="postEmail" class="form-control" required></div>
                         </div>
                         <div class="mb-3">
-                            <label class="fw-bold mb-2">Ảnh bìa bài viết</label>
+                            <label class="fw-bold mb-2">Ảnh bìa</label>
                             <input type="file" id="postImageFile" class="form-control" accept="image/*" onchange="processImage()">
-                            <div id="imagePreviewContainer" class="mt-3" style="display:none; border: 2px dashed var(--primary); border-radius: 15px; overflow: hidden;">
-                                <img id="imgPreview" src="" style="width: 100%; height: 250px; object-fit: cover;">
-                            </div>
+                            <div id="imagePreviewContainer" class="mt-3" style="display:none; border-radius: 15px; overflow: hidden;"><img id="imgPreview" style="width: 100%; height: 200px; object-fit: cover;"></div>
                             <input type="hidden" id="postImageBase64"><input type="hidden" id="postImageName">
                         </div>
-                        <div class="mb-3"><label class="fw-bold mb-2">Tiêu đề bài viết</label><input type="text" id="postTitle" class="form-control" required></div>
-                        <div class="mb-3"><label class="fw-bold mb-2">Nội dung chia sẻ</label><textarea id="postContent" class="form-control" rows="6" required></textarea></div>
-                        <div class="text-end mt-4">
-                            <button type="button" class="btn btn-outline-secondary me-3 px-4 rounded-pill" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" id="btnSubmitPost" class="btn btn-primary fw-bold px-5 rounded-pill text-black">GỬI DUYỆT NGAY</button>
-                        </div>
+                        <div class="mb-3"><label class="fw-bold mb-2">Tiêu đề</label><input type="text" id="postTitle" class="form-control" required></div>
+                        <div class="mb-3"><label class="fw-bold mb-2">Nội dung</label><textarea id="postContent" class="form-control" rows="5" required></textarea></div>
+                        <div class="text-end"><button type="submit" id="btnSubmitPost" class="btn btn-primary fw-bold px-5 rounded-pill text-black">GỬI DUYỆT</button></div>
                     </form>
                 </div>
             </div>
@@ -156,55 +145,28 @@
     <script>
         const N8N_GET_BLOGS = 'https://dichvufb.tino.page/webhook/get-blogs';    
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
-        const BLOG_CACHE_KEY = 'blog_list_cache';
-        const CACHE_EXPIRY = 3600000; 
-
-        const baseDemoBlogs = [
-            { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "CHONANHNHANH.VN", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?auto=format&fit=crop&w=500&q=60", content: "Làm sao để cả nhà cùng cười tươi và có những khung hình tự nhiên nhất? Hãy cùng tham khảo..." },
-            { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?auto=format&fit=crop&w=500&q=60", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên, không cần quá nhiều bối cảnh cầu kỳ..." },
-            { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://images.unsplash.com/photo-1522881373549-d7b1a6c4293f?auto=format&fit=crop&w=500&q=60", content: "Màu sắc và chất liệu đóng vai trò quan trọng trong việc làm nổi bật chủ thể giữa thiên nhiên..." },
-            { id: "DEMO5", title: "Review dịch vụ trọn gói tại CHONANHNHANH.VN", date: "01/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=500&q=60", content: "Chúng tôi mang đến trải nghiệm tuyệt vời từ khâu tư vấn đến khi nhận bộ ảnh thành phẩm hoàn hảo..." },
-        ];
-        
-        const demoReviews = [
-            { name: "Nguyễn Thảo", avatar: "T", stars: 5, content: "Hình chụp siêu đẹp, các bạn nhân viên nhiệt tình lắm! Sẽ quay lại ủng hộ." },
-            { name: "Trần Văn Nam", avatar: "N", stars: 5, content: "Dịch vụ chuyên nghiệp, giao ảnh đúng hẹn và chỉnh sửa rất có tâm." },
-            { name: "Lê Minh", avatar: "M", stars: 4, content: "Gói chụp hợp lý, thợ chụp vui tính tạo không khí thoải mái." },
-            { name: "Phạm Hương", avatar: "H", stars: 5, content: "Đã chụp ở đây lần thứ 2, vẫn rất hài lòng về chất lượng ảnh." }
-        ];
-
+        const BLOG_CACHE_KEY = 'blog_list_cache_v2';
         let currentBlogs = [];
-
-        function getFormattedDateTime() { return new Date().toISOString().replace('T', ' ').substring(0, 19); }
-        function extractDriveFileId(urlOrId) {
-            if (urlOrId && urlOrId.includes('id=')) return urlOrId.split('id=')[1].split('&')[0];
-            return urlOrId; 
-        }
 
         function renderMainCarousel(blogs) {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
-            const initialLoading = document.getElementById('initialLoading');
-            if(initialLoading) initialLoading.remove();
+            document.getElementById('initialLoading')?.remove();
 
             let slides = [];
             for (let i = 0; i < blogs.length; i += 3) {
                 const group = blogs.slice(i, i + 3);
                 let groupHtml = group.map((blog) => {
-                    if (!blog.id) return '<div class="col-md-4"></div>';
-                    const isDemo = blog.id.startsWith('DEMO');
-                    const driveFileId = extractDriveFileId(blog.image); 
-                    const imageUrl = isDemo ? blog.image : (driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w600` : 'https://via.placeholder.com/500x300');
-                    
+                    const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
+                    const imageUrl = blog.id?.startsWith('DEMO') ? blog.image : `https://drive.google.com/thumbnail?id=${driveId}&sz=w600`;
                     return `
                     <div class="col-md-4">
-                        <div class="blog-card" onclick="viewPost(currentBlogs.findIndex(b => b.id === '${blog.id}'))">
-                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300?text=CHONANHNHANH'">
+                        <div class="blog-card" onclick="window.location.href='post.html?id=${blog.id}'">
+                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
                             <div class="blog-body">
                                 <div class="blog-title">${blog.title}</div>
                                 <div class="blog-desc">${blog.content}</div>
-                                <button class="btn-read">Xem chi tiết <i class="fas fa-arrow-right ms-2"></i></button>
+                                <button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button>
                             </div>
                         </div>
                     </div>`;
@@ -212,90 +174,63 @@
                 slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
             }
             carouselInner.innerHTML = slides.join('');
+            
+            // Re-init carousel auto-slide
+            new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 5000, ride: 'carousel' });
         }
 
-        async function loadBlogs(forceReload = false) {
-            const cachedData = JSON.parse(localStorage.getItem(BLOG_CACHE_KEY));
-            if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
-                currentBlogs = cachedData.blogs;
-                renderMainCarousel(currentBlogs);
-            }
+        async function loadBlogs() {
             try {
                 const response = await fetch(N8N_GET_BLOGS);
-                if(response.ok) {
-                    const data = await response.json();
-                    const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                    realBlogs.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    currentBlogs = [...realBlogs, ...baseDemoBlogs];
-                    localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({ blogs: currentBlogs, timestamp: Date.now() }));
-                    if (forceReload || !cachedData) renderMainCarousel(currentBlogs);
-                }
-            } catch (e) { console.error("Lỗi:", e); }
+                const data = await response.json();
+                const realBlogs = Array.isArray(data) ? data : (data.data || []);
+                currentBlogs = [...realBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
+                if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
+                renderMainCarousel(currentBlogs);
+            } catch (e) { renderMainCarousel(demoBlogs); }
         }
 
+        const demoBlogs = [
+            { id: "DEMO1", title: "Cẩm nang chọn váy cưới 2025", content: "Xu hướng tối giản đang lên ngôi trong mùa cưới năm nay...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500" },
+            { id: "DEMO2", title: "Địa điểm ngoại cảnh hot nhất", content: "Top 10 bối cảnh thiên nhiên giúp bộ ảnh của bạn lung linh...", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?w=500" },
+            { id: "DEMO3", title: "Bí quyết tạo dáng tự nhiên", content: "Làm sao để không bị 'đơ' trước ống kính máy ảnh...", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?w=500" }
+        ];
+
         function processImage() {
-            const fileInput = document.getElementById('postImageFile');
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            const imgPreview = document.getElementById('imgPreview');
-            const file = fileInput.files[0];
+            const file = document.getElementById('postImageFile').files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
                 reader.onload = (e) => {
-                    imgPreview.src = e.target.result;
-                    previewContainer.style.display = 'block';
+                    document.getElementById('imgPreview').src = e.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
                     document.getElementById('postImageBase64').value = e.target.result;
                     document.getElementById('postImageName').value = file.name;
                 };
+                reader.readAsDataURL(file);
             }
         }
 
         async function submitPost(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitPost');
-            const imageBase64 = document.getElementById('postImageBase64').value;
-            if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG GỬI...'; btn.disabled = true;
-
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
             try {
                 const response = await fetch(N8N_SUBMIT_BLOG, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ author: document.getElementById('postAuthor').value, email: document.getElementById('postEmail').value, title: document.getElementById('postTitle').value, content: document.getElementById('postContent').value, date: getFormattedDateTime(), image_data: imageBase64, image_name: document.getElementById('postImageName').value })
+                    body: JSON.stringify({
+                        author: document.getElementById('postAuthor').value,
+                        title: document.getElementById('postTitle').value,
+                        content: document.getElementById('postContent').value,
+                        image_data: document.getElementById('postImageBase64').value,
+                        image_name: document.getElementById('postImageName').value,
+                        date: new Date().toISOString()
+                    })
                 });
-                if (response.ok) {
-                    alert("✅ Gửi bài thành công! Chờ ADMIN duyệt nhé.");
-                    bootstrap.Modal.getInstance(document.getElementById('writePostModal')).hide();
-                    document.getElementById('postForm').reset();
-                    loadBlogs(true); 
-                }
-            } catch (e) { alert("Lỗi kết nối."); } 
-            finally { btn.innerHTML = 'GỬI DUYỆT NGAY'; btn.disabled = false; }
+                if (response.ok) { alert("✅ Đã gửi bài duyệt!"); location.reload(); }
+            } catch (e) { alert("Lỗi!"); } finally { btn.innerHTML = 'GỬI DUYỆT'; btn.disabled = false; }
         }
 
-        function viewPost(index) {
-            const blog = currentBlogs[index];
-            if (blog.id) window.location.href = `post.html?id=${blog.id}`;
-        }
-        
-        function renderReviews() {
-            const container = document.getElementById('reviewGrid');
-            let html = demoReviews.map(review => {
-                let starHtml = '<i class="fas fa-star"></i>'.repeat(review.stars) + '<i class="far fa-star"></i>'.repeat(5 - review.stars);
-                return `
-                <div class="col-md-6">
-                    <div class="review-card">
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="user-avatar">${review.avatar}</div>
-                            <div><h5 class="m-0 fw-bold">${review.name}</h5><div class="stars">${starHtml}</div></div>
-                        </div>
-                        <div class="review-text">"${review.content}"</div>
-                    </div>
-                </div>`;
-            }).join('');
-            container.innerHTML = html;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => { loadBlogs(); renderReviews(); });
+        document.addEventListener('DOMContentLoaded', loadBlogs);
     </script>
 </body>
 </html>
