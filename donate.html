@@ -2,195 +2,157 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ủng Hộ Dịch Vụ - Tiện Ích Chọn Ảnh</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ủng Hộ & Phát Triển - CHONANHNHANH.VN</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-green: #147a30;
-            --dark-green: #0e5a22;
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --highlight-color: #51ff7d;
-            --accent-color: #51ff7d;
+            --primary: #00ebb0;
+            --gold-vip: #f0c300;
+            --bg-deep: #050a14;
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --card-glass: rgba(10, 17, 36, 0.9);
+            --border-glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            background-color: var(--bg-color);
-            /* Nền chấm bi tối giống Managa */
-            background-image: radial-gradient(#333 15%, transparent 16%), radial-gradient(#333 15%, transparent 16%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
-            color: var(--text-color);
-            font-family: 'Nunito', sans-serif;
-            padding-top: 80px; /* Offset cho header fixed */
+            background-color: var(--bg-deep);
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 100px;
             min-height: 100vh;
         }
-        
-        /* ⭐ HEADER CHUẨN BOOTSTRAP (COPY TỪ MANAGA) ⭐ */
+
+        /* --- NAVBAR VIP SYSTEM --- */
         .navbar {
-            background: var(--primary-green);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
+            background: rgba(5, 10, 20, 0.95);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            min-height: 85px;
         }
-        
-        .navbar-brand {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: white !important;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; letter-spacing: 1px; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 10px 15px !important; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; background: rgba(0, 235, 176, 0.05); border-radius: 10px; }
 
-        .nav-link {
-            color: rgba(255,255,255,0.9) !important;
-            font-weight: 600;
-            margin: 0 5px;
-            transition: all 0.3s;
-            border-radius: 8px;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255,255,255,0.2);
-            color: #fff !important;
-            transform: translateY(-2px);
-        }
-        
-        .navbar-toggler {
-            border: none;
-            color: white;
-            padding: 0.5rem;
-        }
-        .navbar-toggler:focus {
-            box-shadow: none;
-            outline: 2px solid var(--accent-color);
-        }
-
-        /* ⭐ PHẦN NỀN CHÍNH (DONATE) ⭐ */
+        /* --- DONATE CONTAINER LUXURY --- */
         .donate-container {
-            max-width: 900px;
-            margin: 30px auto; 
-            padding: 40px;
-            
-            /* Nền Gradient trong suốt */
-            background-image: linear-gradient(135deg, rgba(13, 26, 33, 0.85) 0%, rgba(14, 90, 34, 0.75) 100%);
-            
-            /* Hiệu ứng kính mờ */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            
-            background-color: transparent;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff; 
+            max-width: 950px;
+            margin: 20px auto 50px;
+            padding: 50px;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--border-glass);
+            animation: fadeIn 0.8s ease-out;
         }
-        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
         h1 { 
-            color: var(--highlight-color); 
-            margin-bottom: 25px; 
-            text-align: center;
-            text-shadow: 0 0 10px rgba(81, 255, 125, 0.8);
-            font-weight: 800;
-            font-size: 2rem;
+            font-weight: 900; color: #fff; text-align: center; 
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;
         }
-        
-        h2 {
-            color: var(--highlight-color);
-            text-shadow: 0 0 8px rgba(81, 255, 125, 0.6);
-            margin-bottom: 30px;
-            font-weight: 700;
+        .highlight-text { color: var(--primary); text-shadow: var(--neon); }
+
+        .subtitle { 
+            text-align: center; color: #94a3b8; font-size: 1.1rem; 
+            max-width: 700px; margin: 0 auto 40px; line-height: 1.6;
         }
-        
-        /* ⭐ Cấu hình QR và Flexbox ⭐ */
+
+        /* --- PAYMENT GRID --- */
         .payment-grid {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
         }
 
         .payment-method {
-            flex: 1 1 300px; /* Linh hoạt hơn, min-width giảm xuống để ko vỡ layout trên mobile nhỏ */
-            min-width: 300px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 25px;
+            padding: 35px;
             text-align: center;
-            background-color: rgba(0, 0, 0, 0.3); 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
         .payment-method:hover {
-            transform: translateY(-8px);
-            background-color: rgba(0, 0, 0, 0.6);
-            border-color: var(--highlight-color);
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            box-shadow: var(--neon);
         }
 
-        .qr-placeholder {
-            width: 200px;
-            height: 200px;
-            background-color: #fff;
-            margin: 15px auto 20px auto;
-            border: 2px solid #555;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-            border-radius: 12px;
+        /* OPTIMIZED QR DISPLAY */
+        .qr-box {
+            width: 190px;
+            height: 190px;
+            background: #fff;
+            margin: 25px auto;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        .qr-placeholder img {
+        .qr-box img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            image-rendering: -webkit-optimize-contrast; /* Giữ nét khi giảm độ phân giải */
         }
 
-        /* Mobile Adjustments */
+        .bank-name { font-weight: 900; font-size: 1.3rem; margin-bottom: 5px; }
+        .acc-info { color: var(--gold-vip); font-weight: 800; font-size: 1.1rem; margin-bottom: 20px; display: block; }
+        
+        .thank-you-note {
+            text-align: center; margin-top: 50px; padding: 25px;
+            background: rgba(0, 235, 176, 0.05); border-radius: 20px;
+            border: 1px dashed var(--primary);
+        }
+
+        /* --- AUTH CONTROL --- */
+        .user-pill {
+            background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px;
+            border: 1.5px solid var(--primary); font-weight: 800; font-size: 0.85rem;
+        }
+
         @media (max-width: 768px) {
-            .donate-container { padding: 25px 15px; margin: 20px 15px; }
+            .donate-container { padding: 30px 20px; border-radius: 25px; }
             h1 { font-size: 1.6rem; }
-            .payment-method { min-width: 100%; } /* Mobile sẽ full width */
-            
-            .user-info-mobile {
-                border-top: 1px solid rgba(255,255,255,0.1);
-                margin-top: 15px;
-                padding-top: 15px;
-                justify-content: flex-end;
-            }
+            .payment-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    
+
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#"><i class="fas fa-hand-holding-heart me-2"></i>Donate</a>
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle"></i> Tạo Album</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy"></i> Sao Chép Ảnh</a></li>
-                    <li class="nav-item"><a href="donate.html" class="nav-link active"><i class="fas fa-hand-holding-usd"></i> Donate</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link"><i class="fas fa-envelope"></i> Liên Hệ</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-folder-open"></i> Quản Lý</a></li>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a href="admin.html" class="nav-link"><i class="fas fa-plus-circle me-1"></i> Tạo Album</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link"><i class="fas fa-copy me-1"></i> Sao Chép</a></li>
+                    <li class="nav-item"><a href="donate.html" class="nav-link active"><i class="fas fa-hand-holding-heart me-1"></i> Donate</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link"><i class="fas fa-blog me-1"></i> Blog</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link"><i class="fas fa-tasks me-1"></i> Quản Lý</a></li>
                 </ul>
 
-                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3 user-info-mobile">
-                    <span id="userEmailDisplay" class="text-white fw-bold px-3 py-2 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-25">
-                        <i class="fas fa-user-circle me-2"></i>Admin
-                    </span>
-                    <a href="javascript:void(0);" onclick="logoutAdmin()" class="btn btn-danger fw-bold d-flex align-items-center gap-2 rounded-pill px-3">
-                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
-                    </a>
+                <div id="authControl" style="display: none;" class="d-flex align-items-center gap-3">
+                    <div class="user-pill"><i class="fas fa-user-shield me-2"></i><span id="userEmailDisplay">Admin</span></div>
+                    <button onclick="logoutAdmin()" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3">
+                        <i class="fas fa-power-off me-1"></i> THOÁT
+                    </button>
                 </div>
             </div>
         </div>
@@ -198,87 +160,62 @@
     
     <div class="container">
         <div class="donate-container">
-            <h1><i class="fas fa-hand-holding-heart me-2"></i> Ủng Hộ & Phát Triển Dịch Vụ</h1>
+            <h1><span class="highlight-text">Đồng Hành</span> & Phát Triển</h1>
             
-            <p class="text-center" style="font-size: 1.1rem; opacity: 0.9;">Sự ủng hộ của bạn, dù nhỏ bé, là nguồn động viên lớn để chúng tôi tiếp tục duy trì server và cập nhật dịch vụ.</p>
+            <p class="subtitle">
+                CHONANHNHANH.VN vươn tới sự hoàn hảo nhờ sự tin tưởng của bạn. Mỗi đóng góp là nguồn lực quý giá để chúng tôi nâng cấp Server và mang đến những tính năng đột phá hơn cho cộng đồng nhiếp ảnh.
+            </p>
             
-            <hr style="border-color: #00c46f; opacity: 0.5; margin: 30px 0;">
-
-            <h2 class="text-center">Chọn Phương Thức Ủng Hộ</h2>
-
             <div class="payment-grid">
-                
                 <div class="payment-method">
-                    <h3 style="color: #007bff; font-weight: 800;"><i class="fas fa-university me-2"></i> VIETCOMBANK</h3>
-                    
-                    <div class="qr-placeholder" style="border-color: #007bff;">
-                        <img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="Mã QR Vietcombank">
+                    <div class="bank-name" style="color: #007bff;"><i class="fas fa-university me-2"></i>VIETCOMBANK</div>
+                    <div class="qr-box" style="border: 2px solid #007bff;">
+                        <img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="VCB QR">
                     </div>
-
-                    <p class="mb-1" style="font-size: 1.1rem;">
-                        <strong>Tên TK:</strong> Lâm Nam Phước
-                    </p>
-                    <p>
-                        <small class="text-white opacity-75">Quét mã để chuyển khoản nhanh VCB.</small>
-                    </p>
+                    <div class="acc-info">LÂM NAM PHƯỚC</div>
+                    <p class="text-muted small fw-bold">Chuyển khoản nhanh qua App Ngân hàng</p>
                 </div>
 
                 <div class="payment-method">
-                    <h3 style="color: #ff337e; font-weight: 800;"><i class="fas fa-wallet me-2"></i> MOMO (Ví Điện Tử)</h3>
-                    
-                    <div class="qr-placeholder" style="border-color: #ff337e;">
-                        <img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Mã QR Momo Mới">
+                    <div class="bank-name" style="color: #ff337e;"><i class="fas fa-wallet me-2"></i>VÍ MOMO</div>
+                    <div class="qr-box" style="border: 2px solid #ff337e;">
+                        <img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Momo QR">
                     </div>
-                    
-                    <p class="mb-1" style="font-size: 1.1rem;">
-                        <strong>SĐT Nhận:</strong> 0836484821
-                    </p>
-                    <p>
-                        <small class="text-white opacity-75">Quét mã để ủng hộ qua Momo.</small>
-                    </p>
+                    <div class="acc-info">0836.4848.21</div>
+                    <p class="text-muted small fw-bold">Ủng hộ nhanh qua Ví điện tử Momo</p>
                 </div>
-                
             </div>
             
-            <p class="text-center mt-5 fw-bold" style="color: #ffeb3b; font-size: 1.1rem;">
-                <i class="fas fa-heart" style="color: #dc3545;"></i> Chúng tôi xin chân thành cảm ơn mọi sự đóng góp.
-            </p>
-
+            <div class="thank-you-note">
+                <p class="mb-0 fw-900" style="color: var(--gold-vip); font-size: 1.1rem;">
+                    <i class="fas fa-heart text-danger me-2"></i> TRÂN TRỌNG CẢM ƠN MỌI SỰ ĐÓNG GÓP TỪ BẠN!
+                </p>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⭐ LOGIC JAVASCRIPT CHO NAVIGATION VÀ ĐĂNG XUẤT (GIỐNG MANAGA) ⭐
+        // --- LOGIC AUTH ---
         const adminEmail = localStorage.getItem('admin_email');
-        const adminName = localStorage.getItem('admin_name') || 'Admin';
+        const adminName = localStorage.getItem('admin_name');
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
 
-        function updateHeaderUI() {
+        function updateUI() {
             const authControl = document.getElementById('authControl');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
+            const userDisplay = document.getElementById('userEmailDisplay');
             
             if (isLoggedIn) {
-                userEmailDisplay.innerHTML = `<i class="fas fa-user-circle me-2"></i>${adminName || adminEmail || 'Admin'}`;
-                authControl.style.display = 'flex'; 
-                authControl.classList.remove('d-none');
-                authControl.classList.add('d-flex');
-            } else {
-                authControl.style.display = 'none';
-                authControl.classList.remove('d-flex');
-                authControl.classList.add('d-none');
+                userDisplay.innerText = adminName || adminEmail || 'Admin';
+                authControl.style.display = 'flex';
             }
         }
         
         function logoutAdmin() {
-            localStorage.removeItem('admin_is_logged_in');
-            localStorage.removeItem('admin_email');
-            localStorage.removeItem('admin_name');
-            localStorage.removeItem('google_access_token'); 
+            localStorage.clear();
             window.location.href = 'admin.html';
         }
 
-        document.addEventListener('DOMContentLoaded', updateHeaderUI);
+        document.addEventListener('DOMContentLoaded', updateUI);
     </script>
 </body>
 </html>
