@@ -23,25 +23,34 @@
             color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 100px; overflow-x: hidden;
         }
 
-        /* --- NAVBAR --- */
+        /* --- NAVBAR & HIỆU ỨNG HOVER TAB --- */
         .navbar { background: rgba(5, 10, 20, 0.85); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
         .navbar-brand { font-weight: 900; font-size: 1.5rem; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: -1px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
+        
+        .nav-link { 
+            color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; 
+            padding: 10px 15px !important; transition: 0.3s ease; position: relative; 
+        }
+        /* Hiệu ứng di chuyển chuột vào tab */
+        .nav-link::after { 
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; 
+            background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); 
+        }
+        .nav-link:hover { color: #fff !important; }
+        .nav-link:hover::after { width: 70%; box-shadow: var(--neon); }
         .nav-link.active { color: var(--primary) !important; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
-        .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
+        .nav-link.active::after { width: 80%; box-shadow: var(--neon); }
 
-        /* USER PILL ĐỒNG BỘ ADMIN */
+        /* USER PILL */
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); height: 50px; }
         .avt-circle { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 1.2px solid var(--primary); background: #000; flex-shrink: 0; }
         .avt-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.55rem; padding: 1px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
 
         /* CONTENT GRID */
         .main-container { max-width: 1150px; margin: 0 auto; display: grid; grid-template-columns: 1fr 400px; gap: 30px; padding: 20px; }
         @media (max-width: 992px) { .main-container { grid-template-columns: 1fr; } }
 
-        /* CARD LIÊN HỆ */
+        /* CARD LIÊN HỆ CĂN GIỮA */
         .supreme-card { background: rgba(10, 20, 40, 0.75); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
         
         .supreme-title { 
@@ -49,9 +58,9 @@
             background: linear-gradient(to bottom, #fff 20%, var(--primary) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
-            animation: neon-pulse 2s infinite alternate; /* Hiệu ứng Neon */
+            animation: neon-pulse 2s infinite alternate;
         }
-        @keyframes neon-pulse { from { filter: drop-shadow(0 0 2px var(--primary)); } to { filter: drop-shadow(0 0 15px var(--primary)); } }
+        @keyframes neon-pulse { from { filter: drop-shadow(0 0 2px var(--primary)); } to { filter: drop-shadow(0 0 12px var(--primary)); } }
 
         .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
         .contact-item { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; transition: 0.3s; text-decoration: none; text-align: left; }
@@ -101,7 +110,7 @@
                         <div class="d-flex flex-column overflow-hidden">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1; color:#fff;">...</span>
                             <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag" style="color:var(--primary)">...</span>
+                                <span id="badgeStatus" style="font-size:0.5rem; color:var(--primary); font-weight:900; text-transform:uppercase; margin-top:2px;">...</span>
                                 <span id="userExpiryText" style="font-size:0.5rem; color:#94a3b8;"></span>
                             </div>
                         </div>
@@ -134,11 +143,17 @@
                 </a>
                 <a href="https://t.me/david_coby" target="_blank" class="contact-item">
                     <div class="contact-icon" style="color: #27A0DF;"><i class="fab fa-telegram-plane"></i></div>
-                    <div class="contact-info"><label>Telegram</label><span>@david_coby</span></div>
+                    <div class="contact-info">
+                        <label>Telegram</label>
+                        <span>@david_coby</span>
+                    </div>
                 </a>
                 <a href="mailto:phuoclam095@gmail.com" class="contact-item">
                     <div class="contact-icon" style="color: #ff4757;"><i class="fas fa-envelope-open-text"></i></div>
-                    <div class="contact-info"><label>Email Kỹ Thuật</label><span>phuoclam095@gmail.com</span></div>
+                    <div class="contact-info">
+                        <label>Email Kỹ Thuật</label>
+                        <span>phuoclam095@gmail.com</span>
+                    </div>
                 </a>
             </div>
             <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center;">
@@ -151,7 +166,7 @@
             <div class="ai-messages" id="aiChat">
                 <div class="msg-wrapper ai">
                     <div class="chat-avt"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div>
-                    <div class="msg msg-ai">Chào Admin! Tôi là trợ lý ảo của <b>chonanhnhanh.vn</b>. Tôi ở đây để hỗ trợ bạn tối ưu quy trình giao ảnh và chọn ảnh cho khách hàng. Bạn cần kiểm tra thông số gì hôm nay?</div>
+                    <div class="msg msg-ai">Chào Admin! Tôi là trợ lý ảo của <b>chonanhnhanh.vn</b>. Tôi ở đây để hỗ trợ bạn tối ưu quy trình giao ảnh và chọn ảnh cho khách hàng. Bạn cần tôi giải đáp thông tin gì?</div>
                 </div>
             </div>
             <div class="ai-input-area">
@@ -181,7 +196,7 @@
                     body: JSON.stringify({ message: userMsg, sessionId: sessionId, adminEmail: localStorage.getItem('admin_email') })
                 });
                 const data = await response.json();
-                chat.innerHTML += `<div class="msg-wrapper ai"><div class="chat-avt"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg msg-ai">${data.output || data.message || "Xong!"}</div></div>`;
+                chat.innerHTML += `<div class="msg-wrapper ai"><div class="chat-avt"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg msg-ai">${data.output || data.message || "Hệ thống đã nhận thông tin!"}</div></div>`;
             } catch (e) { chat.innerHTML += `<div class="text-center small opacity-50 my-2">Mất kết nối...</div>`; }
             chat.scrollTop = chat.scrollHeight;
         }
