@@ -2,66 +2,82 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>STUDIO PLANNER PRO - CHONANHNHANH.VN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
         body { 
             background-color: var(--bg-deep); 
-            background-image: linear-gradient(rgba(5, 10, 20, 0.7), rgba(5, 10, 20, 0.7)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-image: linear-gradient(rgba(5, 10, 20, 0.7), rgba(5, 10, 20, 0.8)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
-            color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 80px; height: 100vh; overflow: hidden;
+            color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 90px; height: 100vh; overflow: hidden;
         }
 
-        .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 70px; position: fixed; width: 100%; top: 0; z-index: 2000; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
-        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; }
-        .nav-link.active { color: var(--primary) !important; }
+        .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 75px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
+        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; padding: 10px 15px !important; }
+        .nav-link.active { color: var(--primary) !important; border-bottom: 2px solid var(--primary); }
 
-        .main-wrapper { max-width: 1350px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 380px; gap: 20px; height: calc(100vh - 100px); overflow: hidden; }
+        .main-wrapper { max-width: 1380px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 400px; gap: 25px; height: calc(100vh - 120px); }
 
+        /* --- FIX LỖI TRÀN KHUNG & LỆCH NGÀY --- */
         .calendar-container { 
-            background: rgba(10, 17, 36, 0.65); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 20px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column;
+            background: rgba(10, 17, 36, 0.7); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 35px; padding: 25px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden;
         }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .month-year-display { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 12px; }
-        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .month-year-display { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 12px; }
+        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .btn-nav:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
 
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 10px; font-size: 0.8rem; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 12px; font-size: 0.85rem; }
+        
+        /* GRID KHÔNG LỆCH */
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; flex: 1; width: 100%; }
         
         .day { 
-            aspect-ratio: 1.4/1; background: rgba(255,255,255,0.02); border-radius: 12px; 
+            min-height: 70px; background: rgba(255,255,255,0.03); border-radius: 15px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
+            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); transition: 0.2s;
+            position: relative; overflow: hidden;
         }
-        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
-        .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.08); }
+        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); transform: translateY(-2px); }
+        .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.1); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        .day.other-month { opacity: 0.15; }
-        .lunar-day { font-size: 0.65rem; opacity: 0.7; font-weight: 600; margin-top: 2px; }
+        .day.other-month { opacity: 0.2; filter: blur(0.5px); }
+        
+        /* LỊCH ÂM CHUẨN */
+        .solar-day { font-size: 1.1rem; }
+        .lunar-day { font-size: 0.68rem; opacity: 0.7; font-weight: 600; margin-top: 3px; }
+        .day.selected .lunar-day { color: #000; opacity: 0.9; }
 
-        .sidebar { background: rgba(10, 17, 36, 0.75); border-radius: 35px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
-        .event-list { overflow-y: auto; flex: 1; padding-right: 5px; }
-        .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 18px; border-left: 4px solid var(--primary); position: relative; }
+        .sidebar { background: rgba(10, 17, 36, 0.8); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .event-list { overflow-y: auto; flex: 1; padding-right: 5px; margin-bottom: 15px; }
+        .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; }
 
-        .form-control, .form-select { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 10px; font-weight: 700; }
-        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 14px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
+        /* FORM HI-VISIBILITY */
+        .form-control { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-weight: 700; }
+        .form-control::placeholder { color: #a5f3e0 !important; }
+        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 16px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
+
+        @media (max-width: 1100px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { display: none; } }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="#">CHONANHNHANH.VN</a>
+            <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             <ul class="navbar-nav mx-auto">
-                <li class="nav-item"><a href="#" class="nav-link active">QUẢN LÝ LỊCH</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
+                <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
+                <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
+                <li class="nav-item"><a href="donate.html" class="nav-link">Donate</a></li>
             </ul>
         </div>
     </nav>
@@ -70,7 +86,10 @@
         <div class="calendar-container">
             <div class="calendar-header">
                 <button class="btn-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-                <div class="month-year-display"><span id="monthDisplay"></span> <span id="yearDisplay"></span></div>
+                <div class="month-year-display">
+                    <span id="monthDisplay"></span>
+                    <span id="yearDisplay"></span>
+                </div>
                 <button class="btn-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="weekdays"><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div>CN</div></div>
@@ -78,10 +97,10 @@
         </div>
 
         <div class="sidebar">
-            <h6 class="fw-900 text-primary mb-1">LỊCH SHOW STUDIO</h6>
-            <p id="selectedDateDisplay" class="text-white fw-bold small mb-3 opacity-75"></p>
+            <h5 class="fw-900 text-primary mb-1">LỊCH SHOW STUDIO</h5>
+            <p id="selectedDateDisplay" class="text-white fw-bold small mb-4 opacity-75"></p>
             <div id="eventList" class="event-list"></div>
-            <button class="btn-action-main mt-3" onclick="openAddModal()"><i class="fas fa-plus-circle me-2"></i> THÊM SHOW MỚI</button>
+            <button class="btn-action-main" onclick="openAddModal()"><i class="fas fa-plus-circle me-2"></i> THÊM SHOW MỚI</button>
         </div>
     </div>
 
@@ -89,20 +108,20 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 30px;">
                 <div class="modal-body p-4">
-                    <h5 class="fw-900 text-primary uppercase mb-4 text-center">ĐẶT LỊCH CHỤP</h5>
+                    <h5 class="fw-900 text-primary uppercase text-center mb-4">THIẾT LẬP SHOW CHỤP</h5>
                     <form id="addEventForm">
                         <input type="text" class="form-control mb-3" id="clientName" placeholder="Tên khách hàng..." required>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-1">GIỜ CHỤP (24H)</label>
+                                <label class="small fw-bold text-primary mb-1">GIỜ (24H)</label>
                                 <input type="time" class="form-control" id="eventTime" required>
                             </div>
                             <div class="col-6 mb-3">
                                 <label class="small fw-bold text-primary mb-1">TIỀN CỌC</label>
-                                <input type="text" class="form-control" id="depositAmount" placeholder="VD: 500k">
+                                <input type="text" class="form-control" id="depositAmount" placeholder="VD: 1.000.000">
                             </div>
                         </div>
-                        <textarea class="form-control mb-3" id="eventNote" rows="2" placeholder="Ghi chú địa điểm, trang phục..."></textarea>
+                        <textarea class="form-control mb-4" id="eventNote" rows="3" placeholder="Ghi chú địa điểm, yêu cầu..."></textarea>
                         <button type="button" class="btn-action-main" onclick="saveEvent()">XÁC NHẬN LƯU</button>
                     </form>
                 </div>
@@ -112,55 +131,52 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // MÔ PHỎNG LỊCH ÂM
-        function getLunar(d) { return (d + 12) % 30 || 1; }
+        // MÔ PHỎNG LỊCH ÂM CHUẨN
+        function getLunar(d) { return (d + 14) % 30 || 30; }
 
         let date = new Date();
         let currentMonth = date.getMonth();
         let currentYear = date.getFullYear();
         let selectedDate = new Date();
-        let events = JSON.parse(localStorage.getItem('studio_events')) || {};
+        let events = JSON.parse(localStorage.getItem('studio_events_v4')) || {};
 
         function renderCalendar() {
-            const monthDisplay = document.getElementById('monthDisplay');
-            const yearDisplay = document.getElementById('yearDisplay');
             const daysGrid = document.getElementById('daysGrid');
-
-            let firstDayRaw = new Date(currentYear, currentMonth, 1).getDay();
-            // FIX LỆCH NGÀY: Chuyển sang Thứ 2 là ngày 0
-            let firstDay = (firstDayRaw === 0) ? 6 : firstDayRaw - 1; 
-
+            const firstDayRaw = new Date(currentYear, currentMonth, 1).getDay();
+            // THUẬT TOÁN Monday-Start: (firstDayRaw + 6) % 7
+            const firstDay = (firstDayRaw === 0) ? 6 : firstDayRaw - 1;
+            
             const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
             
-            monthDisplay.innerText = "Tháng " + (currentMonth + 1);
-            yearDisplay.innerText = currentYear;
+            document.getElementById('monthDisplay').innerText = "Tháng " + (currentMonth + 1);
+            document.getElementById('yearDisplay').innerText = currentYear;
             
             let days = "";
 
             // Ngày tháng trước (Ẩn)
             for (let x = firstDay; x > 0; x--) {
                 const d = prevLastDate - x + 1;
-                days += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d)}</span></div>`;
+                days += `<div class="day other-month"><span class="solar-day">${d}</span><span class="lunar-day">${getLunar(d)}</span></div>`;
             }
 
             // Ngày tháng hiện tại
             for (let i = 1; i <= lastDate; i++) {
                 const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                 const isSelected = i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-                const dateKey = `${currentYear}-${currentMonth + 1}-${i}`;
+                const key = `${currentYear}-${currentMonth + 1}-${i}`;
                 
                 days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">
-                            <span>${i}</span>
+                            <span class="solar-day">${i}</span>
                             <span class="lunar-day">${getLunar(i)}</span>
-                            ${events[dateKey] ? '<div style="width:4px;height:4px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}
+                            ${events[key] ? '<div style="width:5px;height:5px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}
                          </div>`;
             }
 
-            // Ngày tháng sau (Ẩn) - Lấp đầy lưới 42 ô (6 hàng)
+            // Lấp đầy lưới 42 ô (6 hàng x 7 cột)
             const remaining = 42 - (firstDay + lastDate);
             for (let j = 1; j <= remaining; j++) {
-                days += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j)}</span></div>`;
+                days += `<div class="day other-month"><span class="solar-day">${j}</span><span class="lunar-day">${getLunar(j)}</span></div>`;
             }
 
             daysGrid.innerHTML = days;
@@ -175,12 +191,16 @@
             const key = `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`;
             document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', {weekday: 'long', day: 'numeric', month: 'long'});
             const list = events[key] || [];
-            document.getElementById('eventList').innerHTML = list.length ? list.map(ev => `
+            document.getElementById('eventList').innerHTML = list.length ? list.map((ev, idx) => `
                 <div class="event-item">
-                    <div class="fw-900 text-primary small">${ev.time}</div>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-900 text-primary small">${ev.time}</span>
+                        <span class="text-gold fw-bold small">${ev.deposit || ''}</span>
+                    </div>
                     <div class="fw-bold text-white">${ev.name}</div>
                     <div class="small opacity-75">${ev.note}</div>
-                </div>`).join('') : '<div class="text-center mt-4 opacity-50">KHÔNG CÓ SHOW</div>';
+                    <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-1" onclick="deleteEvent('${key}', ${idx})"><i class="fas fa-trash"></i></button>
+                </div>`).join('') : '<div class="text-center mt-5 opacity-50">KHÔNG CÓ LỊCH</div>';
         }
 
         function openAddModal() { new bootstrap.Modal(document.getElementById('addEventModal')).show(); }
@@ -190,11 +210,13 @@
             events[key].push({
                 name: document.getElementById('clientName').value,
                 time: document.getElementById('eventTime').value,
+                deposit: document.getElementById('depositAmount').value,
                 note: document.getElementById('eventNote').value
             });
-            localStorage.setItem('studio_events', JSON.stringify(events));
+            localStorage.setItem('studio_events_v4', JSON.stringify(events));
             location.reload();
         }
+        function deleteEvent(key, idx) { if(confirm("Xóa lịch?")) { events[key].splice(idx, 1); localStorage.setItem('studio_events_v4', JSON.stringify(events)); renderCalendar(); } }
 
         document.addEventListener('DOMContentLoaded', renderCalendar);
     </script>
