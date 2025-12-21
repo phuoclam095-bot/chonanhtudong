@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 90px; }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 105px; }
         
         /* --- LOADING FLOATING --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -18,22 +18,24 @@
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
 
-        /* --- NAVBAR --- */
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 80px; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); }
+        /* --- NAVBAR & USER STATUS ĐỒNG BỘ --- */
+        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; position: relative; }
         .nav-link.active { color: var(--primary) !important; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s; transform: translateX(-50%); }
         .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
 
-        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 48px; }
-        #avatarPlaceholder { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; }
+        /* FIX KHUNG HẠN DÙNG ĐỀU VỚI CÁC TAB KHÁC */
+        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
+        #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.5rem; padding: 1px 6px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
+        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
+        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; }
 
         /* --- TYPOGRAPHY --- */
         .supreme-title { 
-            font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 15px;
+            font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 20px;
             background: linear-gradient(90deg, #fff, var(--primary), #fff);
             background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: text-shine 4s linear infinite;
@@ -41,13 +43,12 @@
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
         /* --- BỐ CỤC 70/30 DASHBOARD --- */
-        .main-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 20px; height: calc(100vh - 180px); max-width: 1550px; margin: 0 auto; padding: 0 20px; }
+        .main-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 20px; height: calc(100vh - 200px); max-width: 1550px; margin: 0 auto; padding: 0 20px; }
         
         .rainbow-wrap { position: relative; padding: 3px; border-radius: 30px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; height: 100%; }
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
         .copy-card { background: #080d1a; border-radius: 27px; padding: 25px; display: flex; flex-direction: column; height: 100%; }
-
         .alert-mini { background: rgba(255, 243, 205, 0.05); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 15px; padding: 10px 15px; margin-bottom: 15px; font-size: 0.75rem; color: #ffeeba; }
 
         .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -74,7 +75,7 @@
         .log-error { color: #ff4757; padding: 4px 0; }
         .log-info { color: #3b82f6; font-weight: bold; margin-bottom: 10px; display: block; font-size: 0.85rem; }
 
-        #toastNotice { position: fixed; top: 100px; right: 30px; background: var(--primary); color: #000; padding: 10px 25px; border-radius: 10px; z-index: 10000; font-weight: 900; display: none; }
+        #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 10px 25px; border-radius: 10px; z-index: 10000; font-weight: 900; display: none; }
     </style>
 </head>
 <body>
@@ -97,12 +98,12 @@
                 </ul>
                 <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
+                        <div id="avatarPlaceholder"></div>
                         <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.7rem; color:#fff;">...</span>
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
                             <div class="d-flex align-items-center gap-2">
                                 <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                <span id="userExpiryText" style="font-size:0.7rem; font-weight:800; color:#fff;"></span>
+                                <span id="userExpiryText"></span>
                             </div>
                         </div>
                     </div>
@@ -120,7 +121,7 @@
                 <div class="copy-card">
                     <div class="alert-mini">
                         <div class="mb-1"><i class="fab fa-chrome me-2"></i>Chỉ hỗ trợ trình duyệt <strong>Google Chrome</strong> hoặc <strong>Edge</strong> trên máy tính.</div>
-                        <div><i class="fas fa-microchip me-2"></i>Dữ liệu được xử lý trực tiếp bởi phần cứng máy tính của bạn.</div>
+                        <div><i class="fas fa-bolt me-2"></i>Dữ liệu xử lý cục bộ - Tốc độ cực nhanh - Chính xác 100%.</div>
                     </div>
 
                     <div class="dir-grid">
@@ -148,7 +149,7 @@
                     </div>
 
                     <div id="noticeVIP" class="mt-2 text-center" style="display:none; font-weight:700; color:#ff4757; font-size: 0.75rem;">
-                        Tài khoản chưa Active, vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:underline;">Gia hạn VIP</a>
+                        Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:underline;">Gia hạn VIP</a> để sử dụng.
                     </div>
                 </div>
             </div>
@@ -156,7 +157,7 @@
             <div class="log-panel">
                 <span style="font-size:0.7rem; color:var(--primary); font-weight:900; margin-bottom:15px; display:block; text-transform:uppercase;">Nhật ký tiến trình:</span>
                 <div id="statusLog">
-                    <div class="log-info">>> Hệ thống sẵn sàng. Vui lòng chọn thư mục và nhập danh sách.</div>
+                    <div class="log-info">>> Hệ thống sẵn sàng. Chọn thư mục và nhập danh sách.</div>
                 </div>
             </div>
         </div>
@@ -181,7 +182,7 @@
                 const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
                 isVIP = (status === 'active' && expiry > Date.now());
                 document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
                 const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
                 if (isVIP) {
                     badge.innerText = "ACTIVE"; expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
@@ -218,7 +219,6 @@
             if (!txtFiles.trim()) return;
             const fileList = txtFiles.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
             const btn = document.getElementById('btnCopy'); btn.disabled = true; btn.innerHTML = 'ĐANG XỬ LÝ...';
-            
             let success = 0;
             log(`🚀 Bắt đầu sao chép ${fileList.length} tệp...`, 'info');
             for (let i = 0; i < fileList.length; i++) {
