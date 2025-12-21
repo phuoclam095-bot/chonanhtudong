@@ -11,9 +11,8 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* FIX NHÁY HEADER BẰNG CSS */
-        #adminNavLinks, #loggedInNav { display: none !important; }
-        #loggedOutNav { display: block; }
+        /* FIX TRẠNG THÁI KHÔNG NHÁY */
+        #adminNavLinks, #loggedInNav, #loggedOutNav { display: none; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -48,6 +47,13 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
+        /* KHÔI PHỤC HIỆU ỨNG RAINBOW NHẮC ĐĂNG NHẬP */
+        .remind-text-rainbow { 
+            background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; 
+            margin: 25px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none;
+        }
+
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; }
 
@@ -62,7 +68,10 @@
         .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 480px; background: rgba(10, 20, 30, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; z-index: 10001; }
         .chat-header { background: var(--primary); padding: 15px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg-bubble { max-width: 75%; background: rgba(255,255,255,0.08); padding: 10px; border-radius: 12px; font-size: 0.8rem; color: #e2e8f0; }
+        .user-row .msg-bubble { background: var(--primary); color: #000; font-weight: 700; }
         #typingIndicator { font-size: 0.7rem; color: var(--primary); padding-left: 55px; margin-bottom: 5px; font-weight: 700; display: none; }
+        .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
 
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
@@ -95,7 +104,7 @@
                                 <div id="userStatusDisplay"></div>
                             </div>
                         </div>
-                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button>
+                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
                     </div>
                 </div>
             </div>
@@ -118,14 +127,8 @@
                 </div>
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
                 <div id="resultBox">
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i>
-                        <span id="resFolderName" style="font-weight:800; color:#fff; margin-left: 5px;"></span>
-                    </div>
-                    <div class="copy-link-flex">
-                        <a href="#" id="resClientLink" target="_blank">...</a>
-                        <button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()">COPY LINK</button>
-                    </div>
+                    <div style="text-align: center; margin-bottom: 10px;"><i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i><span id="resFolderName" style="font-weight:800; color:#fff; margin-left: 5px;"></span></div>
+                    <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank">...</a><button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()">COPY LINK</button></div>
                 </div>
                 <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
                 <div class="mt-4 text-center" style="color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
@@ -156,8 +159,8 @@
             const name = localStorage.getItem('admin_name') || 'Anh/Chị';
             isVIP = (status === 'active' && expiry > Date.now());
             
+            // Xử lý ẩn hiện tránh nháy
             if (isLoggedIn) {
-                // HIỂN THỊ NGAY LẬP TỨC KHI XÁC NHẬN
                 document.getElementById('marqueeContainer').style.display = 'none';
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedOutNav').style.display = 'none';
@@ -178,20 +181,23 @@
                     document.getElementById('btnCreate').disabled = true; notice.style.display = 'block';
                     notice.innerHTML = status === 'new' ? `Chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="payment.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
                 }
-                
-                setTimeout(() => {
-                    const bubble = document.getElementById('aiSuggestion');
-                    if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                        bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-                        bubble.style.display = 'block';
-                    }
-                }, 1500);
             } else {
                 document.getElementById('marqueeContainer').style.display = 'block';
                 document.getElementById('adminNavLinks').style.display = 'none';
                 document.getElementById('loggedOutNav').style.display = 'block';
-                document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedInNav').style.display = 'none';
+                document.getElementById('authReminder').style.display = 'block'; // Hiện Rainbow remind
+                document.getElementById('btnCreate').classList.add('d-none');
             }
+
+            // Gợi ý AI chào hỏi cả khi chưa Login
+            setTimeout(() => {
+                const bubble = document.getElementById('aiSuggestion');
+                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                    bubble.style.display = 'block';
+                }
+            }, 1500);
         }
 
         async function handleCreateAlbum() {
@@ -220,19 +226,7 @@
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
         function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('auth_status') === 'success') {
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', params.get('user_email') || '');
-                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
-                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
-                localStorage.setItem('admin_status', params.get('user_status') || 'new');
-                localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            updateUI();
-        });
+        document.addEventListener('DOMContentLoaded', updateUI);
     </script>
 </body>
 </html>
