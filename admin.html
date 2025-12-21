@@ -16,13 +16,12 @@
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
-        /* CĂN GIỮA MENU TABS KHI LOGIN */
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 5px; left: 30%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* MARQUEE NẰM TRONG NAVBAR KHI LOGOUT */
+        /* MARQUEE NAVBAR */
         .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 65%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
@@ -51,7 +50,10 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); transition: 0.3s; }
+        /* KHÔI PHỤC HIỆU ỨNG REMIND LOGIN */
+        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; }
+
+        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
         .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
 
         #resultBox { display: none; margin-top: 25px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
@@ -127,6 +129,9 @@
                     <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 </div>
+                
+                <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
+
                 <div id="resultBox">
                     <div style="text-align: center; margin-bottom: 10px;"><i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i><span id="resFolderName" style="font-weight:800; color:#fff; margin-left: 5px;"></span></div>
                     <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank">...</a><button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()">COPY LINK</button></div>
@@ -160,11 +165,12 @@
             isVIP = (status === 'active' && expiry > Date.now());
             
             if (isLoggedIn) {
-                // KHI LOGIN: ẨN MARQUEE, HIỆN TABS
+                // LOGIN STATE
                 document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
                 document.getElementById('btnCreate').classList.remove('d-none');
                 document.getElementById('userNameDisplay').innerText = name;
                 const av = localStorage.getItem('admin_avatar');
@@ -181,11 +187,12 @@
                     notice.innerHTML = status === 'new' ? `Chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="payment.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
                 }
             } else {
-                // KHI LOGOUT: HIỆN MARQUEE, ẨN TABS
+                // LOGOUT STATE
                 document.getElementById('marqueeContainer').style.setProperty('display', 'block', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'none', 'important');
                 document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
                 document.getElementById('loggedOutNav').style.setProperty('display', 'block', 'important');
+                document.getElementById('authReminder').style.setProperty('display', 'block', 'important');
                 document.getElementById('btnCreate').classList.add('d-none');
             }
 
