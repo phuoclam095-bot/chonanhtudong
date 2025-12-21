@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>STUDIO PLANNER PRO V24.8 - CHONANHNHANH.VN</title>
+    <title>FIX NAVIGATION - STUDIO MANAGER</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -14,29 +14,29 @@
         .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 12px 18px !important; transition: 0.3s; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; padding: 12px 18px !important; }
         .nav-link.active { color: var(--primary) !important; text-shadow: var(--neon); }
 
         .main-wrapper { max-width: 1400px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 420px; gap: 25px; height: calc(100vh - 130px); overflow: hidden; }
-        
         .calendar-container { background: rgba(10, 17, 36, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .btn-nav { background: rgba(0, 235, 176, 0.2); border: 2px solid var(--primary); color: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: var(--neon); }
         
-        /* CLICK SELECTOR STYLE */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        /* NỔI BẬT MŨI TÊN */
+        .btn-nav { background: rgba(0, 235, 176, 0.2); border: 2px solid var(--primary); color: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: var(--neon); cursor: pointer; }
+        .btn-nav:hover { background: var(--primary); color: #000; transform: scale(1.1); }
+        
         .month-year-display { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 15px; }
-        .month-year-display span { cursor: pointer; transition: 0.3s; border-radius: 8px; padding: 2px 8px; }
+        .month-year-display span { cursor: pointer; border-radius: 8px; padding: 2px 8px; transition: 0.3s; }
         .month-year-display span:hover { background: rgba(0, 235, 176, 0.15); color: var(--primary); }
 
         .quick-selector { position: absolute; top: 90px; left: 50%; transform: translateX(-50%); width: 90%; background: #080d1a; border: 1px solid var(--primary); border-radius: 25px; padding: 20px; display: none; z-index: 1000; box-shadow: 0 0 50px #000; }
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .selector-item { padding: 12px; text-align: center; font-weight: 800; border-radius: 12px; cursor: pointer; background: rgba(255,255,255,0.05); font-size: 0.85rem; }
+        .selector-item { padding: 12px; text-align: center; font-weight: 800; border-radius: 12px; cursor: pointer; background: rgba(255,255,255,0.05); }
         .selector-item:hover { background: var(--primary); color: #000; }
 
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 12px; font-size: 0.9rem; }
         .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; flex: 1; }
-        .day { min-height: 65px; background: rgba(255,255,255,0.03); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.1s; }
-        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
+        .day { min-height: 65px; background: rgba(255,255,255,0.03); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
         .day.today { border: 2px solid var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.1); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
         .day.other-month { opacity: 0.2; cursor: default; }
@@ -44,16 +44,14 @@
 
         .sidebar { background: rgba(10, 17, 36, 0.85); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .sidebar-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-        .s-tab { cursor: pointer; font-weight: 900; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; padding: 5px 10px; transition: 0.3s; }
+        .s-tab { cursor: pointer; font-weight: 900; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; padding: 5px 10px; }
         .s-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .event-list { overflow-y: auto; flex: 1; padding-right: 5px; }
         .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 18px; margin-bottom: 12px; border-radius: 20px; border-left: 5px solid var(--primary); position: relative; cursor: pointer; }
         .status-badge { font-size: 0.65rem; font-weight: 900; padding: 4px 10px; border-radius: 30px; text-transform: uppercase; }
         .badge-wait { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid #ffc107; }
         .badge-done { background: rgba(0, 235, 176, 0.15); color: var(--primary); border: 1px solid var(--primary); }
-        .btn-action { background: linear-gradient(45deg, #00ebb0, #00a87e); color: #000; font-weight: 900; padding: 16px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
-
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } }
+        .btn-action { background: linear-gradient(45deg, #00ebb0, #00a87e); color: #000; font-weight: 900; padding: 16px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -78,12 +76,12 @@
     <div class="main-wrapper">
         <div class="calendar-container">
             <div class="calendar-header">
-                <button class="btn btn-nav" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="btn btn-nav" id="btnPrev"><i class="fas fa-chevron-left"></i></button>
                 <div class="month-year-display">
                     <span id="monthTitle" onclick="toggleQuickSelector('month')"></span>
                     <span id="yearTitle" onclick="toggleQuickSelector('year')"></span>
                 </div>
-                <button class="btn btn-nav" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="btn btn-nav" id="btnNext"><i class="fas fa-chevron-right"></i></button>
             </div>
 
             <div id="quickSelector" class="quick-selector">
@@ -114,7 +112,7 @@
                         <input type="text" class="form-control mb-3" id="cName" placeholder="Tên khách hàng..." required style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 12px;">
                         <input type="text" class="form-control mb-3" id="cPhone" placeholder="Số điện thoại..." style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 12px;">
                         <div class="row">
-                            <div class="col-6 mb-3"><select class="form-select" id="sType" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 12px;"><option value="Wedding">💍 Gói Chụp Cưới</option><option value="Party">🎉 Gói Chụp Tiệc</option><option value="Portrait">📸 Chân Dung</option><option value="Family">👨‍👩‍👧 Gia Đình</option></select></div>
+                            <div class="col-6 mb-3"><select class="form-select" id="sType" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 12px;"><option value="Wedding">💍 Gói Chụp Cưới</option><option value="Party">🎉 Gói Chụp Tiệc</option><option value="Portrait">📸 Chân Dung</option><option value="Family">👨‍👩‍👧 Gia Đình</option><option value="Other">🌀 Gói Khác</option></select></div>
                             <div class="col-6 mb-3"><input type="time" class="form-control" id="sTime" required style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px; border-radius: 12px;"></div>
                         </div>
                         <div class="row">
@@ -141,16 +139,24 @@
             let l = 3 + diff; while(l <= 0) l += 30; return l > 30 ? l % 30 || 30 : l;
         }
 
+        // FIX TRIỆT ĐỂ LỖI ĐIỀU HƯỚNG
         function render() {
             const y = curr.getFullYear(), m = curr.getMonth();
+            if (isNaN(y) || isNaN(m)) { curr = new Date(); render(); return; } // Bảo vệ dữ liệu
+            
             document.getElementById('monthTitle').innerText = monthsArr[m];
             document.getElementById('yearTitle').innerText = y;
+            
             let firstDayRaw = new Date(y, m, 1).getDay();
             let firstDay = (firstDayRaw === 0) ? 6 : firstDayRaw - 1;
             const lastDate = new Date(y, m + 1, 0).getDate();
             const prevLastDate = new Date(y, m, 0).getDate();
+            
             let html = "";
-            for(let i = firstDay; i > 0; i--) { const d = prevLastDate - i + 1; html += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`; }
+            for(let i = firstDay; i > 0; i--) {
+                const d = prevLastDate - i + 1;
+                html += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d, m-1, y)}</span></div>`;
+            }
             for(let i = 1; i <= lastDate; i++) {
                 const isToday = i === new Date().getDate() && m === new Date().getMonth() && y === new Date().getFullYear();
                 const isSel = i === sel.getDate() && m === sel.getMonth() && y === sel.getFullYear();
@@ -158,14 +164,19 @@
                 html += `<div class="day ${isToday?'today':''} ${isSel?'selected':''}" onclick="selectDay(${i})"><span>${i}</span><span class="lunar-day">${getLunar(i, m, y)}</span>${store[key] ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}</div>`;
             }
             const remaining = 42 - (firstDay + lastDate);
-            for(let j = 1; j <= remaining; j++) { html += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`; }
-            document.getElementById('daysGrid').innerHTML = html; updateList();
+            for(let j = 1; j <= remaining; j++) {
+                html += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j, m+1, y)}</span></div>`;
+            }
+            document.getElementById('daysGrid').innerHTML = html;
+            updateList();
         }
 
-        function selectDay(d) { sel = new Date(curr.getFullYear(), curr.getMonth(), d); currentView = 'lich'; render(); }
-        function changeMonth(v) { curr.setMonth(curr.setMonth() + v); render(); }
+        // SỬA LỖI MŨI TÊN
+        document.getElementById('btnPrev').addEventListener('click', () => { curr.setMonth(curr.getMonth() - 1); render(); });
+        document.getElementById('btnNext').addEventListener('click', () => { curr.setMonth(curr.getMonth() + 1); render(); });
 
-        // QUICK SELECTOR LOGIC
+        function selectDay(d) { sel = new Date(curr.getFullYear(), curr.getMonth(), d); currentView = 'lich'; render(); }
+
         function toggleQuickSelector(type) {
             const box = document.getElementById('quickSelector');
             const grid = document.getElementById('selectorGrid');
