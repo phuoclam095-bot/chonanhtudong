@@ -11,22 +11,20 @@
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
         body { 
             background-color: var(--bg-deep); 
-            background-image: linear-gradient(rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.6)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-image: linear-gradient(rgba(5, 10, 20, 0.7), rgba(5, 10, 20, 0.7)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
             color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 80px; height: 100vh; overflow: hidden;
         }
 
-        /* --- NAVBAR --- */
         .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 70px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; }
+        .nav-link.active { color: var(--primary) !important; position: relative; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: 5px; left: 25%; width: 50%; height: 2px; background: var(--primary); box-shadow: var(--neon); }
 
-        /* --- LAYOUT --- */
         .main-wrapper { max-width: 1350px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 380px; gap: 20px; height: calc(100vh - 100px); overflow: hidden; }
 
-        /* --- CALENDAR CRYSTAL FIXED --- */
         .calendar-container { 
             background: rgba(10, 17, 36, 0.65); backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 20px; 
@@ -41,24 +39,22 @@
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 8px; font-size: 0.8rem; }
         .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
         
-        /* HIỂN THỊ LỊCH ÂM CHO CẢ NGÀY ẨN */
+        /* FIX LỊCH ÂM CHO CẢ NGÀY ẨN */
         .day { 
             aspect-ratio: 1.4/1; background: rgba(255,255,255,0.02); border-radius: 12px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
         }
-        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
-        .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.05); }
+        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); transform: translateY(-2px); }
+        .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.08); border-width: 2px; }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        .day.other-month { opacity: 0.15; } /* GIỮ NGÀY NHƯNG LÀM CHÌM */
+        .day.other-month { opacity: 0.15; cursor: default; } /* GIỮ NGÀY NHƯNG CHÌM */
         .lunar-day { font-size: 0.6rem; opacity: 0.6; font-weight: 600; margin-top: 1px; }
 
-        /* --- SIDEBAR --- */
         .sidebar { background: rgba(10, 17, 36, 0.75); border-radius: 35px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .event-list { overflow-y: auto; flex: 1; padding-right: 5px; margin-bottom: 10px; }
         .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 18px; border-left: 4px solid var(--primary); position: relative; }
 
-        /* --- FORM --- */
         .form-control, .form-select { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 10px; font-weight: 700; font-size: 0.9rem; }
         .form-control::placeholder { color: #a5f3e0 !important; }
         .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 14px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
@@ -164,7 +160,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // MÔ PHỎNG LỊCH ÂM
-        function getLunar(d, m, y) { return (d + 15) % 30 || 30; }
+        function getLunar(d) { return (d + 15) % 30 || 30; }
 
         let date = new Date();
         let currentMonth = date.getMonth();
@@ -176,8 +172,9 @@
 
         function renderCalendar() {
             // FIX CĂN CHỈNH NGÀY DỰA TRÊN THỨ 2
-            let firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            firstDay = (firstDay === 0) ? 6 : firstDay - 1; 
+            let firstDayRaw = new Date(currentYear, currentMonth, 1).getDay();
+            let firstDay = (firstDayRaw === 0) ? 6 : firstDayRaw - 1; // 0 (CN) thành 6, 1 (T2) thành 0
+            
             const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDay = new Date(currentYear, currentMonth, 0).getDate();
             
