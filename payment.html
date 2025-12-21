@@ -12,69 +12,74 @@
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 105px; overflow-x: hidden; }
         
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .load-logo { font-weight: 900; font-size: 2rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; text-align: center; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
+        /* NAVBAR MOBILE FIX */
+        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
+        .navbar-toggler { border: none !important; color: var(--primary) !important; font-size: 1.5rem; }
+        .navbar-toggler:focus { box-shadow: none; }
+        
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
         .nav-link:hover::after, .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
 
-        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
+        /* USER PILL */
+        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); min-height: 55px; }
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
         .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
 
-        .supreme-title { font-weight: 900; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 8px; text-align: center; margin-bottom: 40px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
+        .supreme-title { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 40px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1400px; margin: 0 auto 50px; padding: 0 15px; }
-        .package-card { background: #0a1124; border-radius: 30px; padding: 40px 25px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
-        .package-card:hover { transform: translateY(-15px); border-color: var(--primary); box-shadow: var(--neon); }
+        /* PACKAGES */
+        .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto 50px; padding: 0 15px; }
+        .package-card { background: #0a1124; border-radius: 30px; padding: 35px 20px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; height: 100%; display: flex; flex-direction: column; position: relative; }
         .package-card.selected { border-width: 2px; border-color: var(--primary); background: rgba(0, 235, 176, 0.08); box-shadow: 0 0 40px rgba(0, 235, 176, 0.2); }
 
-        .vip-gold-wrap { position: relative; padding: 3px; border-radius: 33px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
+        .vip-gold-wrap { position: relative; padding: 2.5px; border-radius: 33px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
         @keyframes shine-gold { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         .package-card.luxury { background: #000 !important; border: none !important; }
 
-        .pkg-name { font-weight: 900; font-size: 1.2rem; color: var(--primary); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px; }
-        .luxury .pkg-name { color: var(--gold-vip); }
-        
-        /* FIX LỆCH DÒNG UNIT */
         .pkg-price { display: flex; align-items: baseline; justify-content: center; gap: 5px; margin: 10px 0; }
-        .price-val { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; }
-        .price-unit { font-size: 0.9rem; color: #94a3b8; font-weight: 700; white-space: nowrap; }
+        .price-val { font-size: 2.5rem; font-weight: 900; color: #fff; line-height: 1; }
+        .price-unit { font-size: 0.85rem; color: #94a3b8; font-weight: 700; }
 
-        .feature-list { list-style: none; padding: 0; margin: 25px 0; text-align: left; flex-grow: 1; }
-        .feature-list li { font-size: 0.85rem; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; font-weight: 500; }
-        .feature-list i { color: var(--primary); margin-top: 4px; font-size: 1rem; flex-shrink: 0; }
+        .feature-list { list-style: none; padding: 0; margin: 20px 0; text-align: left; flex-grow: 1; }
+        .feature-list li { font-size: 0.8rem; color: #f8fafc; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+        .feature-list i { color: var(--primary); margin-top: 4px; font-size: 0.9rem; }
         .luxury .feature-list i { color: var(--gold-vip); }
-        .luxury .feature-list li { color: #fff; font-weight: 600; }
 
-        .btn-continue { background: var(--primary); color: #000; border: none; padding: 20px 100px; font-size: 1.2rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); letter-spacing: 1px; }
-        .btn-continue:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 0 50px rgba(0, 235, 176, 0.5); }
+        .btn-continue { background: var(--primary); color: #000; border: none; padding: 18px 60px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); width: 100%; max-width: 400px; }
 
-        #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; }
-        .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
-        #qrCodeImg { width: 280px; height: 280px; border-radius: 10px; }
-        .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .btn-back-selection { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); padding: 10px 30px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; margin-top: 25px; transition: 0.3s; }
-        .btn-back-selection:hover { color: var(--primary); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
+        #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 30px; text-align: center; }
+        .qr-frame { background: #fff; padding: 10px; border-radius: 15px; display: inline-block; margin-bottom: 20px; }
+        #qrCodeImg { width: 100%; max-width: 250px; height: auto; }
+        .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
 
-        #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; }
+        #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; width: 90%; text-align: center; }
+
+        @media (max-width: 991px) {
+            .navbar-collapse { background: #050a14; padding: 20px; border-radius: 20px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1); }
+            #authControl { margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="loadOverlay"><div class="load-logo">CHONANHNHANH.VN</div></div>
-    <div id="toastNotice">Đã sao chép nội dung chuyển khoản!</div>
+    <div id="toastNotice">Đã sao chép nội dung!</div>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <div class="collapse navbar-collapse">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
@@ -83,15 +88,18 @@
                     <li class="nav-item"><a href="payment.html" class="nav-link active">Gia Hạn</a></li>
                     <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                 </ul>
-                <div id="authControl" style="display: none !important;">
+                <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
-                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;"><span id="badgeStatus" class="status-tag">...</span><span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span></div>
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; color:#fff; line-height: 1;">...</span>
+                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
+                                <span id="badgeStatus" class="status-tag">...</span>
+                                <span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
                 </div>
             </div>
         </div>
@@ -99,72 +107,66 @@
 
     <div class="container py-4">
         <div id="selectionMode">
-            <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
-            
+            <h1 class="supreme-title">Nâng Cấp Studio VIP</h1>
             <div class="package-grid">
-                <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói Dùng Thử'})">
+                <div class="package-card" onclick="selectPkg(this, {months: 1, price: 90000, name: 'Gói 1 Tháng'})">
                     <div class="pkg-name">Gói Dùng Thử</div>
                     <div class="pkg-price"><span class="price-val">90.000</span><span class="price-unit"> / 1 tháng</span></div>
                     <ul class="feature-list">
                         <li><i class="fas fa-check-circle"></i>Lưu trữ album 30 ngày</li>
                         <li><i class="fas fa-download"></i>Cho phép tải ảnh gốc</li>
-                        <li><i class="fas fa-copyright"></i>Tích hợp Gắn Logo/Watermark</li>
+                        <li><i class="fas fa-copyright"></i>Gắn Logo/Watermark</li>
                         <li><i class="fas fa-headset"></i>Hỗ trợ Zalo (Giờ hành chính)</li>
                     </ul>
                 </div>
-
-                <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
+                <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói 3 Tháng'})">
                     <div class="pkg-name">Gói Cơ Bản</div>
                     <div class="pkg-price"><span class="price-val">250.000</span><span class="price-unit"> / 3 tháng</span></div>
                     <ul class="feature-list">
                         <li><i class="fas fa-check-circle"></i>Lưu trữ album 90 ngày</li>
                         <li><i class="fas fa-download"></i>Cho phép tải ảnh gốc</li>
-                        <li><i class="fas fa-copyright"></i>Gắn Logo Studio bảo mật</li>
-                        <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật ưu tiên (Zalo)</li>
+                        <li><i class="fas fa-bolt"></i>Ưu tiên xử lý Thumbnail</li>
+                        <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật ưu tiên</li>
                     </ul>
                 </div>
-
-                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Pro'})">
+                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói 6 Tháng'})">
                     <div class="pkg-name">Gói Pro</div>
                     <div class="pkg-price"><span class="price-val">450.000</span><span class="price-unit"> / 6 tháng</span></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ dài hạn 180 ngày</li>
-                        <li><i class="fas fa-user-edit"></i>Hỗ trợ Chuyển đổi tài khoản</li>
-                        <li><i class="fas fa-download"></i>Tải ảnh gốc & Gắn Logo Studio</li>
+                        <li><i class="fas fa-history"></i>Lưu trữ album 180 ngày</li>
+                        <li><i class="fas fa-user-edit"></i>Hỗ trợ Chuyển tài khoản</li>
+                        <li><i class="fas fa-rocket"></i>Tải ảnh gốc & Gắn Logo</li>
                         <li><i class="fas fa-headset"></i>Hỗ trợ đa kênh 24/7 (VIP)</li>
                     </ul>
                 </div>
-
                 <div class="vip-gold-wrap">
                     <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 750000, name: 'Gói UNLIMITED'})">
                         <div class="pkg-name">UNLIMITED VIP</div>
                         <div class="pkg-price"><span class="price-val">750.000</span><span class="price-unit"> / Năm</span></div>
                         <ul class="feature-list">
-                            <li><i class="fas fa-history"></i>Lưu trữ album trọn gói 1 năm</li>
+                            <li><i class="fas fa-history"></i>Lưu trữ trọn gói 1 năm</li>
                             <li><i class="fas fa-magic"></i>Phát triển theo yêu cầu riêng</li>
-                            <li><i class="fas fa-download"></i>Tải ảnh & Gắn Logo không giới hạn</li>
-                            <li><i class="fas fa-shield-alt"></i>Bảo mật & Riêng tư tuyệt đối</li>
+                            <li><i class="fas fa-sync"></i>Hỗ trợ Chuyển đổi tài khoản</li>
                             <li><i class="fas fa-star"></i>Support VIP 24/7 trực tiếp ADMIN</li>
                         </ul>
-                        <div style="position:absolute; top:15px; right:15px; background:var(--gold-vip); color:#000; font-size:0.65rem; font-weight:900; padding:5px 15px; border-radius:50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">⭐ TỐT NHẤT</div>
+                        <div style="position:absolute; top:10px; right:10px; background:var(--gold-vip); color:#000; font-size:0.6rem; font-weight:900; padding:3px 12px; border-radius:50px;">BEST VALUE</div>
                     </div>
                 </div>
             </div>
-
             <div class="text-center mt-5"><button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán VIP</button></div>
         </div>
 
         <div id="paymentPollingMode" style="display: none;">
-            <h3 style="color:var(--primary); font-weight:900; margin-bottom:25px; text-transform:uppercase;">Quét mã kích hoạt dịch vụ</h3>
-            <div id="qrLoading"><i class="fas fa-spinner fa-spin fa-3x text-success"></i></div>
+            <h3 style="color:var(--primary); font-weight:900; margin-bottom:20px;">QUÉT MÃ KÍCH HOẠT</h3>
+            <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-3x text-success"></i></div>
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame"><img id="qrCodeImg" src=""></div>
                 <div class="payment-info-box">
-                    <div class="mb-3">Số tiền: <strong id="displayAmount" class="text-danger fs-3"></strong></div>
-                    <div style="color:#fff">Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" style="cursor:pointer" onclick="copyCode()">COPY</span></div>
+                    <div class="mb-2">Số tiền: <strong id="displayAmount" class="text-danger fs-4"></strong></div>
+                    <div>Nội dung: <strong id="displayPaymentCode" class="text-info" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" onclick="copyCode()" style="cursor:pointer">COPY</span></div>
                 </div>
-                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt tự động sau chuyển khoản...</div>
-                <button class="btn-back-selection" onclick="backToSelection()"><i class="fas fa-arrow-left me-2"></i> TRỞ VỀ CHỌN GÓI KHÁC</button>
+                <div class="alert alert-success mt-4"><i class="fas fa-sync fa-spin me-2"></i>Đang chờ kích hoạt VIP tự động...</div>
+                <button class="btn btn-outline-secondary btn-sm mt-3" onclick="location.reload()">Hủy & Chọn Lại</button>
             </div>
         </div>
     </div>
@@ -172,7 +174,6 @@
     <script>
         let selectedPkgData = {months: 12, price: 750000, name: 'Gói UNLIMITED'};
         let userEmail = localStorage.getItem('admin_email');
-        let pollingInterval = null;
 
         function selectPkg(el, data) {
             document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
@@ -202,7 +203,7 @@
         }
 
         function startPolling(code) {
-            pollingInterval = setInterval(async () => {
+            const interval = setInterval(async () => {
                 try {
                     const res = await fetch('https://dichvufb.tino.page/webhook/google-oauth-callback', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -210,21 +211,13 @@
                     });
                     const data = await res.json();
                     if (data.status === 'active') {
-                        clearInterval(pollingInterval);
+                        clearInterval(interval);
                         localStorage.setItem('admin_status', 'active');
                         localStorage.setItem('admin_expiry', data.expiry_timestamp);
                         window.location.href = `admin.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
                     }
                 } catch (e) {}
             }, 3000);
-        }
-
-        function backToSelection() {
-            if(pollingInterval) clearInterval(pollingInterval);
-            document.getElementById('paymentPollingMode').style.display = 'none';
-            document.getElementById('selectionMode').style.display = 'block';
-            document.getElementById('qrContent').style.display = 'none';
-            document.getElementById('qrLoading').style.display = 'block';
         }
 
         function copyCode() {
@@ -256,5 +249,6 @@
         };
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
