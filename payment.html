@@ -15,27 +15,22 @@
         .load-logo { font-weight: 900; font-size: 2rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; text-align: center; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* NAVBAR MOBILE FIX */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
         .navbar-toggler { border: none !important; color: var(--primary) !important; font-size: 1.5rem; }
-        .navbar-toggler:focus { box-shadow: none; }
         
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
-        .nav-link:hover::after, .nav-link.active::after { width: 60%; box-shadow: var(--neon); }
 
-        /* USER PILL */
         .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); min-height: 55px; }
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
+        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
 
         .supreme-title { font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 40px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* PACKAGES */
         .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto 50px; padding: 0 15px; }
         .package-card { background: #0a1124; border-radius: 30px; padding: 35px 20px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; height: 100%; display: flex; flex-direction: column; position: relative; }
         .package-card.selected { border-width: 2px; border-color: var(--primary); background: rgba(0, 235, 176, 0.08); box-shadow: 0 0 40px rgba(0, 235, 176, 0.2); }
@@ -76,9 +71,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"><i class="fas fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
@@ -93,10 +86,7 @@
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; color:#fff; line-height: 1;">...</span>
-                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
-                                <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span>
-                            </div>
+                            <div class="d-flex align-items-center gap-1" style="margin-top: 2px;"><span id="badgeStatus" class="status-tag">...</span><span id="userExpiryDisplay" style="font-size:0.75rem; font-weight:800; color:#fff;"></span></div>
                         </div>
                     </div>
                     <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
@@ -157,7 +147,7 @@
         </div>
 
         <div id="paymentPollingMode" style="display: none;">
-            <h3 style="color:var(--primary); font-weight:900; margin-bottom:20px;">QUÉT MÃ KÍCH HOẠT</h3>
+            <h3 id="paymentTitle" style="color:var(--primary); font-weight:900; margin-bottom:20px;">Đang tạo mã giao dịch...</h3>
             <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-3x text-success"></i></div>
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame"><img id="qrCodeImg" src=""></div>
@@ -165,8 +155,8 @@
                     <div class="mb-2">Số tiền: <strong id="displayAmount" class="text-danger fs-4"></strong></div>
                     <div>Nội dung: <strong id="displayPaymentCode" class="text-info" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" onclick="copyCode()" style="cursor:pointer">COPY</span></div>
                 </div>
-                <div class="alert alert-success mt-4"><i class="fas fa-sync fa-spin me-2"></i>Đang chờ kích hoạt VIP tự động...</div>
-                <button class="btn btn-outline-secondary btn-sm mt-3" onclick="location.reload()">Hủy & Chọn Lại</button>
+                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt VIP tự động...</div>
+                <button class="btn btn-outline-secondary btn-sm mt-3" onclick="cancelPayment()">Hủy & Chọn Lại Gói Khác</button>
             </div>
         </div>
     </div>
@@ -174,6 +164,7 @@
     <script>
         let selectedPkgData = {months: 12, price: 750000, name: 'Gói UNLIMITED'};
         let userEmail = localStorage.getItem('admin_email');
+        let pollingInterval = null;
 
         function selectPkg(el, data) {
             document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
@@ -187,6 +178,8 @@
             const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
             document.getElementById('selectionMode').style.display = 'none';
             document.getElementById('paymentPollingMode').style.display = 'block';
+            document.getElementById('paymentTitle').innerText = "Đang tạo mã giao dịch...";
+            
             try {
                 const res = await fetch('https://dichvufb.tino.page/webhook/save-pending', {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -198,12 +191,13 @@
                 document.getElementById('displayPaymentCode').innerText = code;
                 document.getElementById('qrLoading').style.display = 'none';
                 document.getElementById('qrContent').style.display = 'block';
+                document.getElementById('paymentTitle').innerText = "QUÉT MÃ ĐỂ KÍCH HOẠT";
                 startPolling(code);
-            } catch (e) { location.reload(); }
+            } catch (e) { cancelPayment(); }
         }
 
         function startPolling(code) {
-            const interval = setInterval(async () => {
+            pollingInterval = setInterval(async () => {
                 try {
                     const res = await fetch('https://dichvufb.tino.page/webhook/google-oauth-callback', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -211,13 +205,22 @@
                     });
                     const data = await res.json();
                     if (data.status === 'active') {
-                        clearInterval(interval);
+                        clearInterval(pollingInterval);
                         localStorage.setItem('admin_status', 'active');
                         localStorage.setItem('admin_expiry', data.expiry_timestamp);
                         window.location.href = `admin.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
                     }
                 } catch (e) {}
             }, 3000);
+        }
+
+        // HÀM HỦY LÙI VỀ 1 BƯỚC
+        function cancelPayment() {
+            if(pollingInterval) clearInterval(pollingInterval);
+            document.getElementById('paymentPollingMode').style.display = 'none';
+            document.getElementById('selectionMode').style.display = 'block';
+            document.getElementById('qrContent').style.display = 'none';
+            document.getElementById('qrLoading').style.display = 'block';
         }
 
         function copyCode() {
