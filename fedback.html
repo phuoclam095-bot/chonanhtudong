@@ -12,7 +12,6 @@
         :root { 
             --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; 
             --neon: 0 0 20px rgba(0, 235, 176, 0.4);
-            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
         }
         body { 
             margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; 
@@ -22,34 +21,36 @@
             color: #fff; min-height: 100vh; display: flex; flex-direction: column; 
         }
 
-        /* Navbar VIP System */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 15px 0; }
         .back-btn { color: #94a3b8; text-decoration: none; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .back-btn:hover { color: var(--primary); transform: translateX(-5px); text-shadow: var(--neon); }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; }
 
         .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px; }
         
-        /* Feedback Card Luxury */
         .feedback-card { 
             background: rgba(10, 17, 36, 0.9); width: 100%; max-width: 750px; 
             border-radius: 30px; padding: 50px; 
             box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; 
             border: 1px solid rgba(255,255,255,0.1);
-            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { text-align: center; margin-bottom: 10px; font-weight: 900; color: #fff; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; }
         p.subtitle { text-align: center; color: #94a3b8; margin-bottom: 40px; font-weight: 600; font-size: 0.95rem; }
 
         .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 12px; font-weight: 700; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; margin-bottom: 12px; font-weight: 700; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
         
-        /* Input Luxury Focus */
+        /* --- KHẮC PHỤC CHỮ GỢI Ý BỊ CHÌM --- */
         .form-control {
-            background: rgba(0,0,0,0.4); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 18px;
-            padding: 16px; font-size: 1rem; transition: all 0.3s; color: #fff; font-weight: 500;
+            background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 18px;
+            padding: 16px; font-size: 1rem; transition: all 0.3s; color: #fff; font-weight: 600;
+        }
+        /* Làm placeholder sáng màu xanh lơ để nổi bật */
+        .form-control::placeholder {
+            color: #a5f3e0 !important;
+            opacity: 0.85;
+            font-weight: 600;
         }
         .form-control:focus {
             background: rgba(0,0,0,0.6); border-color: var(--primary);
@@ -57,7 +58,6 @@
         }
         .form-control[readonly] { background: rgba(255,255,255,0.03); color: #94a3b8; border-style: dashed; cursor: not-allowed; }
 
-        /* Nút Gửi Gold VIP */
         .btn-send {
             background: var(--gold-vip);
             color: #000; border: none; padding: 20px; font-size: 1rem;
@@ -67,22 +67,12 @@
             display: flex; align-items: center; justify-content: center; gap: 12px;
             letter-spacing: 2px;
         }
-        .btn-send:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 40px rgba(240, 195, 0, 0.4); background: #fff; }
-        .btn-send:active { transform: scale(0.98); }
-        .btn-send:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-send:hover { transform: translateY(-4px); background: #fff; }
 
-        /* Success Message Luxury */
         #successMessage {
             display: none; text-align: center; margin-top: 20px;
             background: rgba(0, 235, 176, 0.1); color: var(--primary); padding: 25px;
             border-radius: 20px; border: 1px solid var(--primary);
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        @media (max-width: 768px) {
-            .feedback-card { padding: 30px 20px; }
-            h2 { font-size: 1.6rem; }
         }
     </style>
 </head>
@@ -92,7 +82,8 @@
         <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <a href="admin.html" class="back-btn"><i class="fas fa-chevron-left"></i> Quay lại Admin</a>
             <span class="navbar-brand mb-0 h1">CHONANHNHANH.VN</span>
-            <div style="width: 100px;"></div> </div>
+            <div style="width: 100px;"></div>
+        </div>
     </nav>
 
     <div class="main-container">
@@ -104,17 +95,17 @@
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label>Tên người gửi</label>
-                        <input type="text" id="senderName" class="form-control" placeholder="Chưa đăng nhập" readonly>
+                        <input type="text" id="senderName" class="form-control" placeholder="Tên hiển thị..." readonly>
                     </div>
                     <div class="col-md-6 form-group">
                         <label>Email xác nhận</label>
-                        <input type="text" id="senderEmail" class="form-control" placeholder="Chưa có" readonly>
+                        <input type="text" id="senderEmail" class="form-control" placeholder="Email nhận phản hồi..." readonly>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Nội dung góp ý & Báo lỗi <span class="text-danger">*</span></label>
-                    <textarea id="content" class="form-control" rows="6" placeholder="Nhập chi tiết vấn đề hoặc ý tưởng của bạn tại đây..." required></textarea>
+                    <label>Nội dung góp ý <span class="text-danger">*</span></label>
+                    <textarea id="content" class="form-control" rows="6" placeholder="Nhập chi tiết vấn đề hoặc ý tưởng của bạn tại đây để hệ thống cải thiện tốt hơn..." required></textarea>
                 </div>
 
                 <button type="submit" id="btnSubmit" class="btn-send">
@@ -131,10 +122,8 @@
     </div>
 
     <script>
-        // --- WEBHOOK URL GIỮ NGUYÊN ---
         const WEBHOOK_FEEDBACK_URL = 'https://dichvufb.tino.page/webhook/feedback-form';
 
-        // Tự động điền thông tin từ hệ thống VIP
         document.addEventListener('DOMContentLoaded', () => {
             const name = localStorage.getItem('admin_name');
             const email = localStorage.getItem('admin_email');
@@ -146,39 +135,25 @@
             e.preventDefault(); 
             const btn = document.getElementById('btnSubmit');
             const content = document.getElementById('content').value.trim();
-            const name = document.getElementById('senderName').value || 'Ẩn danh';
-            const email = document.getElementById('senderEmail').value || 'Không có';
-
-            if (!content) return;
-
-            // Hiệu ứng Loading VIP
-            btn.innerHTML = '<i class="fas fa-atom fa-spin"></i> ĐANG TRUYỀN DỮ LIỆU...';
+            btn.innerHTML = '<i class="fas fa-atom fa-spin"></i> ĐANG GỬI...';
             btn.disabled = true;
 
             try {
-                // Tham số n8n giữ nguyên hoàn toàn
                 await fetch(WEBHOOK_FEEDBACK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: name,
-                        email: email,
+                        name: document.getElementById('senderName').value || 'Ẩn danh',
+                        email: document.getElementById('senderEmail').value || 'Không có',
                         message: content,
                         timestamp: new Date().toLocaleString('vi-VN')
                     })
                 });
-
                 document.getElementById('feedbackForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
-                
-                // Tiếng Ping thành công
-                const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
-                audio.volume = 0.4;
-                audio.play().catch(()=>{});
-
             } catch (error) {
-                alert("Lỗi kết nối: " + error.message);
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> THỬ LẠI NGAY';
+                alert("Lỗi: " + error.message);
+                btn.innerHTML = 'Gửi Góp Ý Ngay';
                 btn.disabled = false;
             }
         }
