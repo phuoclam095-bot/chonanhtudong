@@ -10,42 +10,64 @@
 
     <style>
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
-        body { margin: 0; padding-top: 90px; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 100%), url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        
+        /* FIX BACKGROUND HIỆN RÕ HƠN */
+        body { 
+            margin: 0; padding-top: 85px; font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-deep); 
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.7) 0%, rgba(5, 10, 20, 0.7) 100%), url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-size: cover; background-position: center; background-attachment: fixed; 
+            color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
 
-        /* --- NAVBAR COMPACT --- */
+        /* NAVBAR ĐỒNG BỘ */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 75px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 8px 12px !important; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 
-        /* --- DONATE CONTAINER COMPACT --- */
-        .donate-container { max-width: 850px; margin: 0 auto; padding: 25px 40px; background: rgba(10, 17, 36, 0.9); border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
-        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 15px; }
-        .subtitle { text-align: center; color: #cbd5e1; font-size: 0.85rem; line-height: 1.5; margin-bottom: 25px; padding: 0 20px; }
+        /* --- LARGE GLASS CONTAINER (GẦN FULL MÀN HÌNH) --- */
+        .donate-container { 
+            max-width: 1150px; width: 95%; margin: auto; padding: 35px 50px; 
+            background: rgba(10, 17, 36, 0.75); /* ĐỘ TRONG SUỐT CAO */
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
 
-        /* --- PAYMENT GRID --- */
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .payment-method { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 20px; text-align: center; transition: 0.3s; }
-        .payment-method:hover { transform: translateY(-5px); border-color: var(--primary); }
+        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #f1f5f9; font-size: 0.95rem; line-height: 1.6; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto; font-weight: 500; }
 
-        /* QR BOX OPTIMIZED */
-        .qr-box { width: 160px; height: 160px; background: #fff; margin: 12px auto; padding: 6px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        /* --- PAYMENT GRID LARGE --- */
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        .payment-method { 
+            background: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 30px; padding: 30px; text-align: center; transition: 0.4s;
+        }
+        .payment-method:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
+
+        /* QR BOX LARGE */
+        .qr-box { width: 220px; height: 220px; background: #fff; margin: 20px auto; padding: 10px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .qr-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* SIÊU SÁNG TEXT */
-        .bank-title { font-weight: 900; font-size: 1.1rem; margin-bottom: 3px; letter-spacing: 1px; }
-        .acc-name { color: #fff; font-weight: 800; font-size: 0.95rem; margin-top: 10px; display: block; text-transform: uppercase; }
-        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.15rem; margin-top: 3px; display: block; }
-        
-        /* CHỮ KÊU GỌI BỊ CHÌM ĐÃ ĐƯỢC LÀM SÁNG */
-        .call-action-text { color: #f8fafc !important; font-weight: 800; font-size: 0.85rem; margin-top: 10px; display: block; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+        /* SIÊU SÁNG TEXT THÔNG TIN */
+        .bank-title { font-weight: 900; font-size: 1.4rem; margin-bottom: 5px; letter-spacing: 1px; }
+        .acc-name { color: #fff; font-weight: 800; font-size: 1.2rem; margin-top: 15px; display: block; text-transform: uppercase; }
+        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.7rem; margin-top: 5px; display: block; text-shadow: 0 0 15px rgba(240, 195, 0, 0.4); }
+        .call-action-text { color: #00ebb0 !important; font-weight: 900; font-size: 1rem; margin-top: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
 
-        .thank-you { text-align: center; margin-top: 25px; padding: 12px; border-radius: 15px; background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary); color: var(--gold-vip); font-weight: 900; font-size: 0.85rem; }
+        .thank-you { text-align: center; margin-top: 35px; padding: 15px; border-radius: 20px; background: rgba(0, 235, 176, 0.1); border: 1.5px dashed var(--primary); color: #fff; font-weight: 900; font-size: 1rem; letter-spacing: 1px; }
 
-        @media (max-width: 768px) { 
-            .payment-grid { grid-template-columns: 1fr; }
-            .donate-container { margin: 0 10px; padding: 20px; }
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 992px) {
+            body { height: auto; overflow: visible; padding-top: 100px; padding-bottom: 40px; }
+            .donate-container { width: 92%; padding: 30px 20px; border-radius: 30px; }
+            .payment-grid { grid-template-columns: 1fr; gap: 20px; }
+            .qr-box { width: 180px; height: 180px; }
+            h1 { font-size: 1.5rem; }
+            .acc-number { font-size: 1.4rem; }
+            .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
         }
     </style>
 </head>
@@ -54,7 +76,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <div class="collapse navbar-collapse">
+            <div class="collapse navbar-collapse d-block">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
@@ -68,23 +90,23 @@
         </div>
     </nav>
     
-    <div class="container">
+    <div class="container d-flex flex-grow-1 align-items-center justify-content-center">
         <div class="donate-container">
-            <h1><i class="fas fa-hand-holding-heart me-2 text-primary"></i>ĐỒNG HÀNH PHÁT TRIỂN</h1>
+            <h1><i class="fas fa-hand-holding-heart me-3 text-primary"></i>ĐỒNG HÀNH PHÁT TRIỂN</h1>
             <p class="subtitle">CHONANHNHANH.VN vươn tới sự hoàn hảo nhờ sự tin tưởng của bạn. Mỗi đóng góp là nguồn lực quý giá để chúng tôi nâng cấp Server và mang đến những tính năng đột phá hơn cho cộng đồng nhiếp ảnh.</p>
             
             <div class="payment-grid">
                 <div class="payment-method">
-                    <div class="bank-title" style="color: #007bff;">VIETCOMBANK</div>
-                    <div class="qr-box" style="border: 1.5px solid #007bff;"><img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="VCB"></div>
+                    <div class="bank-title" style="color: #007bff;"><i class="fas fa-university me-2"></i>VIETCOMBANK</div>
+                    <div class="qr-box" style="border: 2px solid #007bff;"><img src="https://i.ibb.co/Kx4K6sMp/z7293544271819-99c57711a8ead85ace8c72bc80848a1c.jpg" alt="VCB"></div>
                     <span class="acc-name">LÂM NAM PHƯỚC</span>
-                    <span class="acc-number">1018898144</span>
+                    <span class="acc-number">9444999999</span>
                     <span class="call-action-text">CHUYỂN KHOẢN NHANH VCB</span>
                 </div>
 
                 <div class="payment-method">
-                    <div class="bank-title" style="color: #ff337e;">VÍ MOMO</div>
-                    <div class="qr-box" style="border: 1.5px solid #ff337e;"><img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Momo"></div>
+                    <div class="bank-title" style="color: #ff337e;"><i class="fas fa-wallet me-2"></i>VÍ MOMO</div>
+                    <div class="qr-box" style="border: 2px solid #ff337e;"><img src="https://i.ibb.co/DP0YpdZ3/z7293561890658-715963ac58afc6d03cf1462912d4cff3.jpg" alt="Momo"></div>
                     <span class="acc-name">LÂM NAM PHƯỚC</span>
                     <span class="acc-number">0836.4848.21</span>
                     <span class="call-action-text">ỦNG HỘ QUA VÍ MOMO</span>
@@ -92,7 +114,7 @@
             </div>
             
             <div class="thank-you">
-                <i class="fas fa-heart text-danger me-2"></i> TRÂN TRỌNG CẢM ƠN MỌI SỰ ĐÓNG GÓP TỪ BẠN!
+                <i class="fas fa-crown text-warning me-2"></i> TRÂN TRỌNG CẢM ƠN MỌI SỰ ĐÓNG GÓP TỪ BẠN!
             </div>
         </div>
     </div>
