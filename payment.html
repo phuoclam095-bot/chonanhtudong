@@ -52,13 +52,10 @@
         .btn-continue { background: var(--primary); color: #000; border: none; padding: 20px 100px; font-size: 1.2rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); letter-spacing: 1px; }
         .btn-continue:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 235, 176, 0.5); }
 
-        /* PAYMENT MODE FIX */
         #paymentPollingMode { max-width: 600px; margin: 0 auto; background: rgba(10, 20, 40, 0.95); border-radius: 35px; border: 2.5px solid var(--primary); padding: 40px; text-align: center; }
         .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
         #qrCodeImg { width: 280px; height: 280px; border-radius: 10px; }
         .payment-info-box { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-
-        /* NÚT BACK CẦN THIẾT */
         .btn-back-selection { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); padding: 10px 30px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; margin-top: 25px; transition: 0.3s; }
         .btn-back-selection:hover { color: var(--primary); border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
@@ -104,27 +101,30 @@
                     <div class="pkg-name">Gói Dùng Thử</div>
                     <div class="pkg-price">90.000<small> / 1 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Hỗ trợ lọc ảnh AI siêu tốc</li>
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ album 30 ngày</li>
-                        <li><i class="fas fa-check-circle"></i>Hỗ trợ kỹ thuật qua Zalo</li>
+                        <li><i class="fas fa-history"></i>Lưu trữ album 30 ngày</li>
+                        <li><i class="fas fa-check-circle"></i>Hỗ trợ lọc ảnh Nhanh chóng</li>
+                        <li><i class="fas fa-check-circle"></i>Độ chính xác tuyệt đối 100%</li>
+                        <li><i class="fas fa-headset"></i>Hỗ trợ Zalo (Giờ hành chính)</li>
                     </ul>
                 </div>
                 <div class="package-card" onclick="selectPkg(this, {months: 3, price: 250000, name: 'Gói Cơ Bản'})">
                     <div class="pkg-name">Gói Cơ Bản</div>
                     <div class="pkg-price">250.000<small> / 3 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-bolt"></i>Tăng 200% tốc độ Thumbnail</li>
-                        <li><i class="fas fa-check-circle"></i>Lưu trữ ổn định trong 90 ngày</li>
-                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Watermark cơ bản</li>
+                        <li><i class="fas fa-history"></i>Lưu trữ album 90 ngày</li>
+                        <li><i class="fas fa-bolt"></i>Ưu tiên xử lý Thumbnail nhanh</li>
+                        <li><i class="fas fa-check-circle"></i>Gắn Watermark bảo mật Studio</li>
+                        <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật ưu tiên (Zalo)</li>
                     </ul>
                 </div>
                 <div class="package-card" onclick="selectPkg(this, {months: 6, price: 450000, name: 'Gói Pro'})">
                     <div class="pkg-name">Gói Pro</div>
                     <div class="pkg-price">450.000<small> / 6 tháng</small></div>
                     <ul class="feature-list">
-                        <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh tức thì (No Lag)</li>
-                        <li><i class="fas fa-check-circle"></i>Tích hợp Gắn Logo Studio riêng</li>
-                        <li><i class="fas fa-star"></i>Ưu tiên xử lý Ticket cực nhanh</li>
+                        <li><i class="fas fa-history"></i>Lưu trữ album 180 ngày</li>
+                        <li><i class="fas fa-user-edit"></i>Hỗ trợ Chuyển đổi tài khoản</li>
+                        <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh siêu tốc</li>
+                        <li><i class="fas fa-headset"></i>Hỗ trợ đa kênh 24/7 (VIP)</li>
                     </ul>
                 </div>
                 <div class="vip-gold-wrap">
@@ -132,9 +132,11 @@
                         <div class="pkg-name">UNLIMITED VIP</div>
                         <div class="pkg-price">750.000<small> / Năm</small></div>
                         <ul class="feature-list">
-                            <li><i class="fas fa-crown"></i>Giải phóng hoàn toàn sức lao động</li>
-                            <li><i class="fas fa-check-circle"></i>Hệ thống AI lọc ảnh tự động 100%</li>
-                            <li><i class="fas fa-headset"></i>Support VIP 24/7 trực tiếp ADMIN</li>
+                            <li><i class="fas fa-history"></i>Lưu trữ album trọn gói 1 năm</li>
+                            <li><i class="fas fa-magic"></i>Phát triển theo yêu cầu khách hàng</li>
+                            <li><i class="fas fa-sync"></i>Hỗ trợ Chuyển đổi tài khoản</li>
+                            <li><i class="fas fa-shield-alt"></i>Bảo mật & Riêng tư tuyệt đối</li>
+                            <li><i class="fas fa-star"></i>Support VIP 24/7 trực tiếp ADMIN</li>
                         </ul>
                         <div style="position:absolute; top:15px; right:15px; background:var(--gold-vip); color:#000; font-size:0.65rem; font-weight:900; padding:5px 15px; border-radius:50px;">⭐ TỐT NHẤT</div>
                     </div>
@@ -166,7 +168,7 @@
         function selectPkg(el, data) {
             document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
             const card = el.classList.contains('package-card') ? el : el.querySelector('.package-card');
-            card.classList.add('selected');
+            if(card) card.classList.add('selected');
             selectedPkgData = data;
             document.getElementById('btnContinue').innerText = `Thanh Toán ${data.price.toLocaleString('vi-VN')} VNĐ`;
         }
@@ -208,7 +210,6 @@
             }, 3000);
         }
 
-        // HÀM QUAY LẠI CHỌN GÓI
         function backToSelection() {
             if(pollingInterval) clearInterval(pollingInterval);
             document.getElementById('paymentPollingMode').style.display = 'none';
@@ -232,6 +233,7 @@
                 badge.innerText = isVIP ? "ACTIVE" : (status === 'new' ? "MỚI" : "EXPIRED");
                 badge.style.background = isVIP ? "var(--primary)" : "#ff4757";
                 badge.style.color = isVIP ? "#000" : "#fff";
+                badge.className = "status-tag";
                 expText.innerText = expiry > 0 ? " (" + new Date(expiry).toLocaleDateString('vi-VN') + ")" : "";
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { window.location.href = 'admin.html'; }
