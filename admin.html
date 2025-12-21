@@ -11,19 +11,21 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* NAVBAR FIX */
+        /* FIX NHÁY HEADER BẰNG CSS */
+        #adminNavLinks, #loggedInNav { display: none !important; }
+        #loggedOutNav { display: block; }
+
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
         .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 75%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 35s linear infinite; }
 
-        #adminNavLinks { list-style: none; margin: 0; padding: 0; display: none; gap: 8px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
-        #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
         .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; text-align: center; display: block; margin-top: 2px; }
         .tag-active { background: var(--primary); color: #000; }
@@ -47,7 +49,7 @@
         input:checked + .slider:before { transform: translateX(24px); }
 
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
+        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; }
 
         #resultBox { display: none; margin-top: 25px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
         .copy-link-flex { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.1); width: 100%; overflow: hidden; }
@@ -85,7 +87,7 @@
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
                     <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()" style="cursor:pointer; background:var(--rainbow); padding:2px; border-radius:50px;"><span style="background:#fff; color:#000; font-weight:900; padding:8px 25px; border-radius:50px; display:block; font-size:0.85rem;">LOGIN VIP</span></div></div>
-                    <div id="loggedInNav" style="display: none !important;" class="align-items-center gap-2">
+                    <div id="loggedInNav" class="align-items-center gap-2">
                         <div class="user-pill">
                             <div id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column overflow-hidden">
@@ -93,7 +95,7 @@
                                 <div id="userStatusDisplay"></div>
                             </div>
                         </div>
-                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button>
                     </div>
                 </div>
             </div>
@@ -155,6 +157,7 @@
             isVIP = (status === 'active' && expiry > Date.now());
             
             if (isLoggedIn) {
+                // HIỂN THỊ NGAY LẬP TỨC KHI XÁC NHẬN
                 document.getElementById('marqueeContainer').style.display = 'none';
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedOutNav').style.display = 'none';
@@ -176,7 +179,6 @@
                     notice.innerHTML = status === 'new' ? `Chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="payment.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
                 }
                 
-                // Khôi phục gợi ý AI
                 setTimeout(() => {
                     const bubble = document.getElementById('aiSuggestion');
                     if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
@@ -184,6 +186,11 @@
                         bubble.style.display = 'block';
                     }
                 }, 1500);
+            } else {
+                document.getElementById('marqueeContainer').style.display = 'block';
+                document.getElementById('adminNavLinks').style.display = 'none';
+                document.getElementById('loggedOutNav').style.display = 'block';
+                document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
             }
         }
 
@@ -213,7 +220,7 @@
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
         function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
 
-        window.onload = () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('auth_status') === 'success') {
                 localStorage.setItem('admin_is_logged_in', 'true');
@@ -225,7 +232,7 @@
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
             updateUI();
-        };
+        });
     </script>
 </body>
 </html>
