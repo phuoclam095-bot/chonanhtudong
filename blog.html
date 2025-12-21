@@ -19,7 +19,7 @@
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* --- FIX MARQUEE POSITION & OVERLAP --- */
+        /* --- MARQUEE POSITION & OVERLAP FIX --- */
         .marquee-wrapper { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 65%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 6px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 10; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -28,6 +28,7 @@
         .hero-section { text-align: center; padding: 40px 20px 60px; position: relative; }
         .hero-title { font-weight: 900; font-size: 3rem; text-transform: uppercase; letter-spacing: 10px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        /* BRANDING FIX */
         .hero-subtitle { color: #94a3b8; font-weight: 700; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 
         /* --- BLOG CARDS --- */
@@ -68,7 +69,7 @@
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             <div class="collapse navbar-collapse">
-                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - Chonanhnhanh.vn vươn tới sự hoàn hảo!</span></div>
+                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">🎉 Hãy chia sẻ những bức ảnh và cảm nhận tuyệt vời của bạn để nhận ƯU ĐÃI đặc biệt! - CHONANHNHANH.VN vươn tới sự hoàn hảo!</span></div>
 
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
@@ -86,7 +87,7 @@
     <div class="hero-section">
         <div class="container">
             <h1 class="hero-title">Blog & Cộng Đồng</h1>
-            <p class="hero-subtitle">Nơi lưu giữ những khoảnh khắc và câu chuyện đẹp nhất Studio LNP</p>
+            <p class="hero-subtitle">Nơi lưu giữ những khoảnh khắc và câu chuyện đẹp nhất tại CHONANHNHANH.VN</p>
             <div class="mt-4">
                 <button class="btn-write-post" data-bs-toggle="modal" data-bs-target="#writePostModal">
                     <span><i class="fas fa-pen-fancy me-2"></i>Đăng Bài Chia Sẻ</span>
@@ -116,7 +117,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2025 STUDIO LÂM NAM PHƯỚC. TRUY CẬP ĐẲNG CẤP - CHẤT LƯỢNG 100%</div>
+    <div class="footer">© 2025 CHONANHNHANH.VN. TRUY CẬP ĐẲNG CẤP - CHẤT LƯỢNG 100%</div>
 
     <div class="modal fade" id="writePostModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -160,10 +161,10 @@
 
         const baseDemoBlogs = [
             { id: "DEMO1", title: "Top 5 địa điểm chụp ảnh cưới đẹp", date: "12/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=60", content: "Đà Lạt mộng mơ luôn là điểm đến lý tưởng cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc..." },
-            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "Studio LNP", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?auto=format&fit=crop&w=500&q=60", content: "Làm sao để cả nhà cùng cười tươi và có những khung hình tự nhiên nhất? Hãy cùng tham khảo..." },
+            { id: "DEMO2", title: "Hướng dẫn tạo dáng chụp ảnh gia đình", date: "10/12/2025", author: "CHONANHNHANH.VN", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?auto=format&fit=crop&w=500&q=60", content: "Làm sao để cả nhà cùng cười tươi và có những khung hình tự nhiên nhất? Hãy cùng tham khảo..." },
             { id: "DEMO3", title: "Khám phá phong cách ảnh cưới tối giản", date: "08/12/2025", author: "Phạm A", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?auto=format&fit=crop&w=500&q=60", content: "Vẻ đẹp nằm ở sự đơn giản và cảm xúc tự nhiên, không cần quá nhiều bối cảnh cầu kỳ..." },
             { id: "DEMO4", title: "Bí quyết chọn trang phục chụp ngoại cảnh", date: "05/12/2025", author: "Khách hàng", image: "https://images.unsplash.com/photo-1522881373549-d7b1a6c4293f?auto=format&fit=crop&w=500&q=60", content: "Màu sắc và chất liệu đóng vai trò quan trọng trong việc làm nổi bật chủ thể giữa thiên nhiên..." },
-            { id: "DEMO5", title: "Review dịch vụ trọn gói tại Studio LNP", date: "01/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=500&q=60", content: "Chúng tôi mang đến trải nghiệm tuyệt vời từ khâu tư vấn đến khi nhận bộ ảnh thành phẩm hoàn hảo..." },
+            { id: "DEMO5", title: "Review dịch vụ trọn gói tại CHONANHNHANH.VN", date: "01/12/2025", author: "Admin", image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=500&q=60", content: "Chúng tôi mang đến trải nghiệm tuyệt vời từ khâu tư vấn đến khi nhận bộ ảnh thành phẩm hoàn hảo..." },
         ];
         
         const demoReviews = [
@@ -255,6 +256,7 @@
             const imageBase64 = document.getElementById('postImageBase64').value;
             if (!imageBase64) return alert("Vui lòng chọn ảnh bìa!");
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG GỬI...'; btn.disabled = true;
+
             try {
                 const response = await fetch(N8N_SUBMIT_BLOG, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
