@@ -2,240 +2,219 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Chi tiết Bài viết</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="pageTitle">Chi tiết Bài viết - CHONANHNHANH.VN</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --primary-green: #10B981; /* Xanh lá cây hiện đại */
-            --dark-green: #047857; 
-            --bg-color: #F9FAFB; /* Nền xám nhạt (base color) */
-            --text-color: #111827; /* Màu chữ chính tối */
-            --light-text: #6B7280; /* Màu chữ phụ */
-            --accent-color: #3B82F6; /* Màu nhấn phụ xanh dương */
-            --card-bg: #FFFFFF; /* Nền chính (thẻ bài viết) */
-            --border-color: #E5E7EB; /* Màu đường viền & chấm bi */
+            --primary: #00ebb0; 
+            --gold-vip: #f0c300; 
+            --bg-deep: #050a14; 
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --card-glass: rgba(10, 17, 36, 0.9);
+            --border-glass: rgba(255, 255, 255, 0.1);
         }
 
-        /* 🔥 KHẮC PHỤC 3: Thêm nền chấm bi */
         body { 
             margin: 0; 
-            padding-top: 80px; 
-            font-family: 'Nunito', sans-serif; 
-            
-            /* Nền chấm bi subtle */
-            background-color: var(--bg-color); 
-            background-image: radial-gradient(var(--border-color) 1px, transparent 0);
-            background-size: 20px 20px;
-            
-            color: var(--text-color); 
+            padding-top: 110px; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-deep); 
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff; 
             min-height: 100vh; 
         }
 
-        /* Navbar (Giữ nền xanh lá) */
+        /* Navbar đồng bộ Blog */
         .navbar { 
-            background: var(--primary-green);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background: rgba(5, 10, 20, 0.95); 
+            backdrop-filter: blur(30px); 
+            border-bottom: 1px solid rgba(255,255,255,0.08); 
+            min-height: 85px; 
         }
-        .navbar-brand { 
-            font-weight: 900; 
-            font-size: 1.6rem; 
-            color: white !important; 
-        }
+        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.3rem; }
         .nav-link-custom { 
-            color: white !important; 
+            color: #94a3b8 !important; 
             font-weight: 700; 
+            font-size: 0.8rem;
+            text-transform: uppercase;
             transition: 0.3s; 
             padding: 0.5rem 1rem;
             text-decoration: none;
         }
-        .nav-link-custom:hover { 
-            color: var(--accent-color) !important;
-            transform: translateY(-1px);
-        }
+        .nav-link-custom:hover { color: var(--primary) !important; text-shadow: var(--neon); }
         
-        /* Main Content - Card Design */
+        /* Main Content - Card Design Luxury */
         .main-content { 
-            background: var(--card-bg); /* Nền thẻ là trắng để nổi bật trên nền chấm bi */
-            padding: 50px 70px;
-            border-radius: 12px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
+            background: var(--card-glass);
+            padding: 50px;
+            border-radius: 30px; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glass);
         }
         .post-title { 
             font-weight: 900; 
-            color: var(--dark-green); 
-            margin-bottom: 15px; 
-            font-size: 3rem;
+            color: #fff; 
+            margin-bottom: 20px; 
+            font-size: 2.8rem;
             line-height: 1.2;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .post-meta { 
-            color: var(--light-text); 
-            font-size: 1rem; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px; 
+            color: #94a3b8; 
+            font-size: 0.95rem; 
+            padding-bottom: 25px; 
+            margin-bottom: 35px; 
             display: flex;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-glass);
+            font-weight: 600;
         }
         .post-image { 
-            max-height: 450px;
+            max-height: 550px;
             width: 100%;
             object-fit: cover; 
-            border-radius: 8px; 
-            margin-bottom: 25px; 
-            margin-top: 25px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            border-radius: 25px; 
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-glass);
         }
         
         /* Author UI */
         #postAuthorContainer {
-            background: #F3F4F6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--primary-green);
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-left: 5px solid var(--primary);
         }
         #postAuthorAvatar {
-            width: 40px;
-            height: 40px;
-            line-height: 40px; 
+            width: 45px;
+            height: 45px;
+            line-height: 45px; 
             text-align: center;
-            background: var(--dark-green);
-            color: white; 
+            background: var(--primary);
+            color: #000; 
             border-radius: 50%;
-            font-weight: 800;
-            font-size: 1rem;
-            flex-shrink: 0;
+            font-weight: 900;
             margin-right: 15px;
-        }
-        #postAuthorContainer .fw-bold.text-dark {
-            color: var(--text-color) !important; 
+            box-shadow: var(--neon);
         }
         
-        /* Content Wrapper & Read More */
-        #postContentWrapper {
-            border: none;
-            padding: 0; 
-            background: transparent;
-            margin-bottom: 20px;
-            transition: max-height 0.5s ease-in-out;
-            overflow: hidden; 
-            position: relative;
-        }
-        
-        /* 🔥 KHẮC PHỤC 1 & 2: Giảm cỡ chữ, Canh đều hai lề, Tự động xuống dòng */
+        /* Content Content */
         .post-content { 
             line-height: 1.9; 
-            font-size: 1.1rem; /* Đã giảm từ 1.2rem xuống 1.1rem */
-            color: var(--text-color); 
-            margin: 0; 
-            white-space: pre-wrap; /* Giữ nguyên để tự động xuống dòng và giữ cấu trúc đoạn */
-            text-align: justify; /* Canh đều hai lề */
+            font-size: 1.1rem; 
+            color: #e2e8f0; 
+            white-space: pre-wrap; 
+            text-align: justify; 
         }
-        .post-content p {
-            margin-bottom: 1.8em; 
-            margin-top: 0;
-        }
+        .post-content p { margin-bottom: 1.8em; }
 
         #readMoreBtn {
-            background: none;
-            border: none;
-            color: var(--accent-color); 
-            font-weight: 700;
-            padding: 0;
+            background: rgba(0, 235, 176, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary); 
+            font-weight: 800;
+            padding: 10px 25px;
+            border-radius: 50px;
             cursor: pointer;
-            display: block;
-            margin: 10px 0 0 0; 
-            font-size: 1rem;
-            transition: color 0.3s;
+            margin-top: 15px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
         }
+        #readMoreBtn:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
         
         /* Comment UI */
-        #commentSection { 
-            border-top: 1px solid var(--border-color) !important; 
-            padding-top: 40px !important; 
+        #commentSectionContainer {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-glass);
+        }
+        .comment-header-title {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+        .user-avatar-comment { 
+            width: 45px; height: 45px;
+            background: var(--primary); 
+            color: #000; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; flex-shrink: 0; 
+        }
+        .comment-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-glass);
         }
         
-        /* Avatar Người bình luận */
-        .user-avatar-comment { 
-            width: 40px; 
-            height: 40px; 
-            line-height: 40px; 
-            text-align: center;
-            background: var(--primary-green); 
-            color: white; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 700; 
-            flex-shrink: 0; 
-            font-size: 1rem;
+        /* Reply UI */
+        .comment-item .comment-item {
+            border-left: 2px solid var(--gold-vip);
+            padding-left: 20px;
+            margin-left: 45px;
         }
-        #commentsList .text-primary {
-            color: var(--dark-green) !important; 
-        }
-
-        /* Avatar cho Reply */
         .comment-item .comment-item .user-avatar-comment {
-            background: var(--accent-color) !important;
-            color: white !important; 
-            width: 30px !important; 
-            height: 30px !important;
-            line-height: 30px !important;
-            font-size: 0.75rem !important;
+            background: var(--gold-vip) !important;
+            width: 35px !important; height: 35px !important;
         }
 
         #commentFormContainer { 
-            border: 1px solid var(--border-color); 
-            border-radius: 10px; 
-            padding: 20px; 
-            margin-top: 30px; 
-            background: #FDFDFD; 
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-glass); 
+            border-radius: 20px; 
+            padding: 25px; 
+            margin-top: 40px; 
         }
-        #btnSubmitComment {
-            background-color: var(--primary-green) !important; 
-            border-color: var(--primary-green) !important;
+        .form-control {
+            background: rgba(0,0,0,0.5) !important;
+            border: 1px solid var(--border-glass) !important;
+            color: #fff !important;
+            border-radius: 15px;
+            padding: 15px;
         }
-        .comment-item {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .comment-item:last-child {
-            border-bottom: none;
-        }
+        .form-control:focus { border-color: var(--primary) !important; box-shadow: var(--neon) !important; }
+        .form-control::placeholder { color: #4b5563; }
 
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .main-content { padding: 30px; }
-            .post-title { font-size: 2.5rem; }
+        #btnSubmitComment {
+            background: var(--primary) !important;
+            border: none !important;
+            color: #000 !important;
+            font-weight: 900;
+            padding: 12px 35px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            transition: 0.3s;
         }
+        #btnSubmitComment:hover { transform: scale(1.05); box-shadow: var(--neon); }
+
         @media (max-width: 768px) {
-            .main-content {
-                padding: 20px;
-            }
-            .post-title {
-                font-size: 1.8rem;
-            }
-            /* Cỡ chữ nhỏ hơn trên thiết bị di động */
-            .post-content {
-                font-size: 1rem; 
-            }
+            .main-content { padding: 25px; }
+            .post-title { font-size: 1.8rem; }
+            .post-content { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="blog.html"><i class="fas fa-camera-retro me-2"></i>Studio LNP Blog</a>
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand" href="blog.html">CHONANHNHANH.VN</a>
             
-            <div class="d-flex align-items-center">
-                <a class="nav-link-custom" href="admin.html">
+            <div class="ms-auto d-flex align-items-center">
+                <a class="nav-link-custom me-2" href="admin.html">
                     <i class="fas fa-home me-1"></i> Trang chủ
                 </a>
                 <a class="nav-link-custom" href="blog.html">
@@ -247,10 +226,11 @@
 
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-9">
+            <div class="col-lg-10">
                 <div id="postContainer" class="main-content">
-                    <div class="text-center text-muted py-5" id="loadingMessage">
-                        <i class="fas fa-spinner fa-spin fa-2x text-primary-green"></i> Đang tải bài viết...
+                    <div class="text-center py-5" id="loadingMessage">
+                        <i class="fas fa-atom fa-spin fa-3x text-primary mb-3"></i>
+                        <p class="fw-bold text-primary">ĐANG TẢI NỘI DUNG VIP...</p>
                     </div>
                 </div>
             </div>
@@ -259,17 +239,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ⚠️ CẤU HÌNH WEBHOOK (Giữ nguyên)
+        // --- CẤU HÌNH WEBHOOK GIỮ NGUYÊN 100% ---
         const N8N_GET_POST_DETAIL = 'https://dichvufb.tino.page/webhook/get-post-detail';
         const N8N_GET_COMMENTS = 'https://dichvufb.tino.page/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://dichvufb.tino.page/webhook/submit-comment'; 
         
-        // Cấu hình Cache
         const POST_CACHE_PREFIX = 'post_detail_';
         const CACHE_EXPIRY = 3600000; 
-        const MAX_CONTENT_HEIGHT = 400; /* Chiều cao cắt (giữ nguyên 400px) */
+        const MAX_CONTENT_HEIGHT = 400; 
         
-        // --- LOGIC TIỆN ÍCH --- 
         function getLoggedInUser() {
             return {
                 name: localStorage.getItem('admin_name'),
@@ -280,34 +258,27 @@
         
         function extractDriveFileId(urlOrId) {
             if (urlOrId && urlOrId.includes('id=')) {
-                const parts = urlOrId.split('id=');
-                return parts[1].split('&')[0];
+                return urlOrId.split('id=')[1].split('&')[0];
             }
             return urlOrId; 
         }
         
-        // --- KHẮC PHỤC LỖI "XEM THÊM" ---
         function toggleReadMore() {
             const contentWrapper = document.getElementById('postContentWrapper');
             const readMoreBtn = document.getElementById('readMoreBtn');
             const contentDiv = document.getElementById('postContentActual');
-            
-            // Lấy chiều cao cuộn thực tế của nội dung.
             const actualHeight = contentDiv.scrollHeight; 
             
             if (contentWrapper.classList.contains('collapsed')) {
                 contentWrapper.classList.remove('collapsed');
-                // Đảm bảo max-height lớn hơn chiều cao thực tế 
-                contentWrapper.style.maxHeight = (actualHeight + 40) + 'px'; 
-                readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up"></i>';
+                contentWrapper.style.maxHeight = (actualHeight + 50) + 'px'; 
+                readMoreBtn.innerHTML = 'Thu gọn <i class="fas fa-chevron-up ms-2"></i>';
             } else {
                 contentWrapper.classList.add('collapsed');
                 contentWrapper.style.maxHeight = MAX_CONTENT_HEIGHT + 'px'; 
-                readMoreBtn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down"></i>';
+                readMoreBtn.innerHTML = 'Xem thêm <i class="fas fa-chevron-down ms-2"></i>';
             }
         }
-
-        // --- HÀM XỬ LÝ CHÍNH (loadPostDetail & renderPost) ---
 
         async function loadPostDetail(forceReload = false) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -321,134 +292,93 @@
             }
 
             const cachedData = JSON.parse(localStorage.getItem(cacheKey));
-            
             if (!forceReload && cachedData && (Date.now() - cachedData.timestamp < CACHE_EXPIRY)) {
                 document.getElementById('pageTitle').innerText = cachedData.blog.title;
                 renderPost(cachedData.blog);
                 loadComments(postId); 
+                return;
             } 
-            
-            if (!cachedData || forceReload) {
-                postContainer.innerHTML = `<div class="main-content"><div class="text-center text-muted py-5" id="loadingMessage"><i class="fas fa-spinner fa-spin fa-2x text-success"></i> Đang tải bài viết...</div></div>`;
-            }
 
             try {
                 const response = await fetch(`${N8N_GET_POST_DETAIL}?id=${postId}`);
-                if (!response.ok) throw new Error("Lỗi tải dữ liệu");
-                
                 const rawData = await response.json();
                 let results = Array.isArray(rawData) ? rawData : (rawData.data || []);
-                const blog = results[0] || null;
+                const blog = results[0];
                 
-                if (!blog) {
-                    if (!cachedData) postContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy bài viết hoặc ID không hợp lệ.</div>';
-                    return;
-                }
-                
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    blog: blog,
-                    timestamp: Date.now()
-                }));
-
-                if (!cachedData || forceReload) {
+                if (blog) {
+                    localStorage.setItem(cacheKey, JSON.stringify({ blog: blog, timestamp: Date.now() }));
                     document.getElementById('pageTitle').innerText = blog.title;
                     renderPost(blog);
                     loadComments(postId);
                 }
-
             } catch (error) {
-                console.error("Lỗi tải bài viết từ Server:", error);
-                if (!cachedData) {
-                    postContainer.innerHTML = `<div class="alert alert-danger">Lỗi tải bài viết: ${error.message}</div>`;
-                }
+                console.error("Lỗi:", error);
             }
         }
         
-        // HÀM RENDERPOST: Sắp xếp theo thứ tự Tiêu đề, Nội dung, Hình ảnh, Tác giả
         function renderPost(blog) {
             const driveFileId = extractDriveFileId(blog.image);
             const user = getLoggedInUser();
-            
-            const imageUrl = driveFileId 
-                ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800`
-                : 'https://via.placeholder.com/1000x450';
-
-            // Thay thế \n bằng thẻ <p>
+            const imageUrl = driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800` : 'https://via.placeholder.com/1000x450';
             const fullContent = blog.content ? blog.content.replace(/\n/g, '</p><p>') : ''; 
             const wrappedContent = `<p>${fullContent}</p>`; 
-            let readMoreButtonHtml = '';
+            const requiresCollapse = blog.content && (blog.content.length > 600 || blog.content.split('\n').length > 10); 
             
-            const requiresCollapse = blog.content && (blog.content.length > 500 || blog.content.split('\n').length > 8); 
-            
-            if (requiresCollapse) {
-                readMoreButtonHtml = `<button id="readMoreBtn" onclick="toggleReadMore()">Xem thêm <i class="fas fa-chevron-down"></i></button>`;
-            }
-
             const authorName = blog.author || user.name || 'Người ẩn danh';
             const authorAvatarLetter = authorName.charAt(0).toUpperCase();
 
             const contentHtml = `
                 <h1 class="post-title">${blog.title}</h1>
                 <div class="post-meta">
-                    <i class="far fa-calendar-alt me-2"></i> ${blog.date} 
+                    <i class="far fa-calendar-alt me-2 text-primary"></i> ${blog.date} 
                 </div>
 
-                <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none;'}">
+                <div id="postContentWrapper" class="${requiresCollapse ? 'collapsed' : ''}" style="${requiresCollapse ? `max-height: ${MAX_CONTENT_HEIGHT}px;` : 'max-height: none; transition: 0.5s; overflow:hidden;'}">
                     <div class="post-content" id="postContentActual">
                         ${wrappedContent}
                     </div>
                 </div>
-                ${readMoreButtonHtml}
-                <hr style="margin-top: 30px; border-top: 1px solid var(--border-color);">
-
-                <img src="${imageUrl}" alt="${blog.title}" class="w-100 post-image" onerror="this.src='https://via.placeholder.com/1000x450'">
+                ${requiresCollapse ? `<button id="readMoreBtn" onclick="toggleReadMore()">Xem thêm <i class="fas fa-chevron-down ms-1"></i></button>` : ''}
+                
+                <img src="${imageUrl}" alt="${blog.title}" class="post-image" onerror="this.src='https://via.placeholder.com/1000x450'">
 
                 <div id="postAuthorContainer" class="d-flex align-items-center">
                     <div id="postAuthorAvatar">${authorAvatarLetter}</div>
                     <div>
-                        <span class="fw-bold text-dark">${authorName}</span>
-                        <p class="text-muted small m-0">Người đăng bài viết</p>
+                        <span class="fw-bold" style="color:var(--primary)">${authorName}</span>
+                        <p class="text-muted small m-0">Biên tập viên CHONANHNHANH.VN</p>
                     </div>
                 </div>
-                
                 <div id="commentSectionContainer"></div>
             `;
-            if (document.getElementById('postContainer')) {
-                document.getElementById('postContainer').innerHTML = contentHtml;
-                renderCommentSection(blog.id); 
-            }
+            document.getElementById('postContainer').innerHTML = contentHtml;
+            renderCommentSection(blog.id); 
         }
-
-        // --- CÁC HÀM LIÊN QUAN ĐẾN BÌNH LUẬN ---
 
         function renderCommentSection(postId) {
             const user = getLoggedInUser();
             const commentSection = document.getElementById('commentSectionContainer');
-            
             const isDisabled = !user.isLoggedIn;
             const userStatusHtml = user.isLoggedIn 
-                ? `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`
-                : `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
+                ? `<i class="fas fa-user-check me-2 text-primary"></i>Đang bình luận: <span class="text-primary fw-bold">${user.name}</span>`
+                : `<i class="fas fa-lock me-2 text-warning"></i>Vui lòng đăng nhập Admin để gửi bình luận.`;
 
             commentSection.innerHTML = `
-                <div id="commentSection" class="mt-5 pt-3 border-top">
-                    <h4 class="fw-bold mb-4 text-dark-green"><i class="fas fa-comments me-2"></i>Bình Luận</h4>
-                    
+                <div id="commentSection">
+                    <h4 class="comment-header-title"><i class="fas fa-comments me-2"></i>Cộng đồng thảo luận</h4>
                     <div id="commentsList" class="mb-4"></div>
-
                     <div id="commentFormContainer">
-                        <h6 class="fw-bold text-success mb-3" id="commentAsUser">${userStatusHtml}</h6>
+                        <h6 class="fw-bold mb-3" id="commentAsUser" style="color:#94a3b8; font-size: 0.9rem;">${userStatusHtml}</h6>
                         <form id="commentForm" onsubmit="submitComment(event)">
                             <input type="hidden" id="commentPostId" value="${postId}">
                             <input type="hidden" id="commentUserName" value="${user.name || ''}">
                             <input type="hidden" id="commentUserEmail" value="${user.email || ''}">
                             <input type="hidden" id="commentParentId" value="">
-
                             <div class="mb-3">
-                                <textarea id="commentContent" class="form-control" rows="4" placeholder="Viết bình luận của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea>
+                                <textarea id="commentContent" class="form-control" rows="4" placeholder="Ý kiến của bạn..." required ${isDisabled ? 'disabled' : ''}></textarea>
                             </div>
                             <div class="text-end">
-                                <button type="submit" id="btnSubmitComment" class="btn btn-primary fw-bold px-4" ${isDisabled ? 'disabled' : ''} style="background-color: var(--primary-green); border-color: var(--primary-green);">Gửi Bình Luận</button>
+                                <button type="submit" id="btnSubmitComment" class="btn" ${isDisabled ? 'disabled' : ''}>Gửi bình luận</button>
                             </div>
                         </form>
                     </div>
@@ -462,156 +392,70 @@
             comments.forEach(comment => { if (comment.id) { commentMap[comment.id] = { ...comment, replies: [] }; } });
             Object.values(commentMap).forEach(comment => {
                 const parentId = comment.parent_comment_id;
-                if (parentId && parentId !== "" && commentMap[parentId]) { 
-                    commentMap[parentId].replies.push(comment); 
-                } else { 
-                    topLevelComments.push(comment); 
-                }
+                if (parentId && commentMap[parentId]) { commentMap[parentId].replies.push(comment); } 
+                else { topLevelComments.push(comment); }
             });
-            topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
-            function sortReplies(comment) {
-                if (comment.replies) {
-                    comment.replies.sort((a, b) => new Date(a.date) - new Date(b.date));
-                    comment.replies.forEach(sortReplies);
-                }
-            }
-            topLevelComments.forEach(sortReplies);
-            return topLevelComments;
+            return topLevelComments.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
 
         function renderComments(flatComments) { 
             const commentsList = document.getElementById('commentsList');
-            if (flatComments.length === 0) { commentsList.innerHTML = '<div class="text-center text-muted py-3">Chưa có bình luận nào. Hãy là người đầu tiên!</div>'; return; }
+            if (flatComments.length === 0) { commentsList.innerHTML = '<div class="text-center text-muted py-4">Chưa có thảo luận nào. Hãy bắt đầu ngay!</div>'; return; }
             const nestedComments = nestComments(flatComments);
             let html = '';
             
             function buildCommentHtml(comment, depth = 0) {
-                const name = comment.author || 'Người ẩn danh';
+                const name = comment.author || 'Thành viên';
                 const avatarLetter = name.charAt(0).toUpperCase(); 
                 const isReply = depth > 0;
                 const commentId = comment.id;
-                const marginStyle = isReply ? `margin-left: ${Math.min(depth, 3) * 30}px; border-left: 3px solid ${depth === 1 ? 'var(--primary-green)' : '#ddd'}; padding-left: 15px;` : ''; 
-                
                 const user = getLoggedInUser();
-                const replyButton = user.isLoggedIn 
-                    ? `<button class="btn btn-sm btn-link text-decoration-none" style="color: var(--dark-green);" onclick="handleReply('${commentId}', '${name}')">
-                            <i class="fas fa-reply me-1"></i> Trả lời
-                        </button>`
-                    : `<button class="btn btn-sm btn-link text-decoration-none text-muted" disabled>
-                            <i class="fas fa-reply me-1"></i> Trả lời
-                        </button>`;
-                
-                let avatarClass = 'user-avatar-comment me-3';
-                let avatarStyle = '';
-                if (isReply) {
-                    // Avatar Reply nhỏ hơn, dùng màu nhấn phụ
-                    avatarStyle = `background: var(--accent-color); width: 30px; height: 30px; line-height: 30px; font-size: 0.75rem;`; 
-                }
                 
                 let commentBlock = `
-                <div class="comment-item" style="${marginStyle}">
+                <div class="comment-item">
                     <div class="d-flex align-items-start">
-                        <div class="${avatarClass}" style="${avatarStyle}">${avatarLetter}</div>
+                        <div class="user-avatar-comment me-3">${avatarLetter}</div>
                         <div class="flex-grow-1">
-                            <h6 class="m-0 fw-bold ${isReply ? 'text-dark-green' : 'text-primary'}">${name}</h6>
-                            <p class="text-muted small mb-1">${comment.date || 'Vừa xong'}</p>
-                            <div class="mb-2 text-wrap">${comment.content}</div>
-                            ${replyButton}
+                            <h6 class="m-0 fw-bold" style="color:${isReply ? 'var(--gold-vip)' : 'var(--primary)'}">${name}</h6>
+                            <p class="text-muted small mb-1">${comment.date || 'Gần đây'}</p>
+                            <div class="mb-2 text-light">${comment.content}</div>
+                            ${user.isLoggedIn ? `<button class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-bold" onclick="handleReply('${commentId}', '${name}')"><i class="fas fa-reply me-1"></i> Trả lời</button>` : ''}
                             <div id="reply-form-placeholder-${commentId}" class="mt-2"></div>
                         </div>
                     </div>`;
-                if (comment.replies && comment.replies.length > 0) {
-                     comment.replies.forEach(reply => { commentBlock += buildCommentHtml(reply, depth + 1); });
-                }
+                if (comment.replies) { comment.replies.forEach(reply => { commentBlock += buildCommentHtml(reply, depth + 1); }); }
                 commentBlock += '</div>';
                 return commentBlock;
             }
-
             nestedComments.forEach(comment => { html += buildCommentHtml(comment); });
             commentsList.innerHTML = html;
         }
 
         async function loadComments(postId, skipSpinner = false) {
-            const commentsList = document.getElementById('commentsList');
-            const btn = document.getElementById('btnSubmitComment');
-            
-            const user = getLoggedInUser();
-            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
-
-            if (!skipSpinner) {
-                commentsList.innerHTML = '<div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin me-2 text-primary-green"></i>Đang tải bình luận...</div>';
-            }
-
+            if (!skipSpinner) document.getElementById('commentsList').innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin text-primary"></i></div>';
             try {
                 const response = await fetch(`${N8N_GET_COMMENTS}?post_id=${postId}`);
                 const data = await response.json();
-                const flatComments = Array.isArray(data) ? data : (data.data || []); 
-                renderComments(flatComments);
-                
-                btn.innerHTML = initialCommentStatus; 
-                btn.disabled = !user.isLoggedIn;
-
-            } catch (error) {
-                console.error("Lỗi tải bình luận:", error);
-                commentsList.innerHTML = '<div class="alert alert-danger">Không thể tải bình luận.</div>';
-                btn.innerHTML = initialCommentStatus;
-                btn.disabled = !user.isLoggedIn;
-            }
+                renderComments(Array.isArray(data) ? data : (data.data || []));
+            } catch (e) { console.error(e); }
         }
 
         function handleReply(commentId, authorName) { 
-            const user = getLoggedInUser();
-            const commentContent = document.getElementById('commentContent');
-
-            if (!user.isLoggedIn) { alert("Vui lòng đăng nhập Admin để trả lời!"); return; }
-
             const formContainer = document.getElementById('commentFormContainer');
             const placeholder = document.getElementById(`reply-form-placeholder-${commentId}`);
-            const currentParentIdInput = document.getElementById('commentParentId');
-            const commentAsUser = document.getElementById('commentAsUser');
-            
-            resetCommentFormState();
-            
-            currentParentIdInput.value = commentId; 
-            
+            document.getElementById('commentParentId').value = commentId; 
             placeholder.appendChild(formContainer);
-            
-            commentAsUser.innerHTML = `<i class="fas fa-reply me-1"></i> Trả lời <span class="text-danger fw-bold">${authorName}</span> với tư cách: <span class="text-primary">${user.name}</span> <button class="btn btn-sm btn-link text-danger" onclick="resetCommentFormState()">Hủy</button>`;
-            
-            document.getElementById('btnSubmitComment').disabled = false;
-            commentContent.disabled = false;
-            commentContent.focus(); 
-            commentContent.value = `@${authorName} `;
+            document.getElementById('commentAsUser').innerHTML = `<i class="fas fa-reply me-2 text-warning"></i>Đang trả lời <span class="text-warning fw-bold">${authorName}</span> <button class="btn btn-sm text-danger ms-2" onclick="resetCommentFormState()">Hủy</button>`;
+            document.getElementById('commentContent').focus();
+            document.getElementById('commentContent').value = `@${authorName} `;
         }
 
         function resetCommentFormState() { 
             const user = getLoggedInUser();
-            const commentSection = document.getElementById('commentSection');
-            const formContainer = document.getElementById('commentFormContainer');
-            const currentParentIdInput = document.getElementById('commentParentId');
-            const commentContent = document.getElementById('commentContent');
-            const commentAsUser = document.getElementById('commentAsUser');
-            const btnSubmitComment = document.getElementById('btnSubmitComment');
-            const initialCommentStatus = user.isLoggedIn ? 'Gửi Bình Luận' : 'Gửi Bình Luận'; 
-
-
-            if (formContainer.parentNode !== commentSection) {
-                commentSection.appendChild(formContainer);
-            }
-            
-            currentParentIdInput.value = '';
-            commentContent.value = '';
-            
-            if (user.isLoggedIn) {
-                 commentAsUser.innerHTML = `<i class="fas fa-user-check me-1"></i>Bình luận với tư cách: <span class="text-primary">${user.name}</span>`;
-                 btnSubmitComment.disabled = false;
-                 commentContent.disabled = false;
-            } else {
-                 commentAsUser.innerHTML = `<i class="fas fa-exclamation-triangle me-1 text-danger"></i>Vui lòng đăng nhập Admin để bình luận.`;
-                 btnSubmitComment.disabled = true;
-                 commentContent.disabled = true;
-            }
-            btnSubmitComment.innerHTML = initialCommentStatus;
+            document.getElementById('commentSection').appendChild(document.getElementById('commentFormContainer'));
+            document.getElementById('commentParentId').value = '';
+            document.getElementById('commentContent').value = '';
+            document.getElementById('commentAsUser').innerHTML = `<i class="fas fa-user-check me-2 text-primary"></i>Đang bình luận: <span class="text-primary fw-bold">${user.name}</span>`;
         }
         
         async function submitComment(e) { 
@@ -619,54 +463,22 @@
             const btn = document.getElementById('btnSubmitComment');
             const postId = document.getElementById('commentPostId').value;
             const content = document.getElementById('commentContent').value;
-            const author = document.getElementById('commentUserName').value;
-            const email = document.getElementById('commentUserEmail').value;
-            const parentId = document.getElementById('commentParentId').value; 
-
-            if (!postId || !content || !email) {
-                console.error("Thiếu thông tin bình luận cần thiết.");
-                return;
-            }
-
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang gửi...'; 
-            btn.disabled = true;
-
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
             try {
                 const response = await fetch(N8N_SUBMIT_COMMENT, {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         post_id: postId,
-                        author: author,
-                        email: email,
+                        author: document.getElementById('commentUserName').value,
+                        email: document.getElementById('commentUserEmail').value,
                         content: content,
                         date: new Date().toISOString().replace('T', ' ').substring(0, 19), 
-                        parent_comment_id: parentId || null
+                        parent_comment_id: document.getElementById('commentParentId').value || null
                     })
                 });
-
-                if (response.ok) {
-                    document.getElementById('commentContent').value = ''; 
-                    
-                    loadComments(postId, true); 
-
-                    if (parentId) {
-                        resetCommentFormState();
-                    }
-
-                } else {
-                    console.error("Lỗi khi gửi bình luận. Webhook trả về lỗi.");
-                    alert("Gửi bình luận thất bại.");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                console.error("Lỗi kết nối Webhook:", error);
-                alert("Lỗi kết nối.");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            } 
+                if (response.ok) { resetCommentFormState(); loadComments(postId, true); }
+            } catch (e) { alert("Lỗi kết nối."); } 
+            finally { btn.innerHTML = 'Gửi bình luận'; btn.disabled = false; }
         }
 
         document.addEventListener('DOMContentLoaded', loadPostDetail);
