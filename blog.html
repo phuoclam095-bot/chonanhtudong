@@ -12,7 +12,6 @@
         html { scroll-behavior: smooth; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 100px; }
 
-        /* --- NAVBAR --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
@@ -20,7 +19,6 @@
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 8px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
 
-        /* --- COMPACT HERO --- */
         .hero-section { text-align: center; padding: 25px 20px 10px; }
         .hero-title { font-weight: 900; font-size: 3rem; text-transform: uppercase; letter-spacing: 12px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; margin-bottom: 10px; }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
@@ -29,10 +27,10 @@
         .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 14px 45px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1.5px; }
         @keyframes breathing { 0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 235, 176, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 235, 176, 0.5); } }
 
-        .marquee-container-bottom { width: 65%; margin: 20px auto 0; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.08); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.2); }
-        .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
+        /* --- MARQUEE BOX STABLE --- */
+        .marquee-container-bottom { width: 65%; margin: 20px auto 0; overflow: hidden; background: rgba(0, 235, 176, 0.08); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.2); }
+        .marquee-container-bottom marquee { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; }
 
-        /* --- BLOG CARDS --- */
         .blog-card { background: rgba(10, 17, 36, 0.95); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 28px; overflow: hidden; transition: 0.45s; height: 100%; display: flex; flex-direction: column; cursor: pointer; }
         .blog-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 50px rgba(0, 235, 176, 0.25); }
         .blog-img { height: 210px; object-fit: cover; width: 100%; border-bottom: 2px solid rgba(0, 235, 176, 0.3); }
@@ -41,19 +39,18 @@
         .blog-desc { font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 15px; }
         .btn-read { background: rgba(0, 235, 176, 0.1); border: 1.5px solid var(--primary); color: var(--primary); font-weight: 900; padding: 10px 22px; border-radius: 50px; transition: 0.3s; text-transform: uppercase; font-size: 0.7rem; width: fit-content; margin-top: auto; }
 
-        /* --- COMPACT REVIEWS --- */
         .section-header { font-weight: 900; font-size: 2.2rem; text-transform: uppercase; color: var(--primary); text-align: center; margin: 40px 0 30px; letter-spacing: 6px; text-shadow: var(--neon); }
         .review-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 30px; padding: 35px; border: 1.5px solid rgba(255,255,255,0.08); border-left: 6px solid var(--gold-vip); height: 100%; }
         .user-avatar { width: 55px; height: 55px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.4rem; }
         .stars { color: var(--gold-vip); font-size: 0.9rem; }
         .review-text { font-style: italic; color: #f8fafc; line-height: 1.8; font-size: 0.95rem; }
 
-        .btn-fedback-link { background: var(--gold-vip); color: #000; font-weight: 900; padding: 16px 45px; border-radius: 50px; text-transform: uppercase; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 0 20px rgba(240, 195, 0, 0.3); font-size: 0.95rem; letter-spacing: 1px; }
+        /* --- BTN GÓP Ý --- */
+        .btn-fedback-link { background: var(--gold-vip); color: #000; font-weight: 900; padding: 16px 45px; border-radius: 50px; text-transform: uppercase; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 0 20px rgba(240, 195, 0, 0.3); font-size: 0.95rem; letter-spacing: 1px; border: none; }
         .btn-fedback-link:hover { transform: scale(1.05); background: #fff; }
 
         .footer { text-align: center; color: rgba(255,255,255,0.3); padding: 40px; font-size: 0.8rem; letter-spacing: 2px; }
         
-        /* --- MODAL FIXED --- */
         .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; color: #fff; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4); position: relative; }
         .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(2); opacity: 1; position: absolute; right: 25px; top: 25px; z-index: 10; }
         .form-control { background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 18px; padding: 15px; }
@@ -68,13 +65,13 @@
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link active">Blog</a></li>
-                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li class="nav-item"><a href="fedback.html" class="nav-link">Góp Ý</a></li>
+                    <li><a href="admin.html" class="nav-link">Tạo Album</a></li>
+                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li><a href="blog.html" class="nav-link active">Blog</a></li>
+                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li><a href="fedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
         </div>
@@ -90,7 +87,7 @@
                 </button>
             </div>
             <div class="marquee-container-bottom">
-                <span class="marquee-text">🎉 ƯU ĐÃI: CHIA SẺ CẢM NHẬN NGAY ĐỂ NHẬN QUÀ TẶNG VIP TỪ CHONANHNHANH.VN - HỆ THỐNG LỌC ẢNH STUDIO SỐ 1 VIỆT NAM 🚀</span>
+                <marquee scrollamount="8">🎉 ƯU ĐÃI: CHIA SẺ CẢM NHẬN NGAY ĐỂ NHẬN QUÀ TẶNG VIP TỪ CHONANHNHANH.VN - HỆ THỐNG LỌC ẢNH STUDIO SỐ 1 VIỆT NAM 🚀 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎉 ƯU ĐÃI: CHIA SẺ CẢM NHẬN NGAY ĐỂ NHẬN QUÀ TẶNG VIP TỪ CHONANHNHANH.VN 🚀</marquee>
             </div>
         </div>
     </div>
@@ -112,7 +109,7 @@
         </div>
 
         <div class="text-center mt-5">
-            <a href="fedback.html" class="btn-fedback-link"><i class="fas fa-comment-dots me-2"></i> Gửi Góp Ý  Ngay</a>
+            <a href="fedback.html" class="btn-fedback-link"><i class="fas fa-comment-dots me-2"></i> Gửi Góp Ý Ngay</a>
         </div>
     </div>
 
@@ -152,19 +149,6 @@
         const N8N_SUBMIT_BLOG = 'https://dichvufb.tino.page/webhook/submit-blog';  
         let currentBlogs = [];
 
-        const demoBlogs = [
-            { id: "DEMO1", title: "Cẩm nang chụp ảnh cưới Bạc Liêu 2025", content: "Chia sẻ những địa điểm check-in cực chất dành cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc nhất...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600" },
-            { id: "DEMO2", title: "Bí kíp tạo dáng tự nhiên trước ống kính", content: "Đừng lo nếu bạn là người hướng nội, chúng tôi có cách giúp bạn tỏa sáng một cách tự nhiên nhất trước ống kính...", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?w=600" },
-            { id: "DEMO3", title: "Review hệ thống lọc ảnh tự động 4.0", content: "Tiết kiệm 80% thời gian làm việc cho Studio của bạn với quy trình hiện đại, chính xác tuyệt đối 100%...", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?w=600" }
-        ];
-
-        const demoReviews = [
-            { name: "Khánh Linh", avatar: "L", stars: 5, content: "Hệ thống lọc ảnh quá nhanh, giao diện blog cũng rất đẹp và dễ sử dụng!" },
-            { name: "Tuấn Anh", avatar: "A", stars: 5, content: "Đã đăng bài chia sẻ và được admin duyệt rất nhanh. Xứng đáng 10 sao." },
-            { name: "Minh Thư", avatar: "T", stars: 5, content: "Thợ chụp ở đây rất có tâm, ảnh lọc ra bộ nào cũng ưng ý hết trơn." },
-            { name: "Hoàng Nam", avatar: "N", stars: 4, content: "Dịch vụ chuyên nghiệp, hy vọng hệ thống sẽ cập nhật thêm nhiều tính năng mới." }
-        ];
-
         function renderMainCarousel(blogs) {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
@@ -195,8 +179,20 @@
             } catch (e) { renderMainCarousel(demoBlogs); }
         }
 
+        const demoBlogs = [
+            { id: "DEMO1", title: "Cẩm nang chụp ảnh cưới Bạc Liêu 2025", content: "Chia sẻ những địa điểm check-in cực chất dành cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc nhất...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600" },
+            { id: "DEMO2", title: "Bí kíp tạo dáng tự nhiên trước ống kính", content: "Đừng lo nếu bạn là người hướng nội, chúng tôi có cách giúp bạn tỏa sáng một cách tự nhiên nhất trước ống kính...", image: "https://images.unsplash.com/photo-1555939029-768a86a07672?w=600" },
+            { id: "DEMO3", title: "Review hệ thống lọc ảnh tự động 4.0", content: "Tiết kiệm 80% thời gian làm việc cho Studio của bạn với quy trình hiện đại, chính xác tuyệt đối 100%...", image: "https://images.unsplash.com/photo-1517705191242-b05421c97a8d?w=600" }
+        ];
+
         function renderReviews() {
             const container = document.getElementById('reviewGrid');
+            const demoReviews = [
+                { name: "Khánh Linh", avatar: "L", stars: 5, content: "Hệ thống lọc ảnh quá nhanh, giao diện blog cũng rất đẹp và dễ sử dụng!" },
+                { name: "Tuấn Anh", avatar: "A", stars: 5, content: "Đã đăng bài chia sẻ và được admin duyệt rất nhanh. Xứng đáng 10 sao." },
+                { name: "Minh Thư", avatar: "T", stars: 5, content: "Thợ chụp ở đây rất có tâm, ảnh lọc ra bộ nào cũng ưng ý hết trơn." },
+                { name: "Hoàng Nam", avatar: "N", stars: 4, content: "Dịch vụ chuyên nghiệp, hy vọng hệ thống sẽ cập nhật thêm nhiều tính năng mới." }
+            ];
             container.innerHTML = demoReviews.map(review => {
                 let starHtml = '<i class="fas fa-star"></i>'.repeat(review.stars) + '<i class="far fa-star"></i>'.repeat(5 - review.stars);
                 return `<div class="col-md-6"><div class="review-card"><div class="d-flex align-items-center gap-3 mb-3"><div class="user-avatar">${review.avatar}</div><div><h5 class="m-0 fw-bold">${review.name}</h5><div class="stars">${starHtml}</div></div></div><div class="review-text">"${review.content}"</div></div></div>`;
