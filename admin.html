@@ -11,17 +11,19 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* FIX NHÁY HEADER */
         #adminNavLinks, #loggedInNav, #loggedOutNav { display: none; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
+        /* ĐƯA MARQUEE VÀO VỊ TRÍ PHÙ HỢP */
         .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 75%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 35s linear infinite; }
 
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
+        /* NAV LINK CĂN GIỮA NHƯ PAYMENT */
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+        .nav-link.active::after { content: ''; position: absolute; width: 50%; height: 2px; bottom: 5px; left: 25%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
@@ -39,7 +41,6 @@
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; }
         input[type="text"]:focus { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
-        /* FIX VIỀN 3 NÚT GẠT */
         .switch-container { margin-top: 25px; margin-bottom: 20px; }
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); }
         .toggle-switch { position: relative; width: 50px; height: 26px; cursor: pointer; }
@@ -51,7 +52,8 @@
 
         .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; }
 
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); transition: 0.3s; }
+        .btn-create:hover:not(:disabled) { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 0 30px rgba(0, 235, 176, 0.5); }
         .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
 
         #resultBox { display: none; margin-top: 25px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
@@ -86,7 +88,7 @@
                     <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="feedback.html" class="nav-link">Feedback</a></li> <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
                     <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
