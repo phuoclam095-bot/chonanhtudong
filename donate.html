@@ -9,64 +9,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
+        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 12px rgba(0, 235, 176, 0.4); }
         
-        /* HIỆN RÕ NỀN PHÍA SAU */
+        /* TỐI ƯU HIỆU NĂNG & HIỆN RÕ NỀN */
         body { 
-            margin: 0; padding-top: 85px; font-family: 'Montserrat', sans-serif; 
+            margin: 0; padding-top: 80px; font-family: 'Montserrat', sans-serif; 
             background-color: var(--bg-deep); 
-            background-image: url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-image: linear-gradient(rgba(5, 10, 20, 0.5), rgba(5, 10, 20, 0.5)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
             color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+            will-change: transform; /* Kích hoạt GPU cho toàn bộ trang */
         }
 
-        /* NAVBAR ĐỒNG BỘ */
-        .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 75px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        .navbar { background: rgba(5, 10, 20, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 70px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
-        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 8px 12px !important; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
+        .nav-link { color: #cbd5e1 !important; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; padding: 10px 12px !important; }
+        .nav-link.active { color: var(--primary) !important; border-bottom: 2px solid var(--primary); }
 
-        /* CRYSTAL GLASS CONTAINER (XUYÊN THẤU NỀN) */
+        /* --- COMPACT CRYSTAL CONTAINER --- */
         .donate-container { 
-            max-width: 1150px; width: 95%; margin: auto; padding: 40px 60px; 
-            background: rgba(10, 17, 36, 0.6); /* ĐỘ TRONG SUỐT CỰC CAO ĐỂ THẤY NỀN */
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 40px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
-            border: 1.5px solid rgba(255,255,255,0.15); 
-            animation: fadeIn 0.8s ease-out;
+            max-width: 1100px; width: 95%; margin: auto; padding: 25px 40px; 
+            background: rgba(5, 10, 20, 0.45); /* GIẢM ĐỘ PHỦ MÀU ĐỂ THẤY NỀN RÕ NHẤT */
+            border-radius: 35px; border: 1px solid rgba(255,255,255,0.15); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transform: translateZ(0); /* Ép Render bằng phần cứng để ko lag */
         }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .subtitle { text-align: center; color: #fff; font-size: 1rem; line-height: 1.6; margin-bottom: 35px; max-width: 900px; margin-left: auto; margin-right: auto; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        h1 { font-weight: 900; text-align: center; text-transform: uppercase; font-size: 1.8rem; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #fff; font-size: 0.88rem; line-height: 1.4; margin-bottom: 25px; max-width: 850px; margin-left: auto; margin-right: auto; font-weight: 600; text-shadow: 0 1px 3px #000; }
 
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
         .payment-method { 
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
-            border-radius: 35px; padding: 35px; text-align: center; transition: 0.4s;
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 25px; padding: 20px; text-align: center; transition: 0.2s ease-out;
         }
-        .payment-method:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
+        .payment-method:hover { transform: scale(1.02); border-color: var(--primary); }
 
-        .qr-box { width: 210px; height: 210px; background: #fff; margin: 20px auto; padding: 10px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .qr-box { width: 170px; height: 170px; background: #fff; margin: 15px auto; padding: 5px; border-radius: 15px; }
         .qr-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* LÀM SÁNG THÔNG TIN TÀI KHOẢN */
-        .bank-title { font-weight: 900; font-size: 1.5rem; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
-        .acc-name { color: #fff; font-weight: 900; font-size: 1.25rem; margin-top: 15px; display: block; text-transform: uppercase; letter-spacing: 1px; }
-        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.9rem; margin-top: 5px; display: block; text-shadow: 0 0 20px rgba(240, 195, 0, 0.6); }
-        .call-action-text { color: var(--primary) !important; font-weight: 900; font-size: 1rem; margin-top: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        /* LÀM SÁNG TEXT THÔNG TIN TÀI KHOẢN */
+        .bank-title { font-weight: 900; font-size: 1.2rem; margin-bottom: 3px; }
+        .acc-name { color: #fff; font-weight: 800; font-size: 1.1rem; margin-top: 10px; display: block; text-transform: uppercase; }
+        .acc-number { color: var(--gold-vip) !important; font-weight: 900; font-size: 1.6rem; margin-top: 3px; display: block; text-shadow: 0 0 10px rgba(240, 195, 0, 0.5); }
+        .call-action-text { color: var(--primary) !important; font-weight: 900; font-size: 0.85rem; margin-top: 8px; display: block; text-transform: uppercase; }
 
-        .thank-you { text-align: center; margin-top: 40px; padding: 18px; border-radius: 20px; background: rgba(0, 235, 176, 0.15); border: 2px dashed var(--primary); color: #fff; font-weight: 900; font-size: 1.1rem; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .thank-you { text-align: center; margin-top: 30px; padding: 12px; border-radius: 15px; background: rgba(0, 235, 176, 0.1); border: 1px dashed var(--primary); color: #fff; font-weight: 800; font-size: 0.95rem; }
 
+        /* MOBILE FLUID LAYOUT */
         @media (max-width: 992px) {
-            body { height: auto; overflow: visible; padding-top: 100px; padding-bottom: 40px; }
-            .donate-container { width: 92%; padding: 30px 20px; border-radius: 30px; }
-            .payment-grid { grid-template-columns: 1fr; gap: 20px; }
-            h1 { font-size: 1.6rem; }
-            .acc-number { font-size: 1.5rem; }
-            .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; }
+            body { height: auto; overflow: auto; padding-top: 85px; padding-bottom: 20px; }
+            .donate-container { width: 94%; padding: 25px 15px; margin: 10px auto; }
+            .payment-grid { grid-template-columns: 1fr; gap: 15px; }
+            h1 { font-size: 1.4rem; }
+            .acc-number { font-size: 1.4rem; }
+            .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
         }
     </style>
 </head>
@@ -91,7 +89,7 @@
     
     <div class="container d-flex flex-grow-1 align-items-center justify-content-center">
         <div class="donate-container">
-            <h1><i class="fas fa-hand-holding-heart me-3 text-primary"></i>ĐỒNG HÀNH PHÁT TRIỂN</h1>
+            <h1><i class="fas fa-hand-holding-heart me-2 text-primary"></i>ĐỒNG HÀNH PHÁT TRIỂN</h1>
             <p class="subtitle">CHONANHNHANH.VN vươn tới sự hoàn hảo nhờ sự tin tưởng của bạn. Mỗi đóng góp là nguồn lực quý giá để chúng tôi nâng cấp Server và mang đến những tính năng đột phá hơn cho cộng đồng nhiếp ảnh.</p>
             
             <div class="payment-grid">
