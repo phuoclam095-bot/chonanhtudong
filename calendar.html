@@ -4,64 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>QUẢN LÝ LỊCH CHỤP PRO - CHONANHNHANH.VN</title>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14;
-            --card-glass: rgba(10, 17, 36, 0.95); --border-glass: rgba(255, 255, 255, 0.15);
-            --neon: 0 0 20px rgba(0, 235, 176, 0.5);
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px;
-        }
-
+        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --card-glass: rgba(10, 17, 36, 0.95); --border-glass: rgba(255, 255, 255, 0.15); --neon: 0 0 20px rgba(0, 235, 176, 0.5); }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 100px; }
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 85px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: 1px; }
 
         .main-wrapper { max-width: 1350px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 420px; gap: 30px; }
+        .calendar-container { background: var(--card-glass); border: 1px solid var(--border-glass); border-radius: 30px; padding: 35px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
 
-        .calendar-container { background: var(--card-glass); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); border-radius: 30px; padding: 35px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .month-year { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; }
-        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: white; width: 45px; height: 45px; border-radius: 15px; }
+        /* FIX BỐ CỤC TIÊU ĐỀ */
+        .calendar-header { display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 40px; }
+        .month-year-display { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; cursor: pointer; display: flex; gap: 10px; }
+        .month-year-display span:hover { color: var(--primary); text-shadow: var(--neon); }
+        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: white; width: 50px; height: 50px; border-radius: 50%; transition: 0.3s; }
         .btn-nav:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
 
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 15px; font-size: 0.85rem; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
-        
-        .day { aspect-ratio: 1/1; background: rgba(255,255,255,0.03); border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; transition: 0.4s; border: 1px solid var(--border-glass); }
-        .day:hover { border-color: var(--primary); transform: scale(1.05); background: rgba(0, 235, 176, 0.1); }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 20px; font-size: 0.9rem; }
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; }
+        .day { aspect-ratio: 1/1; background: rgba(255,255,255,0.03); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; transition: 0.3s; border: 1px solid var(--border-glass); }
+        .day:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
         .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.1); border-width: 2px; }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        
-        /* CỐ ĐỊNH NGÀY NGOÀI THÁNG */
-        .day.prev-date, .day.next-date { opacity: 0.08 !important; pointer-events: none !important; filter: grayscale(1); }
+        .day.prev-date, .day.next-date { opacity: 0.1 !important; pointer-events: none; }
 
-        .sidebar { background: var(--card-glass); border-radius: 30px; padding: 30px; border: 1px solid var(--border-glass); display: flex; flex-direction: column; max-height: 85vh; }
-        .event-list { overflow-y: auto; flex: 1; padding-right: 10px; margin-bottom: 20px; }
-        .event-item { background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 20px; margin-bottom: 15px; border-radius: 22px; position: relative; border-left: 5px solid var(--primary); }
+        .sidebar { background: var(--card-glass); border-radius: 30px; padding: 30px; border: 1px solid var(--border-glass); display: flex; flex-direction: column; height: fit-content; }
+        .event-item { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); padding: 20px; margin-bottom: 15px; border-radius: 22px; position: relative; border-left: 5px solid var(--primary); }
         
-        .status-badge { font-size: 0.65rem; padding: 5px 12px; border-radius: 50px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
-        .badge-pending { background: rgba(240, 195, 0, 0.25); color: var(--gold-vip); }
-        .badge-confirmed { background: rgba(0, 235, 176, 0.25); color: var(--primary); }
-
-        .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4); }
-        .form-label { color: var(--primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; }
-        
-        .form-control, .form-select { 
-            background: rgba(255,255,255,0.08) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; 
-            border-radius: 15px; padding: 15px 18px; font-weight: 700;
-        }
-        /* LÀM SÁNG CHỮ GỢI Ý */
+        /* FIX LÀM SÁNG CHỮ GỢI Ý VÀ NỀN Ô CHỌN */
+        .form-control, .form-select { background: #1a2235 !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 15px; padding: 15px; font-weight: 700; }
         .form-control::placeholder { color: #a5f3e0 !important; opacity: 1 !important; font-weight: 700; }
+        
+        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 18px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); margin-top: auto; }
+        
+        .modal-content { background: #080d1a; border: 2px solid var(--primary); border-radius: 35px; }
+        .modal-header .btn-close { filter: invert(1) brightness(2); }
 
-        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 18px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; letter-spacing: 1px; box-shadow: var(--neon); transition: 0.3s; }
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -69,7 +51,6 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
-            <div class="ms-auto"><a href="managa.html" class="nav-link"><i class="fas fa-th-large me-2"></i> Dashboard</a></div>
         </div>
     </nav>
 
@@ -77,18 +58,21 @@
         <div class="calendar-container">
             <div class="calendar-header">
                 <button class="btn-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-                <div class="month-year" id="monthYear"></div>
+                <div class="month-year-display">
+                    <span id="monthDisplay" onclick="quickSelect('month')">THÁNG</span>
+                    <span id="yearDisplay" onclick="quickSelect('year')">NĂM</span>
+                </div>
                 <button class="btn-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="weekdays"><div>CN</div><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div></div>
-            <div class="days" id="daysGrid"></div>
+            <div id="daysGrid" class="days"></div>
         </div>
 
         <div class="sidebar">
-            <h3 class="mb-1 fw-900 text-primary">LỊCH TRÌNH VIP</h3>
+            <h3 class="fw-900 text-primary mb-1">LỊCH TRÌNH VIP</h3>
             <p id="selectedDateDisplay" class="text-white fw-bold small mb-4 opacity-75"></p>
-            <div class="event-list" id="eventList"></div>
-            <button class="btn-action-main" onclick="openAddModal()"><i class="fas fa-plus-circle me-2"></i> THÊM SHOW CHỤP MỚI</button>
+            <div id="eventList" class="event-list overflow-auto" style="max-height: 450px;"></div>
+            <button class="btn-action-main mt-4" onclick="openAddModal()"><i class="fas fa-plus-circle me-2"></i> THÊM SHOW CHỤP MỚI</button>
         </div>
     </div>
 
@@ -97,17 +81,21 @@
             <div class="modal-content">
                 <div class="modal-header border-0 px-4 pt-4">
                     <h5 class="fw-900 text-primary uppercase mb-0"><i class="fas fa-magic me-2"></i>THIẾT LẬP SHOW CHỤP</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body px-4 pb-4">
+                <div class="modal-body p-4">
                     <form id="addEventForm">
                         <div class="mb-3">
-                            <label class="form-label">Khách hàng / Tên Show</label>
-                            <input type="text" class="form-control" id="clientName" placeholder="Tên hiển thị trên lịch..." required>
+                            <label class="small fw-bold text-primary mb-2">TÊN KHÁCH HÀNG SHOW</label>
+                            <input type="text" class="form-control" id="clientName" placeholder="Tên khách hàng hoặc tên show..." required>
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label">Gói chụp</label>
+                            <div class="col-md-6 mb-3">
+                                <label class="small fw-bold text-primary mb-2">SỐ ĐIỆN THOẠI</label>
+                                <input type="text" class="form-control" id="clientPhone" placeholder="Ví dụ: 0944xxxxxx">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="small fw-bold text-primary mb-2">GÓI CHỤP</label>
                                 <select class="form-select" id="shootType">
                                     <option value="Wedding">💍 Gói Chụp Cưới</option>
                                     <option value="Party">🎉 Gói Chụp Tiệc</option>
@@ -116,23 +104,29 @@
                                     <option value="Other">🔹 GÓI CHỤP KHÁC</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="form-label">Trạng thái</label>
+                                <label class="small fw-bold text-primary mb-2">TRẠNG THÁI CỌC</label>
                                 <select class="form-select" id="eventStatus">
                                     <option value="pending">🟡 Chờ xác nhận</option>
                                     <option value="confirmed">🟢 Đã đặt cọc</option>
                                 </select>
                             </div>
+                            <div class="col-6 mb-3">
+                                <label class="small fw-bold text-primary mb-2">GIỜ BẮT ĐẦU (24H)</label>
+                                <input type="time" class="form-control" id="eventTime" required>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 mb-3"><label class="form-label">Giờ bắt đầu (24H)</label><input type="time" class="form-control" id="eventTime" required></div>
-                            <div class="col-6 mb-3"><label class="form-label">Tiền cọc (VNĐ)</label><input type="text" class="form-control" id="depositAmount" placeholder="VD: 500.000"></div>
+                        <div class="mb-3">
+                            <label class="small fw-bold text-primary mb-2">TIỀN CỌC (VNĐ)</label>
+                            <input type="text" class="form-control" id="depositAmount" placeholder="Ví dụ: 1,000,000">
                         </div>
                         <div class="mb-4">
-                            <label class="form-label">Địa chỉ & Ghi chú</label>
-                            <textarea class="form-control" id="eventNote" rows="3" placeholder="Nhập địa điểm và yêu cầu..."></textarea>
+                            <label class="small fw-bold text-primary mb-2">ĐỊA CHỈ & GHI CHÚ</label>
+                            <textarea class="form-control" id="eventNote" rows="2" placeholder="Nơi chụp, yêu cầu riêng của khách..."></textarea>
                         </div>
-                        <button type="button" class="btn-action-main" onclick="saveEvent()">XÁC NHẬN ĐẶT LỊCH</button>
+                        <button type="button" class="btn-action-main" onclick="saveEvent()">XÁC NHẬN LƯU LỊCH</button>
                     </form>
                 </div>
             </div>
@@ -147,36 +141,26 @@
         let selectedDate = new Date();
         let events = JSON.parse(localStorage.getItem('photo_pro_planner_v3')) || {};
 
-        const months = ["Tháng Một", "Tháng Hai", "Tháng Ba", "Tháng Tư", "Tháng Năm", "Tháng Sáu", "Tháng Bảy", "Tháng Tám", "Tháng Chín", "Tháng Mười", "Tháng Mười Một", "Tháng Mười Hai"];
+        const monthsArr = ["Tháng Một", "Tháng Hai", "Tháng Ba", "Tháng Tư", "Tháng Năm", "Tháng Sáu", "Tháng Bảy", "Tháng Tám", "Tháng Chín", "Tháng Mười", "Tháng Mười Một", "Tháng Mười Hai"];
 
         function renderCalendar() {
-            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDay = new Date(currentYear, currentMonth, 0).getDate();
-            const lastDayIndex = new Date(currentYear, currentMonth + 1, 0).getDay();
-            const nextDays = 7 - lastDayIndex - 1;
+            document.getElementById('monthDisplay').innerText = monthsArr[currentMonth];
+            document.getElementById('yearDisplay').innerText = currentYear;
 
-            document.getElementById('monthYear').innerText = `${months[currentMonth]} ${currentYear}`;
             let days = "";
-
-            // NGÀY THÁNG TRƯỚC (CHÌM)
-            for (let x = firstDayIndex; x > 0; x--) days += `<div class="day prev-date">${prevLastDay - x + 1}</div>`;
-
+            for (let x = firstDay; x > 0; x--) days += `<div class="day prev-date">${prevLastDay - x + 1}</div>`;
             for (let i = 1; i <= lastDay; i++) {
                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const hasEvent = events[dateKey] && events[dateKey].length > 0;
                 const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                 const isSelected = i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-                const hasEvent = events[dateKey] && events[dateKey].length > 0;
-
-                days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">
-                            ${i}
-                            <div class="d-flex mt-1">${hasEvent ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;box-shadow:0 0 8px var(--primary)"></div>' : ''}</div>
-                         </div>`;
+                days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">${i}${hasEvent ? '<div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:5px;"></div>' : ''}</div>`;
             }
-            
-            // NGÀY THÁNG SAU (CHÌM)
+            const nextDays = 42 - (firstDay + lastDay);
             for (let j = 1; j <= nextDays; j++) days += `<div class="day next-date">${j}</div>`;
-            
             document.getElementById('daysGrid').innerHTML = days;
             renderEventList();
         }
@@ -187,22 +171,31 @@
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
             const dayEvents = events[dateKey] || [];
             document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
             if (dayEvents.length === 0) {
-                document.getElementById('eventList').innerHTML = `<div class="text-center text-muted mt-5 opacity-50"><i class="fas fa-calendar-day fa-3x mb-3"></i><br>Không có lịch</div>`;
+                document.getElementById('eventList').innerHTML = `<div class="text-center text-white mt-5 opacity-75"><b>CHƯA CÓ LỊCH TRÌNH</b><br><small>Nhấn nút thêm show để tạo mới</small></div>`;
             } else {
-                document.getElementById('eventList').innerHTML = dayEvents.sort((a,b) => a.time.localeCompare(b.time)).map((ev, idx) => `
+                document.getElementById('eventList').innerHTML = dayEvents.map((ev, idx) => `
                     <div class="event-item">
                         <span class="status-badge ${ev.status === 'confirmed' ? 'badge-confirmed' : 'badge-pending'}">${ev.status === 'confirmed' ? '● ĐÃ CỌC' : '○ CHỜ DUYỆT'}</span>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex justify-content-between mb-2">
                             <span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span>
                             <span class="text-warning fw-bold small">${ev.deposit || ''}</span>
                         </div>
-                        <h5 class="mb-2 fw-800">${ev.client}</h5>
-                        <p class="small mb-0"><i class="fas fa-tag me-2 text-primary"></i>${ev.type}</p>
-                        <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `).join('');
+                        <h5 class="mb-1 fw-800">${ev.client}</h5>
+                        <p class="small mb-1 text-primary fw-bold">${ev.phone || ''}</p>
+                        <p class="small mb-0 opacity-75">${ev.type}</p>
+                        <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button>
+                    </div>`).join('');
+            }
+        }
+
+        function quickSelect(type) {
+            if (type === 'month') {
+                const m = prompt("Nhập tháng (1-12):", currentMonth + 1);
+                if (m >= 1 && m <= 12) { currentMonth = m - 1; renderCalendar(); }
+            } else {
+                const y = prompt("Nhập năm:", currentYear);
+                if (y > 2000) { currentYear = parseInt(y); renderCalendar(); }
             }
         }
 
@@ -213,6 +206,7 @@
             if (!events[dateKey]) events[dateKey] = [];
             events[dateKey].push({ 
                 client: document.getElementById('clientName').value, 
+                phone: document.getElementById('clientPhone').value,
                 type: document.getElementById('shootType').value, 
                 status: document.getElementById('eventStatus').value, 
                 time: document.getElementById('eventTime').value, 
@@ -220,8 +214,7 @@
                 note: document.getElementById('eventNote').value 
             });
             localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events));
-            bootstrap.Modal.getInstance(document.getElementById('addEventModal')).hide();
-            renderCalendar();
+            location.reload();
         }
 
         function deleteEvent(key, idx) { if (confirm("Xóa lịch này?")) { events[key].splice(idx, 1); if (events[key].length === 0) delete events[key]; localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events)); renderCalendar(); } }
