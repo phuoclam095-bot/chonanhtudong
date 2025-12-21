@@ -23,30 +23,14 @@
             color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 105px; overflow-x: hidden;
         }
 
-        /* --- LOADING HIỆU ỨNG TỐI QUA (FLOATING & PULSE) --- */
-        #loadOverlay { 
-            position: fixed; inset: 0; background: #050a14; z-index: 20000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        }
-        .load-logo { 
-            font-weight: 900; font-size: 2.5rem; color: var(--primary); 
-            text-shadow: var(--neon); letter-spacing: 5px; position: relative;
-            animation: floating 3s ease-in-out infinite;
-        }
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); filter: drop-shadow(0 5px 15px rgba(0,235,176,0.2)); }
-            50% { transform: translateY(-20px); filter: drop-shadow(0 20px 30px rgba(0,235,176,0.5)); }
-        }
-        .pulse-shadow {
-            width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%;
-            margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite;
-        }
-        @keyframes shadow-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.5); opacity: 0.1; }
-        }
+        /* --- LOADING FLOATING & PULSE --- */
+        #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
+        @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
 
-        /* --- NAVBAR & USER STATUS --- */
+        /* --- NAVBAR & TABS --- */
         .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
         .navbar-brand { font-weight: 900; font-size: 1.4rem; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: -1px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
@@ -54,33 +38,31 @@
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
         .nav-link.active::after, .nav-link:hover::after { width: 60%; box-shadow: var(--neon); }
 
+        /* --- USER STATUS BOX (ĐỒNG BỘ TRANG LIÊN HỆ) --- */
         .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); min-height: 55px; }
-        .avt-circle { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; }
+        .avt-circle { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .avt-circle img { width: 100%; height: 100%; object-fit: cover; }
-        #userExpiryText { font-size: 0.85rem !important; color: #fff !important; font-weight: 900 !important; }
+        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
+        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; }
 
-        /* --- TÌM KIẾM CHỮ TRẮNG --- */
+        /* --- TYPOGRAPHY 11 SAO --- */
+        .supreme-title { 
+            font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 10px; color: #fff; text-align: center; margin-bottom: 35px;
+            text-shadow: 0px 2px 0px var(--primary), 0px 10px 20px rgba(0, 235, 176, 0.3);
+        }
+
+        /* --- SEARCH --- */
         .search-wrapper { max-width: 500px; margin: 0 auto 40px; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; }
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .search-inner { background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 2px 20px; }
         .search-inner input { background: transparent; border: none; color: #fff !important; width: 100%; padding: 10px; font-weight: 700; outline: none; }
-        .search-inner input::placeholder { color: rgba(255,255,255,0.4); }
-
-        /* --- MODAL XUẤT FILE SUPREME --- */
-        .modal-content { background: #0a0f1e !important; border: 2px solid var(--primary) !important; border-radius: 30px !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.15); }
-        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05) !important; padding: 25px; }
-        .modal-title { color: var(--primary) !important; font-weight: 900 !important; font-size: 1.2rem; text-transform: uppercase; }
-        .alert-supreme { background: rgba(0, 235, 176, 0.1) !important; border: 1px solid var(--primary) !important; color: #fff !important; font-weight: 800 !important; border-radius: 15px; font-size: 1rem; }
-        #fileNamesOutput { background: #020617 !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; font-family: 'Consolas', monospace; font-size: 0.9rem; }
-        .btn-copy-action { background: var(--primary) !important; color: #000 !important; font-weight: 900 !important; padding: 18px !important; border-radius: 18px !important; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; border: none; }
-        .btn-copy-action:hover { transform: translateY(-3px); box-shadow: var(--neon); filter: brightness(1.1); }
 
         /* --- ALBUM CARD --- */
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 0 20px; }
         .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
         .album-card-vip:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-5px); }
         .card-img-header { height: 210px; background-size: cover; background-position: center; position: relative; border-radius: 20px 20px 0 0; }
-        .album-vip-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-weight: 900; font-size: 0.95rem; text-align: center; color: #fff; }
+        .album-vip-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); font-weight: 900; font-size: 0.95rem; text-align: center; color: #fff; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 15px; }
         .stat-pill { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 8px; border-radius: 12px; text-align: center; }
@@ -91,6 +73,14 @@
         .btn-vip { height: 38px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; color: #fff; }
         .v-view { background: #3b82f6; } .v-drive { background: #10b981; } .v-export { background: #f59e0b; color: #000; }
         .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 5px; height: 32px; }
+
+        /* --- MODAL XUẤT FILE --- */
+        .modal-content { background: #0a0f1e !important; border: 2px solid var(--primary) !important; border-radius: 30px !important; }
+        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        .modal-title { color: var(--primary) !important; font-weight: 900 !important; }
+        .alert-supreme { background: rgba(0, 235, 176, 0.1) !important; border: 1px solid var(--primary) !important; color: #fff !important; font-weight: 800 !important; border-radius: 15px; }
+        #fileNamesOutput { background: #020617 !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; }
+        .btn-copy-action { background: var(--primary) !important; color: #000 !important; font-weight: 900 !important; border-radius: 15px !important; padding: 15px !important; }
 
         #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     </style>
@@ -114,13 +104,13 @@
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
                 </ul>
-                <div id="authControl" style="display: none !important;" class="align-items-center gap-3">
+                <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
-                        <div class="avt-circle" id="userAvatarPlaceholder"></div>
+                        <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; color:#fff;">...</span>
                             <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" style="background:var(--primary); color:#000; padding:1px 6px; border-radius:4px; font-size:0.5rem; font-weight:900;">...</span>
+                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
                                 <span id="userExpiryText"></span>
                             </div>
                         </div>
@@ -132,8 +122,7 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="mt-5 text-center"><h1 style="font-weight:900; font-size:2.5rem; text-transform:uppercase; letter-spacing:10px; color:#fff; text-shadow: var(--neon);">Quản Lý Album</h1></div>
-        
+        <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
         <div class="search-wrapper">
             <div class="search-inner">
                 <i class="fas fa-search me-2" style="color:var(--primary)"></i>
@@ -147,15 +136,8 @@
     <div class="modal fade" id="exportModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Danh Sách File Ảnh Lọc</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="alert alert-supreme text-center mb-4" id="modalInfo"></div>
-                    <textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea>
-                    <button type="button" class="btn btn-copy-action w-100" onclick="copyFileNames()">Sao Chép Danh Sách</button>
-                </div>
+                <div class="modal-header border-0"><h5 class="modal-title">DANH SÁCH FILE ĐÃ LỌC</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body p-4"><div class="alert alert-supreme text-center mb-4" id="modalInfo"></div><textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea><button type="button" class="btn btn-copy-action w-100" onclick="copyFileNames()">SAO CHÉP DANH SÁCH</button></div>
             </div>
         </div>
     </div>
@@ -165,31 +147,18 @@
         const PATHS = { LIST: 'https://dichvufb.tino.page/webhook/get-album-list', DELETE: 'https://dichvufb.tino.page/webhook/delete-album', EXPORT: 'https://dichvufb.tino.page/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/chonanhtudong/' };
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
-        function showToast(msg) {
-            const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2200);
-        }
-
-        function filterAlbums() {
-            const kw = document.getElementById('albumSearch').value.toLowerCase();
-            renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw)));
-        }
-
-        function renderAlbums(albums) {
-            const grid = document.getElementById('albumGrid'); grid.innerHTML = '';
-            albums.forEach(a => grid.appendChild(createAlbumCard(a)));
-            document.getElementById('albumCount').innerText = albums.length;
-        }
+        function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
+        function filterAlbums() { const kw = document.getElementById('albumSearch').value.toLowerCase(); renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw))); }
+        function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
 
         function createAlbumCard(album) {
-            const card = document.createElement('div');
-            const id = album.folder_id || album.folderId; card.className = 'album-card-vip'; card.id = `card-${id}`;
+            const card = document.createElement('div'); const id = album.folder_id || album.folderId; card.className = 'album-card-vip'; card.id = `card-${id}`;
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <div class="stat-pill"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
-                    <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=notes', '_blank')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
+                    <div class="stat-pill"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
                 <div class="vip-actions-grid">
                     <button class="btn-vip v-view" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye"></i></button>
@@ -208,15 +177,12 @@
                 if (result?.fileNamesForCopy) {
                     document.getElementById('modalInfo').innerText = `Album: ${name} (${result.selectedPhotos || 0} ảnh)`;
                     document.getElementById('fileNamesOutput').value = result.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
-                    new bootstrap.Modal(document.getElementById('exportModal')).show(); showToast("Đã sẵn sàng");
+                    new bootstrap.Modal(document.getElementById('exportModal')).show(); showToast("Xử lý thành công");
                 } else { showToast("Trống dữ liệu"); }
             } catch (e) { showToast("Lỗi hệ thống"); }
         }
 
-        function copyFileNames() {
-            const txt = document.getElementById('fileNamesOutput').value; if(!txt) return;
-            navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => { showToast("Đã sao chép vào bộ nhớ"); });
-        }
+        function copyFileNames() { const txt = document.getElementById('fileNamesOutput').value; if(!txt) return; navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => { showToast("Đã sao chép"); }); }
 
         async function deleteAlbum(id, name) {
             if (!confirm(`Xóa vĩnh viễn album: ${name}?`)) return;
@@ -230,7 +196,7 @@
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
                 const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
                 document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('userAvatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
+                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
                 const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
                 if (status === 'active' && expiry > Date.now()) { badge.innerText = "ACTIVE"; expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); } 
                 else { badge.innerText = "MỚI"; }
@@ -238,14 +204,7 @@
             } else { window.location.href = 'admin.html'; }
         }
 
-        async function init() { 
-            updateHeaderUI(); 
-            try { 
-                const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
-                allAlbums = await res.json(); renderAlbums(allAlbums); 
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 2000); 
-            } catch (e) { document.getElementById('loadOverlay').style.display = 'none'; } 
-        }
+        async function init() { updateHeaderUI(); try { const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); allAlbums = await res.json(); renderAlbums(allAlbums); setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 2000); } catch (e) { document.getElementById('loadOverlay').style.display = 'none'; } }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
