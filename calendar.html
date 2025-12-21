@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>STUDIO PLANNER PRO - CHONANHNHANH.VN</title>
+    <title>STUDIO PLANNER MASTER - CHONANHNHANH.VN</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -31,29 +31,14 @@
             border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 30px; padding: 20px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative;
         }
-
-        /* LÀM NỔI BẬT 2 MŨI TÊN --- */
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-nav { 
-            background: rgba(0, 235, 176, 0.15); border: 1.5px solid var(--primary); color: var(--primary); 
-            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            transition: 0.3s; box-shadow: var(--neon);
-        }
+        .btn-nav { background: rgba(0, 235, 176, 0.15); border: 1.5px solid var(--primary); color: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: var(--neon); }
         .btn-nav:hover { background: var(--primary); color: #000; transform: scale(1.1); }
-
         .month-year-display { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 12px; letter-spacing: 1px; }
-        .month-year-display span { cursor: pointer; transition: 0.3s; padding: 4px 8px; border-radius: 8px; }
-        .month-year-display span:hover { background: rgba(0, 235, 176, 0.1); color: var(--primary); }
 
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 8px; font-size: 0.8rem; }
         .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
-        
-        .day { 
-            min-height: 60px; background: rgba(255,255,255,0.02); border-radius: 12px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
-        }
-        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
+        .day { min-height: 60px; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
         .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.08); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
         .day.other-month { opacity: 0.15; cursor: default; }
@@ -63,12 +48,14 @@
         .sidebar { background: rgba(10, 17, 36, 0.75); border-radius: 30px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .event-list { overflow-y: auto; flex: 1; padding-right: 5px; margin-bottom: 10px; }
         .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 18px; border-left: 4px solid var(--primary); position: relative; }
-        
-        /* TIỀN CỌC CHÌM XUỐNG TÝ --- */
-        .deposit-text { color: var(--gold-muted) !important; font-weight: 700; font-size: 0.75rem; text-shadow: none; }
 
+        /* --- FORM MASTER --- */
         .form-control, .form-select { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 10px; font-weight: 700; font-size: 0.9rem; }
-        .form-control::placeholder { color: #a5f3e0 !important; }
+        
+        /* HIỆN ICON ĐỒNG HỒ & LÀM DỊU GỢI Ý */
+        .form-control::placeholder { color: rgba(165, 243, 224, 0.4) !important; }
+        input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.8) sepia(100%) saturate(1000%) hue-rotate(100deg); cursor: pointer; opacity: 1; display: block !important; }
+
         .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 14px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
 
         .quick-selector { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 90%; background: #080d1a; border: 1px solid var(--primary); border-radius: 25px; padding: 20px; display: none; z-index: 100; box-shadow: 0 0 50px #000; }
@@ -76,7 +63,7 @@
         .selector-item { padding: 8px; text-align: center; font-weight: 700; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.05); font-size: 0.8rem; }
         .selector-item:hover { background: var(--primary); color: #000; }
 
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } }
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; margin-top: 10px; } }
     </style>
 </head>
 <body>
@@ -220,7 +207,7 @@
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
             document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             const dayEvents = events[dateKey] || [];
-            document.getElementById('eventList').innerHTML = dayEvents.length === 0 ? `<div class="text-center text-white mt-5 opacity-75">TRỐNG LỊCH</div>` : dayEvents.map((ev, idx) => `<div class="event-item"><div class="d-flex justify-content-between mb-2"><span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span><span class="deposit-text">${ev.deposit || ''}</span></div><h6 class="mb-1 fw-900">${ev.client}</h6><p class="small mb-0 opacity-75">${ev.type} | ${ev.phone}</p><button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button></div>`).join('');
+            document.getElementById('eventList').innerHTML = dayEvents.length === 0 ? `<div class="text-center text-white mt-5 opacity-75">TRỐNG LỊCH</div>` : dayEvents.map((ev, idx) => `<div class="event-item"><div class="d-flex justify-content-between mb-2"><span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span><span class="deposit-text" style="color:var(--gold-muted);font-size:0.75rem;">${ev.deposit || ''}</span></div><h6 class="mb-1 fw-900">${ev.client}</h6><p class="small mb-0 opacity-75">${ev.type} | ${ev.phone}</p><button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button></div>`).join('');
         }
 
         function openAddModal() { document.getElementById('addEventForm').reset(); new bootstrap.Modal(document.getElementById('addEventModal')).show(); }
