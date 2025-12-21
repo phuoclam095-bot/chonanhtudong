@@ -11,9 +11,8 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        /* CSS ẨN MẶC ĐỊNH ĐỂ CHỐNG NHÁY */
-        #adminNavLinks, #loggedInNav { display: none !important; }
-        #loggedOutNav { display: block; }
+        /* FIX NHÁY HEADER */
+        #adminNavLinks, #loggedInNav, #loggedOutNav { display: none; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -40,23 +39,25 @@
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; }
         input[type="text"]:focus { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
-        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
+        /* FIX VIỀN 3 NÚT GẠT */
+        .switch-container { margin-top: 25px; margin-bottom: 20px; }
+        .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); }
         .toggle-switch { position: relative; width: 50px; height: 26px; cursor: pointer; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background: #334155; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* RAINBOW REMIND KHÔI PHỤC */
         .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; }
 
         .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; }
+        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
 
         #resultBox { display: none; margin-top: 25px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
         .copy-link-flex { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.1); width: 100%; overflow: hidden; }
         #resClientLink { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); font-weight: 700; font-size: 0.85rem; text-decoration: none; }
-        .btn-copy-vip { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 8px 18px; border-radius: 10px; font-size: 0.75rem; cursor: pointer; flex-shrink: 0; }
+        .btn-copy-vip { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 8px 18px; border-radius: 10px; font-size: 0.75rem; cursor: pointer; }
 
         .chat-support-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; }
         .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 280px; text-align: right; }
@@ -64,11 +65,8 @@
         .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 480px; background: rgba(10, 20, 30, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; z-index: 10001; }
         .chat-header { background: var(--primary); padding: 15px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg-bubble { max-width: 75%; background: rgba(255,255,255,0.08); padding: 10px; border-radius: 12px; font-size: 0.8rem; color: #e2e8f0; }
-        .user-row .msg-bubble { background: var(--primary); color: #000; font-weight: 700; }
         #typingIndicator { font-size: 0.7rem; color: var(--primary); padding-left: 55px; margin-bottom: 5px; font-weight: 700; display: none; }
         .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
-        .chat-input-area input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--primary); border-radius: 15px; padding: 8px 15px; color: #fff !important; outline: none; }
 
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
