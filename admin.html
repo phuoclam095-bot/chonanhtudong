@@ -16,11 +16,10 @@
         
         .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 75%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); z-index: 5; }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; animation: marquee-run 35s linear infinite; }
-        @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         #adminNavLinks { list-style: none; margin: 0; padding: 0; display: none; gap: 8px; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover { color: var(--accent) !important; }
+        .nav-link:hover, .nav-link.active { color: var(--accent) !important; }
 
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 20px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; min-width: 240px; }
         #avatarPlaceholder { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
@@ -62,14 +61,10 @@
         .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 480px; background: rgba(10, 20, 30, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; z-index: 10001; }
         .chat-header { background: var(--primary); padding: 15px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .chat-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 5px; }
-        .chat-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--primary); overflow: hidden; background: #000; flex-shrink: 0; }
-        .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .msg-bubble { max-width: 75%; background: rgba(255,255,255,0.08); padding: 10px; border-radius: 12px; font-size: 0.8rem; color: #e2e8f0; }
         .user-row .msg-bubble { background: var(--primary); color: #000; font-weight: 700; }
         #typingIndicator { font-size: 0.7rem; color: var(--primary); padding-left: 55px; margin-bottom: 5px; font-weight: 700; display: none; }
         .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
-        .chat-input-area input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--primary); border-radius: 15px; padding: 8px 15px; color: #fff !important; outline: none; }
 
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
@@ -89,6 +84,7 @@
                     <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
                     <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
@@ -113,20 +109,16 @@
             <div class="create-card">
                 <h1 class="luxury-title">Thiết Lập Album VIP</h1>
                 <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.85rem; font-weight:700;"></div>
-                
                 <div class="mb-4">
                     <label id="inputLabel" style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây..." autocomplete="off" onfocus="resetStatus()" oninput="resetStatus()">
                 </div>
-
                 <div class="switch-container">
                     <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 </div>
-
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
-
                 <div id="resultBox">
                     <div style="text-align: center; margin-bottom: 10px;">
                         <i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i>
@@ -137,9 +129,7 @@
                         <button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()">COPY LINK</button>
                     </div>
                 </div>
-                
                 <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
-                <div class="mt-4 text-center" style="color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
             </div>
         </div>
     </div>
@@ -151,65 +141,73 @@
 
     <div class="chat-panel" id="chatPanel">
         <div class="chat-header"><span>HỖ TRỢ VIP</span><i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i></div>
-        <div class="chat-body" id="chatBody"><div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble">Dạ chào mình ạ! Em hỗ trợ được gì không?</div></div></div>
+        <div class="chat-body" id="chatBody"><div class="chat-row" style="display:flex; gap:10px;"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì không?</div></div></div>
         <div id="typingIndicator">Đang soạn tin...</div>
-        <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Nhập câu hỏi..."><button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%;"><i class="fas fa-paper-plane"></i></button></div>
+        <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%;"><i class="fas fa-paper-plane"></i></button></div>
     </div>
 
     <script>
         const PATHS = { CLIENT_ID: '781143890416-3hsl3fii3is9r7fl6m55gsuuulcteiq8.apps.googleusercontent.com', OAUTH: 'https://dichvufb.tino.page/webhook/google-oauth-callback', CREATE: 'https://dichvufb.tino.page/webhook/create-album-auto', INFO: 'https://dichvufb.tino.page/webhook/get-folder-info', CHAT: 'https://dichvufb.tino.page/webhook/chat-admin' };
-        let chatSessionId = 'session_' + Math.random().toString(36).substr(2, 9);
         let isVIP = false;
 
         function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const status = localStorage.getItem('admin_status') || 'new';
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
             isVIP = (status === 'active' && expiry > Date.now());
             
-            const btnCreate = document.getElementById('btnCreate');
-            const notice = document.getElementById('accountNotice');
-
             if (isLoggedIn) {
                 document.getElementById('marqueeContainer').style.display = 'none';
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedOutNav').style.display = 'none';
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
                 document.getElementById('authReminder').style.display = 'none';
-                btnCreate.classList.remove('d-none');
-                
-                document.getElementById('userNameDisplay').innerText = localStorage.getItem('admin_name');
+                document.getElementById('btnCreate').classList.remove('d-none');
+                document.getElementById('userNameDisplay').innerText = name;
                 const av = localStorage.getItem('admin_avatar');
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
 
+                const statusEl = document.getElementById('userStatusDisplay');
+                const notice = document.getElementById('accountNotice');
                 if (isVIP) {
-                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btnCreate.disabled = false;
+                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                    document.getElementById('btnCreate').disabled = false; notice.style.display = 'none';
                 } else {
-                    const tag = status === 'new' ? 'tag-new' : 'tag-expired';
-                    const text = status === 'new' ? 'Tài khoản MỚI' : 'Hết hạn';
-                    document.getElementById('userStatusDisplay').innerHTML = `<span class="status-tag ${tag}">${text}</span>`;
-                    btnCreate.disabled = true; // KHÓA NÚT NGAY TỪ GIAO DIỆN
-                    notice.style.display = 'block';
-                    notice.innerHTML = status === 'new' ? `Dạ chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="lienhe.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản đã hết hạn, vui lòng <a href="lienhe.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
+                    statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
+                    document.getElementById('btnCreate').disabled = true; notice.style.display = 'block';
+                    notice.innerHTML = status === 'new' ? `Chào mình, liên hệ <a href="https://zalo.me/0879029170" target="_blank" class="text-info">ADMIN</a> để Active hoặc <a href="payment.html" class="text-accent">Gia Hạn</a> ạ.` : `Tài khoản hết hạn, vui lòng <a href="payment.html" class="text-danger">Gia hạn để sử dụng</a> ạ.`;
                 }
+            } else {
+                document.getElementById('marqueeContainer').style.display = 'block';
+                document.getElementById('adminNavLinks').style.display = 'none';
+                document.getElementById('loggedOutNav').style.display = 'block';
+                document.getElementById('loggedInNav').style.display = 'none';
             }
+
+            // Khôi phục gợi ý AI
+            setTimeout(() => {
+                const bubble = document.getElementById('aiSuggestion');
+                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                    bubble.style.display = 'block';
+                }
+            }, 1500);
         }
 
         async function handleCreateAlbum() {
-            if(!isVIP) return; // KHÓA CHẶN LỆNH TẠO NẾU CHƯA ACTIVE
+            if(!isVIP) return;
             const driveLink = document.getElementById('driveLink').value.trim();
             const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
             const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
             if(!fId) return;
-
-            const btn = document.getElementById('btnCreate'); btn.innerHTML = 'ĐANG XỬ LÝ...'; btn.disabled = true;
+            const btn = document.getElementById('btnCreate'); btn.innerHTML = 'ĐANG KHỞI TẠO...'; btn.disabled = true;
             try {
                 await fetch(`${PATHS.CREATE}?folderId=${fId}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }}) });
                 const res = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
                 const data = await res.json();
                 if(data.clientLink) {
-                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới"; // Đã xóa bớt icon
+                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới"; // Xóa 1 icon thừa
                     document.getElementById('resClientLink').href = data.clientLink;
                     document.getElementById('resClientLink').innerText = data.clientLink;
                     document.getElementById('resultBox').style.display = 'block';
@@ -218,10 +216,11 @@
         }
 
         function resetStatus() { if(isVIP) document.getElementById('btnCreate').disabled = false; }
-        function logoutAdmin() { localStorage.clear(); window.location.reload(); }
+        function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
-        function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; }
-        
+        function logoutAdmin() { localStorage.clear(); window.location.reload(); }
+        function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
+
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('auth_status') === 'success') {
