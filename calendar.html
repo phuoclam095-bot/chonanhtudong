@@ -11,65 +11,64 @@
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
         body { 
             background-color: var(--bg-deep); 
-            background-image: linear-gradient(rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.6)), url('https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
+            background-image: linear-gradient(rgba(5, 10, 20, 0.6), rgba(5, 10, 20, 0.6)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
             background-size: cover; background-position: center; background-attachment: fixed; 
             color: #fff; font-family: 'Montserrat', sans-serif; padding-top: 80px; height: 100vh; overflow: hidden;
         }
 
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 70px; position: fixed; width: 100%; top: 0; z-index: 2000; }
+        /* --- NAVBAR --- */
+        .navbar { background: rgba(5, 10, 20, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 70px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.1rem; }
         .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; }
-        .nav-link.active { color: var(--primary) !important; position: relative; }
-        .nav-link.active::after { content: ''; position: absolute; bottom: 5px; left: 25%; width: 50%; height: 2px; background: var(--primary); box-shadow: var(--neon); }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 
-        /* FIX LỖI TRÀN KHUNG */
+        /* --- LAYOUT --- */
         .main-wrapper { max-width: 1350px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: 1fr 380px; gap: 20px; height: calc(100vh - 100px); overflow: hidden; }
 
+        /* --- CALENDAR CRYSTAL FIXED --- */
         .calendar-container { 
             background: rgba(10, 17, 36, 0.65); backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 35px; padding: 20px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative;
-            overflow: hidden;
         }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .month-year-display { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; display: flex; gap: 12px; }
         .month-year-display span { cursor: pointer; transition: 0.3s; padding: 4px 8px; border-radius: 8px; }
         .month-year-display span:hover { background: rgba(0, 235, 176, 0.1); color: var(--primary); }
-        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .btn-nav:hover { background: var(--primary); color: #000; box-shadow: var(--neon); }
-
-        .quick-selector { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 90%; background: #080d1a; border: 1px solid var(--primary); border-radius: 25px; padding: 20px; display: none; z-index: 100; box-shadow: 0 0 50px #000; }
-        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .selector-item { padding: 8px; text-align: center; font-weight: 700; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.05); font-size: 0.85rem; }
-        .selector-item:hover { background: var(--primary); color: #000; }
+        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
         .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: var(--primary); margin-bottom: 8px; font-size: 0.8rem; }
-        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; overflow: hidden; }
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; flex: 1; }
         
-        /* TÍCH HỢP LỊCH ÂM */
+        /* HIỂN THỊ LỊCH ÂM CHO CẢ NGÀY ẨN */
         .day { 
             aspect-ratio: 1.4/1; background: rgba(255,255,255,0.02); border-radius: 12px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); position: relative;
+            font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
         }
-        .day:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
+        .day:hover:not(.other-month) { border-color: var(--primary); background: rgba(0, 235, 176, 0.1); }
         .day.today { border-color: var(--gold-vip); color: var(--gold-vip); background: rgba(240, 195, 0, 0.05); }
         .day.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--neon); }
-        .day.other-month { opacity: 0.1 !important; pointer-events: none; }
-        .lunar-day { font-size: 0.65rem; opacity: 0.7; font-weight: 600; margin-top: 2px; }
-        .day.selected .lunar-day { color: #000; opacity: 0.9; }
+        .day.other-month { opacity: 0.15; } /* GIỮ NGÀY NHƯNG LÀM CHÌM */
+        .lunar-day { font-size: 0.6rem; opacity: 0.6; font-weight: 600; margin-top: 1px; }
 
+        /* --- SIDEBAR --- */
         .sidebar { background: rgba(10, 17, 36, 0.75); border-radius: 35px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .event-list { overflow-y: auto; flex: 1; padding-right: 5px; margin-bottom: 10px; }
         .event-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 18px; border-left: 4px solid var(--primary); position: relative; }
 
+        /* --- FORM --- */
         .form-control, .form-select { background: rgba(0,0,0,0.5) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 10px; font-weight: 700; font-size: 0.9rem; }
         .form-control::placeholder { color: #a5f3e0 !important; }
-        
-        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 14px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); transition: 0.3s; }
+        .btn-action-main { background: var(--primary); color: #000; font-weight: 900; padding: 14px; border-radius: 50px; width: 100%; border: none; text-transform: uppercase; box-shadow: var(--neon); }
 
-        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } .navbar-nav.mx-auto { position: static; transform: none; flex-wrap: wrap; justify-content: center; } }
+        .quick-selector { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 90%; background: #080d1a; border: 1px solid var(--primary); border-radius: 25px; padding: 20px; display: none; z-index: 100; box-shadow: 0 0 50px #000; }
+        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .selector-item { padding: 8px; text-align: center; font-weight: 700; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.05); font-size: 0.8rem; }
+        .selector-item:hover { background: var(--primary); color: #000; }
+
+        @media (max-width: 1000px) { .main-wrapper { grid-template-columns: 1fr; height: auto; } body { height: auto; overflow: auto; } }
     </style>
 </head>
 <body>
@@ -103,7 +102,6 @@
             </div>
 
             <div id="quickSelector" class="quick-selector">
-                <div id="selectorTitle" class="text-center fw-900 text-primary mb-3 uppercase">CHỌN NHANH</div>
                 <div id="selectorGrid" class="selector-grid"></div>
                 <button class="btn btn-sm btn-outline-danger w-100 mt-3 rounded-pill" onclick="toggleSelector()">ĐÓNG</button>
             </div>
@@ -124,53 +122,39 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 30px;">
                 <div class="modal-header border-0 px-4 pt-4">
-                    <h5 class="fw-900 text-primary uppercase mb-0"><i class="fas fa-camera-retro me-2"></i>THIẾT LẬP SHOW</h5>
+                    <h5 class="fw-900 text-primary uppercase mb-0">THIẾT LẬP SHOW</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="addEventForm">
-                        <div class="mb-3">
-                            <label class="small fw-bold text-primary mb-1">KHÁCH HÀNG / SHOW</label>
-                            <input type="text" class="form-control" id="clientName" placeholder="Tên show chụp..." required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold text-primary mb-1">SỐ ĐIỆN THOẠI</label>
-                            <input type="text" class="form-control" id="clientPhone" placeholder="SĐT khách hàng...">
-                        </div>
+                        <input type="text" class="form-control mb-3" id="clientName" placeholder="Tên khách hàng..." required>
+                        <input type="text" class="form-control mb-3" id="clientPhone" placeholder="SĐT liên hệ...">
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-1">GÓI CHỤP</label>
                                 <select class="form-select" id="shootType">
-                                    <option value="Wedding">💎 Gói Chụp Cưới</option>
-                                    <option value="Party">🎆 Gói Chụp Tiệc</option>
-                                    <option value="Portrait">📸 Gói Chân Dung</option>
-                                    <option value="Family">👪 Gói Gia Đình</option>
-                                    <option value="Other">🌀 GÓI KHÁC</option>
+                                    <option value="Wedding">💎 Chụp Cưới</option>
+                                    <option value="Party">🎆 Chụp Tiệc</option>
+                                    <option value="Portrait">📸 Chân Dung</option>
+                                    <option value="Family">👪 Gia Đình</option>
                                 </select>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-1">GIỜ (24H)</label>
                                 <input type="time" class="form-control" id="eventTime" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-1">TRẠNG THÁI</label>
                                 <select class="form-select" id="eventStatus">
                                     <option value="pending">🟡 Chờ xác nhận</option>
                                     <option value="confirmed">🟢 Đã đặt cọc</option>
                                 </select>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="small fw-bold text-primary mb-1">TIỀN CỌC (VNĐ)</label>
-                                <input type="text" class="form-control" id="depositAmount" placeholder="VD: 500.000">
+                                <input type="text" class="form-control" id="depositAmount" placeholder="Cọc: 500.000">
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold text-primary mb-1">GHI CHÚ</label>
-                            <textarea class="form-control" id="eventNote" rows="2" placeholder="Địa điểm, trang phục..."></textarea>
-                        </div>
-                        <button type="button" class="btn-action-main" onclick="saveEvent()">XÁC NHẬN LƯU</button>
+                        <textarea class="form-control mb-3" id="eventNote" rows="2" placeholder="Ghi chú thêm..."></textarea>
+                        <button type="button" class="btn-action-main" onclick="saveEvent()">LƯU LỊCH TRÌNH</button>
                     </form>
                 </div>
             </div>
@@ -179,12 +163,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- LUNAR LOGIC (SIMPLIFIED FOR STUDIO) ---
-        const getLunar = (d, m, y) => {
-            // Hàm mô phỏng ngày âm (Thực tế nên dùng thư viện lunar-calendar.js)
-            // Tạm thời trả về logic ngày giả lập chuẩn grid
-            return (d + 15) % 30 || 30;
-        };
+        // MÔ PHỎNG LỊCH ÂM
+        function getLunar(d, m, y) { return (d + 15) % 30 || 30; }
 
         let date = new Date();
         let currentMonth = date.getMonth();
@@ -195,6 +175,7 @@
         const monthsArr = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
 
         function renderCalendar() {
+            // FIX CĂN CHỈNH NGÀY DỰA TRÊN THỨ 2
             let firstDay = new Date(currentYear, currentMonth, 1).getDay();
             firstDay = (firstDay === 0) ? 6 : firstDay - 1; 
             const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -202,25 +183,32 @@
             
             document.getElementById('monthDisplay').innerText = monthsArr[currentMonth];
             document.getElementById('yearDisplay').innerText = currentYear;
+            
             let days = "";
-            for (let x = firstDay; x > 0; x--) days += `<div class="day other-month">${prevLastDay - x + 1}</div>`;
+
+            // NGÀY THÁNG TRƯỚC (CÓ LỊCH ÂM)
+            for (let x = firstDay; x > 0; x--) {
+                const d = prevLastDay - x + 1;
+                days += `<div class="day other-month"><span>${d}</span><span class="lunar-day">${getLunar(d)}</span></div>`;
+            }
+
+            // NGÀY THÁNG HIỆN TẠI
             for (let i = 1; i <= lastDay; i++) {
                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const isToday = i === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                 const isSelected = i === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-                const hasEvent = events[dateKey] && events[dateKey].length > 0;
-                
-                // Hiển thị lịch âm dưới ngày dương
-                const lunar = getLunar(i, currentMonth, currentYear);
-
                 days += `<div class="day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="selectDate(${i})">
                             <span>${i}</span>
-                            <span class="lunar-day">${lunar}</span>
-                            ${hasEvent ? '<div style="width:5px;height:5px;background:var(--primary);border-radius:50%;margin-top:2px;box-shadow:var(--neon)"></div>' : ''}
+                            <span class="lunar-day">${getLunar(i)}</span>
+                            ${events[dateKey] ? '<div style="width:5px;height:5px;background:var(--primary);border-radius:50%;margin-top:2px;"></div>' : ''}
                          </div>`;
             }
-            const remaining = (firstDay + lastDay > 35) ? 42 - (firstDay + lastDay) : 35 - (firstDay + lastDay);
-            for (let j = 1; j <= remaining; j++) days += `<div class="day other-month">${j}</div>`;
+            
+            // NGÀY THÁNG SAU (CÓ LỊCH ÂM)
+            const remaining = 42 - (firstDay + lastDay);
+            for (let j = 1; j <= remaining; j++) {
+                days += `<div class="day other-month"><span>${j}</span><span class="lunar-day">${getLunar(j)}</span></div>`;
+            }
             
             document.getElementById('daysGrid').innerHTML = days;
             renderEventList();
@@ -244,30 +232,16 @@
         
         function renderEventList() {
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
-            const dayEvents = events[dateKey] || [];
             document.getElementById('selectedDateDisplay').innerText = selectedDate.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('eventList').innerHTML = dayEvents.length === 0 ? `<div class="text-center text-white mt-5 opacity-75">TRỐNG LỊCH</div>` : dayEvents.map((ev, idx) => `
-                <div class="event-item">
-                    <div class="d-flex justify-content-between mb-2"><span class="fw-900 text-white"><i class="far fa-clock me-2 text-primary"></i>${ev.time}</span><span class="text-warning fw-bold small">${ev.deposit || ''}</span></div>
-                    <h6 class="mb-1 fw-900">${ev.client}</h6>
-                    <p class="small mb-1 text-primary fw-bold">${ev.phone || ''}</p>
-                    <button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button>
-                </div>`).join('');
+            const dayEvents = events[dateKey] || [];
+            document.getElementById('eventList').innerHTML = dayEvents.length === 0 ? `<div class="text-center text-white mt-5 opacity-75">TRỐNG LỊCH</div>` : dayEvents.map((ev, idx) => `<div class="event-item"><h6 class="mb-1 fw-900">${ev.client} - ${ev.time}</h6><p class="small mb-0 opacity-75">${ev.type} | ${ev.phone}</p><button class="btn btn-sm text-danger position-absolute top-0 end-0 m-2" onclick="deleteEvent('${dateKey}', ${idx})"><i class="fas fa-trash"></i></button></div>`).join('');
         }
 
         function openAddModal() { document.getElementById('addEventForm').reset(); new bootstrap.Modal(document.getElementById('addEventModal')).show(); }
         function saveEvent() {
             const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
             if (!events[dateKey]) events[dateKey] = [];
-            events[dateKey].push({ 
-                client: document.getElementById('clientName').value, 
-                phone: document.getElementById('clientPhone').value, 
-                type: document.getElementById('shootType').value, 
-                status: document.getElementById('eventStatus').value, 
-                time: document.getElementById('eventTime').value, 
-                deposit: document.getElementById('depositAmount').value,
-                note: document.getElementById('eventNote').value 
-            });
+            events[dateKey].push({ client: document.getElementById('clientName').value, phone: document.getElementById('clientPhone').value, type: document.getElementById('shootType').value, status: document.getElementById('eventStatus').value, time: document.getElementById('eventTime').value, deposit: document.getElementById('depositAmount').value, note: document.getElementById('eventNote').value });
             localStorage.setItem('photo_pro_planner_v3', JSON.stringify(events));
             bootstrap.Modal.getInstance(document.getElementById('addEventModal')).hide();
             renderCalendar();
