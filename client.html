@@ -10,58 +10,38 @@
     <style>
         :root { --primary: #00ebb0; --bg: #050a14; --header-h: 50px; --footer-h: 70px; --strip-h: 90px; }
         body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
-        
-        /* HEADER */
         .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
         .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        /* CONTENT */
         .content-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* GRID */
         #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 10px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
         @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
-
         .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
         .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .grid-item.selected { border-color: var(--primary); }
-        
-        /* SỐ THỨ TỰ DẠNG LƯỚI */
         .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
-
-        /* VIEWER */
         #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
         .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        /* BADGE SỐ THỨ TỰ VÀ TÊN DẠNG CHI TIẾT */
         #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; border: 1px solid rgba(255,255,255,0.1); z-index: 4500; text-align: right; }
-
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
         .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; transition: 0.2s; position: relative; }
         .th-vip img { width: 100%; height: 100%; object-fit: cover; }
         .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.1); }
         .th-vip.sel { border-color: var(--primary); opacity: 1; }
-
-        /* BOTTOM BAR */
         .bottom-bar { height: var(--footer-h); background: #000; border-top: 1px solid #222; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; z-index: 5000; flex-shrink: 0; }
         .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 0.75rem; }
         .btn-sq { width: 42px; font-size: 1.1rem; }
         .btn-text { padding: 0 20px; text-transform: uppercase; gap: 8px; }
-        
         .bg-gray { background: #222; color: #fff; }
         .bg-primary { background: var(--primary); color: #000; }
         .bg-danger-vip { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
         .bg-gradient-vip { background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000; box-shadow: 0 5px 15px rgba(0, 235, 176, 0.3); }
-
         #loadOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-
     <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-weight: 900; color: var(--primary); font-size: 0.7rem; letter-spacing: 2px;">V21.1 ULTIMATE</div></div>
-
     <nav class="navbar">
         <div class="album-title" id="albumTitle">ĐANG TẢI...</div>
         <div class="d-flex gap-2">
@@ -69,12 +49,11 @@
             <button id="btnViewer" style="background:transparent; border:none; color:#666; font-weight:900; font-size:0.75rem;" onclick="setView('viewer')">CHI TIẾT</button>
         </div>
     </nav>
-
     <div class="content-area">
         <div id="photoGrid"></div>
         <div id="photoViewer">
-            <div id="viewerBadge" style="position:absolute; top:15px; left:15px; background:var(--primary); color:#000; padding:5px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
             <div class="stage">
+                <div id="viewerBadge" style="position:absolute; top:15px; left:15px; background:var(--primary); color:#000; padding:5px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
                 <div id="photoInfoBadge">
                     <div id="photoIndexText" style="color:var(--primary); font-weight:900; margin-bottom:2px;">0/0</div>
                     <div id="photoNameText" style="font-size:0.6rem; opacity:0.8;">FILENAME</div>
@@ -84,7 +63,6 @@
             <div class="strip-luxury" id="strip"></div>
         </div>
     </div>
-
     <div class="bottom-bar">
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
@@ -95,14 +73,11 @@
             <button class="btn-action btn-text bg-gradient-vip" onclick="finalCommit()">LƯU (<span id="totalPhotos">0</span>)</button>
         </div>
     </div>
-
     <script>
         const PATHS = { GET: 'https://dichvufb.tino.page/webhook/get-photos', SAVE: 'https://dichvufb.tino.page/webhook/save-selection', DONE: 'https://dichvufb.tino.page/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         const fid = new URLSearchParams(window.location.search).get('id');
-
         function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
-
         function setView(v) {
             currentView = v;
             document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
@@ -111,7 +86,6 @@
             document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
             if(v === 'viewer') showViewer(); else syncGridUI();
         }
-
         function initGrid() {
             const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
             photos.forEach((p, i) => {
@@ -124,7 +98,6 @@
             });
             syncGridUI();
         }
-
         function syncGridUI() {
             if(currentView !== 'grid') return;
             photos.forEach((p, i) => {
@@ -132,28 +105,21 @@
                 const isSel = selectedIds.includes(p.id);
                 el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
-                
-                // HIỂN THỊ SỐ THỨ TỰ DẠNG LƯỚI
                 let dot = el.querySelector('.vip-dot');
                 if(isSel) {
                     const num = selectedIds.indexOf(p.id) + 1;
                     if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
                     else dot.innerText = num;
                 } else if(dot) dot.remove();
-                
                 el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
             });
             updateInfo();
         }
-
         function showViewer() {
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
-            
-            // CẬP NHẬT SỐ THỨ TỰ VÀ TÊN DẠNG CHI TIẾT
             document.getElementById('photoIndexText').innerText = `${cur + 1} / ${photos.length}`;
             document.getElementById('photoNameText').innerText = p.name || "UNNAMED";
-            
             const strip = document.getElementById('strip'); strip.innerHTML = '';
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
             displayPhotos.forEach((p) => {
@@ -169,7 +135,6 @@
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
-
         function togSel() {
             const p = photos[cur];
             const idx = selectedIds.indexOf(p.id);
@@ -179,7 +144,6 @@
             currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
         }
-
         function toggleFilter() {
             if(selectedIds.length === 0 && !isFiltering) return alert("Dạ chưa chọn ảnh nào!");
             isFiltering = !isFiltering;
@@ -189,9 +153,7 @@
                 setView('grid');
             } else { syncGridUI(); }
         }
-
         function clearAll() { if(confirm("Xóa toàn bộ ảnh đã chọn?")) { selectedIds = []; localStorage.setItem('anh_da_chon_cua_khach_' + fid, "[]"); isFiltering = false; syncGridUI(); } }
-
         function updateInfo() {
             const p = photos[cur]; if(!p) return;
             const isSel = selectedIds.includes(p.id);
@@ -203,30 +165,23 @@
             if(currentView === 'viewer' && isSel) { badge.style.display = 'block'; badge.innerText = `CHỌN #${selectedIds.indexOf(p.id)+1}`; }
             else badge.style.display = 'none';
         }
-
         async function finalCommit(){
             if(selectedIds.length === 0) return alert("Dạ khách chưa chọn ảnh nào ạ!");
             if(confirm(`Gửi ${selectedIds.length} ảnh đã chọn?`)) {
                 try { await fetch(PATHS.DONE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ id: fid, selected_ids: selectedIds, count: selectedIds.length }) }); alert("✅ Tuyệt vời! Yêu cầu đã được lưu."); } catch(e) { alert("Lỗi gửi!"); }
             }
         }
-
         async function init() {
             try {
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json(); 
                 photos = data.photos || (Array.isArray(data) ? data : []);
-                
-                // ĐỒNG BỘ TÊN ALBUM
-                if(photos.length > 0) {
-                    document.getElementById('albumTitle').innerText = photos[0].folderName || "VIP ALBUM";
-                }
-
+                if(photos.length > 0) { document.getElementById('albumTitle').innerText = photos[0].folderName || "VIP ALBUM"; }
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 initGrid();
-            } catch(e) { alert("Lỗi tải dữ liệu!"); }
+            } catch(e) { alert("Lỗi!"); }
         }
         init();
     </script>
