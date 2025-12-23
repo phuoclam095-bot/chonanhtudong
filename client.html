@@ -13,7 +13,7 @@
         
         /* HEADER MẢNH */
         .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-        .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; }
+        .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         /* CONTENT AREA */
         .content-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
@@ -33,9 +33,12 @@
         #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
         
         /* TẦNG 1: ẢNH LỚN */
-        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
+        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
+        /* HIỂN THỊ TÊN ẢNH TRONG VIEWER */
+        #fileName { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); }
+
         /* TẦNG 2: THUMBNAIL LUÔN HIỆN DIỆN */
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
         .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; transition: 0.2s; position: relative; }
@@ -74,7 +77,10 @@
         <div id="photoGrid"></div>
         <div id="photoViewer">
             <div id="viewerBadge" style="position:absolute; top:15px; left:15px; background:var(--primary); color:#000; padding:5px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
-            <div class="stage"><img id="mainImg" src=""></div>
+            <div class="stage">
+                <span id="fileName">FILE NAME</span>
+                <img id="mainImg" src="">
+            </div>
             <div class="strip-luxury" id="strip"></div>
         </div>
     </div>
@@ -121,7 +127,6 @@
 
         function syncGridUI() {
             if(currentView !== 'grid') return;
-            const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
@@ -141,6 +146,7 @@
         function showViewer() {
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
+            document.getElementById('fileName').innerText = p.name || "UNNAMED FILE";
             const strip = document.getElementById('strip'); strip.innerHTML = '';
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
             displayPhotos.forEach((p) => {
@@ -164,7 +170,7 @@
             else selectedIds.splice(idx, 1);
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
             currentView === 'grid' ? syncGridUI() : showViewer();
-            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
+            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1, folderId: fid}) });
         }
 
         function toggleFilter() {
@@ -172,7 +178,8 @@
             isFiltering = !isFiltering;
             document.getElementById('btnFilter').classList.toggle('bg-primary', isFiltering);
             if(isFiltering) {
-                cur = photos.indexOf(photos.find(p => selectedIds.includes(p.id)));
+                const firstSelIdx = photos.findIndex(p => selectedIds.includes(p.id));
+                if(firstSelIdx !== -1) cur = firstSelIdx;
                 setView('grid');
             } else { syncGridUI(); }
         }
@@ -207,7 +214,7 @@
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 initGrid();
-            } catch(e) { alert("Lỗi!"); }
+            } catch(e) { alert("Lỗi tải dữ liệu!"); }
         }
         init();
     </script>
