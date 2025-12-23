@@ -26,6 +26,7 @@
         .marquee-wrapper { width: 600px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
+        /* PILL USER */
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); height: 52px; min-width: 230px; }
         #avatarPlaceholder { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0, 235, 176, 0.3); }
         #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
@@ -34,19 +35,18 @@
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
 
-        /* --- HIỆU ỨNG RAINBOW BORDER CHO NÚT LOGIN VIP --- */
-        .btn-login-rainbow { cursor: pointer; background: var(--rainbow); background-size: 200% auto; padding: 2px; border-radius: 50px; animation: rainbow-move 3s linear infinite; transition: 0.3s; }
-        .btn-login-rainbow:hover { transform: scale(1.05); }
+        /* NÚT LOGIN VIP CỐ ĐỊNH */
+        .btn-login-rainbow { cursor: pointer; background: var(--rainbow); background-size: 200% auto; padding: 2px; border-radius: 50px; animation: rainbow-move 3s linear infinite; position: absolute; right: 30px; top: 25px; transition: 0.3s; }
         .btn-login-rainbow span { background: #050a14; color: #fff; font-weight: 900; padding: 8px 25px; border-radius: 50px; display: block; font-size: 0.85rem; }
 
         .main-container { padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; }
         .rainbow-border-wrapper { position: relative; padding: 3px; border-radius: 35px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite; max-width: 600px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
-        .create-card { background: #080d1a; border-radius: 32px; padding: 40px; }
+        .create-card { background: #080d1a; border-radius: 32px; padding: 40px; position: relative; }
         
+        /* TIÊU ĐỀ SHINE CHẬM MANAGA */
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 5s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
 
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; }
-        input[type="text"]:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.05); }
 
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); }
         .toggle-switch { position: relative; width: 50px; height: 26px; cursor: pointer; }
@@ -56,33 +56,28 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0 10px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; padding: 10px; }
+        /* DÒNG NHẮC ĐĂNG NHẬP NỀN DÀI */
+        .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0 10px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; padding: 12px 30px; }
 
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-
-        #resultBox { display: none; margin-bottom: 20px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
-        .copy-link-flex { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.1); width: 100%; overflow: hidden; }
-        #resClientLink { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); font-weight: 700; font-size: 0.85rem; text-decoration: none; }
-        .btn-copy-vip { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 8px 18px; border-radius: 10px; font-size: 0.75rem; cursor: pointer; }
-
-        .chat-support-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; align-items: flex-end; gap: 15px; }
+        /* CHAT BÊN TRÁI */
+        .chat-support-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 10000; display: flex; align-items: center; gap: 15px; }
         .ai-suggestion-bubble { background: #fff; color: #1a1a1a; padding: 12px 18px; border-radius: 20px 20px 0 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; border: 2.5px solid var(--primary); max-width: 280px; text-align: right; }
         .chat-trigger { width: 65px; height: 65px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 25px var(--primary); flex-shrink: 0; }
         .chat-panel { position: fixed; bottom: 105px; right: 30px; width: 330px; height: 480px; background: rgba(10, 20, 30, 0.98); backdrop-filter: blur(25px); border: 1.5px solid var(--primary); border-radius: 25px; display: none; flex-direction: column; overflow: hidden; z-index: 10001; }
-        .chat-header { background: var(--primary); padding: 15px; font-weight: 800; color: #000; display: flex; justify-content: space-between; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .chat-row { display: flex; gap: 10px; margin-bottom: 5px; }
-        .chat-avatar { width: 35px; height: 35px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #eee; border: 1px solid var(--primary); }
-        .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .ai-status-text { font-size: 0.65rem; color: var(--primary); font-weight: 700; margin-left: 45px; display: none; }
-        .msg-bubble { padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; }
-        .msg-ai { background: rgba(255,255,255,0.1); color: #fff; border-bottom-left-radius: 2px; }
-        .msg-user { background: var(--primary); color: #000; font-weight: 700; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
 
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+
+        .navbar-toggler { border: none; color: var(--primary); font-size: 1.6rem; padding: 0; position: absolute; right: 20px; top: 30px; }
+        .navbar-toggler:focus { box-shadow: none; outline: none; }
+
+        @media (max-width: 991px) {
+            .nav-center-container { position: static; transform: none; width: 100%; margin: 15px 0; }
+            .navbar-nav { flex-direction: column; align-items: center; gap: 10px; }
+            .navbar-collapse { background: rgba(5, 10, 20, 0.98); border-radius: 20px; border: 1px solid rgba(0, 235, 176, 0.2); padding: 20px; margin-top: 60px; }
+            .marquee-wrapper { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -90,6 +85,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><i class="fas fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navMain">
                 <div class="nav-center-container">
                     <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
@@ -103,10 +99,11 @@
                         <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
                     </ul>
                 </div>
-                <div class="ms-auto d-flex align-items-center">
-                    <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()"><span>LOGIN VIP</span></div></div>
-                    <div id="loggedInNav" class="d-flex align-items-center"><div class="user-pill"><div id="avatarPlaceholder"></div><div class="d-flex flex-column overflow-hidden"><span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span><div id="userStatusDisplay"></div></div></div><button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button></div>
-                </div>
+            </div>
+            <div id="loggedOutNav"><div class="btn-login-rainbow" onclick="startGoogleLogin()"><span>LOGIN VIP</span></div></div>
+            <div id="loggedInNav" style="position: absolute; right: 30px; top: 22px; z-index: 2000;" class="align-items-center">
+                <div class="user-pill"><div id="avatarPlaceholder"></div><div class="d-flex flex-column overflow-hidden text-start"><span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span><div id="userStatusDisplay"></div></div></div>
+                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
             </div>
         </div>
     </nav>
@@ -126,10 +123,12 @@
                     <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
                 </div>
-                <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
+                <div id="authReminder" class="remind-text-rainbow">VUI LÒNG ĐĂNG NHẬP ĐỂ SỬ DỤNG</div>
+                <div id="extraTextNotice" class="text-center mb-3" style="display:none; color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
+                
                 <div id="resultBox" style="display:none; margin-bottom: 20px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05);">
                     <div style="text-align: center; margin-bottom: 10px;"><i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i><span id="resFolderName" style="font-weight:800; color:#fff; margin-left: 5px;"></span></div>
-                    <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); font-weight: 700; font-size: 0.85rem; text-decoration: none;">...</a><button onclick="copyFinalLink()" style="background: var(--primary); border: none; color: #000; font-weight: 900; padding: 8px 18px; border-radius: 10px; font-size: 0.75rem;">COPY LINK</button></div>
+                    <div class="copy-link-flex" style="display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.1);"><a href="#" id="resClientLink" target="_blank" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); font-weight: 700; font-size: 0.85rem; text-decoration: none;">...</a><button onclick="copyFinalLink()" style="background: var(--primary); border: none; color: #000; font-weight: 900; padding: 8px 18px; border-radius: 10px; font-size: 0.75rem;">COPY LINK</button></div>
                 </div>
                 <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
             </div>
@@ -143,7 +142,7 @@
 
     <div class="chat-panel" id="chatPanel">
         <div class="chat-header"><span>HỖ TRỢ VIP</span><i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i></div>
-        <div class="chat-body" id="chatBody"><div class="chat-row"><div class="msg-bubble msg-ai" style="padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; background: rgba(255,255,255,0.1); color: #fff;">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì không?</div></div></div>
+        <div class="chat-body" id="chatBody"><div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble msg-ai" style="padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; background: rgba(255,255,255,0.1); color: #fff;">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì không?</div></div></div>
         <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Nhập câu hỏi..." style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff;"><button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%; margin-left: 5px;"><i class="fas fa-paper-plane"></i></button></div>
     </div>
 
@@ -167,37 +166,33 @@
                 document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
-                document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedOutNav').style.setProperty('none', 'important');
                 document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
                 btnCreate.classList.remove('d-none');
                 document.getElementById('userNameDisplay').innerText = name;
                 const av = localStorage.getItem('admin_avatar');
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
                 
-                // ĐIỀU KIỆN KHÓA NÚT VÀ HIỂN THỊ THÔNG BÁO
+                // ĐIỀU KIỆN THÔNG MINH CHO THÔNG BÁO
                 if (isVIP) {
                     statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btnCreate.disabled = false; 
-                    notice.style.display = 'none';
+                    btnCreate.disabled = false; notice.style.display = 'none';
                 } else if (status === 'new') {
                     statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-                    btnCreate.disabled = true; // KHÓA NÚT TÀI KHOẢN MỚI
-                    notice.style.display = 'block';
+                    btnCreate.disabled = true; notice.style.display = 'block';
                     notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
                 } else {
                     statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
-                    btnCreate.disabled = true; // KHÓA NÚT TÀI KHOẢN HẾT HẠN
-                    notice.style.display = 'block';
+                    btnCreate.disabled = true; notice.style.display = 'block';
                     notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
                 }
             } else {
                 document.getElementById('marqueeContainer').style.setProperty('display', 'block', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'none', 'important');
-                document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedInNav').style.setProperty('none', 'important');
                 document.getElementById('loggedOutNav').style.setProperty('block', 'important');
                 document.getElementById('authReminder').style.setProperty('block', 'important');
-                btnCreate.classList.add('d-none');
-                notice.style.display = 'none';
+                btnCreate.classList.add('d-none'); notice.style.display = 'none';
             }
             setTimeout(() => {
                 const bubble = document.getElementById('aiSuggestion');
@@ -215,13 +210,15 @@
             const body = document.getElementById('chatBody');
             body.innerHTML += `<div class="msg-bubble msg-user" style="padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; background: var(--primary); color: #000; font-weight: 700; align-self: flex-end; border-bottom-right-radius: 2px;">${msg}</div>`;
             input.value = ''; body.scrollTop = body.scrollHeight;
+            document.getElementById('aiTypingStatus').style.display = 'block';
             let sid = localStorage.getItem('chat_session_id') || 'ss_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('chat_session_id', sid);
             try {
                 const response = await fetch(PATHS.CHAT, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ sessionId: sid, message: msg, adminEmail: localStorage.getItem('admin_email') || 'Guest' }) });
                 const data = await response.json();
-                body.innerHTML += `<div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble msg-ai" style="padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; background: rgba(255,255,255,0.1); color: #fff;">${data.reply || data.output}</div></div>`;
-            } catch (e) {}
+                document.getElementById('aiTypingStatus').style.display = 'none';
+                body.innerHTML += `<div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble msg-ai" style="padding: 10px 14px; border-radius: 15px; font-size: 0.85rem; line-height: 1.4; max-width: 80%; background: rgba(255,255,255,0.1); color: #fff; border-bottom-left-radius: 2px;">${data.reply || data.output}</div></div>`;
+            } catch (e) { document.getElementById('aiTypingStatus').style.display = 'none'; }
             body.scrollTop = body.scrollHeight;
         }
 
