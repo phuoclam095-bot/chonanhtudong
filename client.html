@@ -151,7 +151,7 @@
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             
-            // CẬP NHẬT SỐ THỨ TỰ VÀ TÊN
+            // CẬP NHẬT CHÍNH XÁC NỘI DUNG SỐ THỨ TỰ VÀ TÊN ẢNH
             document.getElementById('photoIndexText').innerText = `${cur + 1} / ${photos.length}`;
             document.getElementById('photoNameText').innerText = p.name || "UNNAMED";
             
