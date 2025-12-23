@@ -20,9 +20,7 @@
         @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
 
         .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-        .grid-item:hover img { transform: scale(1.08); }
-        .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
         .grid-item.selected { border-color: var(--primary); }
         .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
 
@@ -30,7 +28,7 @@
         .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        /* HIỂN THỊ SỐ THỨ TỰ TRÊN ẢNH XEM CHI TIẾT */
+        /* BADGE HIỂN THỊ SỐ TRÊN CHI TIẾT */
         #photoIndexBadge { position: absolute; top: 15px; right: 15px; background: rgba(0, 235, 176, 0.9); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 0.75rem; z-index: 4500; }
 
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
@@ -56,7 +54,7 @@
     <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-weight: 900; color: var(--primary); font-size: 0.7rem; letter-spacing: 2px;">V21.1 ULTIMATE</div></div>
 
     <nav class="navbar">
-        <div class="album-title" id="albumTitle">VIP ALBUM</div>
+        <div class="album-title" id="albumTitle">ĐANG TẢI...</div>
         <div class="d-flex gap-2">
             <button id="btnGrid" style="background:transparent; border:none; color:var(--primary); font-weight:900; font-size:0.75rem;" onclick="setView('grid')">LƯỚI</button>
             <button id="btnViewer" style="background:transparent; border:none; color:#666; font-weight:900; font-size:0.75rem;" onclick="setView('viewer')">CHI TIẾT</button>
@@ -71,7 +69,7 @@
                 <div id="photoIndexBadge">0 / 0</div>
                 <img id="mainImg" src="">
             </div>
-            <div class="strip" id="strip" class="strip-luxury"></div>
+            <div class="strip-luxury" id="strip"></div>
         </div>
     </div>
 
@@ -120,7 +118,6 @@
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
-                el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
                 let dot = el.querySelector('.vip-dot');
                 if(isSel) {
@@ -136,8 +133,7 @@
         function showViewer() {
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
-            
-            // Cập nhật số hiển thị ảnh
+            // CẬP NHẬT SỐ THỨ TỰ
             document.getElementById('photoIndexBadge').innerText = `${cur + 1} / ${photos.length}`;
 
             const strip = document.getElementById('strip'); strip.innerHTML = '';
@@ -157,10 +153,8 @@
         }
 
         function togSel() {
-            const p = photos[cur];
-            const idx = selectedIds.indexOf(p.id);
-            if (idx === -1) selectedIds.push(p.id);
-            else selectedIds.splice(idx, 1);
+            const p = photos[cur]; const idx = selectedIds.indexOf(p.id);
+            if (idx === -1) selectedIds.push(p.id); else selectedIds.splice(idx, 1);
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
             currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
@@ -170,10 +164,7 @@
             if(selectedIds.length === 0 && !isFiltering) return alert("Dạ chưa chọn ảnh nào!");
             isFiltering = !isFiltering;
             document.getElementById('btnFilter').classList.toggle('bg-primary', isFiltering);
-            if(isFiltering) {
-                cur = photos.indexOf(photos.find(p => selectedIds.includes(p.id)));
-                setView('grid');
-            } else { syncGridUI(); }
+            if(isFiltering) { setView('grid'); } else { syncGridUI(); }
         }
 
         function clearAll() { if(confirm("Xóa toàn bộ ảnh đã chọn?")) { selectedIds = []; localStorage.setItem('anh_da_chon_cua_khach_' + fid, "[]"); isFiltering = false; syncGridUI(); } }
@@ -202,15 +193,13 @@
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json(); 
                 photos = data.photos || data;
-                
-                // Bóc tách Folder Name chính xác như trang quản lý
+                // LẤY TÊN THƯ MỤC TỪ MANAGA
                 document.getElementById('albumTitle').innerText = data.folderName || data.name || "VIP ALBUM";
-                
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 initGrid();
-            } catch(e) { alert("Lỗi tải dữ liệu!"); }
+            } catch(e) { alert("Lỗi!"); }
         }
         init();
     </script>
