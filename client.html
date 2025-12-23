@@ -11,44 +11,41 @@
         :root { --primary: #00ebb0; --bg: #050a14; --header-h: 50px; --footer-h: 70px; --strip-h: 90px; }
         body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
         
-        /* HEADER MẢNH */
+        /* HEADER */
         .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
         .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* CONTENT AREA */
+        /* CONTENT */
         .content-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* GRID - FIXED SCROLL */
+        /* GRID */
         #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 10px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
         @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
 
         .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-        .grid-item:hover img { transform: scale(1.08); }
         .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .grid-item.selected { border-color: var(--primary); }
+        
+        /* SỐ THỨ TỰ DẠNG LƯỚI */
         .vip-dot { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
 
-        /* CHI TIẾT - PHÂN TẦNG TUYỆT ĐỐI KHÔNG CHE */
+        /* VIEWER */
         #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
-        
-        /* TẦNG 1: ẢNH LỚN */
         .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        /* BADGE TÊN ẢNH VÀ SỐ */
-        #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; border: 1px solid rgba(255,255,255,0.1); z-index: 11; text-align: right; }
+        /* BADGE SỐ THỨ TỰ VÀ TÊN DẠNG CHI TIẾT */
+        #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; border: 1px solid rgba(255,255,255,0.1); z-index: 4500; text-align: right; }
 
-        /* TẦNG 2: THUMBNAIL LUÔN HIỆN DIỆN */
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
         .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; transition: 0.2s; position: relative; }
         .th-vip img { width: 100%; height: 100%; object-fit: cover; }
         .th-vip.act { opacity: 1; border-color: var(--primary); transform: scale(1.1); }
         .th-vip.sel { border-color: var(--primary); opacity: 1; }
 
-        /* TẦNG 3: THANH CÔNG CỤ DƯỚI CÙNG */
+        /* BOTTOM BAR */
         .bottom-bar { height: var(--footer-h); background: #000; border-top: 1px solid #222; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; z-index: 5000; flex-shrink: 0; }
-        
         .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 0.75rem; }
         .btn-sq { width: 42px; font-size: 1.1rem; }
         .btn-text { padding: 0 20px; text-transform: uppercase; gap: 8px; }
@@ -79,8 +76,8 @@
             <div id="viewerBadge" style="position:absolute; top:15px; left:15px; background:var(--primary); color:#000; padding:5px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
             <div class="stage">
                 <div id="photoInfoBadge">
-                    <div id="photoIndexText" style="color:var(--primary); font-weight:900;">0/0</div>
-                    <div id="photoNameText">FILENAME</div>
+                    <div id="photoIndexText" style="color:var(--primary); font-weight:900; margin-bottom:2px;">0/0</div>
+                    <div id="photoNameText" style="font-size:0.6rem; opacity:0.8;">FILENAME</div>
                 </div>
                 <img id="mainImg" src="">
             </div>
@@ -130,18 +127,20 @@
 
         function syncGridUI() {
             if(currentView !== 'grid') return;
-            const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
                 el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
+                
+                // HIỂN THỊ SỐ THỨ TỰ DẠNG LƯỚI
                 let dot = el.querySelector('.vip-dot');
                 if(isSel) {
                     const num = selectedIds.indexOf(p.id) + 1;
                     if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
                     else dot.innerText = num;
                 } else if(dot) dot.remove();
+                
                 el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
             });
             updateInfo();
@@ -151,7 +150,7 @@
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             
-            // CẬP NHẬT CHÍNH XÁC NỘI DUNG SỐ THỨ TỰ VÀ TÊN ẢNH
+            // CẬP NHẬT SỐ THỨ TỰ VÀ TÊN DẠNG CHI TIẾT
             document.getElementById('photoIndexText').innerText = `${cur + 1} / ${photos.length}`;
             document.getElementById('photoNameText').innerText = p.name || "UNNAMED";
             
@@ -218,7 +217,7 @@
                 const data = await res.json(); 
                 photos = data.photos || (Array.isArray(data) ? data : []);
                 
-                // LẤY TÊN ALBUM TỪ FOLDERNAME CỦA JSON
+                // ĐỒNG BỘ TÊN ALBUM
                 if(photos.length > 0) {
                     document.getElementById('albumTitle').innerText = photos[0].folderName || "VIP ALBUM";
                 }
@@ -227,7 +226,7 @@
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 initGrid();
-            } catch(e) { alert("Lỗi!"); }
+            } catch(e) { alert("Lỗi tải dữ liệu!"); }
         }
         init();
     </script>
