@@ -28,8 +28,10 @@
         .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
         #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        /* BADGE HIỂN THỊ SỐ TRÊN CHI TIẾT */
-        #photoIndexBadge { position: absolute; top: 15px; right: 15px; background: rgba(0, 235, 176, 0.9); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 0.75rem; z-index: 4500; }
+        /* HIỂN THỊ TÊN ẢNH VÀ SỐ THỨ TỰ */
+        #photoInfoBox { position: absolute; top: 15px; right: 15px; z-index: 4500; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+        #photoIndexBadge { background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 0.7rem; }
+        #photoNameBadge { background: rgba(0,0,0,0.6); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); }
 
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
         .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.4; transition: 0.2s; position: relative; }
@@ -66,7 +68,10 @@
         <div id="photoViewer">
             <div id="viewerBadge" style="position:absolute; top:15px; left:15px; background:var(--primary); color:#000; padding:5px 15px; border-radius:20px; font-weight:900; font-size:0.7rem; z-index:10; display:none;"></div>
             <div class="stage">
-                <div id="photoIndexBadge">0 / 0</div>
+                <div id="photoInfoBox">
+                    <div id="photoIndexBadge">0 / 0</div>
+                    <div id="photoNameBadge">FILE NAME</div>
+                </div>
                 <img id="mainImg" src="">
             </div>
             <div class="strip-luxury" id="strip"></div>
@@ -133,8 +138,10 @@
         function showViewer() {
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
-            // CẬP NHẬT SỐ THỨ TỰ
+            
+            // HIỂN THỊ TÊN ẢNH VÀ SỐ
             document.getElementById('photoIndexBadge').innerText = `${cur + 1} / ${photos.length}`;
+            document.getElementById('photoNameBadge').innerText = p.name || p.fileName || "FILE";
 
             const strip = document.getElementById('strip'); strip.innerHTML = '';
             const displayPhotos = isFiltering ? photos.filter(p => selectedIds.includes(p.id)) : photos;
@@ -192,14 +199,19 @@
             try {
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json(); 
-                photos = data.photos || data;
-                // LẤY TÊN THƯ MỤC TỪ MANAGA
+                
+                // XỬ LÝ DỮ LIỆU TỪ n8n
+                // Chấp nhận cả dạng mảng trực tiếp hoặc đối tượng có trường photos
+                photos = data.photos || (Array.isArray(data) ? data : []);
+                
+                // Ưu tiên folderName từ n8n mang qua
                 document.getElementById('albumTitle').innerText = data.folderName || data.name || "VIP ALBUM";
+                
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 initGrid();
-            } catch(e) { alert("Lỗi!"); }
+            } catch(e) { alert("Lỗi kết nối API!"); }
         }
         init();
     </script>
