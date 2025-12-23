@@ -17,13 +17,14 @@
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
         /* CĂN GIỮA NAVAR TUYỆT ĐỐI */
-        .navbar-nav.mx-auto { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; align-items: center; }
+        .nav-center-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; width: auto; z-index: 5; }
+        .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* MARQUEE NAVBAR */
-        .marquee-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: 65%; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
+        /* MARQUEE KHÔI PHỤC */
+        .marquee-wrapper { width: 600px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
         .user-pill { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--primary); height: 52px; min-width: 230px; }
@@ -40,8 +41,6 @@
         .luxury-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; background: linear-gradient(to right, #fff, var(--primary), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; margin-bottom: 30px; text-transform: uppercase; }
 
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; }
-
-        .switch-container { margin-top: 25px; margin-bottom: 20px; }
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); }
         .toggle-switch { position: relative; width: 50px; height: 26px; cursor: pointer; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -51,9 +50,8 @@
         input:checked + .slider:before { transform: translateX(24px); }
 
         .remind-text-rainbow { background: var(--rainbow); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow-move 3s linear infinite; font-weight: 900; text-transform: uppercase; margin: 25px 0 10px 0; text-align: center; font-size: 1.1rem; letter-spacing: 1px; display: none; }
-
-        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; box-shadow: 0 0 20px rgba(0, 235, 176, 0.3); }
-        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed !important; color: #94a3b8 !important; }
+        .btn-create { background: var(--primary); color: #000; border: none; padding: 18px; font-size: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .btn-create:disabled { background: #334155 !important; opacity: 0.4 !important; color: #94a3b8 !important; }
 
         #resultBox { display: none; margin-top: 25px; padding: 25px; border: 1.5px solid var(--primary); border-radius: 20px; background: rgba(0, 235, 176, 0.05); }
         .copy-link-flex { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.1); width: 100%; overflow: hidden; }
@@ -77,6 +75,13 @@
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        
+        @media (max-width: 991px) {
+            .nav-center-container { position: static; transform: none; width: 100%; }
+            .navbar-nav { flex-direction: column; align-items: center; padding: 20px 0; gap: 15px; }
+            .navbar-collapse { background: rgba(5, 10, 20, 0.98); border-radius: 20px; border: 1px solid rgba(0,235,176,0.2); margin-top: 10px; }
+            .marquee-wrapper { width: 90%; }
+        }
     </style>
 </head>
 <body>
@@ -85,26 +90,34 @@
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
             
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" style="border:none; color:var(--primary); font-size:1.8rem;">
+                <i class="fas fa-bars"></i>
+            </button>
+
             <div class="collapse navbar-collapse" id="navMain">
-                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
+                <div class="nav-center-container">
+                    <div id="marqueeContainer" class="marquee-wrapper">
+                        <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
+                    </div>
 
-                <ul class="navbar-nav mx-auto" id="adminNavLinks">
-                    <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
-                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                </ul>
+                    <ul class="navbar-nav" id="adminNavLinks">
+                        <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
+                        <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                        <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                        <li><a href="blog.html" class="nav-link">Blog</a></li>
+                        <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                        <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                        <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    </ul>
+                </div>
 
-                <div class="ms-auto d-flex align-items-center">
+                <div class="ms-auto d-flex align-items-center flex-column flex-lg-row">
                     <div id="loggedOutNav">
                         <div class="btn-login-rainbow" onclick="startGoogleLogin()" style="cursor:pointer; background:var(--rainbow); padding:2px; border-radius:50px;">
                             <span style="background:#fff; color:#000; font-weight:900; padding:8px 25px; border-radius:50px; display:block; font-size:0.85rem;">LOGIN VIP</span>
                         </div>
                     </div>
-                    <div id="loggedInNav">
+                    <div id="loggedInNav" class="d-flex align-items-center">
                         <div class="user-pill">
                             <div id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column overflow-hidden">
@@ -162,7 +175,10 @@
                 <div class="msg-bubble msg-ai">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì không?</div>
             </div>
         </div>
-        <div class="chat-input-area"><input type="text" id="chatInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%;"><i class="fas fa-paper-plane"></i></button></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key==='Enter') sendChat()">
+            <button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -235,7 +251,6 @@
             input.value = '';
             body.scrollTop = body.scrollHeight;
 
-            // TÍCH HỢP SESSION ID CHO CHAT-ADMIN
             let sid = localStorage.getItem('chat_session_id');
             if(!sid) { sid = 'ss_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('chat_session_id', sid); }
 
@@ -250,12 +265,32 @@
                     }) 
                 });
                 const data = await response.json();
-                const aiMsg = data.reply || data.output || "Dạ, em đang bận một chút, mình nhắn lại sau nhé!";
+                const aiMsg = data.reply || data.output || "Dạ, em đang bận một chút ạ!";
                 body.innerHTML += `<div class="chat-row"><div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg-bubble msg-ai">${aiMsg}</div></div>`;
             } catch (e) { 
-                body.innerHTML += `<div class="msg-bubble msg-ai">Dạ lỗi kết nối rồi ạ, mình thử lại sau nhé!</div>`; 
+                body.innerHTML += `<div class="msg-bubble msg-ai">Dạ lỗi kết nối rồi ạ!</div>`; 
             }
             body.scrollTop = body.scrollHeight;
+        }
+
+        async function handleCreateAlbum() {
+            if(!isVIP) return;
+            const driveLink = document.getElementById('driveLink').value.trim();
+            const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
+            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+            if(!fId) return;
+            const btn = document.getElementById('btnCreate'); btn.innerHTML = 'ĐANG KHỞI TẠO...'; btn.disabled = true;
+            try {
+                await fetch(`${PATHS.CREATE}?folderId=${fId}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }}) });
+                const infoRes = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
+                const data = await infoRes.json();
+                if(data.clientLink) {
+                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới";
+                    document.getElementById('resClientLink').href = data.clientLink;
+                    document.getElementById('resClientLink').innerText = data.clientLink;
+                    document.getElementById('resultBox').style.display = 'block';
+                }
+            } catch(e) {} finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = !isVIP; }
         }
 
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
@@ -265,6 +300,7 @@
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
+            // CƠ CHẾ QUAN TRỌNG: TỰ ĐỘNG CẬP NHẬT UI KHI URL CÓ THÔNG SỐ ĐĂNG NHẬP
             if (params.get('auth_status') === 'success') {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', params.get('user_email') || '');
@@ -272,9 +308,13 @@
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                
+                // Kích hoạt ngay UI mới và dọn dẹp URL
+                updateUI();
                 window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                updateUI();
             }
-            updateUI();
         };
     </script>
 </body>
