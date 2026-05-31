@@ -219,7 +219,25 @@
             } else { window.location.href = 'admin.html'; }
         }
 
-        async function init() { updateHeaderUI(); try { const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); allAlbums = await res.json(); renderAlbums(allAlbums); setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 2000); } catch (e) { document.getElementById('loadOverlay').style.display = 'none'; } }
+        async function init() { 
+    updateHeaderUI(); 
+    try { 
+        const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
+        const data = await res.json(); 
+        
+        // --- THÊM DÒNG NÀY ĐỂ DEBUG ---
+        console.log("Dữ liệu gốc nhận được từ n8n:", data);
+        
+        // Kiểm tra nếu dữ liệu nằm trong 1 thuộc tính khác (thường gặp trong n8n)
+        allAlbums = Array.isArray(data) ? data : (data.data || data.results || []);
+        
+        renderAlbums(allAlbums); 
+        setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 2000); 
+    } catch (e) { 
+        console.error("Lỗi khi tải album:", e);
+        document.getElementById('loadOverlay').style.display = 'none'; 
+    } 
+}
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
