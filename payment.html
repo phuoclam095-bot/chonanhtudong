@@ -199,7 +199,7 @@
             document.getElementById('paymentPollingMode').style.display = 'block';
             document.getElementById('paymentTitle').innerText = "Đang tạo mã giao dịch...";
             try {
-                const res = await fetch('https://pt.congtubaclieu.com.vn/webhook/save-pending', {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-pending', {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ email: userEmail, paymentCode: code, amount: selectedPkgData.price, months: selectedPkgData.months, timestamp: Date.now() })
                 });
@@ -217,7 +217,7 @@
         function startPolling(code) {
             pollingInterval = setInterval(async () => {
                 try {
-                    const res = await fetch('https://pt.congtubaclieu.com.vn/webhook/google-oauth-callback', {
+                    const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
                     });
