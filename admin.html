@@ -11,7 +11,7 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-      
+        #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { display: none !important; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -91,79 +91,38 @@
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-        /* Hiển thị nút Login trên mọi thiết bị */
-        #loggedOutNav { display: block !important; }
-        
-        /* Tối ưu hóa Navbar cho Mobile */
-        @media (max-width: 991px) {
-            /* Cho phép nút login nằm ngay góc phải bên cạnh nút Menu */
-            .ms-auto { 
-                margin-right: 10px !important; 
-            }
-            
-            /* Đảm bảo menu đổ xuống không bị che nút Login */
-            .navbar-collapse {
-                margin-top: 15px;
-                background: rgba(5, 10, 20, 0.98);
-                padding: 20px;
-                border-radius: 15px;
-            }
-        }
     </style>
 </head>
 <body>
 
-   <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-    <div class="container-fluid px-lg-5">
-        <!-- Logo của thương hiệu -->
-        <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-        
-        <!-- NÚT ĐĂNG NHẬP VÀ AVATAR: ĐƯA RA NGOÀI COLLAPSE ĐỂ LUÔN HIỂN THỊ -->
-        <div class="d-flex align-items-center ms-auto">
-            <div id="loggedOutNav" style="display:none;">
-                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                    <span>LOGIN VIP</span>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
+            <div class="collapse navbar-collapse" id="navMain">
+                <div class="nav-center-container">
+                    <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
+                    <ul class="navbar-nav" id="adminNavLinks">
+                        <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
+                        <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                        <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                        <li><a href="blog.html" class="nav-link">Blog</a></li>
+                        <li><a href="alarm.html" class="nav-link">Báo Thức</a></li>
+                        <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                        <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                        <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    </ul>
                 </div>
-            </div>
-            <div id="loggedInNav" style="display:none;" class="align-items-center">
-                <div class="user-pill">
-                    <div id="avatarPlaceholder"></div>
-                    <div class="d-flex flex-column overflow-hidden">
-                        <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span>
-                        <div id="userStatusDisplay"></div>
+                <div class="ms-auto d-flex align-items-center">
+                    <div id="loggedOutNav">
+                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                            <span>LOGIN VIP</span>
+                        </div>
                     </div>
+                    <div id="loggedInNav" class="d-flex align-items-center"><div class="user-pill"><div id="avatarPlaceholder"></div><div class="d-flex flex-column overflow-hidden"><span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span><div id="userStatusDisplay"></div></div></div><button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button></div>
                 </div>
-                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
-                    <i class="fas fa-power-off"></i>
-                </button>
             </div>
         </div>
-
-        <!-- Nút Toggler cho menu điện thoại -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Menu chính nằm trong collapse -->
-        <div class="collapse navbar-collapse" id="navMain">
-            <div class="nav-center-container">
-                <div id="marqueeContainer" class="marquee-wrapper">
-                    <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
-                </div>
-                <ul class="navbar-nav" id="adminNavLinks">
-                    <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
-                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="alarm.html" class="nav-link">Báo Thức</a></li>
-                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav>
+    </nav>
 
     <div class="main-container">
         <div class="rainbow-border-wrapper">
@@ -227,7 +186,7 @@
                 document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
-                document.getElementById('loggedOutNav').style.setProperty('display', 'block', 'important');
+                document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
                 document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
                 document.getElementById('extraTextNotice').style.display = 'none';
                 btnCreate.classList.remove('d-none');
@@ -295,51 +254,24 @@
         }
 
         async function handleCreateAlbum() {
-    if (!isVIP) return;
-
-    const driveLink = document.getElementById('driveLink').value.trim();
-    // Regex để lấy ID thư mục từ link Google Drive
-    const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-    const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
-
-    if (!fId) {
-        alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
-        return;
-    }
-
-    const btn = document.getElementById('btnCreate');
-    btn.innerHTML = 'ĐANG XỬ LÝ...';
-    btn.disabled = true;
-
-    // 1. Vẫn gửi lệnh tạo album cho backend (để nó lưu vào DB như cũ)
-    // Dùng kỹ thuật 'fire and forget' (không đợi response)
-    fetch(`${PATHS.CREATE}?folderId=${fId}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            adminEmail: localStorage.getItem('admin_email'),
-            settings: {
-                download: document.getElementById('allowDownload').checked,
-                comment: document.getElementById('allowComment').checked,
-                limitPhotos: document.getElementById('limitPhotos').checked
-            }
-        })
-    }).catch(err => console.log("Backend chạy ngầm..."));
-
-    // 2. TỰ HIỂN THỊ LINK NGAY LẬP TỨC
-    // Không cần đợi API INFO trả về, ta tạo link luôn từ fId vừa lấy được
-    const clientLink = `https://phuoclam095-bot.github.io/chonanhtudong/client.html?id=${fId}`;
-
-    // Cập nhật giao diện
-    document.getElementById('resFolderName').innerText = "Album mới khởi tạo";
-    document.getElementById('resClientLink').href = clientLink;
-    document.getElementById('resClientLink').innerText = clientLink;
-    document.getElementById('resultBox').style.display = 'block';
-
-    // Reset nút
-    btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
-    btn.disabled = false;
-}
+            if(!isVIP) return;
+            const driveLink = document.getElementById('driveLink').value.trim();
+            const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
+            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+            if(!fId) return;
+            const btn = document.getElementById('btnCreate'); btn.innerHTML = 'ĐANG KHỞI TẠO...'; btn.disabled = true;
+            try {
+                await fetch(`${PATHS.CREATE}?folderId=${fId}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }}) });
+                const infoRes = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
+                const data = await infoRes.json();
+                if(data.clientLink) {
+                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới";
+                    document.getElementById('resClientLink').href = data.clientLink;
+                    document.getElementById('resClientLink').innerText = data.clientLink;
+                    document.getElementById('resultBox').style.display = 'block';
+                }
+            } catch(e) {} finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = !isVIP; }
+        }
 
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
