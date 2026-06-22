@@ -11,7 +11,7 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { display: none !important; }
+        #adminNavLinks,  #marqueeContainer { display: none !important; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -91,6 +91,23 @@
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        /* Hiển thị nút Login trên mọi thiết bị */
+        #loggedOutNav { display: block !important; }
+        
+        /* Tối ưu hóa Navbar cho Mobile */
+        @media (max-width: 991px) {
+            .navbar-brand img { height: 32px !important; }
+            .navbar-collapse {
+                background: rgba(5, 10, 20, 0.95);
+                padding: 20px;
+                border-radius: 15px;
+                margin-top: 10px;
+                border: 1px solid var(--primary);
+            }
+            .nav-center-container { position: relative; left: 0; transform: none; width: 100%; margin-bottom: 15px; }
+            .navbar-nav { flex-direction: column !important; align-items: center; }
+            .nav-link { font-size: 0.9rem !important; padding: 15px !important; }
+        }
     </style>
 </head>
 <body>
@@ -186,7 +203,7 @@
                 document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
                 document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
                 document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
-                document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedOutNav').style.setProperty('display', 'block', 'important');
                 document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
                 document.getElementById('extraTextNotice').style.display = 'none';
                 btnCreate.classList.remove('d-none');
