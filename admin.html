@@ -254,24 +254,51 @@
         }
 
         async function handleCreateAlbum() {
-            if(!isVIP) return;
-            const driveLink = document.getElementById('driveLink').value.trim();
-            const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
-            if(!fId) return;
-            const btn = document.getElementById('btnCreate'); btn.innerHTML = 'ĐANG KHỞI TẠO...'; btn.disabled = true;
-            try {
-                await fetch(`${PATHS.CREATE}?folderId=${fId}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ adminEmail: localStorage.getItem('admin_email'), settings: { download: document.getElementById('allowDownload').checked, comment: document.getElementById('allowComment').checked, limitPhotos: document.getElementById('limitPhotos').checked }}) });
-                const infoRes = await fetch(`${PATHS.INFO}?folderId=${fId}&adminEmail=${localStorage.getItem('admin_email')}`);
-                const data = await infoRes.json();
-                if(data.clientLink) {
-                    document.getElementById('resFolderName').innerText = data.folderName || "Album mới";
-                    document.getElementById('resClientLink').href = data.clientLink;
-                    document.getElementById('resClientLink').innerText = data.clientLink;
-                    document.getElementById('resultBox').style.display = 'block';
-                }
-            } catch(e) {} finally { btn.innerHTML = "KHỞI TẠO ALBUM NGAY"; btn.disabled = !isVIP; }
-        }
+    if (!isVIP) return;
+
+    const driveLink = document.getElementById('driveLink').value.trim();
+    // Regex để lấy ID thư mục từ link Google Drive
+    const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
+    const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+
+    if (!fId) {
+        alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
+        return;
+    }
+
+    const btn = document.getElementById('btnCreate');
+    btn.innerHTML = 'ĐANG XỬ LÝ...';
+    btn.disabled = true;
+
+    // 1. Vẫn gửi lệnh tạo album cho backend (để nó lưu vào DB như cũ)
+    // Dùng kỹ thuật 'fire and forget' (không đợi response)
+    fetch(`${PATHS.CREATE}?folderId=${fId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            adminEmail: localStorage.getItem('admin_email'),
+            settings: {
+                download: document.getElementById('allowDownload').checked,
+                comment: document.getElementById('allowComment').checked,
+                limitPhotos: document.getElementById('limitPhotos').checked
+            }
+        })
+    }).catch(err => console.log("Backend chạy ngầm..."));
+
+    // 2. TỰ HIỂN THỊ LINK NGAY LẬP TỨC
+    // Không cần đợi API INFO trả về, ta tạo link luôn từ fId vừa lấy được
+    const clientLink = `https://phuoclam095-bot.github.io/chonanhtudong/client.html?id=${fId}`;
+
+    // Cập nhật giao diện
+    document.getElementById('resFolderName').innerText = "Album mới khởi tạo";
+    document.getElementById('resClientLink').href = clientLink;
+    document.getElementById('resClientLink').innerText = clientLink;
+    document.getElementById('resultBox').style.display = 'block';
+
+    // Reset nút
+    btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
+    btn.disabled = false;
+}
 
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
