@@ -169,7 +169,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
+        // Sửa PATHS trong file admin.html
+const PATHS = { 
+    CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', 
+    // Giữ nguyên OAUTH vì nó đang chạy ổn
+    OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', 
+    
+    // ĐỔI SANG ĐƯỜNG DẪN MỚI (nếu bạn không sửa Nginx, 
+    // hãy thử gọi trực tiếp qua domain con nếu có hoặc thêm tiền tố lạ để né)
+    CREATE: 'https://wsm.congtubaclieu.com.vn/webhook-pt/create-album-auto', 
+    INFO: 'https://wsm.congtubaclieu.com.vn/webhook-pt/get-folder-info', 
+    CHAT: 'https://wsm.congtubaclieu.com.vn/webhook-pt/chat-admin' 
+};
         let isVIP = false;
 
         function updateUI() {
