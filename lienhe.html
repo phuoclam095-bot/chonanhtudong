@@ -103,27 +103,30 @@
                 z-index: 10;
             }
 
-            /* Căn giữa cụm Tab Menu lướt chạm */
+            /* Mở khóa để thanh menu tự do tràn viền tạo dải cuộn ngang vuốt chạm mượt mà */
             .nav-center-container {
                 position: static !important;
                 transform: none !important;
-                width: auto !important;
+                width: 100% !important;
                 margin-top: 12px !important;
                 order: 3; 
                 display: flex !important;
-                justify-content: center !important; 
+                overflow-x: auto !important; /* Kích hoạt thanh cuộn ngang ẩn */
+                -webkit-overflow-scrolling: touch; /* Tạo độ bám nảy vật lý iOS */
+                justify-content: flex-start !important; /* Cho phép bắt đầu từ trái lướt sang phải */
                 align-items: center !important;
-                flex: 1;
+                padding: 0 15px !important;
             }
+            .nav-center-container::-webkit-scrollbar { display: none !important; } /* Giấu thanh cuộn xấu xí */
 
             .navbar-nav {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
                 gap: 8px !important;
-                width: max-content !important;
-                justify-content: center !important;
-                margin: 0 auto !important;
+                width: max-content !important; /* Đảm bảo độ rộng kéo dài vô tận theo số lượng menu */
+                justify-content: flex-start !important;
+                margin: 0 !important;
             }
 
             .nav-link {
@@ -137,6 +140,7 @@
                 background: rgba(0, 235, 176, 0.15) !important;
                 border-color: var(--primary) !important;
             }
+            .nav-link.active::after { display: none !important; }
 
             #authControl { padding-right: 8px; }
             .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; min-width: auto; }
@@ -179,8 +183,9 @@
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="paynment.html" class="nav-link">Gia Hạn</a></li>
+                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
                     <li class="nav-item"><a href="lienhe.html" class="nav-link active">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="fedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
 
