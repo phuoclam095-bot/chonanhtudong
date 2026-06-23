@@ -91,38 +91,36 @@
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        @media (max-width: 768px) {
+    /* Cho phép cuộn ngang nếu menu quá dài */
+    .nav-center-container {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    /* Giảm kích thước chữ và khoảng cách trên điện thoại */
+    .nav-link {
+        font-size: 0.6rem !important;
+        padding: 5px 8px !important;
+    }
+    
+    /* Ẩn marquee để tiết kiệm diện tích */
+    #marqueeContainer {
+        display: none !important;
+    }
+}
     </style>
 </head>
 <body>
+<nav class="navbar navbar-expand fixed-top navbar-dark">
+    <div class="container-fluid px-2">
+        <a class="navbar-brand" href="admin.html">
+            <img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo" style="height: 35px;">
+        </a>
 
-   <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-    <div class="container-fluid px-lg-5">
-        <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="d-flex align-items-center order-lg-last">
-            <div id="loggedOutNav">
-                <div class="btn-login-rainbow" onclick="startGoogleLogin()"><span>LOGIN VIP</span></div>
-            </div>
-            <div id="loggedInNav" class="d-flex align-items-center">
-                <div class="user-pill">
-                    <div id="avatarPlaceholder"></div>
-                    <div class="d-flex flex-column overflow-hidden">
-                        <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span>
-                        <div id="userStatusDisplay"></div>
-                    </div>
-                </div>
-                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button>
-            </div>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navMain">
-            <div class="nav-center-container">
-                <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
-                <ul class="navbar-nav" id="adminNavLinks">
+        <div class="navbar-collapse" id="navMain">
+            <div class="nav-center-container" style="position: relative; left: auto; transform: none; width: 100%;">
+                <ul class="navbar-nav" id="adminNavLinks" style="display: flex; flex-direction: row; gap: 5px; list-style: none;">
                     <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
                     <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
@@ -130,9 +128,19 @@
                     <li><a href="alarm.html" class="nav-link">Báo Thức</a></li>
                     <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
                     <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    <li><a href="fedback.html" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <div id="loggedOutNav">
+                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                    <span>LOGIN VIP</span>
+                </div>
+            </div>
+            <div id="loggedInNav" class="d-flex align-items-center">
+                </div>
         </div>
     </div>
 </nav>
