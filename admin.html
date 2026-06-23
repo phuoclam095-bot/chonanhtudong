@@ -11,7 +11,7 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-        #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { display: none !important; }
+   
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -55,7 +55,7 @@
         /* KIỂM TRA HIỆU ỨNG HOVER INPUT */
         input[type="text"] { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 15px; color: #fff; text-align: center; font-weight: 700; outline: none; transition: 0.4s; }
         input[type="text"]:focus, input[type="text"]:hover { border-color: var(--primary); background: rgba(0, 235, 176, 0.08); box-shadow: 0 0 15px rgba(0, 235, 176, 0.2); }
-
+        #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { display: none; }
         .switch-group { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border-radius: 15px; margin-bottom: 10px; font-weight: 600; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); }
         .toggle-switch { position: relative; width: 50px; height: 26px; cursor: pointer; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -91,16 +91,88 @@
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        @media (max-width: 991.98px) {
+            body { padding-top: 150px; }
+            .navbar { min-height: auto; padding: 10px 0; }
+            
+            /* Đưa khối chứa Menu chạy tự do, không bị khóa cứng Absolute */
+            .nav-center-container {
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                margin-top: 10px;
+                order: 3; /* Đẩy menu xuống dưới cùng thanh nav */
+                overflow-x: auto; /* Tạo hiệu ứng vuốt chạm ngang */
+                -webkit-overflow-scrolling: touch;
+                padding: 5px 10px;
+                display: block !important; /* Luôn hiển thị khi đăng nhập */
+            }
+            
+            /* Tắt tính năng tự ẩn của thanh cuộn để giao diện tối giản */
+            .nav-center-container::-webkit-scrollbar { display: none; }
+
+            /* Định cấu trúc hàng menu dài vô tận để vuốt ngang */
+            .navbar-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                width: max-content;
+            }
+
+            /* Định dạng lại các nút menu trên Mobile giống dạng Tab cao cấp */
+            .nav-link {
+                font-size: 0.75rem !important;
+                padding: 8px 14px !important;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                border: 1px solid rgba(0, 235, 176, 0.15);
+            }
+            .nav-link.active {
+                background: rgba(0, 235, 176, 0.15) !important;
+                border-color: var(--primary) !important;
+            }
+            .nav-link.active::after { display: none !important; }
+
+            /* Thu gọn nút login & thông tin user vừa vặn mobile */
+            .user-pill { min-width: auto; height: 42px; padding: 5px 10px; }
+            .btn-login-rainbow span { padding: 6px 15px; font-size: 0.75rem; }
+            .marquee-wrapper { width: 100%; max-width: 280px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-            <div class="collapse navbar-collapse" id="navMain">
-                <div class="nav-center-container">
-                    <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
+       <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+            <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+                
+                <a class="navbar-brand m-0" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
+                
+                <div class="d-flex align-items-center ms-auto order-lg-3">
+                    <div id="loggedOutNav">
+                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                            <span>LOGIN VIP</span>
+                        </div>
+                    </div>
+                    <div id="loggedInNav" class="d-flex align-items-center">
+                        <div class="user-pill">
+                            <div id="avatarPlaceholder"></div>
+                            <div class="d-flex flex-column overflow-hidden">
+                                <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                                <div id="userStatusDisplay"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                    </div>
+                </div>
+    
+                <div class="nav-center-container" id="navCenterArea">
+                    <div id="marqueeContainer" class="marquee-wrapper">
+                        <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
+                    </div>
+                    
                     <ul class="navbar-nav" id="adminNavLinks">
                         <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
                         <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
@@ -112,17 +184,9 @@
                         <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
                     </ul>
                 </div>
-                <div class="ms-auto d-flex align-items-center">
-                    <div id="loggedOutNav">
-                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                            <span>LOGIN VIP</span>
-                        </div>
-                    </div>
-                    <div id="loggedInNav" class="d-flex align-items-center"><div class="user-pill"><div id="avatarPlaceholder"></div><div class="d-flex flex-column overflow-hidden"><span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span><div id="userStatusDisplay"></div></div></div><button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button></div>
-                </div>
+    
             </div>
-        </div>
-    </nav>
+        </nav>
 
     <div class="main-container">
         <div class="rainbow-border-wrapper">
@@ -172,7 +236,7 @@
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
 
-        function updateUI() {
+       function updateUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const status = localStorage.getItem('admin_status') || 'new';
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
@@ -181,16 +245,25 @@
             
             const notice = document.getElementById('accountNotice');
             const btnCreate = document.getElementById('btnCreate');
+            const marquee = document.getElementById('marqueeContainer');
+            const navLinks = document.getElementById('adminNavLinks');
+            const loggedInNav = document.getElementById('loggedInNav');
+            const loggedOutNav = document.getElementById('loggedOutNav');
+            const authReminder = document.getElementById('authReminder');
+            const extraTextNotice = document.getElementById('extraTextNotice');
+            const vipSpeedNotice = document.getElementById('vipSpeedNotice');
 
             if (isLoggedIn) {
-                document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
-                document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
-                document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
-                document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
-                document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
-                document.getElementById('extraTextNotice').style.display = 'none';
+                if(marquee) marquee.style.display = 'none';
+                if(navLinks) navLinks.style.display = 'flex';
+                if(loggedInNav) loggedInNav.style.display = 'flex';
+                if(loggedOutNav) loggedOutNav.style.display = 'none';
+                if(authReminder) authReminder.style.display = 'none';
+                if(extraTextNotice) extraTextNotice.style.display = 'none';
+                
                 btnCreate.classList.remove('d-none');
-                document.getElementById('vipSpeedNotice').style.display = 'block';
+                if(vipSpeedNotice) vipSpeedNotice.style.display = 'block';
+                
                 document.getElementById('userNameDisplay').innerText = name;
                 const av = localStorage.getItem('admin_avatar');
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
@@ -213,12 +286,13 @@
                     notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
                 }
             } else {
-                document.getElementById('marqueeContainer').style.setProperty('display', 'block', 'important');
-                document.getElementById('adminNavLinks').style.setProperty('display', 'none', 'important');
-                document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
-                document.getElementById('loggedOutNav').style.setProperty('display', 'block', 'important');
-                document.getElementById('authReminder').style.setProperty('display', 'block', 'important');
-                document.getElementById('extraTextNotice').style.display = 'block';
+                if(marquee) marquee.style.display = 'block';
+                if(navLinks) navLinks.style.display = 'none';
+                if(loggedInNav) loggedInNav.style.display = 'none';
+                if(loggedOutNav) loggedOutNav.style.display = 'block';
+                if(authReminder) authReminder.style.display = 'block';
+                if(extraTextNotice) extraTextNotice.style.display = 'block';
+                
                 btnCreate.classList.add('d-none');
                 notice.style.display = 'none';
             }
@@ -230,7 +304,6 @@
                 }
             }, 1500);
         }
-
         async function sendChat() {
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
