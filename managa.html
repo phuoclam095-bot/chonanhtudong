@@ -122,52 +122,62 @@
 
         /* --- MOBILE RESPONSIVE ĐỒNG BỘ 100% ADMIN --- */
         @media (max-width: 991.98px) {
-            body { padding-top: 150px; }
-            .navbar { padding: 10px 0; min-height: auto; }
-            
-            .nav-center-container {
-                position: static !important;
-                transform: none !important;
-                width: 100% !important;
-                margin-top: 12px;
-                order: 3; 
-                padding: 0 15px !important; 
-                display: flex !important;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                justify-content: flex-start;
-                align-items: center;
-            }
-            .nav-center-container::-webkit-scrollbar { display: none; }
+    body { padding-top: 150px; }
+    .navbar { padding: 10px 0; min-height: auto; }
+    
+    /* 🌟 SỬA TẠI ĐÂY: Ép static trên mobile để giải phóng khỏi absolute của PC, giúp lướt ngang mượt mà */
+    .nav-center-container {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        margin-top: 12px;
+        order: 3; 
+        padding: 0 15px !important; 
+        display: flex !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start !important; /* Cho phép menu bắt đầu từ lề trái và vuốt dần qua phải */
+        align-items: center;
+    }
+    .nav-center-container::-webkit-scrollbar { display: none; }
 
-            .navbar-nav {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                gap: 8px !important;
-                width: max-content;
-            }
+    .navbar-nav {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        width: max-content;
+    }
 
-            .nav-link {
-                font-size: 0.75rem !important;
-                padding: 8px 14px !important;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 10px;
-                border: 1px solid rgba(0, 235, 176, 0.15);
-            }
-            .nav-link.active {
-                background: rgba(0, 235, 176, 0.15) !important;
-                border-color: var(--primary) !important;
-            }
-            .nav-link.active::after { display: none !important; }
+    /* 🌟 SỬA TẠI ĐÂY: Thêm thuộc tính chặn bôi đen văn bản và ép con trỏ dạng Click (pointer) */
+    .nav-link {
+        font-size: 0.75rem !important;
+        padding: 8px 14px !important;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border: 1px solid rgba(0, 235, 176, 0.15);
+        cursor: pointer !important; /* Luôn hiển thị bàn tay click */
+        user-select: none !important; /* Chống xuất hiện con nháy chuột bôi đen */
+        -webkit-user-select: none;
+    }
+    .nav-link.active {
+        background: rgba(0, 235, 176, 0.15) !important;
+        border-color: var(--primary) !important;
+    }
+    .nav-link.active::after { display: none !important; }
 
-            #authControl { padding-right: 8px; }
-            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; }
-            #avatarPlaceholder { width: 28px; height: 28px; }
-            #userNameDisplay { font-size: 0.7rem !important; }
-            #userExpiryText { font-size: 0.65rem !important; }
-            .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
-        }
+    #authControl { padding-right: 8px; }
+    .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; }
+    #avatarPlaceholder { width: 28px; height: 28px; }
+    #userNameDisplay { font-size: 0.7rem !important; }
+    #userExpiryText { font-size: 0.65rem !important; }
+    .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
+}
+        .nav-link, .btn-vip, .stat-pill, .btn-copy-action {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
