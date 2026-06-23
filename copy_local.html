@@ -237,6 +237,14 @@
                 Tính năng sao chép tệp tin cục bộ yêu cầu công nghệ <b class="text-white">File System Access API</b> của máy tính. Vui lòng đăng nhập hệ thống bằng <b style="color: var(--primary);">Máy tính (PC/Laptop)</b> để sử dụng chức năng này ạ!
             </p>
         </div>
+        <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
+            <i class="fas fa-lock fa-3x text-danger mb-3"></i>
+            <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+            <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng công nghệ sao chép siêu tốc.
+            </p>
+            <a href="payment.html" class="btn btn-primary fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+        </div>
         <div class="main-grid">
             <div class="rainbow-wrap">
                 <div class="copy-card">
@@ -299,19 +307,54 @@
 
         function updateHeaderUI() {
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const name = localStorage.getItem('admin_name'), 
+                      av = localStorage.getItem('admin_avatar'), 
+                      status = localStorage.getItem('admin_status') || 'new', 
+                      expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                
+                // Kiểm tra điều kiện VIP nghiêm ngặt: Trạng thái phải 'active' VÀ thời gian hiện tại chưa vượt quá hạn dùng
                 isVIP = (status === 'active' && expiry > Date.now());
+                
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
+                
+                const badge = document.getElementById('badgeStatus'); 
+                const expText = document.getElementById('userExpiryText');
+                const mainWorkGrid = document.getElementById('mainWorkGrid');
+                const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+
                 if (isVIP) {
-                    badge.innerText = "ACTIVE"; expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+                    // HỢP LỆ: Hiển thị giao diện màu xanh ACTIVE
+                    badge.innerText = "ACTIVE"; 
+                    badge.style.background = "var(--primary)";
+                    badge.style.color = "#000";
+                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+                    
+                    // Chỉ hiển thị khung làm việc trên máy tính (nếu không dính responsive của mobile)
+                    if (window.innerWidth > 991.98) {
+                        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'grid', 'important');
+                        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.display = 'none';
+                    }
+                    if (document.getElementById('noticeVIP')) document.getElementById('noticeVIP').style.display = 'none';
                 } else {
-                    badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; badge.style.background = "#ff4757"; badge.style.color = "#fff";
-                    document.getElementById('noticeVIP').style.display = 'block';
+                    // ❌ KHÔNG ĐỦ HẠN DÙNG / HẾT HẠN: Chuyển màu đỏ thông báo
+                    badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
+                    badge.style.background = "#ff4757"; 
+                    badge.style.color = "#fff";
+                    expText.innerText = expiry > 0 ? "Hết hạn: " + new Date(expiry).toLocaleDateString('vi-VN') : "Chưa đăng ký";
+                    
+                    // 🌟 KHÓA KHÔNG CHO SỬ DỤNG: Ẩn vùng làm việc, hiện thông báo khóa VIP
+                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                    if (document.getElementById('noticeVIP')) document.getElementById('noticeVIP').style.setProperty('display', 'block', 'important');
+                    
+                    // Vô hiệu hóa nút Bắt đầu sao chép
+                    document.getElementById('btnCopy').disabled = true;
                 }
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { window.location.href = 'admin.html'; }
+            } else { 
+                window.location.href = 'admin.html'; 
+            }
         }
 
         async function handleSelectSource() {
