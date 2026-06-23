@@ -123,18 +123,25 @@
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
-                gap: 8px !important;
-                width: max-content !important; /* Kéo dài vô tận theo số nút */
-                justify-content: flex-start !important;
+                gap: 6px !important; /* Thu hẹp khoảng cách một chút để đỡ chiếm diện tích */
+                width: max-content !important;
+                align-items: center !important; /* Ép toàn bộ các li/thẻ con thẳng hàng ngang */
                 margin: 0 !important;
+                padding: 0 !important;
             }
 
             .nav-link {
-                font-size: 0.72rem !important;
-                padding: 8px 14px !important;
+                font-size: 0.7rem !important; /* Giảm nhẹ font một chút để chữ không bị ép xuống dòng */
+                padding: 0 12px !important;
+                height: 34px !important; /* Khóa cứng chiều cao của tab */
+                display: flex !important;
+                align-items: center !important; /* Căn chữ nằm chính giữa theo chiều dọc */
+                justify-content: center !important; /* Căn chữ nằm chính giữa theo chiều ngang */
                 background: rgba(255, 255, 255, 0.05) !important;
                 border-radius: 10px !important;
                 border: 1px solid rgba(0, 235, 176, 0.15) !important;
+                line-height: 1 !important; /* Khử hoàn toàn lỗi dãn dòng tự động của trình duyệt */
+                white-space: nowrap !important; /* Tuyệt đối không cho chữ tự xuống hàng bên trong nút */
             }
             .nav-link.active {
                 background: rgba(0, 235, 176, 0.15) !important;
