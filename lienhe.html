@@ -9,6 +9,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ebb0; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
+        .supreme-card, .supreme-title, .contact-item, .ai-header, .msg-ai {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default;
+        }
+        @media (min-width: 992px) {
+            .nav-center-container { 
+                position: absolute !important; 
+                left: 50% !important; 
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important; 
+                display: flex !important; 
+                align-items: center !important; 
+                justify-content: center !important; 
+                width: max-content !important; 
+                z-index: 5; 
+            }
+            .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 2px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
+        }
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5,10,20,0.7), rgba(5,10,20,0.9)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 100px; overflow-x: hidden; }
         
         /* NAVBAR */
@@ -62,36 +83,109 @@
         .ai-btn:hover { transform: scale(1.1); box-shadow: var(--neon); }
 
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 991.98px) {
+            body { padding-top: 150px; }
+            .navbar { padding: 10px 0; min-height: auto; }
+            
+            .navbar-brand { display: none !important; }
+            .btn-back-mobile { 
+                display: flex !important; 
+                align-items: center; 
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.1); 
+                border: 1px solid rgba(0, 235, 176, 0.3);
+                color: var(--primary) !important; 
+                width: 38px; 
+                height: 38px; 
+                border-radius: 50%; 
+                text-decoration: none !important;
+                font-size: 0.9rem;
+                z-index: 10;
+            }
+
+            /* Căn giữa cụm Tab Menu lướt chạm */
+            .nav-center-container {
+                position: static !important;
+                transform: none !important;
+                width: auto !important;
+                margin-top: 12px !important;
+                order: 3; 
+                display: flex !important;
+                justify-content: center !important; 
+                align-items: center !important;
+                flex: 1;
+            }
+
+            .navbar-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                width: max-content !important;
+                justify-content: center !important;
+                margin: 0 auto !important;
+            }
+
+            .nav-link {
+                font-size: 0.72rem !important;
+                padding: 8px 14px !important;
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-radius: 10px !important;
+                border: 1px solid rgba(0, 235, 176, 0.15) !important;
+            }
+            .nav-link.active {
+                background: rgba(0, 235, 176, 0.15) !important;
+                border-color: var(--primary) !important;
+            }
+
+            #authControl { padding-right: 8px; }
+            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; min-width: auto; }
+            #avatarPlaceholder { width: 28px; height: 28px; }
+            #userNameDisplay { font-size: 0.7rem !important; }
+            #userExpiryText { font-size: 0.65rem !important; }
+
+            .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 12px; }
+        }
     </style>
 </head>
 <body>
     <div id="loadOverlay"><div class="spinner-border text-primary"></div></div>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="admin.html">CHONANHNHANH<span style="color:#fff">.VN</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#supremeNav"><i class="fas fa-bars"></i></button>
-            <div class="collapse navbar-collapse" id="supremeNav">
-                <ul class="navbar-nav mx-auto">
+        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+            
+            <a class="navbar-brand m-0" href="admin.html">CHONANHNHANH<span style="color:#fff">.VN</span></a>
+            
+            <div class="d-flex align-items-center ms-auto order-lg-3">
+                <div id="authControl">
+                    <div class="user-status-box">
+                        <div id="avatarPlaceholder" class="avt-circle"></div>
+                        <div class="d-flex flex-column">
+                            <span id="userNameDisplay">...</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
+                                <span id="userExpiryText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                </div>
+            </div>
+
+            <div class="nav-center-container" id="navCenterArea">
+                <ul class="navbar-nav" id="adminNavLinks">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
                     <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
                     <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
                     <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="paynment.html" class="nav-link">Gia Hạn</a></li>
                     <li class="nav-item"><a href="lienhe.html" class="nav-link active">Liên Hệ</a></li>
                 </ul>
-                <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; color:#fff;">...</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                <span id="userExpiryText"></span> </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
-                </div>
             </div>
+
+            <div style="width: 40px;" class="d-lg-none"></div>
+
         </div>
     </nav>
 
