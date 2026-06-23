@@ -115,14 +115,24 @@
                 position: static !important;
                 transform: none !important;
                 width: 100% !important;
-                margin-top: 10px;
-                order: 3; /* Đẩy menu xuống dưới cùng thanh nav */
-                overflow-x: auto; /* Tạo hiệu ứng vuốt chạm ngang */
-                -webkit-overflow-scrolling: touch;
-                padding: 5px 10px;
-                display: block !important; /* Luôn hiển thị khi đăng nhập */
+                margin-top: 12px;
+                order: 3; /* Đẩy xuống dưới logo và nút login */
+                padding: 0 15px !important; /* Tạo khoảng cách 2 bên lề màn hình */
+                display: flex !important;
+                flex-direction: column;
+                align-items: center; /* Căn giữa hoàn toàn các thành phần con */
+                justify-content: center;
             }
-            
+            .marquee-wrapper {
+                width: 100% !important; 
+                max-width: 100% !important;
+                box-sizing: border-box;
+                margin: 0 auto !important; /* Căn giữa tuyệt đối */
+                padding: 8px 0 !important;
+            }
+            .marquee-text {
+                font-size: 0.75rem !important;
+            }
             /* Tắt tính năng tự ẩn của thanh cuộn để giao diện tối giản */
             .nav-center-container::-webkit-scrollbar { display: none; }
 
