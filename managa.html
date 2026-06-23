@@ -78,12 +78,15 @@
             font-weight: 900 !important; 
             color: var(--primary) !important; 
             text-shadow: var(--neon) !important; 
-            font-size: 1.2rem !important; /* Kích thước gốc chuẩn nét trên PC */
+            font-size: 1.2rem !important; /* Kích thước chuẩn chỉnh nét căng trên PC */
             text-decoration: none !important;
-            white-space: nowrap !important;  /* Ép chữ nằm trên 1 hàng, cấm tự xuống dòng khi F5 */
-            flex-shrink: 0 !important;       /* Chặn đứng Bootstrap bóp nghẹt hoặc làm mất chữ */
+            white-space: nowrap !important;  /* Ép chữ nằm trên 1 hàng, cấm tự xuống dòng */
+            flex-shrink: 0 !important;       /* Cấm hoàn toàn việc bị bóp méo hình dạng chữ */
             display: flex !important;
             align-items: center !important;
+            
+            /* 🌟 GIỮ LẠI HOẶC THÊM HIỆU ỨNG CHUYỂN ĐỘNG NẢY NẢY (ANIMATION) CỦA BẠN */
+            animation: breathing 3s ease-in-out infinite !important; 
         }
         
         /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
@@ -178,9 +181,13 @@
             .navbar { padding: 10px 0; min-height: auto; }
             .navbar-brand {
                 display: flex !important; 
-                font-size: clamp(0.78rem, 3.8vw, 0.95rem) !important; /* Tự co giãn thông minh theo màn hình điện thoại */
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách chữ một chút cho đẹp */
-                max-width: 48% !important; /* Giới hạn không gian lề trái để không đè vào cụm User */
+                
+                /* Ép chữ Logo tự động thu nhỏ lại từ 0.78rem đến 0.95rem tùy theo độ hẹp của màn hình,
+                   không bao giờ sợ bị tràn sang cụm thông tin khách hàng hay văng ra rìa nữa */
+                font-size: clamp(0.78rem, 3.8vw, 0.95rem) !important; 
+                
+                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách chữ một chút cho tinh tế */
+                max-width: 48% !important; /* Giới hạn đúng diện tích lề trái trên điện thoại */
                 overflow: hidden !important;
             }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
