@@ -104,56 +104,59 @@
         .msg-ai { background: rgba(255,255,255,0.1); color: #fff; border-bottom-left-radius: 2px; }
         .msg-user { background: var(--primary); color: #000; font-weight: 700; align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
-
+        @media (min-width: 992px) {
+            .nav-center-container { 
+                position: absolute !important; 
+                left: 50% !important; 
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important; 
+                display: flex !important; 
+                align-items: center !important; 
+                justify-content: center !important; 
+                width: max-content !important; 
+                z-index: 5; 
+            }
+            .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-        @media (max-width: 991.98px) {
+       @media (max-width: 991.98px) {
             body { padding-top: 150px; }
             .navbar { min-height: auto; padding: 10px 0; }
             
-            /* Đưa khối chứa Menu chạy tự do, không bị khóa cứng Absolute */
+            /* Kích hoạt dải cuộn ngang tự do, không bó cứng cột dọc */
             .nav-center-container {
                 position: static !important;
                 transform: none !important;
                 width: 100% !important;
-                margin-top: 12px;
-                order: 3; /* Đẩy xuống dưới logo và nút login */
-                padding: 0 15px !important; /* Tạo khoảng cách 2 bên lề màn hình */
+                margin-top: 12px !important;
+                order: 3; 
                 display: flex !important;
-                flex-direction: column;
-                align-items: center; /* Căn giữa hoàn toàn các thành phần con */
-                justify-content: center;
+                overflow-x: auto !important; /* Cho phép tràn viền lướt ngang */
+                -webkit-overflow-scrolling: touch; 
+                justify-content: flex-start !important; /* Bắt đầu hàng từ trái qua phải */
+                align-items: center !important;
+                padding: 0 15px !important;
             }
-            .marquee-wrapper {
-                width: 100% !important; 
-                max-width: 100% !important;
-                box-sizing: border-box;
-                margin: 0 auto !important; /* Căn giữa tuyệt đối */
-                padding: 8px 0 !important;
-            }
-            .marquee-text {
-                font-size: 0.75rem !important;
-            }
-            /* Tắt tính năng tự ẩn của thanh cuộn để giao diện tối giản */
-            .nav-center-container::-webkit-scrollbar { display: none; }
+            .nav-center-container::-webkit-scrollbar { display: none !important; }
 
-            /* Định cấu trúc hàng menu dài vô tận để vuốt ngang */
             .navbar-nav {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
                 gap: 8px !important;
-                width: max-content;
+                width: max-content !important; /* Ép hàng nở rộng không giới hạn theo số nút */
+                justify-content: flex-start !important;
+                margin: 0 !important;
             }
 
-            /* Định dạng lại các nút menu trên Mobile giống dạng Tab cao cấp */
             .nav-link {
-                font-size: 0.75rem !important;
+                font-size: 0.72rem !important;
                 padding: 8px 14px !important;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 10px;
-                border: 1px solid rgba(0, 235, 176, 0.15);
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-radius: 10px !important;
+                border: 1px solid rgba(0, 235, 176, 0.15) !important;
             }
             .nav-link.active {
                 background: rgba(0, 235, 176, 0.15) !important;
@@ -161,10 +164,10 @@
             }
             .nav-link.active::after { display: none !important; }
 
-            /* Thu gọn nút login & thông tin user vừa vặn mobile */
-            .user-pill { min-width: auto; height: 42px; padding: 5px 10px; }
+            #loggedInNav { padding-right: 8px; }
+            .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
             .btn-login-rainbow span { padding: 6px 15px; font-size: 0.75rem; }
-            .marquee-wrapper { width: 100%; max-width: 280px; }
+            .marquee-wrapper { width: 100%; max-width: 280px; margin: 0 auto !important; }
         }
     </style>
 </head>
