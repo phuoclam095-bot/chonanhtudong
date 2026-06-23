@@ -68,10 +68,10 @@
             padding: 16px; font-size: 1rem; transition: all 0.3s; color: #fff; font-weight: 600;
         }
         /* Làm placeholder sáng màu xanh lơ để nổi bật */
-        .form-control::placeholder {
-            color: #a5f3e0 !important;
-            opacity: 0.85;
-            font-weight: 600;
+        .form-control::placeholder { 
+            color: #475569 !important; 
+            opacity: 0.85; 
+            font-weight: 500;
         }
         .form-control:focus {
             background: rgba(0,0,0,0.6); border-color: var(--primary);
@@ -99,7 +99,17 @@
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
             
-            .navbar-brand { display: none !important; }
+            .navbar-brand {
+                display: flex !important; /* Luôn luôn hiện chữ logo ở mọi màn hình di động */
+                
+                /* Dùng đơn vị liên kết dòng (vw - Viewport Width) kết hợp hàm clamp để chữ tự động 
+                   co giãn mượt mà từ 0.8rem (màn hình cực nhỏ) đến 1rem (màn hình di động lớn) */
+                font-size: clamp(0.8rem, 4vw, 1rem) !important; 
+                
+                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các chữ một chút để vừa vặn hơn */
+                max-width: 50% !important; /* Giới hạn không gian lề trái, nhường chỗ cho cụm User bên phải */
+                overflow: hidden !important;
+            }}
             .btn-back-mobile { 
                 display: flex !important; 
                 align-items: center; 
@@ -178,11 +188,16 @@
 <body>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
             
-            <a class="navbar-brand m-0" href="admin.html">CHONANHNHANH.VN</a>
+            <!-- 🌟 ĐA FIX: Đổi từ text sang Logo ảnh chuẩn hóa để không bị vỡ giao diện -->
+            <a class="navbar-brand m-0" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
             
+            <!-- Nút Back quay về Admin dạng tròn độc lập lề trái -->
+            <a href="admin.html" class="btn-back-mobile"><i class="fas fa-chevron-left"></i></a>
+            
+            <!-- Khung thông tin User neo góc phải -->
             <div class="d-flex align-items-center ms-auto order-lg-3">
                 <div id="authControl">
                     <div class="user-status-box">
@@ -190,7 +205,7 @@
                         <div class="d-flex flex-column">
                             <span id="userNameDisplay">...</span>
                             <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
+                                <span id="badgeStatus" class="status-tag">...</span>
                                 <span id="userExpiryText"></span>
                             </div>
                         </div>
@@ -199,6 +214,7 @@
                 </div>
             </div>
 
+            <!-- Khung trung tâm menu chức năng -->
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
                     <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
