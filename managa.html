@@ -184,13 +184,9 @@
             .navbar { padding: 10px 0; min-height: auto; }
            .navbar-brand {
                 display: flex !important; 
-                
-                /* 3. Dùng hàm thông minh clamp: Trên iPhone SE chữ tự co nhỏ về 0.75rem, 
-                   màn hình lớn tự nở ra tối đa 0.95rem, luôn luôn vừa khít, không bao giờ tràn lề */
                 font-size: clamp(0.75rem, 3.6vw, 0.95rem) !important; 
-                
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các ký tự một chút cho tinh tế */
-                max-width: 48% !important; /* Giới hạn cứng diện tích lề trái để nhường chỗ cho khối User */
+                letter-spacing: -0.5px !important; 
+                max-width: 48% !important; 
                 overflow: hidden !important;
             }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
