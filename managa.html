@@ -166,7 +166,17 @@
         @media (max-width: 991.98px) {
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
-            
+            .navbar-brand {
+                display: flex !important; /* Luôn luôn hiện chữ logo ở mọi màn hình di động */
+                
+                /* Dùng đơn vị liên kết dòng (vw - Viewport Width) kết hợp hàm clamp để chữ tự động 
+                   co giãn mượt mà từ 0.8rem (màn hình cực nhỏ) đến 1rem (màn hình di động lớn) */
+                font-size: clamp(0.8rem, 4vw, 1rem) !important; 
+                
+                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các chữ một chút để vừa vặn hơn */
+                max-width: 50% !important; /* Giới hạn không gian lề trái, nhường chỗ cho cụm User bên phải */
+                overflow: hidden !important;
+            }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
             .nav-center-container {
                 position: static !important;
