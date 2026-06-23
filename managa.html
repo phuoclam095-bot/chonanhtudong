@@ -80,16 +80,18 @@
             text-shadow: var(--neon) !important; 
             font-size: 1.2rem !important; /* Kích thước gốc hoàn hảo nét căng trên PC */
             text-decoration: none !important;
-            white-space: nowrap !important;  /* Ép chữ nằm trên một hàng, cấm tự xuống dòng khi F5 */
-            flex-shrink: 0 !important;       /* Cấm tuyệt đối việc hệ thống ép dẹt hay bóp méo chữ */
+            white-space: nowrap !important;  /* 1. Ép chữ nằm trên một hàng, cấm tự động xuống dòng */
+            flex-shrink: 0 !important;       /* 2. Cấm tuyệt đối việc hệ thống ép dẹt hay bóp méo hình dạng chữ */
             display: flex !important;
             align-items: center !important;
-            animation: breathing 3s ease-in-out infinite !important; /* Giữ hiệu ứng nảy nhịp thở */
+            
+            /* Giữ nguyên hiệu ứng nhịp thở nảy nảy nhẹ nhàng thương hiệu */
+            animation: breathing 3s ease-in-out infinite !important; 
         }
-        
         @keyframes breathing { 
             0%, 100% { transform: scale(1); filter: brightness(1); } 
-            50% { transform: scale(1.03); filter: brightness(1.2); }
+            50% { transform: scale(1.03); filter: brightness(1.2); } 
+        }
         /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
         .nav-center-container { 
             position: absolute !important; 
@@ -182,12 +184,10 @@
             .navbar { padding: 10px 0; min-height: auto; }
            .navbar-brand {
                 display: flex !important; 
-                font-size: clamp(0.7rem, 3.5vw, 0.9rem) !important; /* Tự co nhỏ chữ thông minh vừa khít iPhone SE */
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách chữ cho tinh tế */
-                max-width: 48% !important; /* Khóa cứng diện tích không cho đè vào cụm User */
-                overflow: hidden !important; /* Ẩn bộ phận chữ thừa nếu màn hình quá hẹp */
-                white-space: nowrap !important;
-                flex-shrink: 0 !important;
+                font-size: clamp(0.7rem, 3.5vw, 0.95rem) !important; /* Hạ thấp cận dưới xuống 0.7rem cho máy siêu nhỏ như iPhone SE */
+                letter-spacing: -0.5px !important; 
+                max-width: 48% !important; 
+                overflow: hidden !important;
             }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
             .nav-center-container {
@@ -278,7 +278,7 @@
     </nav>
 
     <div class="container-fluid">
-        <div class="mt-5"><h1 class="supreme-title">Quản Lý Albuma</h1></div>
+        <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
         <div class="search-wrapper">
             <div class="search-inner">
                 <i class="fas fa-search me-2" style="color:var(--primary)"></i>
