@@ -11,10 +11,7 @@
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
-       /* Ép buộc ẩn bằng cách dùng class để thay thế cho style inline */
-.hidden-force {
-    display: none !important;
-}
+        #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { display: none !important; }
 
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
@@ -24,7 +21,7 @@
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-      
+
         .marquee-wrapper { width: 600px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
@@ -98,49 +95,34 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand fixed-top navbar-dark">
-    <div class="container-fluid px-2">
-        <a class="navbar-brand" href="admin.html">
-            <img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo" style="height: 35px;">
-        </a>
-
-        <div class="navbar-collapse" id="navMain">
-            <div class="nav-center-container" style="position: relative; left: auto; transform: none; width: 100%;">
-                <ul class="navbar-nav" id="adminNavLinks" style="display: none; flex-direction: row; gap: 5px; list-style: none;">
-                    <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
-                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="alarm.html" class="nav-link">Báo Thức</a></li>
-                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback.html" class="nav-link">Góp Ý</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center">
-            <div id="loggedOutNav">
-                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                    <span>LOGIN VIP</span>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
+            <div class="collapse navbar-collapse" id="navMain">
+                <div class="nav-center-container">
+                    <div id="marqueeContainer" class="marquee-wrapper"><span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span></div>
+                    <ul class="navbar-nav" id="adminNavLinks">
+                        <li><a href="admin.html" class="nav-link active">Tạo Album</a></li>
+                        <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                        <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                        <li><a href="blog.html" class="nav-link">Blog</a></li>
+                        <li><a href="alarm.html" class="nav-link">Báo Thức</a></li>
+                        <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                        <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                        <li><a href="fedback.html" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    </ul>
                 </div>
-            </div>
-
-            <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
-                <div class="user-pill">
-                    <div id="avatarPlaceholder"></div>
-                    <div class="d-flex flex-column overflow-hidden">
-                        <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span>
-                        <div id="userStatusDisplay"></div>
+                <div class="ms-auto d-flex align-items-center">
+                    <div id="loggedOutNav">
+                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                            <span>LOGIN VIP</span>
+                        </div>
                     </div>
+                    <div id="loggedInNav" class="d-flex align-items-center"><div class="user-pill"><div id="avatarPlaceholder"></div><div class="d-flex flex-column overflow-hidden"><span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span><div id="userStatusDisplay"></div></div></div><button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer"><i class="fas fa-power-off"></i></button></div>
                 </div>
-                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()">
-                    <i class="fas fa-power-off"></i>
-                </button>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <div class="main-container">
         <div class="rainbow-border-wrapper">
@@ -189,68 +171,65 @@
     <script>
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
-function updateUI() {
-    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-    const status = localStorage.getItem('admin_status') || 'new';
-    const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-    isVIP = (status === 'active' && expiry > Date.now());
 
-    const notice = document.getElementById('accountNotice');
-    const btnCreate = document.getElementById('btnCreate');
+        function updateUI() {
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const status = localStorage.getItem('admin_status') || 'new';
+            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+            isVIP = (status === 'active' && expiry > Date.now());
+            
+            const notice = document.getElementById('accountNotice');
+            const btnCreate = document.getElementById('btnCreate');
 
-    // CÁC ID CẦN ĐIỀU KHIỂN
-    const marquee = document.getElementById('marqueeContainer');
-    const navLinks = document.getElementById('adminNavLinks');
-    const loggedInNav = document.getElementById('loggedInNav');
-    const loggedOutNav = document.getElementById('loggedOutNav');
-    const authReminder = document.getElementById('authReminder');
-    const extraTextNotice = document.getElementById('extraTextNotice');
-
-    if (isLoggedIn) {
-        // ĐĂNG NHẬP: Hiện profile, Ẩn login
-        marquee.style.display = 'none';
-        navLinks.style.display = 'flex';
-        loggedInNav.style.display = 'flex';
-        loggedOutNav.style.display = 'none';
-        authReminder.style.display = 'none';
-        extraTextNotice.style.display = 'none';
-        
-        btnCreate.classList.remove('d-none');
-        document.getElementById('vipSpeedNotice').style.display = 'block';
-        document.getElementById('userNameDisplay').innerText = name;
-        
-        const av = localStorage.getItem('admin_avatar');
-        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? 
-            `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-
-        const statusEl = document.getElementById('userStatusDisplay');
-        if (isVIP) {
-            statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-            btnCreate.disabled = false;
-            notice.style.display = 'none';
-        } else if (status === 'new') {
-            statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-            btnCreate.disabled = true;
-            notice.style.display = 'block';
-            notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary);">ADMIN</a> để kích hoạt.`;
-        } else {
-            statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
-            btnCreate.disabled = true;
-            notice.style.display = 'block';
-            notice.innerHTML = `<span style="color:#ff4757">Tài khoản hết hạn.</span> Vui lòng <a href="payment.html" style="color:var(--primary);">Gia hạn</a>.`;
+            if (isLoggedIn) {
+                document.getElementById('marqueeContainer').style.setProperty('display', 'none', 'important');
+                document.getElementById('adminNavLinks').style.setProperty('display', 'flex', 'important');
+                document.getElementById('loggedInNav').style.setProperty('display', 'flex', 'important');
+                document.getElementById('loggedOutNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('authReminder').style.setProperty('display', 'none', 'important');
+                document.getElementById('extraTextNotice').style.display = 'none';
+                btnCreate.classList.remove('d-none');
+                document.getElementById('vipSpeedNotice').style.display = 'block';
+                document.getElementById('userNameDisplay').innerText = name;
+                const av = localStorage.getItem('admin_avatar');
+                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                
+                const statusEl = document.getElementById('userStatusDisplay');
+                
+                if (isVIP) {
+                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                    btnCreate.disabled = false; 
+                    notice.style.display = 'none';
+                } else if (status === 'new') {
+                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                    btnCreate.disabled = true; 
+                    notice.style.display = 'block';
+                    notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
+                } else {
+                    statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                    btnCreate.disabled = true; 
+                    notice.style.display = 'block';
+                    notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
+                }
+            } else {
+                document.getElementById('marqueeContainer').style.setProperty('display', 'block', 'important');
+                document.getElementById('adminNavLinks').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedInNav').style.setProperty('display', 'none', 'important');
+                document.getElementById('loggedOutNav').style.setProperty('display', 'block', 'important');
+                document.getElementById('authReminder').style.setProperty('display', 'block', 'important');
+                document.getElementById('extraTextNotice').style.display = 'block';
+                btnCreate.classList.add('d-none');
+                notice.style.display = 'none';
+            }
+            setTimeout(() => {
+                const bubble = document.getElementById('aiSuggestion');
+                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                    bubble.style.display = 'block';
+                }
+            }, 1500);
         }
-    } else {
-        // CHƯA ĐĂNG NHẬP: Hiện login, Ẩn profile
-        marquee.style.display = 'block';
-        navLinks.style.display = 'none';
-        loggedInNav.style.display = 'none';
-        loggedOutNav.style.display = 'block';
-        authReminder.style.display = 'block';
-        extraTextNotice.style.display = 'block';
-        btnCreate.classList.add('d-none');
-    }
-}
 
         async function sendChat() {
             const input = document.getElementById('chatInput');
@@ -328,8 +307,6 @@ function updateUI() {
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            
-            // Nếu có thông tin đăng nhập từ URL, lưu vào LocalStorage
             if (params.get('auth_status') === 'success') {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', params.get('user_email') || '');
@@ -337,13 +314,8 @@ function updateUI() {
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                
-                // Làm sạch URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            
-            // Gọi hàm cập nhật giao diện
-            updateUI();
+                updateUI(); window.history.replaceState({}, document.title, window.location.pathname);
+            } else { updateUI(); }
         };
     </script>
 </body>
