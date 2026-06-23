@@ -21,7 +21,7 @@
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        #adminNavLinks, #loggedInNav { display: none; }
+      
         .marquee-wrapper { width: 600px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
@@ -117,7 +117,7 @@
         </div>
 
         <div class="d-flex align-items-center">
-            <div id="loggedOutNav" style="display: block;">
+            <div id="loggedOutNav">
                 <div class="btn-login-rainbow" onclick="startGoogleLogin()">
                     <span>LOGIN VIP</span>
                 </div>
@@ -131,7 +131,7 @@
                         <div id="userStatusDisplay"></div>
                     </div>
                 </div>
-                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
+                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()">
                     <i class="fas fa-power-off"></i>
                 </button>
             </div>
@@ -325,6 +325,8 @@ function updateUI() {
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
+            
+            // Nếu có thông tin đăng nhập từ URL, lưu vào LocalStorage
             if (params.get('auth_status') === 'success') {
                 localStorage.setItem('admin_is_logged_in', 'true');
                 localStorage.setItem('admin_email', params.get('user_email') || '');
@@ -332,8 +334,13 @@ function updateUI() {
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                updateUI(); window.history.replaceState({}, document.title, window.location.pathname);
-            } else { updateUI(); }
+                
+                // Làm sạch URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            // Gọi hàm cập nhật giao diện
+            updateUI();
         };
     </script>
 </body>
