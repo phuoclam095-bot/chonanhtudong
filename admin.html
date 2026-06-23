@@ -132,26 +132,25 @@
             </div>
         </div>
 
-        <div class="d-flex align-items-center">
-            <div id="loggedOutNav">
-                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                    <span>LOGIN VIP</span>
+        <div id="loggedOutNav" style="display: none;">
+            <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                <span>LOGIN VIP</span>
+            </div>
+        </div>
+        
+        <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+            <div class="user-pill">
+                <div id="avatarPlaceholder"></div>
+                <div class="d-flex flex-column overflow-hidden">
+                    <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span>
+                    <div id="userStatusDisplay"></div>
                 </div>
             </div>
-            <div id="loggedInNav" class="d-flex align-items-center">
-    <div class="user-pill">
-        <div id="avatarPlaceholder"></div>
-        <div class="d-flex flex-column overflow-hidden">
-            <span id="userNameDisplay" style="font-weight:900; font-size:0.8rem; line-height:1"></span>
-            <div id="userStatusDisplay"></div>
+            <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
+                <i class="fas fa-power-off"></i>
+            </button>
         </div>
-    </div>
-    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
-        <i class="fas fa-power-off"></i>
-    </button>
-</div>
-        </div>
-    </div>
+
 </nav>
 
     <div class="main-container">
