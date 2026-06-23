@@ -9,6 +9,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
+            .album-card-vip, 
+            .album-vip-title, 
+            .stats-grid, 
+            .stat-pill, 
+            .stat-val, 
+            .stat-lab,
+            .supreme-title {
+                user-select: none !important;
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                cursor: default !important; /* Biến con nháy nhập liệu thành mũi tên chuột thông thường */
+            }
+            
+            /* Riêng các nút bấm hoặc các ô số liệu có link click thì hiện hình bàn tay */
+            .stat-pill, .btn-vip, .nav-link {
+                cursor: pointer !important;
+            }
             --primary: #00ebb0; 
             --bg-deep: #050a14; 
             --neon: 0 0 20px rgba(0, 235, 176, 0.4);
@@ -36,13 +54,14 @@
         
         /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
         .nav-center-container { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: max-content !important; /* Ép độ rộng ôm sát số lượng Tab để căn giữa tuyệt đối */
+            position: absolute !important; 
+            left: 50% !important; 
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important; /* Dịch chuyển chuẩn theo cả 2 trục X và Y */
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            width: max-content !important; 
             z-index: 5; 
         }
         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
