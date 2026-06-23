@@ -74,7 +74,17 @@
 
         /* --- NAVBAR ĐỒNG BỘ ADMIN --- */
         .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .navbar-brand { font-weight: 900; font-size: 1.4rem; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: -1px; }
+        .navbar-brand { 
+            font-weight: 900 !important; 
+            color: var(--primary) !important; 
+            text-shadow: var(--neon) !important; 
+            font-size: 1.2rem !important; /* Kích thước gốc chuẩn nét trên PC */
+            text-decoration: none !important;
+            white-space: nowrap !important;  /* Ép chữ nằm trên 1 hàng, cấm tự xuống dòng khi F5 */
+            flex-shrink: 0 !important;       /* Chặn đứng Bootstrap bóp nghẹt hoặc làm mất chữ */
+            display: flex !important;
+            align-items: center !important;
+        }
         
         /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
         .nav-center-container { 
@@ -167,14 +177,10 @@
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
             .navbar-brand {
-                display: flex !important; /* Luôn luôn hiện chữ logo ở mọi màn hình di động */
-                
-                /* Dùng đơn vị liên kết dòng (vw - Viewport Width) kết hợp hàm clamp để chữ tự động 
-                   co giãn mượt mà từ 0.8rem (màn hình cực nhỏ) đến 1rem (màn hình di động lớn) */
-                font-size: clamp(0.8rem, 4vw, 1rem) !important; 
-                
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các chữ một chút để vừa vặn hơn */
-                max-width: 50% !important; /* Giới hạn không gian lề trái, nhường chỗ cho cụm User bên phải */
+                display: flex !important; 
+                font-size: clamp(0.78rem, 3.8vw, 0.95rem) !important; /* Tự co giãn thông minh theo màn hình điện thoại */
+                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách chữ một chút cho đẹp */
+                max-width: 48% !important; /* Giới hạn không gian lề trái để không đè vào cụm User */
                 overflow: hidden !important;
             }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
