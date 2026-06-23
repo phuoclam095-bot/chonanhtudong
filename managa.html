@@ -9,7 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
-            .album-card-vip, 
+            
+            --primary: #00ebb0; 
+            --bg-deep: #050a14; 
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+        }
+        .album-card-vip, 
             .album-vip-title, 
             .stats-grid, 
             .stat-pill, 
@@ -27,11 +33,6 @@
             .stat-pill, .btn-vip, .nav-link {
                 cursor: pointer !important;
             }
-            --primary: #00ebb0; 
-            --bg-deep: #050a14; 
-            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
-            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
-        }
         
         body { 
             background-color: var(--bg-deep); 
@@ -139,59 +140,52 @@
 
         #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
 
-        /* --- MOBILE RESPONSIVE ĐỒNG BỘ 100% ADMIN --- */
         @media (max-width: 991.98px) {
-    body { padding-top: 150px; }
-    .navbar { padding: 10px 0; min-height: auto; }
-    
-    /* 🌟 SỬA TẠI ĐÂY: Ép static trên mobile để giải phóng khỏi absolute của PC, giúp lướt ngang mượt mà */
-    .nav-center-container {
-        position: static !important;
-        transform: none !important;
-        width: 100% !important;
-        margin-top: 12px;
-        order: 3; 
-        padding: 0 15px !important; 
-        display: flex !important;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        justify-content: flex-start !important; /* Cho phép menu bắt đầu từ lề trái và vuốt dần qua phải */
-        align-items: center;
-    }
-    .nav-center-container::-webkit-scrollbar { display: none; }
+            body { padding-top: 150px; }
+            .navbar { padding: 10px 0; min-height: auto; }
+            
+            /* 🌟 ĐÃ SỬA: Chuyển sang justify-content: center để 3 Tab nằm chính giữa điện thoại */
+            .nav-center-container {
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                margin-top: 12px;
+                order: 3; 
+                padding: 0 15px !important; 
+                display: flex !important;
+                justify-content: center !important; 
+                align-items: center;
+            }
 
-    .navbar-nav {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 8px !important;
-        width: max-content;
-    }
+            .navbar-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                width: max-content;
+                justify-content: center !important;
+            }
 
-    /* 🌟 SỬA TẠI ĐÂY: Thêm thuộc tính chặn bôi đen văn bản và ép con trỏ dạng Click (pointer) */
-    .nav-link {
-        font-size: 0.75rem !important;
-        padding: 8px 14px !important;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-        border: 1px solid rgba(0, 235, 176, 0.15);
-        cursor: pointer !important; /* Luôn hiển thị bàn tay click */
-        user-select: none !important; /* Chống xuất hiện con nháy chuột bôi đen */
-        -webkit-user-select: none;
-    }
-    .nav-link.active {
-        background: rgba(0, 235, 176, 0.15) !important;
-        border-color: var(--primary) !important;
-    }
-    .nav-link.active::after { display: none !important; }
+            .nav-link {
+                font-size: 0.75rem !important;
+                padding: 8px 14px !important;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                border: 1px solid rgba(0, 235, 176, 0.15);
+            }
+            .nav-link.active {
+                background: rgba(0, 235, 176, 0.15) !important;
+                border-color: var(--primary) !important;
+            }
+            .nav-link.active::after { display: none !important; }
 
-    #authControl { padding-right: 8px; }
-    .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; }
-    #avatarPlaceholder { width: 28px; height: 28px; }
-    #userNameDisplay { font-size: 0.7rem !important; }
-    #userExpiryText { font-size: 0.65rem !important; }
-    .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
-}
+            #authControl { padding-right: 8px; }
+            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; }
+            #avatarPlaceholder { width: 28px; height: 28px; }
+            #userNameDisplay { font-size: 0.7rem !important; }
+            #userExpiryText { font-size: 0.65rem !important; }
+            .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
+        }
         .nav-link, .btn-vip, .stat-pill, .btn-copy-action {
     user-select: none;
     -webkit-user-select: none;
@@ -337,7 +331,17 @@
                 window.location.href = 'admin.html'; 
             }
         }
-
+        function handleCopyTabClick(e) {
+            e.preventDefault(); // Chặn hành vi chuyển hướng tự động mặc định
+            
+            // Kiểm tra nếu chiều rộng màn hình nhỏ hơn hoặc bằng 991px (Môi trường Điện thoại)
+            if (window.innerWidth <= 991.98) {
+                alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
+            } else {
+                // Nếu trên PC thì cho phép chuyển hướng bình thường
+                window.location.href = 'copy_local.html';
+            }
+        }
         async function init() { 
             updateHeaderUI(); 
             try { 
