@@ -74,21 +74,24 @@
 
         /* --- NAVBAR ĐỒNG BỘ ADMIN --- */
         .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .navbar-brand { 
+       .navbar-brand { 
             font-weight: 900 !important; 
             color: var(--primary) !important; 
             text-shadow: var(--neon) !important; 
-            font-size: 1.2rem !important; /* Kích thước chuẩn chỉnh nét căng trên PC */
+            font-size: 1.2rem !important; /* Kích thước gốc hoàn hảo nét căng trên PC */
             text-decoration: none !important;
-            white-space: nowrap !important;  /* Ép chữ nằm trên 1 hàng, cấm tự xuống dòng */
-            flex-shrink: 0 !important;       /* Cấm hoàn toàn việc bị bóp méo hình dạng chữ */
+            white-space: nowrap !important;  /* 1. Ép chữ nằm trên một hàng, cấm tự động xuống dòng */
+            flex-shrink: 0 !important;       /* 2. Cấm tuyệt đối việc hệ thống ép dẹt hay bóp méo hình dạng chữ */
             display: flex !important;
             align-items: center !important;
             
-            /* 🌟 GIỮ LẠI HOẶC THÊM HIỆU ỨNG CHUYỂN ĐỘNG NẢY NẢY (ANIMATION) CỦA BẠN */
+            /* Giữ nguyên hiệu ứng nhịp thở nảy nảy nhẹ nhàng thương hiệu */
             animation: breathing 3s ease-in-out infinite !important; 
         }
-        
+        @keyframes breathing { 
+            0%, 100% { transform: scale(1); filter: brightness(1); } 
+            50% { transform: scale(1.03); filter: brightness(1.2); } 
+        }
         /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
         .nav-center-container { 
             position: absolute !important; 
@@ -179,15 +182,15 @@
         @media (max-width: 991.98px) {
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
-            .navbar-brand {
+           .navbar-brand {
                 display: flex !important; 
                 
-                /* Ép chữ Logo tự động thu nhỏ lại từ 0.78rem đến 0.95rem tùy theo độ hẹp của màn hình,
-                   không bao giờ sợ bị tràn sang cụm thông tin khách hàng hay văng ra rìa nữa */
-                font-size: clamp(0.78rem, 3.8vw, 0.95rem) !important; 
+                /* 3. Dùng hàm thông minh clamp: Trên iPhone SE chữ tự co nhỏ về 0.75rem, 
+                   màn hình lớn tự nở ra tối đa 0.95rem, luôn luôn vừa khít, không bao giờ tràn lề */
+                font-size: clamp(0.75rem, 3.6vw, 0.95rem) !important; 
                 
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách chữ một chút cho tinh tế */
-                max-width: 48% !important; /* Giới hạn đúng diện tích lề trái trên điện thoại */
+                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các ký tự một chút cho tinh tế */
+                max-width: 48% !important; /* Giới hạn cứng diện tích lề trái để nhường chỗ cho khối User */
                 overflow: hidden !important;
             }
             /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
