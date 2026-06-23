@@ -251,74 +251,82 @@
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
 
-       function updateUI() {
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const status = localStorage.getItem('admin_status') || 'new';
-            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-            isVIP = (status === 'active' && expiry > Date.now());
-            
-            const notice = document.getElementById('accountNotice');
-            const btnCreate = document.getElementById('btnCreate');
-            const marquee = document.getElementById('marqueeContainer');
-            const navLinks = document.getElementById('adminNavLinks');
-            const loggedInNav = document.getElementById('loggedInNav');
-            const loggedOutNav = document.getElementById('loggedOutNav');
-            const authReminder = document.getElementById('authReminder');
-            const extraTextNotice = document.getElementById('extraTextNotice');
-            const vipSpeedNotice = document.getElementById('vipSpeedNotice');
+      function updateUI() {
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const status = localStorage.getItem('admin_status') || 'new';
+    const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+    isVIP = (status === 'active' && expiry > Date.now());
+    
+    const notice = document.getElementById('accountNotice');
+    const btnCreate = document.getElementById('btnCreate');
+    const marquee = document.getElementById('marqueeContainer');
+    const navLinks = document.getElementById('adminNavLinks');
+    const loggedInNav = document.getElementById('loggedInNav');
+    const loggedOutNav = document.getElementById('loggedOutNav');
+    const authReminder = document.getElementById('authReminder');
+    const extraTextNotice = document.getElementById('extraTextNotice');
+    const vipSpeedNotice = document.getElementById('vipSpeedNotice');
 
-            if (isLoggedIn) {
-                if(marquee) marquee.style.display = 'none';
-                if(navLinks) navLinks.style.display = 'flex';
-                if(loggedInNav) loggedInNav.style.display = 'flex';
-                if(loggedOutNav) loggedOutNav.style.display = 'none';
-                if(authReminder) authReminder.style.display = 'none';
-                if(extraTextNotice) extraTextNotice.style.display = 'none';
-                
-                btnCreate.classList.remove('d-none');
-                if(vipSpeedNotice) vipSpeedNotice.style.display = 'block';
-                
-                document.getElementById('userNameDisplay').innerText = name;
-                const av = localStorage.getItem('admin_avatar');
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-                
-                const statusEl = document.getElementById('userStatusDisplay');
-                
-                if (isVIP) {
-                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btnCreate.disabled = false; 
-                    notice.style.display = 'none';
-                } else if (status === 'new') {
-                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-                    btnCreate.disabled = true; 
-                    notice.style.display = 'block';
-                    notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
-                } else {
-                    statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
-                    btnCreate.disabled = true; 
-                    notice.style.display = 'block';
-                    notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
-                }
-            } else {
-                if(marquee) marquee.style.display = 'block';
-                if(navLinks) navLinks.style.display = 'none';
-                if(loggedInNav) loggedInNav.style.display = 'none';
-                if(loggedOutNav) loggedOutNav.style.display = 'block';
-                if(authReminder) authReminder.style.display = 'block';
-                if(extraTextNotice) extraTextNotice.style.display = 'block';
-                
-                btnCreate.classList.add('d-none');
-                notice.style.display = 'none';
-            }
-            setTimeout(() => {
-                const bubble = document.getElementById('aiSuggestion');
-                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-                    bubble.style.display = 'block';
-                }
-            }, 1500);
+    if (isLoggedIn) {
+        if(marquee) marquee.style.setProperty('display', 'none', 'important');
+        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+        
+        // KHI ĐĂNG NHẬP: Hiện khung thông tin user, ẩn nút Login VIP
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+        
+        if(authReminder) authReminder.style.setProperty('display', 'none', 'important');
+        if(extraTextNotice) extraTextNotice.style.display = 'none';
+        
+        btnCreate.classList.remove('d-none');
+        if(vipSpeedNotice) vipSpeedNotice.style.display = 'block';
+        
+        document.getElementById('userNameDisplay').innerText = name;
+        const av = localStorage.getItem('admin_avatar');
+        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        
+        const statusEl = document.getElementById('userStatusDisplay');
+        
+        if (isVIP) {
+            statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+            btnCreate.disabled = false; 
+            notice.style.display = 'none';
+        } else if (status === 'new') {
+            statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+            btnCreate.disabled = true; 
+            notice.style.display = 'block';
+            notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
+        } else {
+            statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+            btnCreate.disabled = true; 
+            notice.style.display = 'block';
+            notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
         }
+    } else {
+        // KHI ĐĂNG XUẤT: Hiện chữ chạy, ẩn menu chức năng
+        if(marquee) marquee.style.setProperty('display', 'block', 'important');
+        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+        
+        // 🌟 KHẮC PHỤC LỖI TẠI ĐÂY: Ẩn sạch bách cái khung thông tin user đi, chỉ chừa lại nút LOGIN VIP thôi!
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+        
+        if(authReminder) authReminder.style.setProperty('display', 'block', 'important');
+        if(extraTextNotice) extraTextNotice.style.display = 'block';
+        
+        btnCreate.classList.add('d-none');
+        notice.style.display = 'none';
+    }
+    
+    setTimeout(() => {
+        const bubble = document.getElementById('aiSuggestion');
+        if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+            bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+            bubble.style.display = 'block';
+        }
+    }, 1500);
+}
         async function sendChat() {
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
