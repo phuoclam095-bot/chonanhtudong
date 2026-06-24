@@ -314,8 +314,17 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ĐANG GỬI...'; btn.disabled = true;
             try {
                 const response = await fetch(N8N_SUBMIT_BLOG, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ author: document.getElementById('postAuthor').value, title: document.getElementById('postTitle').value, content: document.getElementById('postContent').value, image_data: document.getElementById('postImageBase64').value, image_name: document.getElementById('postImageName').value, date: new Date().toISOString() })
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        author: document.getElementById('postAuthor').value, 
+                        email: document.getElementById('postEmail').value, // <-- BỔ SUNG DÒNG NÀY ĐỂ TRUYỀN EMAIL LÊN WEBHOOK
+                        title: document.getElementById('postTitle').value, 
+                        content: document.getElementById('postContent').value, 
+                        image_data: document.getElementById('postImageBase64').value, 
+                        image_name: document.getElementById('postImageName').value, 
+                        date: new Date().toISOString() 
+                    })
                 });
                 if (response.ok) { alert("✅ Đã gửi bài duyệt! Cảm ơn bạn."); location.reload(); }
             } catch (e) { alert("Lỗi kết nối."); } finally { btn.innerHTML = 'GỬI DUYỆT NGAY'; btn.disabled = false; }
