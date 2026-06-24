@@ -13,27 +13,6 @@
             --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; 
             --neon: 0 0 20px rgba(0, 235, 176, 0.4);
         }
-        .feedback-card, h2, p.subtitle, label, #successMessage {
-            user-select: none !important;
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
-            cursor: default;
-        }
-        @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
-                top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
-            }
-            .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 2px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
-        }
         body { 
             margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; 
             background-color: var(--bg-deep); 
@@ -68,10 +47,10 @@
             padding: 16px; font-size: 1rem; transition: all 0.3s; color: #fff; font-weight: 600;
         }
         /* Làm placeholder sáng màu xanh lơ để nổi bật */
-        .form-control::placeholder { 
-            color: #475569 !important; 
-            opacity: 0.85; 
-            font-weight: 500;
+        .form-control::placeholder {
+            color: #a5f3e0 !important;
+            opacity: 0.85;
+            font-weight: 600;
         }
         .form-control:focus {
             background: rgba(0,0,0,0.6); border-color: var(--primary);
@@ -95,142 +74,18 @@
             background: rgba(0, 235, 176, 0.1); color: var(--primary); padding: 25px;
             border-radius: 20px; border: 1px solid var(--primary);
         }
-        @media (max-width: 991.98px) {
-            body { padding-top: 150px; }
-            .navbar { padding: 10px 0; min-height: auto; }
-            
-            .navbar-brand {
-                display: flex !important; /* Luôn luôn hiện chữ logo ở mọi màn hình di động */
-                
-                /* Dùng đơn vị liên kết dòng (vw - Viewport Width) kết hợp hàm clamp để chữ tự động 
-                   co giãn mượt mà từ 0.8rem (màn hình cực nhỏ) đến 1rem (màn hình di động lớn) */
-                font-size: clamp(0.8rem, 4vw, 1rem) !important; 
-                
-                letter-spacing: -0.5px !important; /* Thu gọn khoảng cách các chữ một chút để vừa vặn hơn */
-                max-width: 50% !important; /* Giới hạn không gian lề trái, nhường chỗ cho cụm User bên phải */
-                overflow: hidden !important;
-            }}
-            .btn-back-mobile { 
-                display: flex !important; 
-                align-items: center; 
-                justify-content: center;
-                background: rgba(255, 255, 255, 0.1); 
-                border: 1px solid rgba(0, 235, 176, 0.3);
-                color: var(--primary) !important; 
-                width: 38px; 
-                height: 38px; 
-                border-radius: 50%; 
-                text-decoration: none !important;
-                font-size: 0.9rem;
-                z-index: 10;
-            }
-
-            /* Mở rộng dải menu lướt chạm hàng ngang đều chữ và tâm trục X */
-            .nav-center-container {
-                position: static !important;
-                transform: none !important;
-                width: 100% !important;
-                margin-top: 12px !important;
-                order: 3; 
-                display: flex !important;
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-                justify-content: flex-start !important; 
-                align-items: center !important;
-                padding: 0 15px !important;
-            }
-            .nav-center-container::-webkit-scrollbar { display: none !important; }
-
-            .navbar-nav {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                gap: 8px !important;
-                width: max-content !important;
-                justify-content: flex-start !important;
-                align-items: center !important;
-                margin: 0 !important;
-            }
-
-            .nav-link {
-                font-size: 0.72rem !important;
-                padding: 0 14px !important;
-                height: 34px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                background: rgba(255, 255, 255, 0.05) !important;
-                border-radius: 10px !important;
-                border: 1px solid rgba(0, 235, 176, 0.15) !important;
-                line-height: 1 !important;
-            }
-            .nav-link.active {
-                background: rgba(0, 235, 176, 0.15) !important;
-                border-color: var(--primary) !important;
-            }
-            .nav-link.active::after { display: none !important; }
-
-            #authControl { padding-right: 8px; }
-            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; min-width: auto; }
-            #avatarPlaceholder { width: 28px; height: 28px; }
-            #userNameDisplay { font-size: 0.7rem !important; }
-            #userExpiryText { font-size: 0.65rem !important; }
-
-            /* Thu gọn hộp Form Góp Ý vừa vặn điện thoại hẹp */
-            .feedback-card { padding: 30px 20px; border-radius: 24px; }
-            h2 { font-size: 1.6rem; letter-spacing: 1px; }
-            p.subtitle { font-size: 0.85rem; margin-bottom: 25px; }
-            .form-control { padding: 12px; font-size: 0.9rem; border-radius: 14px; }
-            .btn-send { padding: 15px; font-size: 0.95rem; }
-        }
     </style>
 </head>
 <body>
 
-
-    <<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-            
-            <!-- 🌟 ĐA FIX: Đổi từ text sang Logo ảnh chuẩn hóa để không bị vỡ giao diện -->
-            <a class="navbar-brand m-0" href="admin.html"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-            
-            <!-- Nút Back quay về Admin dạng tròn độc lập lề trái -->
-            <a href="admin.html" class="btn-back-mobile"><i class="fas fa-chevron-left"></i></a>
-            
-            <!-- Khung thông tin User neo góc phải -->
-            <div class="d-flex align-items-center ms-auto order-lg-3">
-                <div id="authControl">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay">...</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryText"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
-                </div>
-            </div>
-
-            <!-- Khung trung tâm menu chức năng -->
-            <div class="nav-center-container" id="navCenterArea">
-                <ul class="navbar-nav" id="adminNavLinks">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li class="nav-item"><a href="fedback.html" class="nav-link active">Góp Ý</a></li>
-                </ul>
-            </div>
-
-            <div style="width: 40px;" class="d-lg-none"></div>
-
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
+            <a href="admin.html" class="back-btn"><i class="fas fa-chevron-left"></i> Quay lại Admin</a>
+            <span class="navbar-brand mb-0 h1">CHONANHNHANH.VN</span>
+            <div style="width: 100px;"></div>
         </div>
     </nav>
+
     <div class="main-container">
         <div class="feedback-card">
             <h2>Đóng Góp Ý Kiến</h2>
@@ -267,30 +122,14 @@
     </div>
 
     <script>
-        const WEBHOOK_FEEDBACK_URL = 'https://wsm.congtubaclieu.com.vn//webhook/feedback-form';
-        function updateHeaderUI() {
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-                
-                // 🌟 ĐÃ FIX LỖI BIẾN EMAIL CHƯA ĐỊNH NGHĨA TẠI ĐÂY
-                document.getElementById('senderName').value = name || 'Ẩn danh';
-                document.getElementById('senderEmail').value = localStorage.getItem('admin_email') || 'Không có';
-                
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
-                if (status === 'active' && expiry > Date.now()) { 
-                    badge.innerText = "ACTIVE"; 
-                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
-                } else { 
-                    badge.innerText = "MỚI"; 
-                    expText.innerText = "";
-                }
-                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { 
-                window.location.href = 'admin.html'; 
-            }
-        }
+        const WEBHOOK_FEEDBACK_URL = 'https://dichvufb.tino.page/webhook/feedback-form';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const name = localStorage.getItem('admin_name');
+            const email = localStorage.getItem('admin_email');
+            if (name) document.getElementById('senderName').value = name;
+            if (email) document.getElementById('senderEmail').value = email;
+        });
 
         async function handleSendFeedback(e) {
             e.preventDefault(); 
@@ -318,8 +157,6 @@
                 btn.disabled = false;
             }
         }
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
-        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); });
     </script>
 </body>
 </html>
