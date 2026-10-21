@@ -393,7 +393,7 @@
                     new bootstrap.Modal(document.getElementById('exportModal')).show(); 
                     showToast("Dữ liệu đã sẵn sàng");
                 } else { showToast("Chưa chọn ảnh nào"); }
-            } catch (e) { showToast("Lỗi hệ thống"); }
+            } catch (e) { showToast("Khách chưa chọn ảnh"); }
         }
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
