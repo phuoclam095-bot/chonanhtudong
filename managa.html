@@ -279,14 +279,27 @@
 
     <div class="container-fluid">
         <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
-        <div class="search-wrapper">
-            <div class="search-inner">
-                <i class="fas fa-search me-2" style="color:var(--primary)"></i>
-                <input type="text" id="albumSearch" placeholder="Tìm kiếm tên album..." oninput="filterAlbums()">
-                <span class="badge bg-dark text-primary rounded-pill px-2" id="albumCount">0</span>
-            </div>
+        <!-- THÊM: Khung thông báo Khóa VIP (giống hệt trang copy) -->
+        <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
+            <i class="fas fa-lock fa-3x text-danger mb-3"></i>
+            <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+            <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý.
+            </p>
+            <a href="payment.html" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
         </div>
-        <div id="albumGrid"></div>
+
+        <!-- THÊM: Bọc Thanh Tìm Kiếm và Grid vào thẻ div mainWorkGrid -->
+        <div id="mainWorkGrid">
+            <div class="search-wrapper">
+                <div class="search-inner">
+                    <i class="fas fa-search me-2" style="color:var(--primary)"></i>
+                    <input type="text" id="albumSearch" placeholder="Tìm kiếm tên album..." oninput="filterAlbums()">
+                    <span class="badge bg-dark text-primary rounded-pill px-2" id="albumCount">0</span>
+                </div>
+            </div>
+            <div id="albumGrid"></div>
+        </div>
     </div>
 
     <div class="modal fade" id="exportModal" tabindex="-1">
@@ -331,34 +344,7 @@
                 </div>`;
             return card;
         }
-        // ĐOẠN SCRIPT BẢO VỆ CHUYỂN HƯỚNG BẮT BUỘC
-        (function checkVipAccess() {
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const status = localStorage.getItem('admin_status');
-            const expiryRaw = localStorage.getItem('admin_expiry');
-            
-            let expiryTimestamp = 0;
-            if (expiryRaw) {
-                if (expiryRaw.includes('/')) {
-                    const parts = expiryRaw.split(/[\s/:]+/);
-                    if (parts.length >= 3) {
-                        const y = parseInt(parts[2]), m = parseInt(parts[1]) - 1, d = parseInt(parts[0]);
-                        const h = parts[3] ? parseInt(parts[3]) : 0;
-                        const min = parts[4] ? parseInt(parts[4]) : 0;
-                        const sec = parts[5] ? parseInt(parts[5]) : 0;
-                        expiryTimestamp = new Date(y, m, d, h, min, sec).getTime();
-                    }
-                } else {
-                    expiryTimestamp = parseInt(expiryRaw) || 0;
-                }
-            }
         
-            // Nếu chưa đăng nhập HOẶC không phải Active HOẶC thời gian đã qua hạn mức
-            if (!isLoggedIn || status !== 'active' || expiryTimestamp <= Date.now()) {
-                alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn! Vui lòng gia hạn để tiếp tục sử dụng tính năng.");
-                window.location.replace("payment.html"); // Chuyển thẳng về trang thanh toán
-            }
-        })();
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
@@ -388,13 +374,32 @@
                 const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
+                
+                const badge = document.getElementById('badgeStatus'); 
+                const expText = document.getElementById('userExpiryText');
+                
+                // Lấy 2 khung giao diện
+                const mainWorkGrid = document.getElementById('mainWorkGrid');
+                const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+
                 if (status === 'active' && expiry > Date.now()) { 
+                    // VIP CÒN HẠN: Bật giao diện xanh, hiện quản lý, ẩn ổ khóa
                     badge.innerText = "ACTIVE"; 
+                    badge.style.background = "var(--primary)";
+                    badge.style.color = "#000";
                     expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
+                    
+                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
                 } else { 
-                    badge.innerText = "MỚI"; 
+                    // HẾT HẠN / MỚI: Bật giao diện đỏ, ẩn quản lý, hiện ổ khóa
+                    badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
+                    badge.style.background = "#ff4757"; 
+                    badge.style.color = "#fff";
                     expText.innerText = "";
+                    
+                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                 }
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { 
