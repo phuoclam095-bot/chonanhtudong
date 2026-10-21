@@ -334,8 +334,8 @@
                     
                     // Chỉ hiển thị khung làm việc trên máy tính (nếu không dính responsive của mobile)
                     if (window.innerWidth > 991.98) {
-                        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'grid', 'important');
-                        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.display = 'none';
+                        if (mainWorkGrid) mainWorkGrid.innerHTML = '';
+                        if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                     }
                     if (document.getElementById('noticeVIP')) document.getElementById('noticeVIP').style.display = 'none';
                 } else {
