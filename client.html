@@ -189,7 +189,7 @@
             if (idx === -1) {
                 // KIỂM TRA GIỚI HẠN SỐ LƯỢNG ẢNH TỪ ADMIN
                 if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
-                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                    return Giới Hạn Ảnh (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
                 }
                 selectedIds.push(p.id);
             } else {
@@ -233,23 +233,18 @@
         async function downloadPhoto() {
             const p = photos[cur];
             if (!p) return;
-            showToast("Đang chuẩn bị tải ảnh...");
-            try {
-                // Sử dụng link gốc Full HD từ Google Drive
-                const fileUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
-                const response = await fetch(fileUrl);
-                const blob = await response.blob();
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = p.name || `photo_${p.id}.jpg`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showToast("Tải ảnh thành công!");
-            } catch (e) {
-                // Fallback mở tab mới nếu bị chặn CORS tải trực tiếp
-                window.open(`https://drive.google.com/file/d/${p.id}/view`, '_blank');
-            }
+            showToast("Đang tải ảnh gốc...");
+            
+            // Tạo link tải trực tiếp file từ Google Drive
+            const downloadUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
+            
+            // Mở tab ẩn hoặc tạo thẻ a tải trực tiếp
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = p.name || `photo_${p.id}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         // 2. CHỨC NĂNG BÌNH LUẬN / GHI CHÚ CHO ẢNH
@@ -261,7 +256,7 @@
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             const currentNote = notesMap[p.id] || '';
             
-            const userNote = prompt(`Nhập ghi chú / bình luận cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
+            const userNote = Ghi Chú Ảnh (`Nhập ghi chú cho ảnh này! [${p.name || 'Ảnh'}]:`, currentNote);
             if (userNote === null) return; // Người dùng bấm Hủy
             
             // Lưu vào LocalStorage
