@@ -82,7 +82,12 @@
             <div class="strip-luxury" id="strip"></div>
         </div>
     </div>
-
+    <div id="commentBoxContainer" style="background: rgba(0,0,0,0.85); padding: 8px 15px; border-top: 1px solid #222; display: none; z-index: 4800;">
+        <div class="input-group input-group-sm">
+            <input type="text" id="photoCommentInput" class="form-control bg-dark text-white border-secondary" placeholder="Nhập ghi chú cho ảnh này...">
+            <button class="btn btn-outline-light fw-bold" type="button" onclick="saveCurrentComment()">Lưu ghi chú</button>
+        </div>
+    </div>
     <div class="bottom-bar">
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
