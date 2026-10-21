@@ -328,56 +328,58 @@
                 if(limitPhotosInput) limitPhotosInput.disabled = false;
     
             } else if (status === 'new') {
-                // === TÀI KHOẢN MỚI: KHÓA CHỨC NĂNG ===
-                statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-                btnCreate.classList.add('d-none');
-                btnCreate.disabled = true; 
-                notice.style.display = 'block';
-                if(vipSpeedNotice) vipSpeedNotice.style.display = 'none';
-                notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
-                
-                // Khóa ô nhập liệu và làm mờ
-                if(driveLinkInput) { driveLinkInput.disabled = true; driveLinkInput.style.opacity = '0.4'; }
-                if(allowDownloadInput) allowDownloadInput.disabled = true;
-                if(allowCommentInput) allowCommentInput.disabled = true;
-                if(limitPhotosInput) limitPhotosInput.disabled = true;
-    
-            } else {
-                // === TÀI KHOẢN HẾT HẠN: KHÓA CHỨC NĂNG ===
-                statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
-                btnCreate.classList.add('d-none');
-                btnCreate.disabled = true; 
-                notice.style.display = 'block';
-                if(vipSpeedNotice) vipSpeedNotice.style.display = 'none';
-                notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
-                
-                // Khóa ô nhập liệu và làm mờ
-                if(driveLinkInput) { driveLinkInput.disabled = true; driveLinkInput.style.opacity = '0.4'; }
-                if(allowDownloadInput) allowDownloadInput.disabled = true;
-                if(allowCommentInput) allowCommentInput.disabled = true;
-                if(limitPhotosInput) limitPhotosInput.disabled = true;
-            }
-        } else {
-            // === CHƯA ĐĂNG NHẬP ===
-            if(marquee) marquee.style.setProperty('display', 'block', 'important');
-            if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
-            if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
-            if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
-            if(authReminder) authReminder.style.setProperty('display', 'block', 'important');
-            if(extraTextNotice) extraTextNotice.style.display = 'block';
-            
-            btnCreate.classList.add('d-none');
-            notice.style.display = 'none';
-        }
+                    // === TÀI KHOẢN MỚI: XÓA SẠCH FORM ĐỂ CHỐNG F12 ===
+                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                    
+                    const createCard = document.querySelector('.create-card');
+                    if (createCard) {
+                        createCard.innerHTML = `
+                            <h1 class="luxury-title">Thiết Lập Album VIP</h1>
+                            <div class="text-center mb-4" style="font-size:0.85rem; font-weight:700; line-height:1.6; display:block;">
+                                Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.
+                            </div>
+                        `;
+                    }
         
-        setTimeout(() => {
-            const bubble = document.getElementById('aiSuggestion');
-            if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-                bubble.style.display = 'block';
+                } else {
+                    // === TÀI KHOẢN HẾT HẠN: XÓA SẠCH FORM ĐỂ CHỐNG F12 ===
+                    statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                    
+                    const createCard = document.querySelector('.create-card');
+                    if (createCard) {
+                        createCard.innerHTML = `
+                            <h1 class="luxury-title">Thiết Lập Album VIP</h1>
+                            <div class="text-center mb-4" style="font-size:0.85rem; font-weight:700; line-height:1.6; display:block;">
+                                <span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.
+                            </div>
+                        `;
+                    }
+                }
+            } else {
+                // === CHƯA ĐĂNG NHẬP: XÓA SẠCH FORM ĐỂ CHỐNG F12 ===
+                if(marquee) marquee.style.setProperty('display', 'block', 'important');
+                if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+                if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+                if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+                
+                const createCard = document.querySelector('.create-card');
+                if (createCard) {
+                    createCard.innerHTML = `
+                        <h1 class="luxury-title">Thiết Lập Album VIP</h1>
+                        <div class="remind-text-rainbow" style="display:block;">Vui lòng đăng nhập để sử dụng</div>
+                        <div class="text-center mb-3" style="color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
+                    `;
+                }
             }
-        }, 1500);
-    }
+            
+            setTimeout(() => {
+                const bubble = document.getElementById('aiSuggestion');
+                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                    bubble.style.display = 'block';
+                }
+            }, 1500);
+        }
         async function sendChat() {
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
