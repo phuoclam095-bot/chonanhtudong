@@ -346,7 +346,7 @@
                 </div>`;
             return card;
         }
-        async function openNoteModal(folderId, albumName) {
+        aasync function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
                 // Gọi API lấy danh sách chi tiết ảnh / ghi chú của album này
@@ -354,12 +354,12 @@
                 const data = await res.json();
                 const photos = Array.isArray(data) ? data : (data.photos || []);
                 
-                document.getElementById('noteModalInfoinnerText`Album: ${albumName}` || `Album: ${albumName}`);
+                // Đã sửa lỗi cú pháp ở dòng này
+                document.getElementById('noteModalInfo').innerText = `Album: ${albumName}`;
+                
                 const container = document.getElementById('noteListContainer');
                 container.innerHTML = '';
                 
-                // Lọc ra những ảnh có ghi chú (hoặc lấy từ DB/LocalStorage của album)
-                // (Nếu bạn lưu note vào DB, hãy đảm bảo API get-photos trả về trường 'note' của từng ảnh)
                 let hasNote = false;
                 photos.forEach(p => {
                     if (p.note) {
