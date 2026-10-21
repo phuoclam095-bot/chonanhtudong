@@ -352,8 +352,9 @@
                 const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
                 const data = await res.json();
                 
-                // Trích xuất mảng photos chuẩn từ cấu trúc n8n mới
-                const photos = Array.isArray(data) ? data : (data.photos || data[0]?.photos || []);
+                // 👉 ĐOẠN SỬA ĐÂY: Trích xuất chính xác mảng photos nằm trong object cấu trúc n8n
+                const rootObj = Array.isArray(data) ? data[0] : data;
+                const photos = rootObj.photos || [];
                 
                 document.getElementById('noteModalInfo').innerText = `Album: ${albumName}`;
                 const container = document.getElementById('noteListContainer');
