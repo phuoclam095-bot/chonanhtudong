@@ -335,17 +335,53 @@
                 <div class="stats-grid">
                     <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
-                    <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=notes', '_blank')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
+                    <div class="stat-pill" onclick="openNoteModal('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
                 <div class="vip-actions-grid">
                     <button class="btn-vip v-view" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye"></i></button>
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
                     <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')"><i class="fas fa-file-export"></i></button> 
+                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', '${album.limit_photos || 0}', ${album.allow_download || false}, ${album.allow_comment || false})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')">Xóa album</button>
                 </div>`;
             return card;
         }
-        
+        async function openNoteModal(folderId, albumName) {
+            showToast("Đang tải ghi chú...");
+            try {
+                // Gọi API lấy danh sách chi tiết ảnh / ghi chú của album này
+                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
+                const data = await res.json();
+                const photos = Array.isArray(data) ? data : (data.photos || []);
+                
+                document.getElementById('noteModalInfoinnerText`Album: ${albumName}` || `Album: ${albumName}`);
+                const container = document.getElementById('noteListContainer');
+                container.innerHTML = '';
+                
+                // Lọc ra những ảnh có ghi chú (hoặc lấy từ DB/LocalStorage của album)
+                // (Nếu bạn lưu note vào DB, hãy đảm bảo API get-photos trả về trường 'note' của từng ảnh)
+                let hasNote = false;
+                photos.forEach(p => {
+                    if (p.note) {
+                        hasNote = true;
+                        container.innerHTML += `
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px;">
+                                <div style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 4px;">📷 ${p.name || 'Ảnh'}</div>
+                                <div style="font-size: 0.85rem; color: #fff;">${p.note}</div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (!hasNote) {
+                    container.innerHTML = `<div class="text-center text-secondary py-4">Chưa có ghi chú nào từ khách hàng cho album này.</div>`;
+                }
+                
+                new bootstrap.Modal(document.getElementById('noteModal')).show();
+            } catch(e) {
+                showToast("Không thể tải ghi chú!");
+            }
+        }
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
@@ -430,6 +466,40 @@
                 window.location.href = 'copy_local.html';
             }
         }
+        function openSettingsModal(folderId, limitVal, downloadVal, commentVal) {
+            document.getElementById('editFolderId').value = folderId;
+            document.getElementById('editLimitPhotos').value = limitVal > 0 ? limitVal : '';
+            document.getElementById('editAllowDownload').checked = downloadVal;
+            document.getElementById('editAllowComment').checked = commentVal;
+            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+        }
+
+        async function saveAlbumSettings() {
+            const folderId = document.getElementById('editFolderId').value;
+            const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
+            const download = document.getElementById('editAllowDownload').checked;
+            const comment = document.getElementById('editAllowComment').checked;
+            
+            showToast("Đang lưu cấu hình...");
+            try {
+                // Gửi request lên n8n để cập nhật bảng albums_data trên Supabase
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folderId, limitPhotos, download, comment })
+                });
+                const result = await res.json();
+                if(result.success) {
+                    showToast("Cập nhật thành công!");
+                    bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+                    setTimeout(() => location.reload(), 1000); // Tải lại trang để cập nhật giao diện
+                } else {
+                    alert("Lưu thất bại!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
         async function init() { 
             updateHeaderUI(); 
             if (!document.getElementById('mainWorkGrid') || document.getElementById('mainWorkGrid').innerHTML === '') {
@@ -449,5 +519,33 @@
         function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
+    <!-- MODAL CHỈNH SỬA CẤU HÌNH ALBUM -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">CẤU HÌNH ALBUM</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="editFolderId">
+                    <div class="mb-3">
+                        <label class="form-label text-primary fw-bold small text-uppercase">Giới hạn số lượng ảnh tối đa</label>
+                        <input type="number" id="editLimitPhotos" class="form-control bg-dark text-white border-secondary" placeholder="Nhập 0 nếu không giới hạn">
+                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Nhập 0 hoặc để trống nghĩa là khách được chọn thoải mái không giới hạn.</div>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="editAllowDownload">
+                        <label class="form-check-label fw-bold text-white small" for="editAllowDownload">Cho phép khách tải ảnh gốc</label>
+                    </div>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="editAllowComment">
+                        <label class="form-check-label fw-bold text-white small" for="editAllowComment">Cho phép khách viết ghi chú / bình luận</label>
+                    </div>
+                    <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()">LƯU THAY ĐỔI</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
