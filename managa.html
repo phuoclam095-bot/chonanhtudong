@@ -341,7 +341,7 @@
                     <button class="btn-vip v-view" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye"></i></button>
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
                     <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')"><i class="fas fa-file-export"></i></button> 
-                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', '${album.limit_photos || 0}', ${album.allow_download || false}, ${album.allow_comment || false})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
+                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', '${album.limit_photos || album.limitPhotos || 0}', ${album.allow_download ?? album.allowDownload ?? false}, ${album.allow_comment ?? album.allowComment ?? false})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')">Xóa album</button>
                 </div>`;
             return card;
@@ -349,25 +349,26 @@
         async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
-                // Gọi API lấy danh sách chi tiết ảnh / ghi chú của album này
                 const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
                 const data = await res.json();
                 const photos = Array.isArray(data) ? data : (data.photos || []);
                 
-                // Đã sửa lỗi cú pháp ở dòng này
                 document.getElementById('noteModalInfo').innerText = `Album: ${albumName}`;
-                
                 const container = document.getElementById('noteListContainer');
                 container.innerHTML = '';
                 
                 let hasNote = false;
                 photos.forEach(p => {
-                    if (p.note) {
+                    // Kiểm tra nếu bức ảnh có chứa ghi chú (từ cột note trong DB)
+                    if (p.note && p.note.trim() !== '') {
                         hasNote = true;
                         container.innerHTML += `
-                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px;">
-                                <div style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 4px;">📷 ${p.name || 'Ảnh'}</div>
-                                <div style="font-size: 0.85rem; color: #fff;">${p.note}</div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                    <img src="https://drive.google.com/thumbnail?id=${p.id}&sz=w100" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary);">
+                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 800;">📷 ${p.name || 'Ảnh'}</div>
+                                </div>
+                                <div style="font-size: 0.9rem; color: #fff; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; border-left: 3px solid var(--primary);">${p.note}</div>
                             </div>
                         `;
                     }
@@ -468,9 +469,14 @@
         }
         function openSettingsModal(folderId, limitVal, downloadVal, commentVal) {
             document.getElementById('editFolderId').value = folderId;
-            document.getElementById('editLimitPhotos').value = limitVal > 0 ? limitVal : '';
-            document.getElementById('editAllowDownload').checked = downloadVal;
-            document.getElementById('editAllowComment').checked = commentVal;
+            
+            // Xử lý giới hạn ảnh: nếu > 0 thì hiện số, ngược lại để trống hoặc 0
+            document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
+            
+            // Đồng bộ trạng thái checkbox/switch (chuyển đổi giá trị string/boolean sang true/false)
+            document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
+            document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
+            
             new bootstrap.Modal(document.getElementById('settingsModal')).show();
         }
 
