@@ -277,79 +277,107 @@
                 return parseInt(raw) || 0;
             }
       function updateUI() {
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const status = localStorage.getItem('admin_status') || 'new';
-            const expiry = getExpiryTimestamp();
-            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-            isVIP = (status === 'active' && expiry > Date.now());
+        const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+        const status = localStorage.getItem('admin_status') || 'new';
+        const expiry = getExpiryTimestamp();
+        const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+        isVIP = (status === 'active' && expiry > Date.now());
+        
+        const notice = document.getElementById('accountNotice');
+        const btnCreate = document.getElementById('btnCreate');
+        const marquee = document.getElementById('marqueeContainer');
+        const navLinks = document.getElementById('adminNavLinks');
+        const loggedInNav = document.getElementById('loggedInNav');
+        const loggedOutNav = document.getElementById('loggedOutNav');
+        const authReminder = document.getElementById('authReminder');
+        const extraTextNotice = document.getElementById('extraTextNotice');
+        const vipSpeedNotice = document.getElementById('vipSpeedNotice');
+    
+        // Lấy các ô input cấu hình để thực hiện Khóa/Mở khóa
+        const driveLinkInput = document.getElementById('driveLink');
+        const allowDownloadInput = document.getElementById('allowDownload');
+        const allowCommentInput = document.getElementById('allowComment');
+        const limitPhotosInput = document.getElementById('limitPhotos');
+    
+        if (isLoggedIn) {
+            if(marquee) marquee.style.setProperty('display', 'none', 'important');
+            if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+            if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+            if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+            if(authReminder) authReminder.style.setProperty('display', 'none', 'important');
+            if(extraTextNotice) extraTextNotice.style.display = 'none';
             
-            const notice = document.getElementById('accountNotice');
-            const btnCreate = document.getElementById('btnCreate');
-            const marquee = document.getElementById('marqueeContainer');
-            const navLinks = document.getElementById('adminNavLinks');
-            const loggedInNav = document.getElementById('loggedInNav');
-            const loggedOutNav = document.getElementById('loggedOutNav');
-            const authReminder = document.getElementById('authReminder');
-            const extraTextNotice = document.getElementById('extraTextNotice');
-            const vipSpeedNotice = document.getElementById('vipSpeedNotice');
-
-            if (isLoggedIn) {
-                // Đăng nhập: hiện menu chức năng và thông tin user mượt mà bằng setProperty nâng cao
-                if(marquee) marquee.style.setProperty('display', 'none', 'important');
-                if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
-                if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
-                if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
-                if(authReminder) authReminder.style.setProperty('display', 'none', 'important');
-                if(extraTextNotice) extraTextNotice.style.display = 'none';
-                
+            document.getElementById('userNameDisplay').innerText = name;
+            const av = localStorage.getItem('admin_avatar');
+            document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+            
+            const statusEl = document.getElementById('userStatusDisplay');
+            
+            if (isVIP) {
+                // === TÀI KHOẢN HỢP LỆ: MỞ KHÓA TẤT CẢ ===
+                statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
                 btnCreate.classList.remove('d-none');
-                if(vipSpeedNotice) vipSpeedNotice.style.display = 'block';
-                
-                document.getElementById('userNameDisplay').innerText = name;
-                const av = localStorage.getItem('admin_avatar');
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-                
-                const statusEl = document.getElementById('userStatusDisplay');
-                
-                if (isVIP) {
-                    statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                    btnCreate.classList.remove('d-none');
-                    btnCreate.disabled = false; 
-                    notice.style.display = 'none';
-                } else if (status === 'new') {
-                    statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
-                    btnCreate.classList.add('d-none');
-                    btnCreate.disabled = true; 
-                    notice.style.display = 'block';
-                    notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
-                } else {
-                    statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
-                    btnCreate.classList.add('d-none');
-                    btnCreate.disabled = true; 
-                    notice.style.display = 'block';
-                    notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
-                }
-            } else {
-                // Đăng xuất: Ẩn sạch bách khung viền trống của User, chỉ để lại duy nhất nút Login VIP
-                if(marquee) marquee.style.setProperty('display', 'block', 'important');
-                if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
-                if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
-                if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
-                if(authReminder) authReminder.style.setProperty('display', 'block', 'important');
-                if(extraTextNotice) extraTextNotice.style.display = 'block';
-                
-                btnCreate.classList.add('d-none');
+                btnCreate.disabled = false; 
                 notice.style.display = 'none';
+                if(vipSpeedNotice) vipSpeedNotice.style.display = 'block';
+    
+                // Mở khóa ô nhập liệu
+                if(driveLinkInput) { driveLinkInput.disabled = false; driveLinkInput.style.opacity = '1'; }
+                if(allowDownloadInput) allowDownloadInput.disabled = false;
+                if(allowCommentInput) allowCommentInput.disabled = false;
+                if(limitPhotosInput) limitPhotosInput.disabled = false;
+    
+            } else if (status === 'new') {
+                // === TÀI KHOẢN MỚI: KHÓA CHỨC NĂNG ===
+                statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                btnCreate.classList.add('d-none');
+                btnCreate.disabled = true; 
+                notice.style.display = 'block';
+                if(vipSpeedNotice) vipSpeedNotice.style.display = 'none';
+                notice.innerHTML = `Chào <strong>${name}</strong>, liên hệ <a href="https://zalo.me/0879029170" target="_blank" style="color:var(--primary); text-decoration:none;">ADMIN</a> để kích hoạt dùng thử hoặc<br><a href="payment.html" style="color:var(--primary); text-decoration:none;">Gia hạn ngay</a> để sử dụng ạ.`;
+                
+                // Khóa ô nhập liệu và làm mờ
+                if(driveLinkInput) { driveLinkInput.disabled = true; driveLinkInput.style.opacity = '0.4'; }
+                if(allowDownloadInput) allowDownloadInput.disabled = true;
+                if(allowCommentInput) allowCommentInput.disabled = true;
+                if(limitPhotosInput) limitPhotosInput.disabled = true;
+    
+            } else {
+                // === TÀI KHOẢN HẾT HẠN: KHÓA CHỨC NĂNG ===
+                statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                btnCreate.classList.add('d-none');
+                btnCreate.disabled = true; 
+                notice.style.display = 'block';
+                if(vipSpeedNotice) vipSpeedNotice.style.display = 'none';
+                notice.innerHTML = `<span style="color:#ff4757">Tài khoản của <strong>${name}</strong> đã hết hạn.</span><br>Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:none; font-weight:900;">Gia hạn</a> để tiếp tục sử dụng dịch vụ ạ.`;
+                
+                // Khóa ô nhập liệu và làm mờ
+                if(driveLinkInput) { driveLinkInput.disabled = true; driveLinkInput.style.opacity = '0.4'; }
+                if(allowDownloadInput) allowDownloadInput.disabled = true;
+                if(allowCommentInput) allowCommentInput.disabled = true;
+                if(limitPhotosInput) limitPhotosInput.disabled = true;
             }
+        } else {
+            // === CHƯA ĐĂNG NHẬP ===
+            if(marquee) marquee.style.setProperty('display', 'block', 'important');
+            if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+            if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+            if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+            if(authReminder) authReminder.style.setProperty('display', 'block', 'important');
+            if(extraTextNotice) extraTextNotice.style.display = 'block';
             
-            setTimeout(() => {
-                const bubble = document.getElementById('aiSuggestion');
-                if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-                    bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-                    bubble.style.display = 'block';
-                }
-            }, 1500);
+            btnCreate.classList.add('d-none');
+            notice.style.display = 'none';
         }
+        
+        setTimeout(() => {
+            const bubble = document.getElementById('aiSuggestion');
+            if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+                bubble.innerHTML = `Dạ chào <strong>${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+                bubble.style.display = 'block';
+            }
+        }, 1500);
+    }
         async function sendChat() {
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
