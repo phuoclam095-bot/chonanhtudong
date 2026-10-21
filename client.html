@@ -87,6 +87,10 @@
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
+            
+            <!-- THÊM 2 NÚT NÀY -->
+            <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display:none;"><i class="fas fa-download"></i></button>
+            <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display:none;"><i class="fas fa-comment-dots"></i></button>
         </div>
         <div class="d-flex gap-2">
             <button class="btn-action btn-text bg-gray" id="btnSel" onclick="togSel()">CHỌN</button>
@@ -95,6 +99,7 @@
     </div>
 
     <script>
+        let albumSettings = { download: false, comment: false, limitPhotos: 0 };
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         const fid = new URLSearchParams(window.location.search).get('id');
@@ -172,11 +177,20 @@
             updateInfo();
         }
 
-        function togSel() {
+       function togSel() {
             const p = photos[cur];
             const idx = selectedIds.indexOf(p.id);
-            if (idx === -1) selectedIds.push(p.id);
-            else selectedIds.splice(idx, 1);
+            
+            if (idx === -1) {
+                // KIỂM TRA GIỚI HẠN SỐ LƯỢNG ẢNH TỪ ADMIN
+                if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
+                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                }
+                selectedIds.push(p.id);
+            } else {
+                selectedIds.splice(idx, 1);
+            }
+            
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
             currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
@@ -210,14 +224,69 @@
                 try { await fetch(PATHS.DONE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ id: fid, selected_ids: selectedIds, count: selectedIds.length }) }); alert("✅ Tuyệt vời! Yêu cầu đã được lưu."); } catch(e) { alert("Lỗi gửi!"); }
             }
         }
+        // 1. CHỨC NĂNG TẢI ẢNH GỐC (Tải ảnh hiện tại đang xem hoặc chọn)
+        async function downloadPhoto() {
+            const p = photos[cur];
+            if (!p) return;
+            showToast("Đang chuẩn bị tải ảnh...");
+            try {
+                // Sử dụng link gốc Full HD từ Google Drive
+                const fileUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
+                const response = await fetch(fileUrl);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = p.name || `photo_${p.id}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("Tải ảnh thành công!");
+            } catch (e) {
+                // Fallback mở tab mới nếu bị chặn CORS tải trực tiếp
+                window.open(`https://drive.google.com/file/d/${p.id}/view`, '_blank');
+            }
+        }
 
-        async function init() {
+        // 2. CHỨC NĂNG BÌNH LUẬN / GHI CHÚ CHO ẢNH
+        async function commentPhoto() {
+            const p = photos[cur];
+            if (!p) return;
+            
+            // Lấy ghi chú cũ nếu có trong localStorage
+            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+            const currentNote = notesMap[p.id] || '';
+            
+            const userNote = prompt(`Nhập ghi chú / bình luận cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
+            if (userNote === null) return; // Người dùng bấm Hủy
+            
+            // Lưu vào LocalStorage
+            notesMap[p.id] = userNote.trim();
+            localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
+            
+            showToast("Đã lưu ghi chú!");
+            
+            // Đồng bộ lên n8n (tuỳ chọn nếu bạn có luồng save-note)
+            try {
+                await fetch(PATHS.SAVE, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ id: p.id, note: userNote.trim() }) 
+                });
+            } catch(e) {}
+        }
+      async function init() {
             try {
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json(); 
-                photos = Array.isArray(data) ? data : (data.photos || []);
                 
-                /* 1. LẤY TÊN ALBUM TỪ DỮ LIỆU */
+                // Trích xuất cấu hình và danh sách ảnh từ cấu trúc n8n mới
+                photos = Array.isArray(data) ? (data.photos || data) : (data.photos || []);
+                albumSettings = data.settings || albumSettings;
+                
+                // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
+                if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
+                if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
+
                 if(photos.length > 0) {
                     document.getElementById('albumTitle').innerText = photos[0].folderName || "VIP ALBUM";
                 }
