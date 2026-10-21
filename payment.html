@@ -372,20 +372,55 @@
         }
 
         function updateHeaderUI() {
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-                const isVIP = (status === 'active' && expiry > Date.now());
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryDisplay');
-                badge.innerText = isVIP ? "ACTIVE" : (status === 'new' ? "MỚI" : "EXPIRED");
-                badge.style.background = isVIP ? "var(--primary)" : "#ff4757";
-                badge.style.color = isVIP ? "#000" : "#fff";
-                badge.className = "status-tag";
-                expText.innerText = expiry > 0 ? " (" + new Date(expiry).toLocaleDateString('vi-VN') + ")" : "";
-                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { window.location.href = 'admin.html'; }
+    if (localStorage.getItem('admin_is_logged_in') === 'true') {
+        const name = localStorage.getItem('admin_name'), 
+              av = localStorage.getItem('admin_avatar'), 
+              status = localStorage.getItem('admin_status') || 'new';
+        
+        let expiryRaw = localStorage.getItem('admin_expiry');
+        let expiryTimestamp = 0;
+        let displayDate = "";
+
+        // Kiểm tra xem dữ liệu là dãy số hay định dạng ngày tháng dd/MM/yyyy
+        if (expiryRaw) {
+            if (expiryRaw.includes('/')) {
+                // Xử lý chuỗi "DD/MM/YYYY HH:mm:ss"
+                const parts = expiryRaw.split(/[\s/:]+/);
+                if (parts.length >= 3) {
+                    // Cấu trúc Date(year, monthIndex, day, hours, minutes, seconds)
+                    const y = parseInt(parts[2]), m = parseInt(parts[1]) - 1, d = parseInt(parts[0]);
+                    const h = parts[3] ? parseInt(parts[3]) : 0;
+                    const min = parts[4] ? parseInt(parts[4]) : 0;
+                    const sec = parts[5] ? parseInt(parts[5]) : 0;
+                    expiryTimestamp = new Date(y, m, d, h, min, sec).getTime();
+                    displayDate = ` (${parts[0]}/${parts[1]}/${parts[2]})`;
+                }
+            } else {
+                // Xử lý dãy số timestamp thông thường
+                expiryTimestamp = parseInt(expiryRaw) || 0;
+                displayDate = expiryTimestamp > 0 ? " (" + new Date(expiryTimestamp).toLocaleDateString('vi-VN') + ")" : "";
+            }
         }
+
+        const isVIP = (status === 'active' && expiryTimestamp > Date.now());
+        
+        document.getElementById('userNameDisplay').innerText = name;
+        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        
+        const badge = document.getElementById('badgeStatus'); 
+        const expText = document.getElementById('userExpiryDisplay');
+        
+        badge.innerText = isVIP ? "ACTIVE" : (status === 'new' ? "MỚI" : "EXPIRED");
+        badge.style.background = isVIP ? "var(--primary)" : "#ff4757";
+        badge.style.color = isVIP ? "#000" : "#fff";
+        badge.className = "status-tag";
+        expText.innerText = displayDate;
+        
+        document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
+    } else { 
+        window.location.href = 'admin.html'; 
+    }
+}
 
         window.onload = () => { 
             updateHeaderUI();
