@@ -359,7 +359,17 @@
                 } else { showToast("Chưa chọn ảnh nào"); }
             } catch (e) { showToast("Lỗi hệ thống"); }
         }
-
+        function getExpiryTimestamp() {
+            let raw = localStorage.getItem('admin_expiry');
+            if (!raw) return 0;
+            if (raw.includes('/')) {
+                let parts = raw.split(/[\s/:]+/);
+                if (parts.length >= 3) {
+                    return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+                }
+            }
+            return parseInt(raw) || 0;
+        }
         function copyFileNames() { const txt = document.getElementById('fileNamesOutput').value; if(!txt) return; navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => { showToast("Đã sao chép danh sách"); }); }
 
         async function deleteAlbum(id, name) {
@@ -372,28 +382,31 @@
 
         function updateHeaderUI() {
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const name = localStorage.getItem('admin_name');
+                const av = localStorage.getItem('admin_avatar');
+                const status = localStorage.getItem('admin_status') || 'new';
+                
+                const expiry = getExpiryTimestamp();
+                
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
                 
                 const badge = document.getElementById('badgeStatus'); 
                 const expText = document.getElementById('userExpiryText');
                 
-                // Lấy 2 khung giao diện
                 const mainWorkGrid = document.getElementById('mainWorkGrid');
                 const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
-
+        
                 if (status === 'active' && expiry > Date.now()) { 
-                    // VIP CÒN HẠN: Bật giao diện xanh, hiện quản lý, ẩn ổ khóa
+
                     badge.innerText = "ACTIVE"; 
                     badge.style.background = "var(--primary)";
                     badge.style.color = "#000";
                     expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
                     
-                    if (mainWorkGrid) mainWorkGrid.innerHTML = '';
-                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
                 } else { 
-                    // HẾT HẠN / MỚI: Bật giao diện đỏ, ẩn quản lý, hiện ổ khóa
                     badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
                     badge.style.background = "#ff4757"; 
                     badge.style.color = "#fff";
@@ -419,6 +432,11 @@
         }
         async function init() { 
             updateHeaderUI(); 
+            if (!document.getElementById('mainWorkGrid') || document.getElementById('mainWorkGrid').innerHTML === '') {
+                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500); 
+                return;
+            }
+            
             try { 
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
