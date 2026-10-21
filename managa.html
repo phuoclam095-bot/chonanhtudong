@@ -331,7 +331,34 @@
                 </div>`;
             return card;
         }
-
+        // ĐOẠN SCRIPT BẢO VỆ CHUYỂN HƯỚNG BẮT BUỘC
+        (function checkVipAccess() {
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const status = localStorage.getItem('admin_status');
+            const expiryRaw = localStorage.getItem('admin_expiry');
+            
+            let expiryTimestamp = 0;
+            if (expiryRaw) {
+                if (expiryRaw.includes('/')) {
+                    const parts = expiryRaw.split(/[\s/:]+/);
+                    if (parts.length >= 3) {
+                        const y = parseInt(parts[2]), m = parseInt(parts[1]) - 1, d = parseInt(parts[0]);
+                        const h = parts[3] ? parseInt(parts[3]) : 0;
+                        const min = parts[4] ? parseInt(parts[4]) : 0;
+                        const sec = parts[5] ? parseInt(parts[5]) : 0;
+                        expiryTimestamp = new Date(y, m, d, h, min, sec).getTime();
+                    }
+                } else {
+                    expiryTimestamp = parseInt(expiryRaw) || 0;
+                }
+            }
+        
+            // Nếu chưa đăng nhập HOẶC không phải Active HOẶC thời gian đã qua hạn mức
+            if (!isLoggedIn || status !== 'active' || expiryTimestamp <= Date.now()) {
+                alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn! Vui lòng gia hạn để tiếp tục sử dụng tính năng.");
+                window.location.replace("payment.html"); // Chuyển thẳng về trang thanh toán
+            }
+        })();
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
