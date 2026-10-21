@@ -390,8 +390,8 @@
                     badge.style.color = "#000";
                     expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
                     
-                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
-                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                    if (mainWorkGrid) mainWorkGrid.innerHTML = '';
+                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                 } else { 
                     // HẾT HẠN / MỚI: Bật giao diện đỏ, ẩn quản lý, hiện ổ khóa
                     badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
@@ -399,8 +399,8 @@
                     badge.style.color = "#fff";
                     expText.innerText = "";
                     
-                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                    if (mainWorkGrid) mainWorkGrid.innerHTML = '';
+                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                 }
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { 
