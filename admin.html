@@ -231,7 +231,18 @@
                 <div class="switch-container">
                     <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
                     <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
-                    <div class="switch-group"><span>Giới hạn số ảnh</span><label class="toggle-switch"><input type="checkbox" id="limitPhotos"><span class="slider"></span></label></div>
+                    <div class="switch-group">
+                        <span>Giới hạn số ảnh</span>
+                        <label class="toggle-switch">
+                            <!-- THÊM onchange để kích hoạt hàm ẩn/hiện -->
+                            <input type="checkbox" id="limitPhotos" onchange="toggleLimitInput()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <!-- KHUNG NHẬP SỐ LƯỢNG ẢNH (Mặc định ẩn) -->
+                    <div id="limitNumberContainer" style="display: none; padding: 0 18px 12px; margin-top: -5px;">
+                        <input type="number" id="limitNumber" placeholder="Nhập số ảnh tối đa (VD: 50)" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--primary); border-radius: 10px; color: var(--primary); text-align: center; font-weight: 900; outline: none;">
+                    </div>
                 </div>
                 <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
                 <div id="extraTextNotice" class="text-center mb-3" style="display:none; color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
@@ -427,7 +438,8 @@
             btn.innerHTML = 'ĐANG XỬ LÝ...';
             btn.disabled = true;
         
-            // 4. Gửi lệnh tạo album
+            const limitToggle = document.getElementById('limitPhotos').checked;
+            const limitValue = limitToggle ? (parseInt(document.getElementById('limitNumber').value) || 0) : 0;
             try {
                 await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
                     method: 'POST',
@@ -437,7 +449,7 @@
                         settings: {
                             download: document.getElementById('allowDownload').checked,
                             comment: document.getElementById('allowComment').checked,
-                            limitPhotos: document.getElementById('limitPhotos').checked
+                            limitPhotos: limitValue
                         }
                     })
                 });
@@ -457,7 +469,11 @@
             btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
             btn.disabled = false;
         }
-
+        function toggleLimitInput() {
+            const isChecked = document.getElementById('limitPhotos').checked;
+            document.getElementById('limitNumberContainer').style.display = isChecked ? 'block' : 'none';
+        }
+        
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
         function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
