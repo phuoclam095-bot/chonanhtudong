@@ -189,7 +189,7 @@
             if (idx === -1) {
                 // KIỂM TRA GIỚI HẠN SỐ LƯỢNG ẢNH TỪ ADMIN
                 if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
-                    return Giới Hạn Ảnh (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                    return alert (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
                 }
                 selectedIds.push(p.id);
             } else {
@@ -256,7 +256,7 @@
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             const currentNote = notesMap[p.id] || '';
             
-            const userNote = Ghi Chú Ảnh (`Nhập ghi chú cho ảnh này! [${p.name || 'Ảnh'}]:`, currentNote);
+            const userNote = prompt(`Nhập ghi chú cho ảnh này! [${p.name || 'Ảnh'}]:`, currentNote);
             if (userNote === null) return; // Người dùng bấm Hủy
             
             // Lưu vào LocalStorage
