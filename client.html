@@ -161,7 +161,7 @@
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
-                const hasNote = notesMap[p.id] && notesMap[p.id].trim() !== ''; // Kiểm tra xem ảnh này có ghi chú chưa
+                const hasNote = p.note && p.note.trim() !== '';
                 
                 el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
@@ -196,7 +196,7 @@
             const strip = document.getElementById('strip'); strip.innerHTML = '';
             photos.forEach((p, i) => {
                 const isSel = selectedIds.includes(p.id);
-                const hasNote = notesMap[p.id] && notesMap[p.id].trim() !== '';
+                const hasNote = p.note && p.note.trim() !== '';
                 if(isFiltering && !isSel) return;
                 
                 const th = document.createElement('div');
