@@ -176,7 +176,7 @@
                 // HIỂN THỊ HOẶC XÓA BIỂU TƯỢNG GHI CHÚ
                 let noteIcon = el.querySelector('.note-badge');
                 if(hasNote) {
-                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Chỉnh sửa ghi chú" onclick="event.stopPropagation(); commentPhoto();"><i class="fas fa-comment-alt"></i></div>`);
+                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
                 } else if(noteIcon) {
                     noteIcon.remove();
                 }
@@ -210,7 +210,7 @@
                 
                 // HIỂN THỊ ICON GHI CHÚ TRÊN THANH THUMBNAIL CHI TIẾT
                 if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Chỉnh sửa ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); commentPhoto();"><i class="fas fa-comment"></i></div>`);
+                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment"></i></div>`);
                 }
                 
                 th.onclick = () => { cur = i; showViewer(); };
@@ -280,7 +280,18 @@
             currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
         }
-
+        // HÀM MỞ MODAL XEM GHI CHÚ KHI NHẤP VÀO ICON NHỎ
+        function openViewNoteModal(photoId) {
+            const p = photos.find(x => x.id === photoId);
+            if (!p) return;
+            
+            // Gán hình ảnh và nội dung ghi chú tương ứng của ảnh đó lên Modal
+            document.getElementById('modalNoteImg').src = getLink(p.id, 's200');
+            document.getElementById('modalNoteContent').innerText = p.note || "Không có ghi chú nào.";
+            
+            // Hiển thị Modal Bootstrap
+            new bootstrap.Modal(document.getElementById('viewNoteModal')).show();
+        }
         function toggleFilter() {
             if(selectedIds.length === 0 && !isFiltering) return alert("Dạ chưa chọn ảnh nào!");
             isFiltering = !isFiltering;
@@ -402,5 +413,22 @@
         }
         init();
     </script>
+    <!-- MODAL XEM GHI CHÚ CỦA ẢNH -->
+    <div class="modal fade" id="viewNoteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 0.95rem;">GHI CHÚ CỦA ẢNH</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <img id="modalNoteImg" src="" style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid var(--primary); margin-bottom: 15px;">
+                    <div id="modalNoteContent" style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; color: #fff; font-size: 0.9rem; min-height: 60px; text-align: left; border-left: 4px solid var(--primary); word-break: break-word;">
+                        Đang tải...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
