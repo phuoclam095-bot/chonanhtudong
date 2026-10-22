@@ -347,7 +347,7 @@
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
                     <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')"><i class="fas fa-file-export"></i></button> 
                     
-                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', '${album.limit_photos ?? album.limitPhotos ?? 0}', ${album.allow_download ?? album.allowDownload ?? false}, ${album.allow_comment ?? album.allowComment ?? false})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
+                   <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', '${album.limit_photos ?? album.limitPhotos ?? 0}', ${album.allow_download ?? album.allowDownload ?? album.allow_downloading ?? false}, ${album.allow_comment ?? album.allowComment ?? album.allow_comments ?? false})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${(album.folderName || album.name).replace(/'/g, "\\'")}')">Xóa album</button>
                 </div>`;
