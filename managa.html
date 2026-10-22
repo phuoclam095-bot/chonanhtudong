@@ -405,39 +405,15 @@
                 });
                 const data = await res.json(); 
                 
-                let fileNames = [];
+                // Bóc tách mảng trả về từ n8n
+                const result = Array.isArray(data) ? data[0] : data;
 
-                // Trường hợp 1: n8n trả về theo dạng cấu trúc cũ có sẵn 'fileNamesForCopy'
-                let flatData = Array.isArray(data) ? data : [data];
-                let matched = flatData.find(item => item && item.fileNamesForCopy);
-                
-                if (matched && matched.fileNamesForCopy) {
-                    fileNames = matched.fileNamesForCopy.split(',').map(n => n.trim()).filter(Boolean);
-                } else {
-                    // Trường hợp 2: n8n trả về danh sách các object có chứa trường 'name'
-                    let rawList = [];
-                    flatData.forEach(item => {
-                        if (Array.isArray(item)) rawList.push(...item);
-                        else if (item && typeof item === 'object') {
-                            if (item.name) rawList.push(item);
-                            // Quét sâu vào các nhánh con nếu có
-                            Object.values(item.body || item.data || item).forEach(sub => {
-                                if (Array.isArray(sub)) {
-                                    sub.forEach(subItem => { if (subItem && subItem.name) rawList.push(subItem); });
-                                }
-                            });
-                        }
-                    });
+                if (result && result.fileNamesForCopy) {
+                    // Chuyển chuỗi thành danh sách tên file xuống dòng
+                    const formattedNames = result.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
                     
-                    fileNames = rawList.map(r => r.name || r.file_name || r.fileName).filter(Boolean);
-                }
-
-                // Loại bỏ các giá trị trùng lặp (nếu có)
-                fileNames = [...new Set(fileNames)];
-
-                if (fileNames.length > 0) {
-                    document.getElementById('modalInfo').innerText = `Album: ${name} (${fileNames.length} ảnh)`;
-                    document.getElementById('fileNamesOutput').value = fileNames.join('\n');
+                    document.getElementById('modalInfo').innerText = `Album: ${name} (${result.selectedPhotos || 0} ảnh)`;
+                    document.getElementById('fileNamesOutput').value = formattedNames;
                     new bootstrap.Modal(document.getElementById('exportModal')).show(); 
                     showToast("Dữ liệu đã sẵn sàng");
                 } else { 
@@ -445,7 +421,7 @@
                 }
             } catch (e) { 
                 console.error(e);
-                showToast("Khách chưa chọn ảnh hoặc lỗi mạng"); 
+                showToast("Khách chưa chọn ảnh"); 
             }
         }
         function getExpiryTimestamp() {
