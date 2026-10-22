@@ -339,32 +339,32 @@
             document.body.removeChild(a);
         }
 
-      // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ DÙNG HỘP THOẠI PROMPT/ALERT
-        // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ LUÔN ĐỒNG BỘ TỪ SUPABASE
-       async function commentPhoto() {
+
+        async function commentPhoto() {
+            // Lấy chính xác bức ảnh đang xem theo vị trí `cur`
             const p = photos[cur];
             if (!p) return;
             
-            showToast("Đang tải ghi chú từ hệ thống...");
+            // Lấy thẳng ghi chú từ dữ liệu của tấm ảnh này (đã được tải sẵn khi mở trang)
+            const currentNote = p.note || '';
+            
+            // Hiển thị hộp thoại prompt với đúng ghi chú riêng biệt của tấm ảnh đó
+            const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
+            if (userNote === null) return; // Khách bấm Hủy thì thoát
+            
+            const trimmedNote = userNote.trim();
+            
+            // Cập nhật lại ngay vào đối tượng ảnh `p` hiện tại
+            p.note = trimmedNote;
+            
+            showToast("Đang lưu ghi chú...");
+            
+            // Cập nhật lại giao diện lưới/chi tiết để hiện đúng icon tin nhắn trên ảnh đó
+            currentView === 'grid' ? syncGridUI() : showViewer();
+            
+            // Đồng bộ ngầm bản ghi chú này lên Supabase thông qua webhook SAVE
             try {
-                // Gọi webhook lấy ghi chú riêng của ảnh này từ Supabase
-                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-note?id=${p.id}`);
-                const data = await res.json();
-                
-                // Lấy nội dung note trả về từ database
-                const serverNote = data.note || data[0]?.note || '';
-                
-                // Hiển thị prompt với đúng ghi chú thực tế trên Database
-                const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, serverNote);
-                if (userNote === null) return; // Khách bấm Hủy
-                
-                const trimmedNote = userNote.trim();
-                p.note = trimmedNote; // Cập nhật vào mảng hiển thị hiện tại
-                
-                showToast("Đang lưu ghi chú...");
-                
-                // Lưu thẳng lên Supabase thông qua webhook SAVE
-                const saveRes = await fetch(PATHS.SAVE, { 
+                await fetch(PATHS.SAVE, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ 
@@ -372,15 +372,9 @@
                         note: trimmedNote 
                     }) 
                 });
-                
-                if((await saveRes.json()).success) {
-                    showToast("Đã lưu ghi chú lên hệ thống!");
-                    currentView === 'grid' ? syncGridUI() : showViewer();
-                } else {
-                    alert("Lưu thất bại!");
-                }
+                showToast("Đã lưu ghi chú thành công!");
             } catch(e) {
-                alert("Lỗi kết nối khi tải/lưu ghi chú!");
+                alert("Lỗi kết nối khi lưu ghi chú!");
             }
         }
       async function init() {
