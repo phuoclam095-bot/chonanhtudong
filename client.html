@@ -339,7 +339,7 @@
             document.body.removeChild(a);
         }
 
-      function commentPhoto() {
+      async function commentPhoto() {
             const p = photos[cur];
             if (!p) return;
             
@@ -354,11 +354,11 @@
             } else {
                 container.style.display = 'block';
                 
-                // Ưu tiên lấy ghi chú từ bộ nhớ tạm trên máy (hoặc từ dữ liệu ảnh tải về)
+                // Lấy ghi chú cũ từ LocalStorage theo ID của ảnh, nếu không có thì lấy từ dữ liệu `p.note` của server
                 const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
                 const existingNote = notesMap[p.id] !== undefined ? notesMap[p.id] : (p.note || '');
                 
-                // Đưa nội dung cũ vào ô input để khách xem hoặc chỉnh sửa lại
+                // Đưa nội dung cũ điền thẳng vào ô input để khách/quản lý thấy và sửa
                 inputEl.value = existingNote;
                 inputEl.focus();
             }
