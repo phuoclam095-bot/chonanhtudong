@@ -405,11 +405,11 @@
                 });
                 const data = await res.json(); 
                 
-                // Bóc tách mảng trả về từ n8n
+                // Xử lý linh hoạt dữ liệu trả về từ n8n (dù là mảng hay object đơn)
                 const result = Array.isArray(data) ? data[0] : data;
 
                 if (result && result.fileNamesForCopy) {
-                    // Chuyển chuỗi thành danh sách tên file xuống dòng
+                    // Chuyển chuỗi file cách nhau bằng dấu phẩy thành xuống dòng để dễ copy
                     const formattedNames = result.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
                     
                     document.getElementById('modalInfo').innerText = `Album: ${name} (${result.selectedPhotos || 0} ảnh)`;
