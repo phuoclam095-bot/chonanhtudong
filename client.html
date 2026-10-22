@@ -55,6 +55,23 @@
         .bg-gradient-vip { background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000; }
 
         #loadOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .note-badge {
+        position: absolute;
+        bottom: 6px;
+        left: 6px;
+        background: #3b82f6; /* Màu xanh dương nổi bật */
+        color: #fff;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        z-index: 10;
+        border: 1.5px solid #000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
     </style>
 </head>
 <body>
@@ -133,45 +150,67 @@
             syncGridUI();
         }
 
-        function syncGridUI() {
+       function syncGridUI() {
             if(currentView !== 'grid') return;
             const pCurrent = photos[cur];
             if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
             
+            // Lấy danh sách ghi chú đang lưu trên trình duyệt của khách
+            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+            
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
+                const hasNote = notesMap[p.id] && notesMap[p.id].trim() !== ''; // Kiểm tra xem ảnh này có ghi chú chưa
+                
                 el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
+                
                 let dot = el.querySelector('.vip-dot');
                 if(isSel) {
                     const num = selectedIds.indexOf(p.id) + 1;
                     if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
                     else dot.innerText = num;
                 } else if(dot) dot.remove();
+
+                // HIỂN THỊ HOẶC XÓA BIỂU TƯỢNG GHI CHÚ
+                let noteIcon = el.querySelector('.note-badge');
+                if(hasNote) {
+                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Đã có ghi chú"><i class="fas fa-comment-alt"></i></div>`);
+                } else if(noteIcon) {
+                    noteIcon.remove();
+                }
+
                 el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
             });
             updateInfo();
         }
-
-        function showViewer() {
+       function showViewer() {
             const p = photos[cur]; if(!p) return;
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
             
+            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+            
             const strip = document.getElementById('strip'); strip.innerHTML = '';
             photos.forEach((p, i) => {
                 const isSel = selectedIds.includes(p.id);
+                const hasNote = notesMap[p.id] && notesMap[p.id].trim() !== '';
                 if(isFiltering && !isSel) return;
+                
                 const th = document.createElement('div');
                 th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
                 th.innerHTML = `<img src="${getLink(p.id, 's100')}">`;
                 
-                /* 3. HIỂN THỊ SỐ THỨ TỰ TRÊN THUMBNAIL CHI TIẾT */
                 if(isSel) {
                     const num = selectedIds.indexOf(p.id) + 1;
                     th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
+                }
+                
+                // HIỂN THỊ ICON GHI CHÚ TRÊN THANH THUMBNAIL CHI TIẾT
+                if(hasNote) {
+                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;"><i class="fas fa-comment"></i></div>`);
                 }
                 
                 th.onclick = () => { cur = i; showViewer(); };
@@ -181,7 +220,46 @@
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
-
+    // 3. HÀM XỬ LÝ KHI BẤM NÚT LƯU TRONG KHUNG GHI CHÚ
+        async function saveCurrentComment() {
+            const p = photos[cur];
+            if (!p) return;
+            
+            const inputEl = document.getElementById('photoCommentInput');
+            const noteVal = inputEl ? inputEl.value.trim() : '';
+            
+            // Lưu vào LocalStorage của trình duyệt khách
+            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+            if (noteVal) {
+                notesMap[p.id] = noteVal;
+            } else {
+                delete notesMap[p.id];
+            }
+            localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
+            
+            showToast("Đã lưu ghi chú!");
+            
+            // Ẩn khung nhập ghi chú sau khi lưu xong
+            const container = document.getElementById('commentBoxContainer');
+            if (container) container.style.display = 'none';
+            
+            // Cập nhật lại giao diện lưới/chi tiết để hiện icon chấm xanh thông báo đã có note
+            currentView === 'grid' ? syncGridUI() : showViewer();
+            
+            // Đồng bộ ngầm lên n8n / Database Supabase
+            try {
+                await fetch(PATHS.SAVE, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ 
+                        id: p.id, 
+                        note: noteVal 
+                    }) 
+                });
+            } catch(e) {
+                console.log("Lỗi đồng bộ ghi chú ngầm lên server");
+            }
+        }
        function togSel() {
             const p = photos[cur];
             const idx = selectedIds.indexOf(p.id);
