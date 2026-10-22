@@ -340,13 +340,15 @@
         }
 
       // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ DÙNG HỘP THOẠI PROMPT/ALERT
+        // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ LUÔN ĐỒNG BỘ TỪ SUPABASE
         async function commentPhoto() {
             const p = photos[cur];
             if (!p) return;
             
-            // Lấy ghi chú cũ từ bộ nhớ tạm hoặc từ dữ liệu server trả về
+            // Lấy trực tiếp từ dữ liệu ảnh mới nhất (đã được đồng bộ từ Supabase khi tải trang)
+            // Nếu chưa có trên server mới tìm trong localStorage
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            const currentNote = notesMap[p.id] !== undefined ? notesMap[p.id] : (p.note || '');
+            const currentNote = p.note !== undefined && p.note !== '' ? p.note : (notesMap[p.id] || '');
             
             // Hiển thị hộp thoại prompt chuẩn để nhập/sửa ghi chú
             const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
@@ -354,19 +356,18 @@
             
             const trimmedNote = userNote.trim();
             
-            // Lưu vào LocalStorage
+            // Cập nhật lại vào đối tượng ảnh hiện tại và localStorage
+            p.note = trimmedNote;
             if (trimmedNote) {
                 notesMap[p.id] = trimmedNote;
-                p.note = trimmedNote;
             } else {
                 delete notesMap[p.id];
-                p.note = '';
             }
             localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
             
             showToast("Đã lưu ghi chú thành công!");
             
-            // Cập nhật lại giao diện để hiển thị icon nhận biết trên ảnh
+            // Cập nhật lại giao diện để hiển thị icon nhận biết trên ảnh ngay lập tức
             currentView === 'grid' ? syncGridUI() : showViewer();
             
             // Đồng bộ dữ liệu này lưu vào cơ sở dữ liệu Supabase thông qua n8n
