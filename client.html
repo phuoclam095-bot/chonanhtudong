@@ -341,49 +341,47 @@
 
       // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ DÙNG HỘP THOẠI PROMPT/ALERT
         // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ LUÔN ĐỒNG BỘ TỪ SUPABASE
-        async function commentPhoto() {
+       async function commentPhoto() {
+            // Lấy chính xác bức ảnh hiện tại theo vị trí `cur` đang xem
             const p = photos[cur];
             if (!p) return;
             
-            // Lấy trực tiếp từ dữ liệu ảnh mới nhất (đã được đồng bộ từ Supabase khi tải trang)
-            // Nếu chưa có trên server mới tìm trong localStorage
+            // Lấy ghi chú chuẩn từ localStorage theo đúng id của tấm ảnh này
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            const currentNote = p.note !== undefined && p.note !== '' ? p.note : (notesMap[p.id] || '');
+            const currentNote = notesMap[p.id] !== undefined ? notesMap[p.id] : (p.note || '');
             
-            // Hiển thị hộp thoại prompt chuẩn để nhập/sửa ghi chú
+            // Hiển thị prompt với đúng ghi chú riêng của tấm ảnh đó
             const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
-            if (userNote === null) return; // Nếu khách bấm Hủy thì thoát
+            if (userNote === null) return; // Bấm Hủy thì bỏ qua
             
             const trimmedNote = userNote.trim();
             
-            // Cập nhật lại vào đối tượng ảnh hiện tại và localStorage
-            p.note = trimmedNote;
+            // Lưu riêng biệt cho id của bức ảnh này
             if (trimmedNote) {
                 notesMap[p.id] = trimmedNote;
+                p.note = trimmedNote;
             } else {
                 delete notesMap[p.id];
+                p.note = '';
             }
             localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
             
-            showToast("Đã lưu ghi chú thành công!");
+            showToast("Đã lưu ghi chú cho ảnh này!");
             
-            // Cập nhật lại giao diện để hiển thị icon nhận biết trên ảnh ngay lập tức
+            // Cập nhật lại giao diện lưới/chi tiết để hiện đúng icon của ảnh đó
             currentView === 'grid' ? syncGridUI() : showViewer();
             
-            // Đồng bộ dữ liệu này lưu vào cơ sở dữ liệu Supabase thông qua n8n
+            // Đồng bộ ngầm lên server
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ 
                         id: p.id, 
-                        selected: selectedIds.includes(p.id), 
                         note: trimmedNote 
                     }) 
                 });
-            } catch(e) {
-                console.log("Lỗi đồng bộ ghi chú lên server");
-            }
+            } catch(e) {}
         }
       async function init() {
             try {
