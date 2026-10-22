@@ -176,7 +176,7 @@
                 // HIỂN THỊ HOẶC XÓA BIỂU TƯỢNG GHI CHÚ
                 let noteIcon = el.querySelector('.note-badge');
                 if(hasNote) {
-                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Đã có ghi chú"><i class="fas fa-comment-alt"></i></div>`);
+                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Chỉnh sửa ghi chú" onclick="event.stopPropagation(); commentPhoto();"><i class="fas fa-comment-alt"></i></div>`);
                 } else if(noteIcon) {
                     noteIcon.remove();
                 }
@@ -210,7 +210,7 @@
                 
                 // HIỂN THỊ ICON GHI CHÚ TRÊN THANH THUMBNAIL CHI TIẾT
                 if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;"><i class="fas fa-comment"></i></div>`);
+                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Chỉnh sửa ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); commentPhoto();"><i class="fas fa-comment"></i></div>`);
                 }
                 
                 th.onclick = () => { cur = i; showViewer(); };
@@ -228,25 +228,27 @@
             const inputEl = document.getElementById('photoCommentInput');
             const noteVal = inputEl ? inputEl.value.trim() : '';
             
-            // Lưu vào LocalStorage của trình duyệt khách
+            // Cập nhật lại LocalStorage
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             if (noteVal) {
                 notesMap[p.id] = noteVal;
+                p.note = noteVal; // Cập nhật luôn vào mảng photos hiện tại
             } else {
                 delete notesMap[p.id];
+                p.note = '';
             }
             localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
             
-            showToast("Đã lưu ghi chú!");
+            showToast("Đã cập nhật ghi chú thành công!");
             
-            // Ẩn khung nhập ghi chú sau khi lưu xong
+            // Ẩn khung nhập sau khi lưu
             const container = document.getElementById('commentBoxContainer');
             if (container) container.style.display = 'none';
             
-            // Cập nhật lại giao diện lưới/chi tiết để hiện icon chấm xanh thông báo đã có note
+            // Cập nhật lại giao diện để hiển thị/làm mới icon ghi chú trên ảnh
             currentView === 'grid' ? syncGridUI() : showViewer();
             
-            // Đồng bộ ngầm lên n8n / Database Supabase
+            // Đồng bộ ngầm bản chỉnh sửa lên n8n / Database Supabase
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
@@ -257,7 +259,7 @@
                     }) 
                 });
             } catch(e) {
-                console.log("Lỗi đồng bộ ghi chú ngầm lên server");
+                console.log("Lỗi đồng bộ ghi chú ngầm");
             }
         }
        function togSel() {
@@ -337,32 +339,29 @@
             document.body.removeChild(a);
         }
 
-        // 2. CHỨC NĂNG BÌNH LUẬN / GHI CHÚ CHO ẢNH
-        async function commentPhoto() {
+      function commentPhoto() {
             const p = photos[cur];
             if (!p) return;
             
-            // Lấy ghi chú cũ nếu có trong localStorage
-            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            const currentNote = notesMap[p.id] || '';
+            const container = document.getElementById('commentBoxContainer');
+            const inputEl = document.getElementById('photoCommentInput');
+            if (!container || !inputEl) return;
             
-            const userNote = prompt(`Nhập ghi chú cho ảnh này! [${p.name || 'Ảnh'}]:`, currentNote);
-            if (userNote === null) return; // Người dùng bấm Hủy
-            
-            // Lưu vào LocalStorage
-            notesMap[p.id] = userNote.trim();
-            localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
-            
-            showToast("Đã lưu ghi chú!");
-            
-            // Đồng bộ lên n8n (tuỳ chọn nếu bạn có luồng save-note)
-            try {
-                await fetch(PATHS.SAVE, { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ id: p.id, note: userNote.trim() }) 
-                });
-            } catch(e) {}
+            // Đảo trạng thái ẩn/hiện của khung nhập ghi chú
+            const isVisible = container.style.display === 'block';
+            if (isVisible) {
+                container.style.display = 'none';
+            } else {
+                container.style.display = 'block';
+                
+                // Ưu tiên lấy ghi chú từ bộ nhớ tạm trên máy (hoặc từ dữ liệu ảnh tải về)
+                const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+                const existingNote = notesMap[p.id] !== undefined ? notesMap[p.id] : (p.note || '');
+                
+                // Đưa nội dung cũ vào ô input để khách xem hoặc chỉnh sửa lại
+                inputEl.value = existingNote;
+                inputEl.focus();
+            }
         }
       async function init() {
             try {
