@@ -396,27 +396,18 @@
             }
         }
         async function handleExportClick(id, name) {
-            showToast("Đang trích xuất dữ liệu...");
-            try {
-                const res = await fetch(PATHS.EXPORT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
-                const data = await res.json(); 
-                
-                // Gom tất cả các tên file mà n8n trả về thành một mảng
-                const rows = Array.isArray(data) ? data : [data];
-                const fileNames = rows.map(r => r.name || r.fileNamesForCopy).filter(Boolean);
-
-                if (fileNames.length > 0) {
-                    document.getElementById('modalInfo').innerText = `Album: ${name} (${fileNames.length} ảnh)`;
-                    document.getElementById('fileNamesOutput').value = fileNames.join('\n');
-                    new bootstrap.Modal(document.getElementById('exportModal')).show(); 
-                    showToast("Dữ liệu đã sẵn sàng");
-                } else { 
-                    showToast("Chưa chọn ảnh nào"); 
-                }
-            } catch (e) { 
-                showToast("Khách chưa chọn ảnh"); 
-            }
-        }
+            showToast("Đang trích xuất dữ liệu...");
+            try {
+                const res = await fetch(PATHS.EXPORT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
+                const data = await res.json(); const result = Array.isArray(data) ? data[0] : data;
+                if (result?.fileNamesForCopy) {
+                    document.getElementById('modalInfo').innerText = `Album: ${name} (${result.selectedPhotos || 0} ảnh)`;
+                    document.getElementById('fileNamesOutput').value = result.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
+                    new bootstrap.Modal(document.getElementById('exportModal')).show(); 
+                    showToast("Dữ liệu đã sẵn sàng");
+                } else { showToast("Chưa chọn ảnh nào"); }
+            } catch (e) { showToast("Lỗi hệ thống"); }
+        }
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw) return 0;
