@@ -333,43 +333,25 @@
         function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
 
         function createAlbumCard(album) {
-            const card = document.createElement('div'); 
-            const id = album.folder_id || album.folderId; 
-            card.className = 'album-card-vip'; 
-            card.id = `card-${id}`;
-            
+            const card = document.createElement('div'); const id = album.folder_id || album.folderId; card.className = 'album-card-vip'; card.id = `card-${id}`;
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
             
-            // Trích xuất an toàn các biến cấu hình từ database trả về
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
             const albumTitle = (album.folderName || album.name || 'VIP Album').replace(/'/g, "\\'");
 
-            card.innerHTML = `
-                <div class="card-img-header" style="background-image: url('${img}');">
-                    <div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div>
-                </div>
+            card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=selected', '_blank')">
-                        <span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span>
-                    </div>
-                    <div class="stat-pill">
-                        <span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span>
-                    </div>
-                    <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')">
-                        <span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span>
-                    </div>
+                    <div class="stat-pill" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
+                    <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
                 <div class="vip-actions-grid">
                     <button class="btn-vip v-view" onclick="window.open('${PATHS.CLIENT}client.html?id=${id}', '_blank')"><i class="fas fa-eye"></i></button>
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
                     <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button> 
-                    
-                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal})">
-                        <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
-                    </button>
-                    
+                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
                 </div>`;
             return card;
@@ -379,7 +361,6 @@
             try {
                 const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
                 const data = await res.json();
-                
                 const rootObj = Array.isArray(data) ? data[0] : data;
                 const photos = rootObj.photos || [];
                 
@@ -416,6 +397,7 @@
                 showToast("Không thể tải ghi chú!");
             }
         }
+
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
@@ -425,14 +407,10 @@
                     body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) 
                 });
                 const data = await res.json(); 
-                
-                // Xử lý linh hoạt dữ liệu trả về từ n8n (dù là mảng hay object đơn)
                 const result = Array.isArray(data) ? data[0] : data;
 
                 if (result && result.fileNamesForCopy) {
-                    // Chuyển chuỗi file cách nhau bằng dấu phẩy thành xuống dòng để dễ copy
                     const formattedNames = result.fileNamesForCopy.split(',').map(n => n.trim()).join('\n');
-                    
                     document.getElementById('modalInfo').innerText = `Album: ${name} (${result.selectedPhotos || 0} ảnh)`;
                     document.getElementById('fileNamesOutput').value = formattedNames;
                     new bootstrap.Modal(document.getElementById('exportModal')).show(); 
@@ -445,6 +423,11 @@
                 showToast("Khách chưa chọn ảnh"); 
             }
         }
+
+        
+
+       
+        
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw) return 0;
