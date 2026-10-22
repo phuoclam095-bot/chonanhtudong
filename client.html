@@ -342,38 +342,29 @@
       // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ DÙNG HỘP THOẠI PROMPT/ALERT
         // CHỨC NĂNG BÌNH LUẬN / GHI CHÚ LUÔN ĐỒNG BỘ TỪ SUPABASE
        async function commentPhoto() {
-            // Lấy chính xác bức ảnh hiện tại theo vị trí `cur` đang xem
             const p = photos[cur];
             if (!p) return;
             
-            // Lấy ghi chú chuẩn từ localStorage theo đúng id của tấm ảnh này
-            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            const currentNote = notesMap[p.id] !== undefined ? notesMap[p.id] : (p.note || '');
-            
-            // Hiển thị prompt với đúng ghi chú riêng của tấm ảnh đó
-            const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
-            if (userNote === null) return; // Bấm Hủy thì bỏ qua
-            
-            const trimmedNote = userNote.trim();
-            
-            // Lưu riêng biệt cho id của bức ảnh này
-            if (trimmedNote) {
-                notesMap[p.id] = trimmedNote;
-                p.note = trimmedNote;
-            } else {
-                delete notesMap[p.id];
-                p.note = '';
-            }
-            localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
-            
-            showToast("Đã lưu ghi chú cho ảnh này!");
-            
-            // Cập nhật lại giao diện lưới/chi tiết để hiện đúng icon của ảnh đó
-            currentView === 'grid' ? syncGridUI() : showViewer();
-            
-            // Đồng bộ ngầm lên server
+            showToast("Đang tải ghi chú từ hệ thống...");
             try {
-                await fetch(PATHS.SAVE, { 
+                // Gọi webhook lấy ghi chú riêng của ảnh này từ Supabase
+                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-note?id=${p.id}`);
+                const data = await res.json();
+                
+                // Lấy nội dung note trả về từ database
+                const serverNote = data.note || data[0]?.note || '';
+                
+                // Hiển thị prompt với đúng ghi chú thực tế trên Database
+                const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, serverNote);
+                if (userNote === null) return; // Khách bấm Hủy
+                
+                const trimmedNote = userNote.trim();
+                p.note = trimmedNote; // Cập nhật vào mảng hiển thị hiện tại
+                
+                showToast("Đang lưu ghi chú...");
+                
+                // Lưu thẳng lên Supabase thông qua webhook SAVE
+                const saveRes = await fetch(PATHS.SAVE, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({ 
@@ -381,7 +372,16 @@
                         note: trimmedNote 
                     }) 
                 });
-            } catch(e) {}
+                
+                if((await saveRes.json()).success) {
+                    showToast("Đã lưu ghi chú lên hệ thống!");
+                    currentView === 'grid' ? syncGridUI() : showViewer();
+                } else {
+                    alert("Lưu thất bại!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối khi tải/lưu ghi chú!");
+            }
         }
       async function init() {
             try {
