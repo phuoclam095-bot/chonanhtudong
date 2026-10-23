@@ -332,11 +332,14 @@
         function filterAlbums() { const kw = document.getElementById('albumSearch').value.toLowerCase(); renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw))); }
         function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
 
-        function createAlbumCard(album) {
+       function createAlbumCard(album) {
             const card = document.createElement('div'); 
-            const id = album.folder_id || album.folderId; 
+            
+            // 🌟 Bóc tách chuẩn xác ID của Google Drive (hỗ trợ cả các tên biến khác nhau từ server)
+            const id = album.folder_id || album.folderId || album.id; 
             card.className = 'album-card-vip'; 
             card.id = `card-${id}`;
+            
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
             
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
@@ -344,10 +347,10 @@
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
             const albumTitle = (album.folderName || album.name || 'VIP Album').replace(/'/g, "\\'");
             
-            // Lấy mã định danh studio (mặc định là 'studio' nếu trống)
-            const sSlug = album.studio_slug || album.studioSlug || 'studio';
+            // 🌟 Lấy chuẩn xác tên định danh studio từ LocalStorage (ưu tiên của admin) hoặc từ dữ liệu album
+            const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
 
-            // Định dạng chuẩn: client.html?id=...&studio=...
+            // 🌟 Ghép đúng định dạng: client.html?id=...&studio=...
             const clientPageUrl = `${PATHS.CLIENT}?id=${id}&studio=${sSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
