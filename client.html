@@ -80,7 +80,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Giúp khách vẫn bấm chọn ảnh bình thường xuyên qua lớp logo */
+            pointer-events: none; /* Giúp khách vẫn bấm chọn ảnh bình thường xuyên qua logo */
             z-index: 20;
             overflow: hidden;
         }
@@ -231,10 +231,11 @@
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-            
-            // 🌟 Gán lớp phủ logo vào khung xem chi tiết
-            document.getElementById('clientWatermarkContainer').innerHTML = watermarkHTML;
-        
+
+            const watermarkContainer = document.getElementById('clientWatermarkContainer');
+            if (watermarkContainer) {
+                watermarkContainer.innerHTML = watermarkHTML;
+            }
             const strip = document.getElementById('strip'); 
             strip.innerHTML = '';
             
@@ -274,7 +275,7 @@
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
                 
-                // Chèn ảnh và biến watermarkHTML chứa logo đã lấy từ server
+                // Đảm bảo có dòng ${watermarkHTML} ở đây để hiện logo trên lưới
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
