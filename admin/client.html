@@ -457,18 +457,24 @@
         }
       async function init() {
             try {
-                // 🌟 GỬI KÈM CẢ ID ALBUM VÀ TÊN STUDIO LÊN N8N
                 const res = await fetch(`${PATHS.GET}?id=${fid}&studio=${studioSlug || ''}`);
-                const data = await res.json(); 
+                const rawData = await res.json(); 
                 
-                photos = Array.isArray(data) ? (data.photos || data) : (data.photos || []);
+                // 🌟 LẤY ĐÚNG ĐỐI TƯỢNG BÊN TRONG MẢNG TRẢ VỀ TỪ N8N
+                const data = Array.isArray(rawData) ? rawData[0] : rawData;
+                
+                // Trích xuất cấu hình và danh sách ảnh chuẩn xác
+                photos = data.photos || [];
                 albumSettings = data.settings || albumSettings;
                 
+                // Lấy thông tin logo và trạng thái hiển thị
                 const clientLogo = albumSettings.watermark_logo || '';
                 const isWatermarkOn = albumSettings.watermark_enabled !== false;
                 
+                // Tạo biến toàn cục để các hàm lưới và chi tiết cùng dùng chung
                 window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
                 
+                // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
                 if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
                 if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
