@@ -124,9 +124,10 @@
 
     <script>
         // --- ĐOẠN LẤY LOGO WATERMARK TỪ TRÌNH DUYỆT ---
-        const isWatermarkOn = albumData.watermark_enabled !== false; 
-        const clientLogo = albumData.watermark_logo || '';
-        const watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Watermark"></div>` : '';
+        const isWatermarkOn = (typeof albumData !== 'undefined' && albumData.watermark_enabled !== false);
+        const clientLogo = (typeof albumData !== 'undefined' && albumData.watermark_logo) || '';
+        
+        const watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0 };
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
