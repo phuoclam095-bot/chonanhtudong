@@ -192,6 +192,9 @@
                                 <div id="userStatusDisplay"></div>
                             </div>
                         </div>
+                        <button class="btn btn-link text-primary p-0 ms-2" onclick="openStudioConfigModal()" title="Cấu hình Studio" style="cursor:pointer">
+                            <i class="fas fa-cog"></i>
+                        </button>
                         <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
                             <i class="fas fa-power-off"></i>
                         </button>
@@ -412,63 +415,93 @@
             } catch (e) { statusText.style.display = 'none'; body.innerHTML += `<div class="msg-bubble msg-ai">Dạ lỗi kết nối rồi ạ!</div>`; }
             body.scrollTop = body.scrollHeight;
         }
-
-        async function handleCreateAlbum() {
-            // 1. TƯỜNG LỬA: Kiểm tra tài khoản
-            const status = localStorage.getItem('admin_status');
-            const expiry = getExpiryTimestamp();
-            
-            if (status !== 'active' || expiry <= Date.now()) {
-                alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!");
-                return; 
-            }
+        // Mở bảng cấu hình Studio
+        function openStudioConfigModal() {
+            const currentSlug = localStorage.getItem('admin_studio_slug') || '';
+            document.getElementById('modalStudioSlugInput').value = currentSlug;
+            new bootstrap.Modal(document.getElementById('studioConfigModal')).show();
+        }
         
-            // 2. Lấy link và xử lý ID
-            const driveLink = document.getElementById('driveLink').value.trim();
-            const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+        // Lưu cấu hình Studio và đồng bộ ngầm lên server/database qua n8n
+        async function saveStudioConfig() {
+            const inputVal = document.getElementById('modalStudioSlugInput').value.trim();
+            if (!inputVal) return alert("Vui lòng nhập tên định danh studio!");
         
-            if (!fId) {
-                alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
-                return;
-            }
+            const studioSlug = inputVal.toLowerCase().replace(/[^a-z0-9-_]/g, '');
+            localStorage.setItem('admin_studio_slug', studioSlug);
         
-            // 3. Khóa nút ngay lập tức để tránh bấm trùng
-            const btn = document.getElementById('btnCreate');
-            btn.innerHTML = 'ĐANG XỬ LÝ...';
-            btn.disabled = true;
+            const modalEl = document.getElementById('studioConfigModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
         
-            const limitToggle = document.getElementById('limitPhotos').checked;
-            const limitValue = limitToggle ? (parseInt(document.getElementById('limitNumber').value) || 0) : 0;
             try {
-                await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
+                await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         adminEmail: localStorage.getItem('admin_email'),
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked,
-                            limitPhotos: limitValue
-                        }
+                        studioSlug: studioSlug
                     })
                 });
-            } catch (err) {
-                console.log("Backend chạy ngầm...");
+                alert("Đã lưu cấu hình Studio thành công!");
+            } catch (e) {
+                console.log("Lỗi đồng bộ cấu hình ngầm");
             }
-        
-            // 5. HIỂN THỊ KẾT QUẢ NGAY
-            const clientLink = `https://phuoclam095-bot.github.io/chonanhtudong/client.html?id=${fId}`;
-        
-            document.getElementById('resFolderName').innerText = "Album mới khởi tạo";
-            document.getElementById('resClientLink').href = clientLink;
-            document.getElementById('resClientLink').innerText = clientLink;
-            document.getElementById('resultBox').style.display = 'block';
-        
-            // 6. Reset nút
-            btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
-            btn.disabled = false;
         }
+        async function handleCreateAlbum() {
+    const status = localStorage.getItem('admin_status');
+    const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+    
+    if (status !== 'active' || expiry <= Date.now()) {
+        alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!");
+        return; 
+    }
+
+    const driveLink = document.getElementById('driveLink').value.trim();
+    const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
+    const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+    
+    if (!fId) {
+        alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
+        return;
+    }
+
+    // Lấy tên studio đã cấu hình (mặc định là 'studio' nếu chưa cài)
+    let studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+
+    const btn = document.getElementById('btnCreate');
+    btn.innerHTML = 'ĐANG XỬ LÝ...';
+    btn.disabled = true;
+
+    try {
+        await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                adminEmail: localStorage.getItem('admin_email'),
+                studioSlug: studioSlug, // Gửi kèm tên studio lên n8n / Database
+                settings: {
+                    download: document.getElementById('allowDownload').checked,
+                    comment: document.getElementById('allowComment').checked,
+                    limitPhotos: document.getElementById('limitPhotos').checked
+                }
+            })
+        });
+    } catch (err) {
+        console.log("Backend chạy ngầm...");
+    }
+
+    // Thay đổi đường dẫn hiển thị theo đúng tên định danh Studio
+    const clientLink = `https://chonanhnhanh.vn/${studioSlug}/${fId}`;
+
+    document.getElementById('resFolderName').innerText = "Album mới khởi tạo (" + studioSlug + ")";
+    document.getElementById('resClientLink').href = clientLink;
+    document.getElementById('resClientLink').innerText = clientLink;
+    document.getElementById('resultBox').style.display = 'block';
+
+    btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
+    btn.disabled = false;
+}
         function toggleLimitInput() {
             const isChecked = document.getElementById('limitPhotos').checked;
             document.getElementById('limitNumberContainer').style.display = isChecked ? 'block' : 'none';
@@ -488,9 +521,44 @@
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                updateUI(); window.history.replaceState({}, document.title, window.location.pathname);
-            } else { updateUI(); }
+                
+                // Nhận studio_slug từ hệ thống trả về (nếu có sẵn trong DB)
+                const sSlug = params.get('studio_slug');
+                if(sSlug) localStorage.setItem('admin_studio_slug', sSlug);
+        
+                updateUI(); 
+                window.history.replaceState({}, document.title, window.location.pathname);
+        
+                // Tự động bật bảng cấu hình nếu tài khoản chưa từng cài đặt tên studio
+                setTimeout(() => {
+                    if (!localStorage.getItem('admin_studio_slug')) {
+                        openStudioConfigModal();
+                    }
+                }, 600);
+            } else { 
+                updateUI(); 
+            }
         };
     </script>
+    <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-primary fw-900" style="font-size: 1.1rem; text-transform: uppercase;">Cấu hình Đường Dẫn Studio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 20px;">
+                    Đặt tên định danh không dấu cho thương hiệu của bạn (Ví dụ: <code>chonanhnhanh.vn/ten-studio/id-album</code>).
+                </p>
+                <div class="mb-3">
+                    <label style="font-size: 0.75rem; color: var(--primary); font-weight: 900; margin-bottom: 8px; display: block; text-transform: uppercase;">Tên định danh (Slug)</label>
+                    <input type="text" id="modalStudioSlugInput" placeholder="Ví dụ: congtubaclieu, studio-a..." autocomplete="off">
+                </div>
+                <button class="btn-create" style="margin-top: 15px;" onclick="saveStudioConfig()">LƯU CẤU HÌNH</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
