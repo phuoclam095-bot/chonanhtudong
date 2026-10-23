@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <title>Đang chuyển hướng...</title>
     <script>
+        // Lấy các thành phần trên đường dẫn URL
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
+        // Nếu đường dẫn có dạng /ten-studio/id-album (từ 2 phần tử trở lên)
         if (pathSegments.length >= 2) {
             const studioSlug = pathSegments[pathSegments.length - 2];
             const albumId = pathSegments[pathSegments.length - 1];
             
-            // Điều hướng ngầm về client.html kèm theo đầy đủ tham số
+            // Tự động chuyển hướng ngầm về client.html kèm theo tham số
             window.location.replace(`/client.html?id=${albumId}&studio=${studioSlug}`);
         } else {
             window.location.replace('/');
