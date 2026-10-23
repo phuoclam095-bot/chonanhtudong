@@ -250,8 +250,8 @@
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây..." autocomplete="off">
                 </div>
                 <div class="switch-container">
-                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload"><span class="slider"></span></label></div>
-                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment"><span class="slider"></span></label></div>
+                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" ><span class="slider"></span></label></div>
+                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
                     <!-- KHU VỰC CÀI ĐẶT WATERMARK VÀ GIỚI HẠN ẢNH TRONG ADMIN -->
                 
                     <div class="switch-group">
@@ -268,18 +268,15 @@
                     <div class="switch-group">
                         <span>Đóng dấu bản quyền Logo</span>
                         <label class="toggle-switch">
-                            <input type="checkbox" id="enableWatermark" checked onchange="toggleWatermarkInput()">
+                            <input type="checkbox" id="enableWatermark" onchange="toggleWatermarkInput()">
                             <span class="slider"></span>
                         </label>
                     </div>
                     
-                    <!-- Ô tải logo trực tiếp từ máy tính (Ẩn/Hiện theo công tắc trên) -->
-                    <div class="mb-3 mt-3 px-2" id="logoUploadContainer">
+                    <div class="mb-3 mt-3 px-2" id="logoUploadContainer" style="display: none;">
                         <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
-                       <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
-                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Dung lượng lớn sẽ ảnh hưởng thời gian load ảnh, khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
-                        
-                        <!-- Xem trước logo vừa tải -->
+                        <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
+                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
                         <div class="mt-2">
                             <img id="logoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
                         </div>
