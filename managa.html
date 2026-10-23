@@ -325,7 +325,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/chonanhtudong/' };
+        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames' };
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
@@ -340,6 +340,7 @@
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
             const albumTitle = (album.folderName || album.name || 'VIP Album').replace(/'/g, "\\'");
+            const studioSlug = album.studio_slug || localStorage.getItem('admin_studio_slug') || 'studio';
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
