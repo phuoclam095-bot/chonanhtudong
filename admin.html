@@ -452,16 +452,16 @@
             if (!file) return;
         
             if (file.size > 1024 * 1024) {
-                alert("Dung lượng file quá lớn! Vui lòng chọn ảnh dưới 1MB.");
+                alert("Dung lượng file logo quá lớn! Vui lòng chọn ảnh dưới 1MB.");
                 return;
             }
         
             const reader = new FileReader();
             reader.onload = function(e) {
                 storedLogoBase64 = e.target.result;
+                // Lưu thẳng vào localStorage để dùng ngay
                 localStorage.setItem('studio_watermark_logo', storedLogoBase64);
                 
-                // Hiện ảnh xem trước ngay lập tức
                 const preview = document.getElementById('logoPreview');
                 if (preview) {
                     preview.src = storedLogoBase64;
@@ -581,6 +581,8 @@
         
             // Lấy tên studio đã cấu hình (mặc định là 'studio' nếu chưa cài)
             let studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            let currentLogo = localStorage.getItem('studio_watermark_logo') || storedLogoBase64 || '';
+            let isWatermarkChecked = document.getElementById('enableWatermark').checked;
         
             const btn = document.getElementById('btnCreate');
             btn.innerHTML = 'ĐANG XỬ LÝ...';
@@ -597,8 +599,8 @@
                             download: document.getElementById('allowDownload').checked,
                             comment: document.getElementById('allowComment').checked,
                             limitPhotos: document.getElementById('limitPhotos').checked,
-                            watermarkEnabled: document.getElementById('enableWatermark').checked,
-                            watermarkLogo: storedLogoBase64 || ''
+                            watermarkEnabled: isWatermarkChecked,
+                            watermarkLogo: currentLogo // <--- Truyền trực tiếp biến chứa Base64 vào đây
                         }
                     })
                 });
