@@ -114,8 +114,8 @@
         <div id="photoViewer">
             <div class="stage" style="position: relative; display: flex; align-items: center; justify-content: center;">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Bọc chung ảnh và logo trong một khung tương đối -->
-                <div style="position: relative; display: inline-flex; max-width: 100%; max-height: 100%;">
+                <!-- Khung bọc tương đối để lớp phủ logo căn đè chính xác lên ảnh chi tiết -->
+                <div style="position: relative; display: inline-flex; align-items: center; justify-content: center; max-width: 100%; max-height: 100%;">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
                 </div>
@@ -224,20 +224,22 @@
             });
             updateInfo();
         }
-       function showViewer() {
+        function showViewer() {
             const p = photos[cur]; 
             if(!p) return;
             
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-
+        
+            // 🌟 Gán trực tiếp biến watermarkHTML toàn cục vào đây
             const watermarkContainer = document.getElementById('clientWatermarkContainer');
             if (watermarkContainer) {
-                watermarkContainer.innerHTML = watermarkHTML;
+                watermarkContainer.innerHTML = window.watermarkHTML || '';
             }
+        
             const strip = document.getElementById('strip'); 
-            strip.innerHTML = '';
+            strip.innerHTML = ''; 
             
             photos.forEach((photoItem, i) => {
                 const isSel = selectedIds.includes(photoItem.id);
@@ -457,14 +459,17 @@
         }
       async function init() {
             try {
-                const res = await fetch(`${PATHS.GET}?id=${fid}`);
-                const data = await res.json(); 
+                const res = await fetch(`${PATHS.GET}?id=${fid}&studio=${studioSlug || ''}`);
+                const rawData = await res.json(); 
                 
-                // Trích xuất cấu hình và danh sách ảnh từ cấu trúc n8n
-                photos = Array.isArray(data) ? (data.photos || data) : (data.photos || []);
+                // 🌟 LẤY ĐÚNG ĐỐI TƯỢNG BÊN TRONG MẢNG TRẢ VỀ TỪ N8N
+                const data = Array.isArray(rawData) ? rawData[0] : rawData;
+                
+                // Trích xuất cấu hình và danh sách ảnh chuẩn xác
+                photos = data.photos || [];
                 albumSettings = data.settings || albumSettings;
                 
-                // 🌟 LẤY LOGO VÀ TẠO LỚP PHỦ WATERMARK CHUẨN XÁC
+                // Lấy thông tin logo và trạng thái hiển thị
                 const clientLogo = albumSettings.watermark_logo || '';
                 const isWatermarkOn = albumSettings.watermark_enabled !== false;
                 
@@ -488,7 +493,6 @@
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 
-                // Gọi hàm khởi tạo lưới ảnh sau khi đã có watermarkHTML
                 initGrid();
             } catch(e) { 
                 console.log(e);
