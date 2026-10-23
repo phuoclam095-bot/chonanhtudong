@@ -128,8 +128,8 @@
         
         // --- ĐOẠN KHAI BÁO THAM SỐ CHUẨN XÁC ---
         const urlParams = new URLSearchParams(window.location.search);
-        const fid = urlParams.get('id');
-        const studioSlug = urlParams.get('studio'); // Lấy tên studio từ file 404.html truyền qua
+        const fid = urlParams.get('id');       // Lấy ID Google Drive
+        const studioSlug = urlParams.get('studio'); // Lấy tên studio
         
         if (studioSlug) {
             console.log("Đang xem album thuộc Studio: " + studioSlug);
