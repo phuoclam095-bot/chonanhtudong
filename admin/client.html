@@ -125,7 +125,14 @@
         let albumSettings = { download: false, comment: false, limitPhotos: 0 };
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
-        const fid = new URLSearchParams(window.location.search).get('id');
+        const fid = new URLSearchParams(window.location.searconst urlParams = new URLSearchParams(window.location.search);
+        const fid = urlParams.get('id');
+        const studioSlug = urlParams.get('studio'); // Lấy tên studio truyền từ file 404.html qua
+        
+        // Kiểm tra và in ra console hoặc hiển thị lên tiêu đề nếu cần
+        if (studioSlug) {
+            console.log("Đang xem album thuộc Studio: " + studioSlug);
+        }ch).get('id');
 
         function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
 
@@ -403,7 +410,13 @@
                 if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
                 if(photos.length > 0) {
-                    document.getElementById('albumTitle').innerText = photos[0].folderName || "VIP ALBUM";
+                    let folderName = photos[0].folderName || "VIP ALBUM";
+                    // Nếu có tên studio, hiển thị kết hợp cho chuyên nghiệp
+                    if(studioSlug) {
+                        document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
+                    } else {
+                        document.getElementById('albumTitle').innerText = folderName;
+                    }
                 }
 
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
