@@ -506,48 +506,49 @@
         }
         
         // Lưu thông tin và tự động sinh Slug
-        async function saveStudioConfig() {
-            const nameVal = document.getElementById('modalStudioNameInput').value.trim();
-            const phoneVal = document.getElementById('modalStudioPhoneInput').value.trim();
-            const addressVal = document.getElementById('modalStudioAddressInput').value.trim();
-        
-            if (!nameVal) {
-                return alert("Vui lòng nhập Tên Studio!");
-            }
-        
-            // Tự động tạo tên viết tắt từ tên studio vừa nhập
-            const studioSlug = createSlug(nameVal);
-        
-            // Lưu trữ vào localStorage
-            localStorage.setItem('admin_studio_slug', studioSlug);
-            localStorage.setItem('admin_studio_name', nameVal);
-            localStorage.setItem('admin_studio_phone', phoneVal);
-            localStorage.setItem('admin_studio_address', addressVal);
-        
-            // Đóng Modal
-            const modalEl = document.getElementById('studioConfigModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
-        
-            // Gửi dữ liệu đầy đủ lên n8n / Database để lưu làm bill sau này
-            try {
-                await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        adminEmail: localStorage.getItem('admin_email'),
-                        studioSlug: studioSlug,
-                        studioName: nameVal,
-                        studioPhone: phoneVal,
-                        studioAddress: addressVal
-                    })
-                });
-                alert("Đã lưu thông tin Studio thành công!");
-            } catch (e) {
-                console.log("Lỗi đồng bộ ngầm");
-            }
-        }
+      async function saveStudioConfig() {
+    const nameVal = document.getElementById('modalStudioNameInput').value.trim();
+    const phoneVal = document.getElementById('modalStudioPhoneInput').value.trim();
+    const addressVal = document.getElementById('modalStudioAddressInput').value.trim();
 
+    if (!nameVal) {
+        return alert("Vui lòng nhập Tên Studio!");
+    }
+
+    const studioSlug = createSlug(nameVal);
+    const currentLogo = localStorage.getItem('studio_watermark_logo') || '';
+    const isWatermarkOn = document.getElementById('enableWatermark') ? document.getElementById('enableWatermark').checked : true;
+
+    // Lưu trữ tạm vào localStorage của máy chủ studio
+    localStorage.setItem('admin_studio_slug', studioSlug);
+    localStorage.setItem('admin_studio_name', nameVal);
+    localStorage.setItem('admin_studio_phone', phoneVal);
+    localStorage.setItem('admin_studio_address', addressVal);
+
+    const modalEl = document.getElementById('studioConfigModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) modalInstance.hide();
+
+    // Gửi cấu hình riêng của studio này lên n8n để lưu vào bảng quản lý Studio
+    try {
+        await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                adminEmail: localStorage.getItem('admin_email'), // 👈 Chìa khóa định danh chính xác chủ studio
+                studioSlug: studioSlug,
+                studioName: nameVal,
+                studioPhone: phoneVal,
+                studioAddress: addressVal,
+                watermarkEnabled: isWatermarkOn,
+                watermarkLogo: currentLogo // Logo riêng của studio này
+            })
+        });
+        alert("Đã lưu thông tin và Logo Studio thành công!");
+    } catch (e) {
+        console.log("Lỗi đồng bộ ngầm");
+    }
+}
         function createSlug(str) {
             if (!str) return 'studio';
             str = str.toLowerCase();
