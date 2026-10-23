@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHONANHNHANH.VN - HỖ TRỢ KỸ THUẬT Master</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #00ebb0; --bg-deep: #050a14; --neon: 0 0 15px rgba(0, 235, 176, 0.4); }
+        .supreme-card, .supreme-title, .contact-item, .ai-header, .msg-ai {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default;
+        }
+        @media (min-width: 992px) {
+            .nav-center-container { 
+                position: absolute !important; 
+                left: 50% !important; 
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important; 
+                display: flex !important; 
+                align-items: center !important; 
+                justify-content: center !important; 
+                width: max-content !important; 
+                z-index: 5; 
+            }
+            .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 2px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
+        }
+        body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5,10,20,0.7), rgba(5,10,20,0.9)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 100px; overflow-x: hidden; }
+        
+        /* NAVBAR */
+        .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 85px; }
+        .navbar-brand { font-weight: 900; font-size: 1.5rem; color: var(--primary) !important; text-shadow: var(--neon); letter-spacing: -1px; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s; position: relative; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 5px; left: 50%; background: var(--primary); transition: 0.3s ease; transform: translateX(-50%); }
+        .nav-link:hover::after, .nav-link.active::after { width: 70%; box-shadow: var(--neon); }
+        .nav-link.active { color: var(--primary) !important; }
+
+        /* USER PILL FIX - TO HƠN HẠN DÙNG */
+        .user-status-box { background: rgba(255,255,255,0.05); padding: 5px 18px; border-radius: 50px; display: flex; align-items: center; gap: 12px; border: 1.5px solid var(--primary); height: 55px; }
+        #avatarPlaceholder { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+        .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; }
+        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; } /* Phóng to hạn dùng */
+
+        /* TITLE 11 SAO - TIẾT CHẾ ĐỘ LÓE */
+        .supreme-title { 
+            font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 10px; 
+            color: #fff; text-align: center; margin-bottom: 35px; 
+            text-shadow: 0px 2px 0px var(--primary), 0px 5px 15px rgba(0, 235, 176, 0.4); /* Giảm lóe */
+        }
+
+        .main-container { max-width: 1150px; margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 25px; padding: 20px; }
+        @media (max-width: 992px) { .main-container { grid-template-columns: 1fr; } }
+
+        .supreme-card { background: rgba(10, 20, 40, 0.75); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); padding: 50px 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .contact-item { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; transition: 0.3s; text-decoration: none; text-align: left; }
+        .contact-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--neon); }
+        .contact-info label { display: block; font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+        .contact-info span { display: block; font-weight: 900; font-size: 0.85rem; color: #fff; }
+
+        /* AI CHAT */
+        .ai-box { background: rgba(10, 20, 40, 0.85); border: 1px solid var(--primary); border-radius: 30px; display: flex; flex-direction: column; height: 580px; overflow: hidden; box-shadow: var(--neon); }
+        .ai-header { padding: 18px; background: var(--primary); color: #000; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; }
+        .ai-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; font-size: 0.85rem; }
+        .msg-wrapper { display: flex; gap: 10px; max-width: 85%; }
+        .msg-wrapper.user { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-wrapper.ai { align-self: flex-start; }
+        .chat-avt { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--primary); overflow: hidden; flex-shrink: 0; }
+        .chat-avt img { width: 100%; height: 100%; object-fit: cover; }
+        .msg { padding: 10px 15px; border-radius: 18px; line-height: 1.5; }
+        .msg-ai { background: rgba(255,255,255,0.1); }
+        .msg-user { background: var(--primary); color: #000; font-weight: 700; }
+        #typingIndicator { display: none; padding: 5px 20px; font-size: 0.75rem; color: var(--primary); font-weight: 700; }
+        .ai-input-area { padding: 15px; background: rgba(0,0,0,0.4); display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .ai-input-area input { flex: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; outline: none; }
+        .ai-btn { background: var(--primary); color: #000; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .ai-btn:hover { transform: scale(1.1); box-shadow: var(--neon); }
+
+        #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 991.98px) {
+            body { padding-top: 150px; }
+            .navbar { padding: 10px 0; min-height: auto; }
+            
+            .navbar-brand { display: none !important; }
+            .btn-back-mobile { 
+                display: flex !important; 
+                align-items: center; 
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.1); 
+                border: 1px solid rgba(0, 235, 176, 0.3);
+                color: var(--primary) !important; 
+                width: 38px; 
+                height: 38px; 
+                border-radius: 50%; 
+                text-decoration: none !important;
+                font-size: 0.9rem;
+                z-index: 10;
+            }
+
+            /* Mở khóa để dải menu lướt ngang mượt mà tự do */
+            .nav-center-container {
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                margin-top: 12px !important;
+                order: 3; 
+                display: flex !important;
+                overflow-x: auto !important; /* Kích hoạt cuộn trục X */
+                -webkit-overflow-scrolling: touch;
+                justify-content: flex-start !important; 
+                align-items: center !important;
+                padding: 0 15px !important;
+            }
+            .nav-center-container::-webkit-scrollbar { display: none !important; }
+
+            .navbar-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 6px !important; /* Thu hẹp khoảng cách một chút để đỡ chiếm diện tích */
+                width: max-content !important;
+                align-items: center !important; /* Ép toàn bộ các li/thẻ con thẳng hàng ngang */
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .nav-link {
+                font-size: 0.7rem !important; /* Giảm nhẹ font một chút để chữ không bị ép xuống dòng */
+                padding: 0 12px !important;
+                height: 34px !important; /* Khóa cứng chiều cao của tab */
+                display: flex !important;
+                align-items: center !important; /* Căn chữ nằm chính giữa theo chiều dọc */
+                justify-content: center !important; /* Căn chữ nằm chính giữa theo chiều ngang */
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-radius: 10px !important;
+                border: 1px solid rgba(0, 235, 176, 0.15) !important;
+                line-height: 1 !important; /* Khử hoàn toàn lỗi dãn dòng tự động của trình duyệt */
+                white-space: nowrap !important; /* Tuyệt đối không cho chữ tự xuống hàng bên trong nút */
+            }
+            .nav-link.active {
+                background: rgba(0, 235, 176, 0.15) !important;
+                border-color: var(--primary) !important;
+            }
+            .nav-link.active::after { display: none !important; }
+
+            #authControl { padding-right: 8px; }
+            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; min-width: auto; }
+            #avatarPlaceholder { width: 28px; height: 28px; }
+            #userNameDisplay { font-size: 0.7rem !important; }
+            #userExpiryText { font-size: 0.65rem !important; }
+
+            .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadOverlay"><div class="spinner-border text-primary"></div></div>
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+            
+            <a class="navbar-brand m-0" href="admin.html">CHONANHNHANH<span style="color:#fff">.VN</span></a>
+            
+            <div class="d-flex align-items-center ms-auto order-lg-3">
+                <div id="authControl">
+                    <div class="user-status-box">
+                        <div id="avatarPlaceholder" class="avt-circle"></div>
+                        <div class="d-flex flex-column">
+                            <span id="userNameDisplay">...</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
+                                <span id="userExpiryText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                </div>
+            </div>
+
+            <div class="nav-center-container" id="navCenterArea">
+                <ul class="navbar-nav" id="adminNavLinks">
+                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
+                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
+                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
+                    <li class="nav-item"><a href="lienhe.html" class="nav-link active">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="fedback.html" class="nav-link">Góp Ý</a></li>
+                </ul>
+            </div>
+
+            <div style="width: 40px;" class="d-lg-none"></div>
+
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="supreme-card">
+            <h1 class="supreme-title">Hỗ Trợ Kỹ Thuật</h1>
+            <p class="text-secondary fw-bold small">Giải pháp chọn ảnh thông minh cho Studio chuyên nghiệp.<br>Dịch vụ từ <b>chonanhnhanh.vn</b>.</p>
+            <div class="contact-grid">
+                <a href="https://m.me/lamnamphuoc95" target="_blank" class="contact-item"><div class="contact-icon" style="color: #0099ff;"><i class="fab fa-facebook-messenger"></i></div><div class="contact-info"><label>Messenger</label><span>Lâm Nam Phước</span></div></a>
+                <a href="https://zalo.me/0879029170" target="_blank" class="contact-item"><div class="contact-icon" style="color: #00ebb0;"><i class="fas fa-comment-dots"></i></div><div class="contact-info"><label>Zalo</label><span>0879 029 170</span></div></a>
+                <a href="https://t.me/david_coby" target="_blank" class="contact-item"><div class="contact-icon" style="color: #27A0DF;"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><label>Telegram</label><span>@david_coby</span></div></a>
+                <a href="mailto:phuoclam095@gmail.com" class="contact-item"><div class="contact-icon" style="color: #ff4757;"><i class="fas fa-envelope-open-text"></i></div><div class="contact-info"><label>Email</label><span>phuoclam095@gmail.com</span></div></a>
+            </div>
+            <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center;"><i class="far fa-clock me-2"></i>GIỜ LÀM VIỆC: 08:00 AM - 10:00 PM HÀNG NGÀY</p>
+        </div>
+
+        <div class="ai-box">
+            <div class="ai-header"><i class="fas fa-robot"></i> TRỢ LÝ CHONANHNHANH.VN</div>
+            <div class="ai-messages" id="aiChat"><div class="msg-wrapper ai"><div class="chat-avt"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg msg-ai" id="welcomeMsg">Chào Admin! Bạn cần hỗ trợ gì?</div></div></div>
+            <div id="typingIndicator">Trợ lý ảo đang soạn tin...</div>
+            <div class="ai-input-area"><input type="text" id="aiInput" placeholder="Hỏi gì đó..." onkeypress="if(event.key==='Enter') askAI()"><button class="ai-btn" onclick="askAI()"><i class="fas fa-paper-plane"></i></button></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const AI_PATH = 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin';
+        const sessionId = localStorage.getItem('admin_email') || 'session_' + Date.now();
+
+        async function askAI() {
+            const input = document.getElementById('aiInput'); const chat = document.getElementById('aiChat'); const typing = document.getElementById('typingIndicator');
+            const userAvt = localStorage.getItem('admin_avatar') || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            if(!input.value.trim()) return;
+            const msg = input.value; input.value = '';
+            chat.innerHTML += `<div class="msg-wrapper user"><div class="chat-avt"><img src="${userAvt}"></div><div class="msg msg-user">${msg}</div></div>`;
+            chat.scrollTop = chat.scrollHeight; typing.style.display = 'block';
+            try {
+                const res = await fetch(AI_PATH, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, sessionId: sessionId, adminEmail: localStorage.getItem('admin_email') }) });
+                const data = await res.json(); typing.style.display = 'none';
+                chat.innerHTML += `<div class="msg-wrapper ai"><div class="chat-avt"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div><div class="msg msg-ai">${data.output || data.message || "Xong!"}</div></div>`;
+            } catch (e) { typing.style.display = 'none'; }
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function updateHeaderUI() {
+            if (localStorage.getItem('admin_is_logged_in') === 'true') {
+                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                document.getElementById('userNameDisplay').innerText = name;
+                document.getElementById('welcomeMsg').innerHTML = `Chào <b>${name}</b>! Tôi là trợ lý ảo của <b>chonanhnhanh.vn</b>. Rất vui được hỗ trợ bạn!`;
+                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
+                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
+                if (status === 'active' && expiry > Date.now()) { 
+                    badge.innerText = "ACTIVE"; 
+                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
+                } else { badge.innerText = "MỚI"; }
+                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
+            } else { window.location.href = 'admin.html'; }
+        }
+        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); setTimeout(() => document.getElementById('loadOverlay').style.display = 'none', 500); });
+        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
+    </script>
+</body>
+</html>
