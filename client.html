@@ -112,10 +112,13 @@
     <div class="content-area">
         <div id="photoGrid"></div>
         <div id="photoViewer">
-            <div class="stage">
+            <div class="stage" style="position: relative; display: flex; align-items: center; justify-content: center;">
                 <div id="photoInfoBadge">0/0</div>
-                <img id="mainImg" src="">
-                <div id="clientWatermarkContainer"></div>
+                <!-- Bọc chung ảnh và logo trong một khung tương đối -->
+                <div style="position: relative; display: inline-flex; max-width: 100%; max-height: 100%;">
+                    <img id="mainImg" src="">
+                    <div id="clientWatermarkContainer"></div>
+                </div>
             </div>
             <div class="strip-luxury" id="strip"></div>
         </div>
@@ -222,36 +225,41 @@
             updateInfo();
         }
        function showViewer() {
-            const p = photos[cur]; if(!p) return;
+            const p = photos[cur]; 
+            if(!p) return;
+            
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-            document.getElementById('clientWatermarkContainer').innerHTML = watermarkHTML;
-            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             
-            const strip = document.getElementById('strip'); strip.innerHTML = '';
-            photos.forEach((p, i) => {
-                const isSel = selectedIds.includes(p.id);
-                const hasNote = p.note && p.note.trim() !== '';
+            // 🌟 Gán lớp phủ logo vào khung xem chi tiết
+            document.getElementById('clientWatermarkContainer').innerHTML = watermarkHTML;
+        
+            const strip = document.getElementById('strip'); 
+            strip.innerHTML = '';
+            
+            photos.forEach((photoItem, i) => {
+                const isSel = selectedIds.includes(photoItem.id);
+                const hasNote = photoItem.note && photoItem.note.trim() !== '';
                 if(isFiltering && !isSel) return;
                 
                 const th = document.createElement('div');
                 th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(p.id, 's100')}">`;
+                th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
                 
                 if(isSel) {
-                    const num = selectedIds.indexOf(p.id) + 1;
+                    const num = selectedIds.indexOf(photoItem.id) + 1;
                     th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
                 }
                 
-                // HIỂN THỊ ICON GHI CHÚ TRÊN THANH THUMBNAIL CHI TIẾT
                 if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment"></i></div>`);
+                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
                 }
                 
                 th.onclick = () => { cur = i; showViewer(); };
                 strip.appendChild(th);
             });
+            
             const activeTh = strip.querySelector('.act');
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
