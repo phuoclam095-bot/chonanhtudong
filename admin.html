@@ -273,7 +273,7 @@
                     <!-- Ô tải logo trực tiếp từ máy tính (Ẩn/Hiện theo công tắc trên) -->
                     <div class="mb-3 mt-3 px-2" id="logoUploadContainer">
                         <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
-                        <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(file)" style="padding: 10px; font-size: 0.8rem;">
+                       <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
                         <div class="form-text text-secondary" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng < 1MB).</div>
                         
                         <!-- Xem trước logo vừa tải -->
@@ -441,12 +441,12 @@
         }
         
         // Hàm ẩn/hiện ô chọn file logo dựa vào công tắc bật/tắt
-        function toggleWatermarkInput() {
+       function toggleWatermarkInput() {
             const isChecked = document.getElementById('enableWatermark').checked;
             document.getElementById('logoUploadContainer').style.display = isChecked ? 'block' : 'none';
         }
         
-        // Hàm xử lý đọc file logo từ máy tính của khách/chủ studio
+        // Hàm xử lý đọc file logo từ máy tính
         function processLogoFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -463,12 +463,13 @@
                 
                 // Hiện ảnh xem trước ngay lập tức
                 const preview = document.getElementById('logoPreview');
-                preview.src = storedLogoBase64;
-                preview.style.display = 'block';
+                if (preview) {
+                    preview.src = storedLogoBase64;
+                    preview.style.display = 'block';
+                }
             };
             reader.readAsDataURL(file);
         }
-        
         // Khi gửi dữ liệu tạo album lên n8n, nhớ gửi kèm trạng thái watermark và logo
         // (Đưa các biến này vào object payload gửi đi của bạn)
         const watermarkEnabled = document.getElementById('enableWatermark').checked;
