@@ -125,8 +125,9 @@
     <script>
         // --- ĐOẠN LẤY LOGO WATERMARK TỪ TRÌNH DUYỆT ---
         const isWatermarkOn = (typeof albumData !== 'undefined' && albumData.watermark_enabled !== false);
-        const clientLogo = (typeof albumData !== 'undefined' && albumData.watermark_logo) || '';
-        
+        const albumSettings = response.settings || {};
+        const clientLogo = albumSettings.watermark_logo || '';
+        const isWatermarkOn = albumSettings.watermark_enabled !== false;
         const watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0 };
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
@@ -153,13 +154,13 @@
             if(v === 'viewer') showViewer(); else syncGridUI();
         }
 
-        function initGrid() {
-            const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
-            photos.forEach((p, i) => {
+        function initGrid(photosArray) {
+            const gridContainer = document.getElementById('gridContainer'); // Tên container chứa ảnh của bạn
+            gridContainer.innerHTML = '';
+        
+            photosArray.forEach(p => {
                 const item = document.createElement('div');
-                item.className = 'grid-item'; item.id = `item-${i}`;
-                
-                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                item.className = 'photo-item'; // Hoặc tên class khung ảnh hiện tại của bạn
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
