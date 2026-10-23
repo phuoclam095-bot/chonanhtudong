@@ -457,21 +457,18 @@
         }
       async function init() {
             try {
-                const res = await fetch(`${PATHS.GET}?id=${fid}`);
+                // 🌟 GỬI KÈM CẢ ID ALBUM VÀ TÊN STUDIO LÊN N8N
+                const res = await fetch(`${PATHS.GET}?id=${fid}&studio=${studioSlug || ''}`);
                 const data = await res.json(); 
                 
-                // Trích xuất cấu hình và danh sách ảnh từ cấu trúc n8n
                 photos = Array.isArray(data) ? (data.photos || data) : (data.photos || []);
                 albumSettings = data.settings || albumSettings;
                 
-                // 🌟 LẤY LOGO VÀ TẠO LỚP PHỦ WATERMARK CHUẨN XÁC
                 const clientLogo = albumSettings.watermark_logo || '';
                 const isWatermarkOn = albumSettings.watermark_enabled !== false;
                 
-                // Tạo biến toàn cục để các hàm lưới và chi tiết cùng dùng chung
                 window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
                 
-                // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
                 if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
                 if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
@@ -488,7 +485,6 @@
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
                 
-                // Gọi hàm khởi tạo lưới ảnh sau khi đã có watermarkHTML
                 initGrid();
             } catch(e) { 
                 console.log(e);
