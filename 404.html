@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <title>Đang chuyển hướng...</title>
     <script>
-        // Phân tách đường dẫn trên URL (Ví dụ: /studiocongtu/1b4Y3seGP...)
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
         if (pathSegments.length >= 2) {
             const studioSlug = pathSegments[pathSegments.length - 2];
             const albumId = pathSegments[pathSegments.length - 1];
             
-            // Chuyển hướng đến client.html kèm theo tham số id ảnh và tên studio
+            // Điều hướng ngầm về client.html kèm theo đầy đủ tham số
             window.location.replace(`/client.html?id=${albumId}&studio=${studioSlug}`);
         } else {
             window.location.replace('/');
