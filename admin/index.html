@@ -257,10 +257,13 @@
                     <div class="switch-group">
                         <span>Giới hạn số ảnh</span>
                         <label class="toggle-switch">
-                            <!-- THÊM onchange để kích hoạt hàm ẩn/hiện -->
                             <input type="checkbox" id="limitPhotos" onchange="toggleLimitInput()">
                             <span class="slider"></span>
                         </label>
+                    </div>
+                    <div class="mb-3 mt-2 px-2" id="limitNumberContainer" style="display: none;">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Nhập số lượng ảnh giới hạn tối đa</label>
+                        <input type="text" id="limitPhotosInput" placeholder="Ví dụ: 50" autocomplete="off" style="padding: 10px; font-size: 0.8rem;">
                     </div>
                     <div class="switch-group">
                         <span>Đóng dấu bản quyền Logo</span>
@@ -373,7 +376,7 @@
                 // Mở khóa ô nhập liệu
                 if(driveLinkInput) { driveLinkInput.disabled = false; driveLinkInput.style.opacity = '1'; }
                 if(allowDownloadInput) allowDownloadInput.disabled = false;
-                if(allowCommentInput) allowCommentInput.disabled = true;
+                if(allowCommentInput) allowCommentInput.disabled = false;
                 if(limitPhotosInput) limitPhotosInput.disabled = false;
     
             } else if (status === 'new') {
