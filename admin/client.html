@@ -73,6 +73,25 @@
         border: 1.5px solid #000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
+        /* --- LỚP PHỦ LOGO WATERMARK MỜ 30% --- */
+        .watermark-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Giúp khách vẫn bấm chọn ảnh bình thường xuyên qua logo */
+            z-index: 20;
+            overflow: hidden;
+        }
+        
+        .watermark-overlay img {
+            width: 35%; /* Kích thước logo trên ảnh */
+            opacity: 0.3; /* Độ mờ chuẩn 30% */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            user-select: none;
+            -webkit-user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -93,10 +112,13 @@
     <div class="content-area">
         <div id="photoGrid"></div>
         <div id="photoViewer">
-            <div class="stage">
+            <div class="stage" style="position: relative; display: flex; align-items: center; justify-content: center;">
                 <div id="photoInfoBadge">0/0</div>
-                <img id="mainImg" src="">
-                <div id="clientWatermarkContainer"></div>
+                <!-- Bọc chung ảnh và logo trong một khung tương đối -->
+                <div style="position: relative; display: inline-flex; max-width: 100%; max-height: 100%;">
+                    <img id="mainImg" src="">
+                    <div id="clientWatermarkContainer"></div>
+                </div>
             </div>
             <div class="strip-luxury" id="strip"></div>
         </div>
@@ -123,18 +145,15 @@
     </div>
 
     <script>
-        // --- ĐOẠN LẤY LOGO WATERMARK TỪ TRÌNH DUYỆT ---
-        const isWatermarkOn = albumData.watermark_enabled !== false; 
-        const clientLogo = albumData.watermark_logo || '';
-        const watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Watermark"></div>` : '';
-        let albumSettings = { download: false, comment: false, limitPhotos: 0 };
-        const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
-        let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
-        
-        // --- ĐOẠN KHAI BÁO THAM SỐ CHUẨN XÁC ---
         const urlParams = new URLSearchParams(window.location.search);
         const fid = urlParams.get('id');       // Lấy ID Google Drive
         const studioSlug = urlParams.get('studio'); // Lấy tên studio
+
+        let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
+        let watermarkHTML = ''; // Biến chứa HTML của logo
+        
+        const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
+        let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         
         if (studioSlug) {
             console.log("Đang xem album thuộc Studio: " + studioSlug);
@@ -152,13 +171,13 @@
             if(v === 'viewer') showViewer(); else syncGridUI();
         }
 
-        function initGrid() {
-            const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
-            photos.forEach((p, i) => {
+        function initGrid(photosArray) {
+            const gridContainer = document.getElementById('gridContainer'); // Tên container chứa ảnh của bạn
+            gridContainer.innerHTML = '';
+        
+            photosArray.forEach(p => {
                 const item = document.createElement('div');
-                item.className = 'grid-item'; item.id = `item-${i}`;
-                
-                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                item.className = 'photo-item'; // Hoặc tên class khung ảnh hiện tại của bạn
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
@@ -206,47 +225,57 @@
             updateInfo();
         }
        function showViewer() {
-            const p = photos[cur]; if(!p) return;
+            const p = photos[cur]; 
+            if(!p) return;
+            
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-            document.getElementById('clientWatermarkContainer').innerHTML = watermarkHTML;
-            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+
+            const watermarkContainer = document.getElementById('clientWatermarkContainer');
+            if (watermarkContainer) {
+                watermarkContainer.innerHTML = watermarkHTML;
+            }
+            const strip = document.getElementById('strip'); 
+            strip.innerHTML = '';
             
-            const strip = document.getElementById('strip'); strip.innerHTML = '';
-            photos.forEach((p, i) => {
-                const isSel = selectedIds.includes(p.id);
-                const hasNote = p.note && p.note.trim() !== '';
+            photos.forEach((photoItem, i) => {
+                const isSel = selectedIds.includes(photoItem.id);
+                const hasNote = photoItem.note && photoItem.note.trim() !== '';
                 if(isFiltering && !isSel) return;
                 
                 const th = document.createElement('div');
                 th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(p.id, 's100')}">`;
+                th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
                 
                 if(isSel) {
-                    const num = selectedIds.indexOf(p.id) + 1;
+                    const num = selectedIds.indexOf(photoItem.id) + 1;
                     th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
                 }
                 
-                // HIỂN THỊ ICON GHI CHÚ TRÊN THANH THUMBNAIL CHI TIẾT
                 if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment"></i></div>`);
+                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
                 }
                 
                 th.onclick = () => { cur = i; showViewer(); };
                 strip.appendChild(th);
             });
+            
             const activeTh = strip.querySelector('.act');
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
         function initGrid() {
-            const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
+            const grid = document.getElementById('photoGrid'); 
+            if (!grid) return;
+            grid.innerHTML = '';
+            
             photos.forEach((p, i) => {
                 const item = document.createElement('div');
-                item.className = 'grid-item'; item.id = `item-${i}`;
+                item.className = 'grid-item'; 
+                item.id = `item-${i}`;
                 
-                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                // Đảm bảo có dòng ${watermarkHTML} ở đây để hiện logo trên lưới
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
@@ -431,9 +460,16 @@
                 const res = await fetch(`${PATHS.GET}?id=${fid}`);
                 const data = await res.json(); 
                 
-                // Trích xuất cấu hình và danh sách ảnh từ cấu trúc n8n mới
+                // Trích xuất cấu hình và danh sách ảnh từ cấu trúc n8n
                 photos = Array.isArray(data) ? (data.photos || data) : (data.photos || []);
                 albumSettings = data.settings || albumSettings;
+                
+                // 🌟 LẤY LOGO VÀ TẠO LỚP PHỦ WATERMARK CHUẨN XÁC
+                const clientLogo = albumSettings.watermark_logo || '';
+                const isWatermarkOn = albumSettings.watermark_enabled !== false;
+                
+                // Tạo biến toàn cục để các hàm lưới và chi tiết cùng dùng chung
+                window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
                 
                 // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
                 if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
@@ -441,7 +477,6 @@
 
                 if(photos.length > 0) {
                     let folderName = photos[0].folderName || "VIP ALBUM";
-                    // Nếu có tên studio, hiển thị kết hợp cho chuyên nghiệp
                     if(studioSlug) {
                         document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
                     } else {
@@ -452,8 +487,13 @@
                 const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
                 if (local) selectedIds = JSON.parse(local);
                 document.getElementById('loadOverlay').style.display='none';
+                
+                // Gọi hàm khởi tạo lưới ảnh sau khi đã có watermarkHTML
                 initGrid();
-            } catch(e) { alert("Lỗi tải dữ liệu!"); }
+            } catch(e) { 
+                console.log(e);
+                alert("Lỗi tải dữ liệu!"); 
+            }
         }
         init();
     </script>
