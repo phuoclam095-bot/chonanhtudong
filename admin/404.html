@@ -13,7 +13,7 @@
             const albumId = pathSegments[pathSegments.length - 1];
             
             // Tự động chuyển hướng ngầm về client.html kèm theo tham số
-            window.location.replace(`/client.html?id=${albumId}&studio=${studioSlug}`);
+            window.location.replace(`/client?id=${albumId}&studio=${studioSlug}`);
         } else {
             window.location.replace('/');
         }
