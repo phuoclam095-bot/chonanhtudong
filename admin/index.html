@@ -598,13 +598,9 @@
                             comment: document.getElementById('allowComment').checked,
                             limitPhotos: document.getElementById('limitPhotos').checked,
                             watermarkEnabled: document.getElementById('enableWatermark').checked,
-                            watermarkLogo: storedLogoBase64 // <--- Gửi chuỗi logo Base64 lên Database
+                            watermarkLogo: storedLogoBase64 || ''
                         }
                     })
-                    await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(createPayload)
                 });
             } catch (err) {
                 console.log("Backend chạy ngầm...");
