@@ -157,14 +157,19 @@
             photos.forEach((p, i) => {
                 const item = document.createElement('div');
                 item.className = 'grid-item'; item.id = `item-${i}`;
-                item.innerHTML = `<img src="${getLink(p.id, 's400')}" loading="lazy">`;
+                
+                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                item.innerHTML = `
+                    <img src="${getLink(p.id, 's400')}" loading="lazy">
+                    ${watermarkHTML}
+                `;
+                
                 item.onclick = () => { cur = i; syncGridUI(); };
                 item.ondblclick = () => { cur = i; setView('viewer'); };
                 grid.appendChild(item);
             });
             syncGridUI();
         }
-
        function syncGridUI() {
             if(currentView !== 'grid') return;
             const pCurrent = photos[cur];
