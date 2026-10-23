@@ -210,7 +210,7 @@
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-            
+            document.getElementById('clientWatermarkContainer').innerHTML = watermarkHTML;
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             
             const strip = document.getElementById('strip'); strip.innerHTML = '';
