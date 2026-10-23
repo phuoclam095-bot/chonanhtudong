@@ -73,6 +73,25 @@
         border: 1.5px solid #000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
+        /* --- LỚP PHỦ LOGO WATERMARK MỜ 30% --- */
+        .watermark-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Giúp khách vẫn bấm chọn ảnh bình thường xuyên qua lớp logo */
+            z-index: 20;
+            overflow: hidden;
+        }
+        
+        .watermark-overlay img {
+            width: 35%; /* Kích thước logo trên ảnh */
+            opacity: 0.3; /* Độ mờ chuẩn 30% */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            user-select: none;
+            -webkit-user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -238,12 +257,16 @@
             updateInfo();
         }
         function initGrid() {
-            const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
+            const grid = document.getElementById('photoGrid'); 
+            if (!grid) return;
+            grid.innerHTML = '';
+            
             photos.forEach((p, i) => {
                 const item = document.createElement('div');
-                item.className = 'grid-item'; item.id = `item-${i}`;
+                item.className = 'grid-item'; 
+                item.id = `item-${i}`;
                 
-                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                // Chèn ảnh và biến watermarkHTML chứa logo đã lấy từ server
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
