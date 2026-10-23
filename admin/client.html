@@ -96,6 +96,7 @@
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
                 <img id="mainImg" src="">
+                <div id="clientWatermarkContainer"></div>
             </div>
             <div class="strip-luxury" id="strip"></div>
         </div>
@@ -122,6 +123,10 @@
     </div>
 
     <script>
+        // --- ĐOẠN LẤY LOGO WATERMARK TỪ TRÌNH DUYỆT ---
+        const isWatermarkOn = localStorage.getItem('studio_watermark_enabled') !== 'false';
+        const clientLogo = localStorage.getItem('studio_watermark_logo') || '';
+        const watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0 };
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
@@ -229,6 +234,24 @@
             const activeTh = strip.querySelector('.act');
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
+        }
+        function initGrid() {
+            const grid = document.getElementById('photoGrid'); grid.innerHTML = '';
+            photos.forEach((p, i) => {
+                const item = document.createElement('div');
+                item.className = 'grid-item'; item.id = `item-${i}`;
+                
+                // 🌟 CHÈN BIẾN watermarkHTML VÀO ĐÂY ĐỂ HIỂN THỊ LOGO MỜ TRÊN LƯỚI ẢNH
+                item.innerHTML = `
+                    <img src="${getLink(p.id, 's400')}" loading="lazy">
+                    ${watermarkHTML}
+                `;
+                
+                item.onclick = () => { cur = i; syncGridUI(); };
+                item.ondblclick = () => { cur = i; setView('viewer'); };
+                grid.appendChild(item);
+            });
+            syncGridUI();
         }
     // 3. HÀM XỬ LÝ KHI BẤM NÚT LƯU TRONG KHUNG GHI CHÚ
         async function saveCurrentComment() {
