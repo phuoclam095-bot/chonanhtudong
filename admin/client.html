@@ -114,8 +114,8 @@
         <div id="photoViewer">
             <div class="stage" style="position: relative; display: flex; align-items: center; justify-content: center;">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Khung bọc tương đối để lớp phủ logo căn đè chính xác lên ảnh chi tiết -->
-                <div style="position: relative; display: inline-flex; align-items: center; justify-content: center; max-width: 100%; max-height: 100%;">
+                <!-- Bọc chung ảnh và logo trong một khung tương đối -->
+                <div style="position: relative; display: inline-flex; max-width: 100%; max-height: 100%;">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
                 </div>
@@ -224,22 +224,20 @@
             });
             updateInfo();
         }
-        function showViewer() {
+       function showViewer() {
             const p = photos[cur]; 
             if(!p) return;
             
             document.getElementById('mainImg').src = getLink(p.id, 's2000');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-        
-            // 🌟 Gán trực tiếp biến watermarkHTML toàn cục vào đây
+
             const watermarkContainer = document.getElementById('clientWatermarkContainer');
             if (watermarkContainer) {
-                watermarkContainer.innerHTML = window.watermarkHTML || '';
+                watermarkContainer.innerHTML = watermarkHTML;
             }
-        
             const strip = document.getElementById('strip'); 
-            strip.innerHTML = ''; 
+            strip.innerHTML = '';
             
             photos.forEach((photoItem, i) => {
                 const isSel = selectedIds.includes(photoItem.id);
