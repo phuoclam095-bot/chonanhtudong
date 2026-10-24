@@ -146,8 +146,8 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const fid = urlParams.get('id');       // Lấy ID Google Drive
-        const studioSlug = urlParams.get('studio'); // Lấy tên studio
+        const albumSlug = urlParams.get('album'); // Bắt tham số slug của album
+        const studioSlug = urlParams.get('studio');
 
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; // Biến chứa HTML của logo
