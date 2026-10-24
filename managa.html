@@ -347,12 +347,10 @@
             const albumTitle = folderName.replace(/'/g, "\\'");
             
             const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
+            const aSlug = album.album_slug || album.albumSlug || createSlug(album.folderName || album.name || '');
             
-            // 🌟 Dự phòng: Nếu album chưa có sẵn slug, hệ thống tự động tạo từ tên thư mục
-            const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
-
-            // Gắn link chuẩn dạng URL thân thiện
-            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
+            // 🌟 Sửa lại URL truyền đi phải chứa chính xác ?album=...&studio=...
+            const clientPageUrl = `${PATHS.CLIENT}client.html?album=${aSlug}&studio=${sSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
