@@ -325,7 +325,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/client' };
+        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/' };
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
@@ -334,6 +334,8 @@
 
        function createAlbumCard(album) {
             const card = document.createElement('div'); 
+            
+            // 🌟 Bóc tách chuẩn xác ID của Google Drive (hỗ trợ cả các tên biến khác nhau từ server)
             const id = album.folder_id || album.folderId || album.id; 
             card.className = 'album-card-vip'; 
             card.id = `card-${id}`;
@@ -345,15 +347,19 @@
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
             const albumTitle = (album.folderName || album.name || 'VIP Album').replace(/'/g, "\\'");
             
-            // 🌟 LẤY ĐÚNG ĐỊNH DẠNG STUDIO SLUG TỪ LOCALSTORAGE HOẶC DỮ LIỆU ALBUM
+            // 🌟 Lấy chuẩn xác tên định danh studio từ LocalStorage (ưu tiên của admin) hoặc từ dữ liệu album
             const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
 
-            // 🌟 ĐƯỜNG DẪN ĐỒNG BỘ CHUẨN XÁC VỚI CLIENT.HTML
-            const clientPageUrl = `${PATHS.CLIENT}client.html?id=${id}&studio=${sSlug}`;
+            // 🌟 Lấy slug của album (hỗ trợ cả album_slug hoặc tự suy ra từ tên)
+            const aSlug = album.album_slug || album.albumSlug || createSlug(album.folderName || album.name || '');
+            
+            // 🌟 Cấu hình lại link client theo đúng chuẩn URL thân thiện mới
+            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
+
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${clientPageUrl}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <div class="stat-pill" onclick="window.open('${clientPageUrl}', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
                     <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
@@ -562,7 +568,7 @@
                 document.getElementById('loadOverlay').style.display = 'none'; 
             } 
         }
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
+        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
     <!-- MODAL CHỈNH SỬA CẤU HÌNH ALBUM -->
