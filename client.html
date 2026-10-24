@@ -472,13 +472,8 @@
         
         // Gán lại fid (nếu các hàm khác bên dưới còn dùng đến fId)
         // Nếu trong DB trả về folder_id, ta gán vào biến fid toàn cục để các tính năng lưu/chọn ảnh hoạt động bình thường
-        if (data.folder_id) {
-            window.fid = data.folder_id; 
-            fid = data.folder_id;
-        
-        } else {
-            fid = albumSlug; // Phòng hờ nếu thiếu folder_id thì dùng tạm slug làm khóa lưu trữ
-        }
+        window.fid = data.folder_id || data.folderId || albumSlug; 
+        fid = window.fid;
 
         // --- Các phần xử lý hiển thị ảnh, watermark, giao diện giữ nguyên như cũ ---
         const clientLogo = albumSettings.watermark_logo || '';
