@@ -455,51 +455,58 @@
                 alert("Lỗi kết nối khi lưu ghi chú!");
             }
         }
-      async function init() {
-            try {
-               const urlParams = new URLSearchParams(window.location.search);
-                const albumSlug = urlParams.get('album');
-                const studioSlug = urlParams.get('studio');
-                const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
-                const rawData = await res.json();
-                // 🌟 LẤY ĐÚNG ĐỐI TƯỢNG BÊN TRONG MẢNG TRẢ VỀ TỪ N8N
-                const data = Array.isArray(rawData) ? rawData[0] : rawData;
-                
-                // Trích xuất cấu hình và danh sách ảnh chuẩn xác
-                photos = data.photos || [];
-                albumSettings = data.settings || albumSettings;
-                
-                // Lấy thông tin logo và trạng thái hiển thị
-                const clientLogo = albumSettings.watermark_logo || '';
-                const isWatermarkOn = albumSettings.watermark_enabled !== false;
-                
-                // Tạo biến toàn cục để các hàm lưới và chi tiết cùng dùng chung
-                window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-                
-                // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
-                if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
-                if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
+     async function init() {
+    try {
+        // 1. Đọc đúng tham số album và studio từ URL do 404.html chuyển hướng sang
+        const urlParams = new URLSearchParams(window.location.search);
+        const albumSlug = urlParams.get('album');
+        const studioSlug = urlParams.get('studio');
 
-                if(photos.length > 0) {
-                    let folderName = photos[0].folderName || "VIP ALBUM";
-                    if(studioSlug) {
-                        document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
-                    } else {
-                        document.getElementById('albumTitle').innerText = folderName;
-                    }
-                }
+        // 2. Gọi webhook GetPhoto của n8n với đúng cặp tham số studio và album
+        const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+        const rawData = await res.json(); 
+        
+        const data = Array.isArray(rawData) ? rawData[0] : rawData;
+        
+        photos = data.photos || [];
+        albumSettings = data.settings || albumSettings;
+        
+        // Gán lại fid (nếu các hàm khác bên dưới còn dùng đến fId)
+        // Nếu trong DB trả về folder_id, ta gán vào biến fid toàn cục để các tính năng lưu/chọn ảnh hoạt động bình thường
+        if (data.folder_id) {
+            window.fid = data.folder_id; 
+        }
 
-                const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
-                if (local) selectedIds = JSON.parse(local);
-                document.getElementById('loadOverlay').style.display='none';
-                
-                initGrid();
-            } catch(e) { 
-                console.log(e);
-                alert("Lỗi tải dữ liệu!"); 
+        // --- Các phần xử lý hiển thị ảnh, watermark, giao diện giữ nguyên như cũ ---
+        const clientLogo = albumSettings.watermark_logo || '';
+        const isWatermarkOn = albumSettings.watermark_enabled !== false;
+        
+        window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
+        
+        if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
+        if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
+
+        if(photos.length > 0) {
+            let folderName = photos[0].folderName || "VIP ALBUM";
+            if(studioSlug) {
+                document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
+            } else {
+                document.getElementById('albumTitle').innerText = folderName;
             }
         }
-        init();
+
+        // Đọc dữ liệu đã chọn từ LocalStorage dựa trên định danh album
+        const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
+        if (local) selectedIds = JSON.parse(local);
+        
+        document.getElementById('loadOverlay').style.display = 'none';
+        initGrid();
+        
+    } catch(e) { 
+        console.log(e);
+        alert("Lỗi tải dữ liệu ảnh!"); 
+    }
+}
     </script>
     <!-- MODAL XEM GHI CHÚ CỦA ẢNH -->
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
