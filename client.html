@@ -148,12 +148,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const albumSlug = urlParams.get('album'); // Bắt tham số slug của album
         const studioSlug = urlParams.get('studio');
-
+        let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; // Biến chứa HTML của logo
-        let photos = [], cur = 0, currentView = 'grid', selectedIds = [], isFiltering = false;
-        let fid = ''; // 🌟 Thêm biến fid toàn cục ở đây
+        
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
+        let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
         
         if (studioSlug) {
             console.log("Đang xem album thuộc Studio: " + studioSlug);
@@ -275,6 +275,7 @@
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
                 
+                // Đảm bảo có dòng ${watermarkHTML} ở đây để hiện logo trên lưới
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                     ${watermarkHTML}
@@ -462,7 +463,7 @@
         const studioSlug = urlParams.get('studio');
 
         // 2. Gọi webhook GetPhoto của n8n với đúng cặp tham số studio và album
-        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?studio=${studioSlug}&album=${albumSlug}`);
+        const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
         const rawData = await res.json(); 
         
         const data = Array.isArray(rawData) ? rawData[0] : rawData;
@@ -470,9 +471,7 @@
         photos = data.photos || [];
         albumSettings = data.settings || albumSettings;
         
-        // Gán lại fid (nếu các hàm khác bên dưới còn dùng đến fId)
-        // Nếu trong DB trả về folder_id, ta gán vào biến fid toàn cục để các tính năng lưu/chọn ảnh hoạt động bình thường
-        window.fid = data.folder_id || data.folderId || albumSlug; 
+        window.fid = data.folder_id || albumSlug; 
         fid = window.fid;
 
         // --- Các phần xử lý hiển thị ảnh, watermark, giao diện giữ nguyên như cũ ---
