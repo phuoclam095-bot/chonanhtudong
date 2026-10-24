@@ -462,7 +462,7 @@
         const studioSlug = urlParams.get('studio');
 
         // 2. Gọi webhook GetPhoto của n8n với đúng cặp tham số studio và album
-        const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?studio=${studioSlug}&album=${albumSlug}`);
         const rawData = await res.json(); 
         
         const data = Array.isArray(rawData) ? rawData[0] : rawData;
