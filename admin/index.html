@@ -602,27 +602,27 @@
         
             let folderTitle = "Album VIP";
             let albumSlug = "album";
-
+        
             try {
-                // 1. Gọi webhook lấy thông tin tên thư mục Google Drive trước
+                // 1. Gọi webhook lấy thông tin tên thư mục Google Drive chính xác
                 const infoRes = await fetch(`${PATHS.INFO}?id=${fId}`);
                 const infoData = await infoRes.json();
                 const folderObj = Array.isArray(infoData) ? infoData[0] : infoData;
                 
                 if (folderObj && (folderObj.folderName || folderObj.name)) {
                     folderTitle = folderObj.folderName || folderObj.name;
-                    albumSlug = createSlug(folderTitle); // Tạo slug từ tên album (Ví dụ: "Ảnh Cưới" -> "anh-cuoi")
+                    albumSlug = createSlug(folderTitle); // Tự động tạo slug sạch sẽ từ tên thật
                 }
-
-                // 2. Gửi request tạo album lên n8n (gửi kèm cả albumSlug để n8n lưu vào Supabase)
+        
+                // 2. Gửi dữ liệu tạo album lên n8n (phải truyền kèm folderName và albumSlug)
                 await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         adminEmail: localStorage.getItem('admin_email'),
                         studioSlug: studioSlug,
-                        albumSlug: albumSlug, // <--- Truyền thêm slug tên album để lưu DB
-                        folderName: folderTitle,
+                        albumSlug: albumSlug,
+                        folderName: folderTitle, // <--- BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ LƯU VÀO SUPABASE
                         settings: {
                             download: document.getElementById('allowDownload').checked,
                             comment: document.getElementById('allowComment').checked,
@@ -636,7 +636,7 @@
                 console.log("Xử lý tạo album hoàn tất");
             }
         
-            // 🌟 ĐƯỜNG DẪN MỚI THÂN THIỆN: /tên-studio/tên-album-slug
+            // Hiển thị kết quả đường dẫn thân thiện
             const clientLink = `https://phuoclam095-bot.github.io/${studioSlug}/${albumSlug}`;
         
             document.getElementById('resFolderName').innerText = folderTitle;
