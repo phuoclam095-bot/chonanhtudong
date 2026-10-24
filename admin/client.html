@@ -148,7 +148,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const albumSlug = urlParams.get('album'); // Bắt tham số slug của album
         const studioSlug = urlParams.get('studio');
-
+        let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; // Biến chứa HTML của logo
         
@@ -471,11 +471,8 @@
         photos = data.photos || [];
         albumSettings = data.settings || albumSettings;
         
-        // Gán lại fid (nếu các hàm khác bên dưới còn dùng đến fId)
-        // Nếu trong DB trả về folder_id, ta gán vào biến fid toàn cục để các tính năng lưu/chọn ảnh hoạt động bình thường
-        if (data.folder_id) {
-            window.fid = data.folder_id; 
-        }
+        window.fid = data.folder_id || albumSlug; 
+        fid = window.fid;
 
         // --- Các phần xử lý hiển thị ảnh, watermark, giao diện giữ nguyên như cũ ---
         const clientLogo = albumSettings.watermark_logo || '';
