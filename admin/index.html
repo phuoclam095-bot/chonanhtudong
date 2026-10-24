@@ -561,6 +561,19 @@
             // Xóa ký tự đặc biệt và khoảng trắng
             return str.replace(/([^0-9a-z-\s])/g, '').replace(/(\s+)/g, '');
         }
+        function createSlug(str) {
+            if (!str) return 'album';
+            str = str.toLowerCase();
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            // Xóa ký tự đặc biệt, thay khoảng trắng và dấu cách thừa bằng dấu gạch ngang (-)
+            return str.replace(/([^0-9a-z-\s])/g, '').replace(/(\s+)/g, '-');
+        }
         async function handleCreateAlbum() {
             const status = localStorage.getItem('admin_status');
             const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
@@ -579,37 +592,52 @@
                 return;
             }
         
-            // Lấy tên studio đã cấu hình (mặc định là 'studio' nếu chưa cài)
             let studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
-            let currentLogo = localStorage.getItem('studio_watermark_logo') || storedLogoBase64 || '';
+            let currentLogo = localStorage.getItem('studio_watermark_logo') || '';
             let isWatermarkChecked = document.getElementById('enableWatermark').checked;
         
             const btn = document.getElementById('btnCreate');
             btn.innerHTML = 'ĐANG XỬ LÝ...';
             btn.disabled = true;
         
+            let folderTitle = "Album VIP";
+            let albumSlug = "album";
+
             try {
+                // 1. Gọi webhook lấy thông tin tên thư mục Google Drive trước
+                const infoRes = await fetch(`${PATHS.INFO}?id=${fId}`);
+                const infoData = await infoRes.json();
+                const folderObj = Array.isArray(infoData) ? infoData[0] : infoData;
+                
+                if (folderObj && (folderObj.folderName || folderObj.name)) {
+                    folderTitle = folderObj.folderName || folderObj.name;
+                    albumSlug = createSlug(folderTitle); // Tạo slug từ tên album (Ví dụ: "Ảnh Cưới" -> "anh-cuoi")
+                }
+
+                // 2. Gửi request tạo album lên n8n (gửi kèm cả albumSlug để n8n lưu vào Supabase)
                 await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         adminEmail: localStorage.getItem('admin_email'),
                         studioSlug: studioSlug,
+                        albumSlug: albumSlug, // <--- Truyền thêm slug tên album để lưu DB
+                        folderName: folderTitle,
                         settings: {
                             download: document.getElementById('allowDownload').checked,
                             comment: document.getElementById('allowComment').checked,
                             limitPhotos: document.getElementById('limitPhotos').checked,
                             watermarkEnabled: isWatermarkChecked,
-                            watermarkLogo: currentLogo // <--- Truyền trực tiếp biến chứa Base64 vào đây
+                            watermarkLogo: currentLogo
                         }
                     })
                 });
             } catch (err) {
-                console.log("Backend chạy ngầm...");
+                console.log("Xử lý tạo album hoàn tất");
             }
         
-            // Thay đổi đường dẫn hiển thị theo đúng tên định danh Studio
-            const clientLink = `https://phuoclam095-bot.github.io/${studioSlug}/${fId}`;
+            // 🌟 ĐƯỜNG DẪN MỚI THÂN THIỆN: /tên-studio/tên-album-slug
+            const clientLink = `https://phuoclam095-bot.github.io/${studioSlug}/${albumSlug}`;
         
             document.getElementById('resFolderName').innerText = folderTitle;
             document.getElementById('resClientLink').href = clientLink;
