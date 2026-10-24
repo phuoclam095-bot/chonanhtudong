@@ -347,10 +347,11 @@
             const albumTitle = folderName.replace(/'/g, "\\'");
             
             const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
-            const aSlug = album.album_slug || album.albumSlug || createSlug(album.folderName || album.name || '');
+            const folderName = album.folderName || album.name || 'VIP Album';
+            const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
             
             // 🌟 Sửa lại URL truyền đi phải chứa chính xác ?album=...&studio=...
-            const clientPageUrl = `${PATHS.CLIENT}client.html?album=${aSlug}&studio=${sSlug}`;
+            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
