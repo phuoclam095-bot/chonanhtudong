@@ -350,12 +350,16 @@
             // 🌟 Lấy chuẩn xác tên định danh studio từ LocalStorage (ưu tiên của admin) hoặc từ dữ liệu album
             const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
 
-            // 🌟 Ghép đúng định dạng: client.html?id=...&studio=...
-            const clientPageUrl = `${PATHS.CLIENT}?id=${id}&studio=${sSlug}`;
+            // 🌟 Lấy slug của album (hỗ trợ cả album_slug hoặc tự suy ra từ tên)
+            const aSlug = album.album_slug || album.albumSlug || createSlug(album.folderName || album.name || '');
+            
+            // 🌟 Cấu hình lại link client theo đúng chuẩn URL thân thiện mới
+            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
+
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${clientPageUrl}&mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <div class="stat-pill" onclick="window.open('${clientPageUrl}', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
                     <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
