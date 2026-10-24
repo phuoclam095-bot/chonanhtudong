@@ -457,9 +457,11 @@
         }
       async function init() {
             try {
-                const res = await fetch(`${PATHS.GET}?id=${fid}&studio=${studioSlug || ''}`);
-                const rawData = await res.json(); 
-                
+               const urlParams = new URLSearchParams(window.location.search);
+                const albumSlug = urlParams.get('album');
+                const studioSlug = urlParams.get('studio');
+                const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+                const rawData = await res.json();
                 // 🌟 LẤY ĐÚNG ĐỐI TƯỢNG BÊN TRONG MẢNG TRẢ VỀ TỪ N8N
                 const data = Array.isArray(rawData) ? rawData[0] : rawData;
                 
